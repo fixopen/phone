@@ -36,70 +36,70 @@ void ContactsDialog::DoDataExchange(CDataExchange* pDX) {
 BEGIN_MESSAGE_MAP(ContactsDialog, CDialog)
     ON_BN_CLICKED(IDC_BUTTON_CLOSE, &ContactsDialog::OnBnClickedButtonClose)
     ON_BN_CLICKED(IDC_BUTTON_NEW_CONTACT, &ContactsDialog::OnBnClickedButtonNewContact)
-    //ON_BN_CLICKED(IDC_BUTTON_NEW_CATEGORY, &ContactsDialog::OnBnClickedButtonNewCategory)
-    //ON_BN_CLICKED(IDC_BUTTON_CLEAR, &ContactsDialog::OnBnClickedButtonClear)
+    ON_BN_CLICKED(IDC_BUTTON_NEW_CATEGORY, &ContactsDialog::OnBnClickedButtonNewCategory)
+    ON_BN_CLICKED(IDC_BUTTON_CLEAR, &ContactsDialog::OnBnClickedButtonClear)
     ON_BN_CLICKED(IDC_BUTTON_PAGE_UP, &ContactsDialog::OnBnClickedButtonPageUp)
     ON_BN_CLICKED(IDC_BUTTON_PAGE_DOWN, &ContactsDialog::OnBnClickedButtonPageDown)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_0, &ContactsDialog::OnStnClickedStaticCategory0)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_0, &ContactsDialog::OnStnClickedStaticCategory0)
     ON_STN_CLICKED(IDC_STATIC_DELETE_0, &ContactsDialog::OnStnClickedStaticDelete0)
     ON_STN_CLICKED(IDC_STATIC_NAME_0, &ContactsDialog::OnStnClickedStaticName0)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_0, &ContactsDialog::OnStnClickedStaticTelephone0)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_0, &ContactsDialog::OnStnClickedStaticAddress0)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_0, &ContactsDialog::OnStnClickedStaticType0)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_1, &ContactsDialog::OnStnClickedStaticCategory1)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_0, &ContactsDialog::OnStnClickedStaticType0)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_1, &ContactsDialog::OnStnClickedStaticCategory1)
     ON_STN_CLICKED(IDC_STATIC_DELETE_1, &ContactsDialog::OnStnClickedStaticDelete1)
     ON_STN_CLICKED(IDC_STATIC_NAME_1, &ContactsDialog::OnStnClickedStaticName1)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_1, &ContactsDialog::OnStnClickedStaticTelephone1)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_1, &ContactsDialog::OnStnClickedStaticAddress1)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_1, &ContactsDialog::OnStnClickedStaticType1)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_2, &ContactsDialog::OnStnClickedStaticCategory2)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_1, &ContactsDialog::OnStnClickedStaticType1)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_2, &ContactsDialog::OnStnClickedStaticCategory2)
     ON_STN_CLICKED(IDC_STATIC_DELETE_2, &ContactsDialog::OnStnClickedStaticDelete2)
     ON_STN_CLICKED(IDC_STATIC_NAME_2, &ContactsDialog::OnStnClickedStaticName2)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_2, &ContactsDialog::OnStnClickedStaticTelephone2)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_2, &ContactsDialog::OnStnClickedStaticAddress2)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_2, &ContactsDialog::OnStnClickedStaticType2)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_3, &ContactsDialog::OnStnClickedStaticCategory3)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_2, &ContactsDialog::OnStnClickedStaticType2)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_3, &ContactsDialog::OnStnClickedStaticCategory3)
     ON_STN_CLICKED(IDC_STATIC_DELETE_3, &ContactsDialog::OnStnClickedStaticDelete3)
     ON_STN_CLICKED(IDC_STATIC_NAME_3, &ContactsDialog::OnStnClickedStaticName3)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_3, &ContactsDialog::OnStnClickedStaticTelephone3)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_3, &ContactsDialog::OnStnClickedStaticAddress3)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_3, &ContactsDialog::OnStnClickedStaticType3)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_4, &ContactsDialog::OnStnClickedStaticCategory4)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_3, &ContactsDialog::OnStnClickedStaticType3)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_4, &ContactsDialog::OnStnClickedStaticCategory4)
     ON_STN_CLICKED(IDC_STATIC_DELETE_4, &ContactsDialog::OnStnClickedStaticDelete4)
     ON_STN_CLICKED(IDC_STATIC_NAME_4, &ContactsDialog::OnStnClickedStaticName4)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_4, &ContactsDialog::OnStnClickedStaticTelephone4)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_4, &ContactsDialog::OnStnClickedStaticAddress4)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_4, &ContactsDialog::OnStnClickedStaticType4)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_5, &ContactsDialog::OnStnClickedStaticCategory5)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_4, &ContactsDialog::OnStnClickedStaticType4)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_5, &ContactsDialog::OnStnClickedStaticCategory5)
     ON_STN_CLICKED(IDC_STATIC_DELETE_5, &ContactsDialog::OnStnClickedStaticDelete5)
     ON_STN_CLICKED(IDC_STATIC_NAME_5, &ContactsDialog::OnStnClickedStaticName5)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_5, &ContactsDialog::OnStnClickedStaticTelephone5)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_5, &ContactsDialog::OnStnClickedStaticAddress5)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_5, &ContactsDialog::OnStnClickedStaticType5)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_6, &ContactsDialog::OnStnClickedStaticCategory6)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_5, &ContactsDialog::OnStnClickedStaticType5)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_6, &ContactsDialog::OnStnClickedStaticCategory6)
     ON_STN_CLICKED(IDC_STATIC_DELETE_6, &ContactsDialog::OnStnClickedStaticDelete6)
     ON_STN_CLICKED(IDC_STATIC_NAME_6, &ContactsDialog::OnStnClickedStaticName6)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_6, &ContactsDialog::OnStnClickedStaticTelephone6)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_6, &ContactsDialog::OnStnClickedStaticAddress6)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_6, &ContactsDialog::OnStnClickedStaticType6)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_7, &ContactsDialog::OnStnClickedStaticCategory7)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_6, &ContactsDialog::OnStnClickedStaticType6)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_7, &ContactsDialog::OnStnClickedStaticCategory7)
     ON_STN_CLICKED(IDC_STATIC_DELETE_7, &ContactsDialog::OnStnClickedStaticDelete7)
     ON_STN_CLICKED(IDC_STATIC_NAME_7, &ContactsDialog::OnStnClickedStaticName7)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_7, &ContactsDialog::OnStnClickedStaticTelephone7)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_7, &ContactsDialog::OnStnClickedStaticAddress7)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_7, &ContactsDialog::OnStnClickedStaticType7)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_8, &ContactsDialog::OnStnClickedStaticCategory8)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_7, &ContactsDialog::OnStnClickedStaticType7)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_8, &ContactsDialog::OnStnClickedStaticCategory8)
     ON_STN_CLICKED(IDC_STATIC_DELETE_8, &ContactsDialog::OnStnClickedStaticDelete8)
     ON_STN_CLICKED(IDC_STATIC_NAME_8, &ContactsDialog::OnStnClickedStaticName8)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_8, &ContactsDialog::OnStnClickedStaticTelephone8)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_8, &ContactsDialog::OnStnClickedStaticAddress8)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_8, &ContactsDialog::OnStnClickedStaticType8)
-    //ON_STN_CLICKED(IDC_STATIC_CATEGORY_9, &ContactsDialog::OnStnClickedStaticCategory9)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_8, &ContactsDialog::OnStnClickedStaticType8)
+    ON_STN_CLICKED(IDC_STATIC_CATEGORY_9, &ContactsDialog::OnStnClickedStaticCategory9)
     ON_STN_CLICKED(IDC_STATIC_DELETE_9, &ContactsDialog::OnStnClickedStaticDelete9)
     ON_STN_CLICKED(IDC_STATIC_NAME_9, &ContactsDialog::OnStnClickedStaticName9)
     ON_STN_CLICKED(IDC_STATIC_TELEPHONE_9, &ContactsDialog::OnStnClickedStaticTelephone9)
     ON_STN_CLICKED(IDC_STATIC_ADDRESS_9, &ContactsDialog::OnStnClickedStaticAddress9)
-    //ON_STN_CLICKED(IDC_STATIC_TYPE_9, &ContactsDialog::OnStnClickedStaticType9)
+    ON_STN_CLICKED(IDC_STATIC_TYPE_9, &ContactsDialog::OnStnClickedStaticType9)
     ON_WM_CTLCOLOR()
     ON_BN_CLICKED(IDC_BUTTON_CALL, &ContactsDialog::OnBnClickedButtonCall)
     ON_BN_CLICKED(IDC_BUTTON_VOICE_MESSAGES, &ContactsDialog::OnBnClickedButtonVoiceMessages)
@@ -109,58 +109,18 @@ BEGIN_MESSAGE_MAP(ContactsDialog, CDialog)
     ON_EN_SETFOCUS(IDC_EDIT_TELEPHONE, &ContactsDialog::OnEnSetfocusEditTelephone)
     ON_EN_KILLFOCUS(IDC_EDIT_TELEPHONE, &ContactsDialog::OnEnKillfocusEditTelephone)
 	ON_WM_ERASEBKGND()
-    ON_BN_CLICKED(IDC_BUTTON_IMPORT_CONTACT, &ContactsDialog::OnBnClickedButtonImportContact)
-	ON_EN_UPDATE(IDC_EDIT_NAME, &ContactsDialog::OnEnUpdateEditName)
-	ON_EN_UPDATE(IDC_EDIT_TELEPHONE, &ContactsDialog::OnEnUpdateEditTelephone)
 END_MESSAGE_MAP()
 
 
 // ContactsDialog message handlers
 
 void ContactsDialog::OnBnClickedButtonClose() {
+    // TODO: Add your control notification handler code here
     ShowWindow(SW_HIDE);
-}
-
-void ContactsDialog::hideContact_(int const categoryId, int const nameId, int const telephoneId, int const addressId, int const typeId, int const deleteId) {
-    CWnd* control = 0;
-    //control = GetDlgItem(categoryId);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(nameId);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(telephoneId);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(addressId);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(typeId);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(deleteId);
-    control->ShowWindow(SW_HIDE);
-}
-
-void ContactsDialog::showContact_(int const current, int const categoryId, int const nameId, int const telephoneId, int const addressId, int const typeId, int const deleteId) {
-    CWnd* control = 0;
-    //control = GetDlgItem(categoryId);
-    //std::wstring categoryName = contacts_[current]->GetCategoryName();
-    //if (categoryName != L"") {
-    //    control->SetWindowTextW(categoryName.c_str());
-    //    control->ShowWindow(SW_SHOW);
-    //} else {
-    //    control->SetWindowTextW(L"No Category");
-    //}
-    control = GetDlgItem(nameId);
-    control->SetWindowTextW(contacts_[current]->name().c_str());
-    control->ShowWindow(SW_SHOW);
-    control = GetDlgItem(telephoneId);
-    control->SetWindowTextW(contacts_[current]->telephone().c_str());
-    control->ShowWindow(SW_SHOW);
-    control = GetDlgItem(addressId);
-    control->SetWindowTextW(contacts_[current]->address().c_str());
-    control->ShowWindow(SW_SHOW);
-    //control = GetDlgItem(typeId);
-    //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-    //control->ShowWindow(SW_SHOW);
-    control = GetDlgItem(deleteId);
-    control->ShowWindow(SW_SHOW);
+    //contactForm->DestroyWindow();
+    //delete contactForm;
+    //OnOK();
+    //DestroyWindow();
 }
 
 void ContactsDialog::SetContacts(std::vector<Util::shared_ptr<Contact> > const& contacts) {
@@ -170,68 +130,388 @@ void ContactsDialog::SetContacts(std::vector<Util::shared_ptr<Contact> > const& 
         control->ShowWindow(SW_SHOW);
     }
 
-    //CComboBox* categoriesControl = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_CATEGORY));
-    ////categoriesControl->Clear();
-    ////categoriesControl->GetCount();
-    //while (categoriesControl->DeleteString(0))
-    //    ;
-    //categoriesControl->AddString(L"All");
-    //std::vector<Util::shared_ptr<ContactCategory> > categories = ContactCategory::All();
-    //for (size_t i = 0; i < categories.size(); ++i) {
-    //    categoriesControl->AddString(categories[i]->name().c_str());
-    //}
-    //categoriesControl->SetWindowTextW(L"All");
+    CComboBox* categoriesControl = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_CATEGORY));
+	//categoriesControl->Clear();
+    categoriesControl->GetCount();
+    while (categoriesControl->DeleteString(0))
+        ;
+    categoriesControl->AddString(L"All");
+    std::vector<Util::shared_ptr<ContactCategory> > categories = ContactCategory::All();
+    for (size_t i = 0; i < categories.size(); ++i) {
+        categoriesControl->AddString(categories[i]->name().c_str());
+    }
+    categoriesControl->SetWindowTextW(L"All");
     contacts_ = contacts;
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_0, IDC_STATIC_TELEPHONE_0, IDC_STATIC_ADDRESS_0, IDC_STATIC_TYPE_0, IDC_STATIC_DELETE_0);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_1, IDC_STATIC_TELEPHONE_1, IDC_STATIC_ADDRESS_1, IDC_STATIC_TYPE_1, IDC_STATIC_DELETE_1);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_2, IDC_STATIC_TELEPHONE_2, IDC_STATIC_ADDRESS_2, IDC_STATIC_TYPE_2, IDC_STATIC_DELETE_2);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_3, IDC_STATIC_TELEPHONE_3, IDC_STATIC_ADDRESS_3, IDC_STATIC_TYPE_3, IDC_STATIC_DELETE_3);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_4, IDC_STATIC_TELEPHONE_4, IDC_STATIC_ADDRESS_4, IDC_STATIC_TYPE_4, IDC_STATIC_DELETE_4);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_5, IDC_STATIC_TELEPHONE_5, IDC_STATIC_ADDRESS_5, IDC_STATIC_TYPE_5, IDC_STATIC_DELETE_5);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_6, IDC_STATIC_TELEPHONE_6, IDC_STATIC_ADDRESS_6, IDC_STATIC_TYPE_6, IDC_STATIC_DELETE_6);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_7, IDC_STATIC_TELEPHONE_7, IDC_STATIC_ADDRESS_7, IDC_STATIC_TYPE_7, IDC_STATIC_DELETE_7);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_8, IDC_STATIC_TELEPHONE_8, IDC_STATIC_ADDRESS_8, IDC_STATIC_TYPE_8, IDC_STATIC_DELETE_8);
-	hideContact_(IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_9, IDC_STATIC_TELEPHONE_9, IDC_STATIC_ADDRESS_9, IDC_STATIC_TYPE_9, IDC_STATIC_DELETE_9);
+    CWnd* control = GetDlgItem(IDC_STATIC_CATEGORY_0);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_0);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_0);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_0);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_0);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_0);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_1);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_1);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_1);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_1);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_1);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_1);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_2);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_2);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_2);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_2);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_2);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_2);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_3);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_3);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_3);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_3);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_3);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_3);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_4);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_4);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_4);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_4);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_4);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_4);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_5);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_5);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_5);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_5);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_5);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_5);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_6);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_6);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_6);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_6);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_6);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_6);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_7);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_7);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_7);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_7);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_7);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_7);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_8);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_8);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_8);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_8);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_8);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_8);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_CATEGORY_9);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_NAME_9);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TELEPHONE_9);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_ADDRESS_9);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_TYPE_9);
+    control->ShowWindow(SW_HIDE);
+    control = GetDlgItem(IDC_STATIC_DELETE_9);
+    control->ShowWindow(SW_HIDE);
     size_t count = contacts_.size();
     size_t current = 0;
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_0, IDC_STATIC_NAME_0, IDC_STATIC_TELEPHONE_0, IDC_STATIC_ADDRESS_0, IDC_STATIC_TYPE_0, IDC_STATIC_DELETE_0);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_0);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_0);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_0);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_0);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_0);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_0);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_1, IDC_STATIC_NAME_1, IDC_STATIC_TELEPHONE_1, IDC_STATIC_ADDRESS_1, IDC_STATIC_TYPE_1, IDC_STATIC_DELETE_1);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_1);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_1);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_1);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_1);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_1);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_1);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_2, IDC_STATIC_NAME_2, IDC_STATIC_TELEPHONE_2, IDC_STATIC_ADDRESS_2, IDC_STATIC_TYPE_2, IDC_STATIC_DELETE_2);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_2);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_2);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_2);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_2);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_2);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_2);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_3, IDC_STATIC_NAME_3, IDC_STATIC_TELEPHONE_3, IDC_STATIC_ADDRESS_3, IDC_STATIC_TYPE_3, IDC_STATIC_DELETE_3);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_3);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_3);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_3);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_3);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_3);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_3);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_4, IDC_STATIC_NAME_4, IDC_STATIC_TELEPHONE_4, IDC_STATIC_ADDRESS_4, IDC_STATIC_TYPE_4, IDC_STATIC_DELETE_4);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_4);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_4);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_4);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_4);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_4);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_4);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_5, IDC_STATIC_NAME_5, IDC_STATIC_TELEPHONE_5, IDC_STATIC_ADDRESS_5, IDC_STATIC_TYPE_5, IDC_STATIC_DELETE_5);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_5);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_5);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_5);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_5);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_5);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_5);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_6, IDC_STATIC_NAME_6, IDC_STATIC_TELEPHONE_6, IDC_STATIC_ADDRESS_6, IDC_STATIC_TYPE_6, IDC_STATIC_DELETE_6);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_6);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_6);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_6);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_6);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_6);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_6);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_7, IDC_STATIC_NAME_7, IDC_STATIC_TELEPHONE_7, IDC_STATIC_ADDRESS_7, IDC_STATIC_TYPE_7, IDC_STATIC_DELETE_7);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_7);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_7);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_7);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_7);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_7);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_7);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_8, IDC_STATIC_NAME_8, IDC_STATIC_TELEPHONE_8, IDC_STATIC_ADDRESS_8, IDC_STATIC_TYPE_8, IDC_STATIC_DELETE_8);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_8);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_8);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_8);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_8);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_8);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_8);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
     if (current < count) {
-		showContact_(current, IDC_STATIC_CATEGORY_9, IDC_STATIC_NAME_9, IDC_STATIC_TELEPHONE_9, IDC_STATIC_ADDRESS_9, IDC_STATIC_TYPE_9, IDC_STATIC_DELETE_9);
+        control = GetDlgItem(IDC_STATIC_CATEGORY_9);
+        std::wstring categoryName = contacts_[current]->GetCategoryName();
+        if (categoryName != L"") {
+            control->SetWindowTextW(categoryName.c_str());
+            control->ShowWindow(SW_SHOW);
+        } else {
+            control->SetWindowTextW(L"No Category");
+        }
+        control = GetDlgItem(IDC_STATIC_NAME_9);
+        control->SetWindowTextW(contacts_[current]->name().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TELEPHONE_9);
+        control->SetWindowTextW(contacts_[current]->telephone().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_ADDRESS_9);
+        control->SetWindowTextW(contacts_[current]->address().c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_TYPE_9);
+        control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
+        control->ShowWindow(SW_SHOW);
+        control = GetDlgItem(IDC_STATIC_DELETE_9);
+        control->ShowWindow(SW_SHOW);
         ++current;
     }
 }
@@ -247,35 +527,34 @@ void ContactsDialog::OnBnClickedButtonNewContact() {
     contactForm->SetListener(this);
     contactForm->SetContact(newContact);
     contactForm->ShowWindow(SW_SHOW);
-    //clear search condition
-    filter_ = L"";
+    filter_ = L""; //clear search condition
     CWnd* control = GetDlgItem(IDC_EDIT_NAME);
     control->SetWindowTextW(L"");
     control = GetDlgItem(IDC_EDIT_TELEPHONE);
     control->SetWindowTextW(L"");
-    //control = GetDlgItem(IDC_COMBO_CATEGORY);
-    //control->SetWindowTextW(L"All");
-    //control = GetDlgItem(IDC_COMBO_TYPE);
-    //control->SetWindowTextW(L"All");
+    control = GetDlgItem(IDC_COMBO_CATEGORY);
+    control->SetWindowTextW(L"All");
+    control = GetDlgItem(IDC_COMBO_TYPE);
+    control->SetWindowTextW(L"All");
 }
 
 BOOL ContactsDialog::OnInitDialog() {
     CDialog::OnInitDialog();
+    // TODO:  Add extra initialization here
+    CComboBox* control = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_CATEGORY));
+    control->AddString(L"All");
+    std::vector<Util::shared_ptr<ContactCategory> > categories = ContactCategory::All();
+    for (size_t i = 0; i < categories.size(); ++i) {
+        control->AddString(categories[i]->name().c_str());
+    }
+    control->SetWindowTextW(L"All");
 
-    //CComboBox* control = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_CATEGORY));
-    //control->AddString(L"All");
-    //std::vector<Util::shared_ptr<ContactCategory> > categories = ContactCategory::All();
-    //for (size_t i = 0; i < categories.size(); ++i) {
-    //    control->AddString(categories[i]->name().c_str());
-    //}
-    //control->SetWindowTextW(L"All");
-
-    //control = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_TYPE));
-    //control->AddString(L"All");
-    //control->AddString(L"Normal");
-    //control->AddString(L"VIP");
-    //control->AddString(L"Blacklist");
-    //control->SetWindowTextW(L"All");
+    control = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_TYPE));
+    control->AddString(L"All");
+    control->AddString(L"Normal");
+    control->AddString(L"VIP");
+    control->AddString(L"Blacklist");
+    control->SetWindowTextW(L"All");
 
 	SIZE buttonSize;
 	buttonSize.cx = 48;
@@ -287,14 +566,12 @@ BOOL ContactsDialog::OnInitDialog() {
 	pageDownButton_.SubclassDlgItem(IDC_BUTTON_PAGE_DOWN, this);
 	pageUpButton_.SetImage(L"/FlashDrv/debug/pageup.jpg", buttonSize, maskFilename);
 	pageUpButton_.SubclassDlgItem(IDC_BUTTON_PAGE_UP, this);
+	clearButton_.SetImage(L"/FlashDrv/debug/clear.jpg", buttonSize, maskFilename);
+	clearButton_.SubclassDlgItem(IDC_BUTTON_CLEAR, this);
 	newContactButton_.SetImage(L"/FlashDrv/debug/newContact.jpg", buttonSize, maskFilename);
 	newContactButton_.SubclassDlgItem(IDC_BUTTON_NEW_CONTACT, this);
-	importButton_.SetImage(L"/FlashDrv/debug/import.jpg", buttonSize, maskFilename);
-	importButton_.SubclassDlgItem(IDC_BUTTON_IMPORT_CONTACT, this);
-	//clearButton_.SetImage(L"/FlashDrv/debug/clear.jpg", buttonSize, maskFilename);
-	//clearButton_.SubclassDlgItem(IDC_BUTTON_CLEAR, this);
-	//newCategoryButton_.SetImage(L"/FlashDrv/debug/newCategory.jpg", buttonSize, maskFilename);
-	//newCategoryButton_.SubclassDlgItem(IDC_BUTTON_NEW_CATEGORY, this);
+	newCategoryButton_.SetImage(L"/FlashDrv/debug/newCategory.jpg", buttonSize, maskFilename);
+	newCategoryButton_.SubclassDlgItem(IDC_BUTTON_NEW_CATEGORY, this);
 	callButton_.SetImage(L"/FlashDrv/debug/call.jpg", buttonSize, maskFilename);
 	callButton_.SubclassDlgItem(IDC_BUTTON_CALL, this);
 	voiceMessagesButton_.SetImage(L"/FlashDrv/debug/message.jpg", buttonSize, maskFilename);
@@ -306,8 +583,8 @@ BOOL ContactsDialog::OnInitDialog() {
 	font_.CreatePointFont(Screen::fontPoint, L"ËÎÌו");
 	GetDlgItem(IDC_EDIT_NAME)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_TELEPHONE)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_COMBO_CATEGORY)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_COMBO_TYPE)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_COMBO_CATEGORY)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_COMBO_TYPE)->SetFont(&font_, FALSE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
@@ -320,18 +597,6 @@ LRESULT ContactsDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) {
     Util::shared_ptr<ContactCategory> contactCategory;
     CWnd* control = 0;
     switch (message) {
-        case UM_CHANGE_CONTACT_TYPE:
-            switch (wParam) {
-                case 0: //insert
-                    isNewContact_ = true;
-                    break;
-                case 1: //update
-                    isNewContact_ = false;
-                    break;
-                default:
-                    break;
-            }
-            break;
         case UM_SHOW_TELEPHONE:
             control = GetDlgItem(IDC_BUTTON_CALL);
             control->ShowWindow(SW_SHOW);
@@ -425,7 +690,6 @@ void ContactsDialog::Delete(int const no) {
 
 void ContactsDialog::ShowDetail(int const no) {
     isNewContact_ = false;
-    contactForm->SuppressSuggest();
     contactForm->SetContact(contacts_[no]);
     contactForm->SetListener(this);
     contactForm->ShowWindow(SW_SHOW);
@@ -739,23 +1003,23 @@ void ContactsDialog::OnBnClickedButtonFind() {
         filter += L" OR [mobile] LIKE '" + value + L"%'";
         filter += L" OR [mobile2] LIKE '" + value + L"%')";
     }
-    //control = GetDlgItem(IDC_COMBO_CATEGORY);
-    //control->GetWindowTextW(value);
-    //if (value != L"All") {
-    //    if (filter != L"") {
-    //        filter += " AND ";
-    //    }
-    //    filter += L"[categoryId] = " + ContactCategory::GetIdByName(static_cast<LPCTSTR>(value));
-    //}
-    //control = GetDlgItem(IDC_COMBO_TYPE);
-    //control->GetWindowTextW(value);
-    //if (value != L"All") {
-    //    if (filter != L"") {
-    //        filter += " AND ";
-    //    }
-    //    filter += L"[type] = ";
-    //    filter += Util::StringOp::FromInt(StringToContactType(static_cast<LPCTSTR>(value))).c_str();
-    //}
+    control = GetDlgItem(IDC_COMBO_CATEGORY);
+    control->GetWindowTextW(value);
+    if (value != L"All") {
+        if (filter != L"") {
+            filter += " AND ";
+        }
+        filter += L"[categoryId] = " + ContactCategory::GetIdByName(static_cast<LPCTSTR>(value));
+    }
+    control = GetDlgItem(IDC_COMBO_TYPE);
+    control->GetWindowTextW(value);
+    if (value != L"All") {
+        if (filter != L"") {
+            filter += " AND ";
+        }
+        filter += L"[type] = ";
+        filter += Util::StringOp::FromInt(StringToContactType(static_cast<LPCTSTR>(value))).c_str();
+    }
     filter_ = static_cast<LPCTSTR>(filter);
     std::vector<Util::shared_ptr<Contact> > contacts = Contact::Select(filter_, L"id", Util::BaseData::srDesc, 0, pageSize);
     SetContacts(contacts);
@@ -786,460 +1050,3 @@ BOOL ContactsDialog::OnEraseBkgnd(CDC* pDC) {
 	//return CDialog::OnEraseBkgnd(pDC);
 	return TRUE;
 }
-
-void ContactsDialog::OnBnClickedButtonImportContact() {
-    std::wstring filename = StoragePath::GetSdCardPath() + L"/import.csv";
-    if (StoragePath::HasFile(filename)) {
-        Contact::Import(filename);
-    } else {
-        MessageBox(L"not import file exist, you must has import.csv file in sd card root directory");
-    }
-}
-
-void ContactsDialog::OnEnUpdateEditName() {
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialog::OnInitDialog()
-	// function to send the EM_SETEVENTMASK message to the control
-	// with the ENM_UPDATE flag ORed into the lParam mask.
-
-	// TODO:  Add your control notification handler code here
-    CString filter;
-    CWnd* control = GetDlgItem(IDC_EDIT_NAME);
-    CString value;
-    control->GetWindowTextW(value);
-    if (value != L"") {
-        filter += L"[name] LIKE '" + value + L"%'";
-    }
-    control = GetDlgItem(IDC_EDIT_TELEPHONE);
-    control->GetWindowTextW(value);
-    if (value != L"") {
-        if (filter != L"") {
-            filter += " AND ";
-        }
-        filter += L"([telephone] LIKE '" + value + L"%'";
-        filter += L" OR [telephone2] LIKE '" + value + L"%'";
-        filter += L" OR [mobile] LIKE '" + value + L"%'";
-        filter += L" OR [mobile2] LIKE '" + value + L"%')";
-    }
-    //control = GetDlgItem(IDC_COMBO_CATEGORY);
-    //control->GetWindowTextW(value);
-    //if (value != L"All") {
-    //    if (filter != L"") {
-    //        filter += " AND ";
-    //    }
-    //    filter += L"[categoryId] = " + ContactCategory::GetIdByName(static_cast<LPCTSTR>(value));
-    //}
-    //control = GetDlgItem(IDC_COMBO_TYPE);
-    //control->GetWindowTextW(value);
-    //if (value != L"All") {
-    //    if (filter != L"") {
-    //        filter += " AND ";
-    //    }
-    //    filter += L"[type] = ";
-    //    filter += Util::StringOp::FromInt(StringToContactType(static_cast<LPCTSTR>(value))).c_str();
-    //}
-    filter_ = static_cast<LPCTSTR>(filter);
-    std::vector<Util::shared_ptr<Contact> > contacts = Contact::Select(filter_, L"id", Util::BaseData::srDesc, 0, pageSize);
-    SetContacts(contacts);
-}
-
-void ContactsDialog::OnEnUpdateEditTelephone() {
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialog::OnInitDialog()
-	// function to send the EM_SETEVENTMASK message to the control
-	// with the ENM_UPDATE flag ORed into the lParam mask.
-
-	// TODO:  Add your control notification handler code here
-    CString filter;
-    CWnd* control = GetDlgItem(IDC_EDIT_NAME);
-    CString value;
-    control->GetWindowTextW(value);
-    if (value != L"") {
-        filter += L"[name] LIKE '" + value + L"%'";
-    }
-    control = GetDlgItem(IDC_EDIT_TELEPHONE);
-    control->GetWindowTextW(value);
-    if (value != L"") {
-        if (filter != L"") {
-            filter += " AND ";
-        }
-        filter += L"([telephone] LIKE '" + value + L"%'";
-        filter += L" OR [telephone2] LIKE '" + value + L"%'";
-        filter += L" OR [mobile] LIKE '" + value + L"%'";
-        filter += L" OR [mobile2] LIKE '" + value + L"%')";
-    }
-    //control = GetDlgItem(IDC_COMBO_CATEGORY);
-    //control->GetWindowTextW(value);
-    //if (value != L"All") {
-    //    if (filter != L"") {
-    //        filter += " AND ";
-    //    }
-    //    filter += L"[categoryId] = " + ContactCategory::GetIdByName(static_cast<LPCTSTR>(value));
-    //}
-    //control = GetDlgItem(IDC_COMBO_TYPE);
-    //control->GetWindowTextW(value);
-    //if (value != L"All") {
-    //    if (filter != L"") {
-    //        filter += " AND ";
-    //    }
-    //    filter += L"[type] = ";
-    //    filter += Util::StringOp::FromInt(StringToContactType(static_cast<LPCTSTR>(value))).c_str();
-    //}
-    filter_ = static_cast<LPCTSTR>(filter);
-    std::vector<Util::shared_ptr<Contact> > contacts = Contact::Select(filter_, L"id", Util::BaseData::srDesc, 0, pageSize);
-    SetContacts(contacts);
-}
-#if 0
-    CWnd* control = 0;
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_0);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_0);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_0);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_0);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_0);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_0);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_1);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_1);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_1);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_1);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_1);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_1);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_2);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_2);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_2);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_2);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_2);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_2);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_3);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_3);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_3);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_3);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_3);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_3);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_4);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_4);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_4);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_4);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_4);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_4);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_5);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_5);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_5);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_5);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_5);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_5);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_6);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_6);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_6);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_6);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_6);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_6);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_7);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_7);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_7);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_7);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_7);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_7);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_8);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_8);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_8);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_8);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_8);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_8);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_CATEGORY_9);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_NAME_9);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_TELEPHONE_9);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_ADDRESS_9);
-    control->ShowWindow(SW_HIDE);
-    //control = GetDlgItem(IDC_STATIC_TYPE_9);
-    //control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_STATIC_DELETE_9);
-    control->ShowWindow(SW_HIDE);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_0);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_0);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_0);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_0);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_0);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_0);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_1);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_1);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_1);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_1);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_1);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_1);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_2);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_2);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_2);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_2);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_2);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_2);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_3);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_3);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_3);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_3);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_3);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_3);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_4);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_4);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_4);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_4);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_4);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_4);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_5);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_5);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_5);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_5);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_5);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_5);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_6);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_6);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_6);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_6);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_6);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_6);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_7);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_7);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_7);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_7);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_7);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_7);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_8);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_8);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_8);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_8);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_8);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_8);
-        control->ShowWindow(SW_SHOW);
-
-        //control = GetDlgItem(IDC_STATIC_CATEGORY_9);
-        //std::wstring categoryName = contacts_[current]->GetCategoryName();
-        //if (categoryName != L"") {
-        //    control->SetWindowTextW(categoryName.c_str());
-        //    control->ShowWindow(SW_SHOW);
-        //} else {
-        //    control->SetWindowTextW(L"No Category");
-        //}
-        control = GetDlgItem(IDC_STATIC_NAME_9);
-        control->SetWindowTextW(contacts_[current]->name().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_TELEPHONE_9);
-        control->SetWindowTextW(contacts_[current]->telephone().c_str());
-        control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_ADDRESS_9);
-        control->SetWindowTextW(contacts_[current]->address().c_str());
-        control->ShowWindow(SW_SHOW);
-        //control = GetDlgItem(IDC_STATIC_TYPE_9);
-        //control->SetWindowTextW(ContactTypeToString(contacts_[current]->type()).c_str());
-        //control->ShowWindow(SW_SHOW);
-        control = GetDlgItem(IDC_STATIC_DELETE_9);
-        control->ShowWindow(SW_SHOW);
-#endif
-

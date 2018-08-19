@@ -21,8 +21,7 @@ IMPLEMENT_DYNAMIC(CallDialog, CDialog)
 CallDialog::CallDialog(CWnd* pParent /*=NULL*/)
 : CDialog(CallDialog::IDD, pParent)
 , listener_(0)
-, hasCallId_(false)
-, isNewContact_(true) {
+, hasCallId_(false) {
     Telephone::Instance(); //init the telephone machine
 }
 
@@ -42,7 +41,7 @@ BEGIN_MESSAGE_MAP(CallDialog, CDialog)
     ON_BN_CLICKED(IDC_BUTTON_HANGUP, &CallDialog::OnBnClickedButtonHangup)
     ON_BN_CLICKED(IDC_BUTTON_HIDDEN, &CallDialog::OnBnClickedButtonHidden)
     ON_BN_CLICKED(IDC_BUTTON_NEW_CONTACT, &CallDialog::OnBnClickedButtonNewContact)
-//    ON_BN_CLICKED(IDC_BUTTON_MUTE, &CallDialog::OnBnClickedButtonMute)
+    ON_BN_CLICKED(IDC_BUTTON_MUTE, &CallDialog::OnBnClickedButtonMute)
     ON_BN_CLICKED(IDC_BUTTON_START_RECORD, &CallDialog::OnBnClickedButtonStartRecord)
     ON_BN_CLICKED(IDC_BUTTON_STOP_RECORD, &CallDialog::OnBnClickedButtonStopRecord)
     ON_WM_CTLCOLOR()
@@ -50,8 +49,6 @@ BEGIN_MESSAGE_MAP(CallDialog, CDialog)
     ON_WM_TIMER()
     ON_WM_SHOWWINDOW()
 	ON_WM_ERASEBKGND()
-    ON_BN_CLICKED(IDC_BUTTON_MUTE, &CallDialog::OnBnClickedButtonMute)
-    ON_BN_CLICKED(IDC_BUTTON_UNMUTE, &CallDialog::OnBnClickedButtonUnmute)
 END_MESSAGE_MAP()
 
 
@@ -67,18 +64,8 @@ void CallDialog::SetName(std::wstring const& name) {
     control->SetWindowTextW(name.c_str());
 }
 
-void CallDialog::SetAddress(std::wstring const& address) {
-    CWnd* control = GetDlgItem(IDC_EDIT_ADDRESS);
-    control->SetWindowTextW(address.c_str());
-}
-
 void CallDialog::SetStartTime(Util::Timestamp const& time) {
     CWnd* control = GetDlgItem(IDC_STATIC_TIME);
-    control->SetWindowTextW(Util::StringOp::FromTimestamp(time).c_str());
-}
-
-void CallDialog::SetRecordStartTime(Util::Timestamp const& time) {
-    CWnd* control = GetDlgItem(IDC_STATIC_RECORD_START_TIME);
     control->SetWindowTextW(Util::StringOp::FromTimestamp(time).c_str());
 }
 
@@ -91,21 +78,21 @@ void CallDialog::ClearDuration() {
 
 void CallDialog::OnDestroy() {
     CDialog::OnDestroy();
+
+    // TODO: Add your message handler code here
     MessageBox(L"CallDialog::OnDestroy");
 }
 
 void CallDialog::OnBnClickedButtonClose() {
+    // TODO: Add your control notification handler code here
     if (listener_) {
         listener_->PostMessageW(UM_CALLINFO_UPDATE_FINALLY, 0, 0);
-        listener_ = 0;
     }
-    ClearDuration();
-	//CString v;
-	//v.Format(L"close callform Current State is : %d", Telephone::Instance()->getCurrentState());
-	//AfxMessageBox(v);
     Telephone::Instance()->SoftHangup();
     Telephone::Instance()->ClearCall();
     ShowWindow(SW_HIDE);
+    //OnOK();
+    //DestroyWindow();
 }
 
 LRESULT CallDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) {
@@ -113,27 +100,9 @@ LRESULT CallDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) {
     Util::shared_ptr<Contact> contact;
     CWnd* control;
     switch (message) {
-        case UM_CHANGE_CONTACT_TYPE:
-            switch (wParam) {
-                case 0: //insert
-                    isNewContact_ = true;
-                    break;
-                case 1: //update
-                    isNewContact_ = false;
-                    break;
-                default:
-                    break;
-            }
-            break;
         case UM_CONTACT_UPDATE_FINALLY:
-            contactForm->SyncContact();
             contact = contactForm->GetContact();
-            if (isNewContact_) {
-                contact->Insert();
-            } else {
-                contact->Update();
-                isNewContact_ = true;
-            }
+            contact->Insert();
             control = GetDlgItem(IDC_EDIT_NAME);
             control->SetWindowTextW(contact->name().c_str());
             break;
@@ -238,20 +207,19 @@ void CallDialog::OnBnClickedButtonNewContact() {
     contactForm->ShowWindow(SW_SHOW);
 }
 
+void CallDialog::OnBnClickedButtonMute() {
+    // TODO: Add your control notification handler code here
+    Telephone::Instance()->Mute();
+}
+
 void CallDialog::OnBnClickedButtonStartRecord() {
+    // TODO: Add your control notification handler code here
     Telephone::Instance()->fireEvent(Telephone::eStartRecord, 0);
-    CWnd* control = GetDlgItem(IDC_BUTTON_START_RECORD);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_BUTTON_STOP_RECORD);
-    control->ShowWindow(SW_SHOW);
 }
 
 void CallDialog::OnBnClickedButtonStopRecord() {
+    // TODO: Add your control notification handler code here
     Telephone::Instance()->fireEvent(Telephone::eStopRecord, 0);
-    CWnd* control = GetDlgItem(IDC_BUTTON_START_RECORD);
-    control->ShowWindow(SW_SHOW);
-    control = GetDlgItem(IDC_BUTTON_STOP_RECORD);
-    control->ShowWindow(SW_HIDE);
 }
 
 void CallDialog::dial_(wchar_t const keyCode) {
@@ -311,10 +279,7 @@ void CallDialog::connect_() {
 void CallDialog::startRecord_() {
     CWnd* control = GetDlgItem(IDC_STATIC_RECORD_START_TIME);
     control->SetWindowTextW(Util::StringOp::FromTimestamp(Util::Timestamp::GetCurrentTime()).c_str());
-	control = GetDlgItem(IDC_BUTTON_START_RECORD);
-	control->ShowWindow(SW_HIDE);
-	control = GetDlgItem(IDC_BUTTON_STOP_RECORD);
-	control->ShowWindow(SW_SHOW);
+
     timers_.insert(std::make_pair(Telephone::tRecord, SetTimer(Telephone::tRecord, 1000, 0)));
 }
 
@@ -336,10 +301,6 @@ void CallDialog::subDial_(wchar_t const keyCode) {
 }
 
 void CallDialog::stopRecord_() {
-	CWnd* control = GetDlgItem(IDC_BUTTON_START_RECORD);
-	control->ShowWindow(SW_SHOW);
-	control = GetDlgItem(IDC_BUTTON_STOP_RECORD);
-	control->ShowWindow(SW_HIDE);
 	KillTimer(timers_[Telephone::tRecord]);
     timers_.erase(Telephone::tRecord);
 }
@@ -385,16 +346,6 @@ void CallDialog::pickup_() {
 }
 
 void CallDialog::hangup_() {
-    KillTimer(timers_[Telephone::tDial]);
-    timers_.erase(Telephone::tDial);
-    KillTimer(timers_[Telephone::tWaitReceive]);
-    timers_.erase(Telephone::tWaitReceive);
-    KillTimer(timers_[Telephone::tRing]);
-    timers_.erase(Telephone::tRing);
-    KillTimer(timers_[Telephone::tCallId]);
-    timers_.erase(Telephone::tCallId);
-    KillTimer(timers_[Telephone::tWaitConnect]);
-    timers_.erase(Telephone::tWaitConnect);
     KillTimer(timers_[Telephone::tConnect]);
     timers_.erase(Telephone::tConnect);
     KillTimer(timers_[Telephone::tRecord]);
@@ -539,16 +490,12 @@ BOOL CallDialog::OnInitDialog() {
 	std::wstring maskFilename = L"/FlashDrv/debug/buttonMask.bmp";
 	closeButton_.SetImage(L"/FlashDrv/debug/close.jpg", buttonSize, maskFilename);
 	closeButton_.SubclassDlgItem(IDC_BUTTON_CLOSE, this);
-	hiddenButton_.SetImage(L"/FlashDrv/debug/hidden.jpg", buttonSize, maskFilename);
-	hiddenButton_.SubclassDlgItem(IDC_BUTTON_HIDDEN, this);
 	hangupButton_.SetImage(L"/FlashDrv/debug/hangup.jpg", buttonSize, maskFilename);
 	hangupButton_.SubclassDlgItem(IDC_BUTTON_HANGUP, this);
+	hiddenButton_.SetImage(L"/FlashDrv/debug/hidden.jpg", buttonSize, maskFilename);
+	hiddenButton_.SubclassDlgItem(IDC_BUTTON_HIDDEN, this);
 	rejectButton_.SetImage(L"/FlashDrv/debug/hangup.jpg", buttonSize, maskFilename);
 	rejectButton_.SubclassDlgItem(IDC_BUTTON_REJECT, this);
-	holdButton_.SetImage(L"/FlashDrv/debug/hold.jpg", buttonSize, maskFilename);
-	holdButton_.SubclassDlgItem(IDC_BUTTON_HOLD, this);
-	switchButton_.SetImage(L"/FlashDrv/debug/switch.jpg", buttonSize, maskFilename);
-	switchButton_.SubclassDlgItem(IDC_BUTTON_SWITCH, this);
 	listenButton_.SetImage(L"/FlashDrv/debug/answer.jpg", buttonSize, maskFilename);
 	listenButton_.SubclassDlgItem(IDC_BUTTON_LISTEN, this);
 	callButton_.SetImage(L"/FlashDrv/debug/call.jpg", buttonSize, maskFilename);
@@ -556,45 +503,11 @@ BOOL CallDialog::OnInitDialog() {
 	voiceMessagesButton_.SetImage(L"/FlashDrv/debug/message.jpg", buttonSize, maskFilename);
 	voiceMessagesButton_.SubclassDlgItem(IDC_BUTTON_VOICE_MESSAGES, this);
 
-    startRecordButton_.SetImage(L"/FlashDrv/debug/startRecord.jpg", buttonSize, maskFilename);
-    startRecordButton_.SubclassDlgItem(IDC_BUTTON_START_RECORD, this);
-    stopRecordButton_.SetImage(L"/FlashDrv/debug/stopRecord.jpg", buttonSize, maskFilename);
-    stopRecordButton_.SubclassDlgItem(IDC_BUTTON_STOP_RECORD, this);
-    buttonSize.cx = 40;
-    buttonSize.cy = 40;
-	newContactButton_.SetImage(L"/FlashDrv/debug/callNewContact.jpg", buttonSize, L"/FlashDrv/debug/callNewContactMask.bmp");
-	newContactButton_.SubclassDlgItem(IDC_BUTTON_NEW_CONTACT, this);
-
-    buttonSize.cx = 30;
-    buttonSize.cy = 30;
-    muteButton_.SetImage(L"/FlashDrv/debug/unmute.jpg", buttonSize, L"/FlashDrv/debug/unmuteMask.bmp");
-    muteButton_.SubclassDlgItem(IDC_BUTTON_MUTE, this);
-    unmuteButton_.SetImage(L"/FlashDrv/debug/unmute.jpg", buttonSize, L"/FlashDrv/debug/unmuteMask.bmp");
-    unmuteButton_.SubclassDlgItem(IDC_BUTTON_UNMUTE, this);
-
-
 	//font_.CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"ËÎÌו");
 	font_.CreatePointFont(Screen::fontPoint, L"ËÎÌו");
 	GetDlgItem(IDC_EDIT_NAME)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_NUMBER)->SetFont(&font_, FALSE);
-	GetDlgItem(IDC_EDIT_ADDRESS)->SetFont(&font_, FALSE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
-}
-
-void CallDialog::OnBnClickedButtonMute() {
-    //Telephone::Instance()->Mute();
-    CWnd* control = GetDlgItem(IDC_BUTTON_MUTE);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_BUTTON_UNMUTE);
-    control->ShowWindow(SW_SHOW);
-}
-
-void CallDialog::OnBnClickedButtonUnmute() {
-    //Telephone::Instance()->Unmute();
-    CWnd* control = GetDlgItem(IDC_BUTTON_MUTE);
-    control->ShowWindow(SW_SHOW);
-    control = GetDlgItem(IDC_BUTTON_UNMUTE);
-    control->ShowWindow(SW_HIDE);
 }

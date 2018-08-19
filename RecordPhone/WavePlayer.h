@@ -4,7 +4,7 @@
 #include <string>
 #include "Util/SmartPtr.h"
 #include "SoundSegment.h"
-#include "CallInfo.h"
+#include "ContactInfo.h"
 #include "Resource.h"
 #include "WaveUtil.h"
 
@@ -12,20 +12,17 @@ class WavePlayer : public CDialog {
 	DECLARE_DYNAMIC(WavePlayer)
 
 public:
-	static WavePlayer* const Instance();
+	static WavePlayer* const WavePlayer::Instance();
 	WavePlayer(CWnd* pParent = NULL);   // standard constructor
 	virtual ~WavePlayer();
 
 // Dialog Data
 	enum { IDD = IDD_DIALOG_WAVE_PLAYER };
 
-    bool const Start(std::wstring const& filename);
+    bool const Start(Util::shared_ptr<SoundSegment>& soundSegment);
     bool const Pause();
     bool const Resume();
     bool const Stop();
-    void SetStopNotify(void (*notify)()) {
-        notify_ = notify;
-    }
     bool const IsPlaying() const {
         return isPlaying_;
     }
@@ -34,7 +31,6 @@ protected:
 	afx_msg LRESULT OnMM_WOM_OPEN(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnMM_WOM_DONE(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnMM_WOM_CLOSE(WPARAM wParam, LPARAM lParam);
-    void (*notify_)();
 
 	DECLARE_MESSAGE_MAP()
 private:

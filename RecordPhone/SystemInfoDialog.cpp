@@ -6,7 +6,6 @@
 #include "SystemInfoDialog.h"
 #include "CallDialog.h"
 #include "PlayingRecordsDialog.h"
-#include "ConfirmDialog.h"
 #include "Telephone.h"
 #include "BackgroundImage.h"
 #include "Util/ImageOp.h"
@@ -16,8 +15,7 @@
 IMPLEMENT_DYNAMIC(SystemInfoDialog, CDialog)
 
 SystemInfoDialog::SystemInfoDialog(CWnd* pParent /*=NULL*/)
-: CDialog(SystemInfoDialog::IDD, pParent)
-, clearType_(tNull) {
+: CDialog(SystemInfoDialog::IDD, pParent) {
 }
 
 SystemInfoDialog::~SystemInfoDialog() {
@@ -48,24 +46,24 @@ void SystemInfoDialog::OnBnClickedButtonClose() {
 }
 
 void SystemInfoDialog::OnBnClickedButtonClearContacts() {
-    clearType_ = tContact;
-    confirmForm->SetConfirmMessage(L"Do you sure to clear the contacts? It's not recoverable!");
-    confirmForm->SetListener(this);
-    confirmForm->ShowWindow(SW_SHOW);
+    // TODO: Add your control notification handler code here
+    Contact::Remove(L"");
+    CWnd* control = GetDlgItem(IDC_STATIC_CONTACT_COUNT);
+    control->SetWindowTextW(L"0");
 }
 
 void SystemInfoDialog::OnBnClickedButtonClearVoiceMessages() {
-    clearType_ = tVoice;
-    confirmForm->SetConfirmMessage(L"Do you sure to clear the voice record? It's not recoverable!");
-    confirmForm->SetListener(this);
-    confirmForm->ShowWindow(SW_SHOW);
+    // TODO: Add your control notification handler code here
+    SoundSegment::Remove(L"[contactInfoId] <> 0");
+    CWnd* control = GetDlgItem(IDC_STATIC_VOICE_MESSAGE_COUNT);
+    control->SetWindowTextW(L"0");
 }
 
 void SystemInfoDialog::OnBnClickedButtonClearCallHistory() {
-    clearType_ = tHistory;
-    confirmForm->SetConfirmMessage(L"Do you sure to clear the call history? It's not recoverable!");
-    confirmForm->SetListener(this);
-    confirmForm->ShowWindow(SW_SHOW);
+    // TODO: Add your control notification handler code here
+    CallInfo::Remove(L"");
+    CWnd* control = GetDlgItem(IDC_STATIC_CALL_HISTORY_COUNT);
+    control->SetWindowTextW(L"0");
 }
 
 HBRUSH SystemInfoDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
@@ -131,16 +129,6 @@ BOOL SystemInfoDialog::OnInitDialog() {
 	voiceMessagesButton_.SetImage(L"/FlashDrv/debug/message.jpg", buttonSize, maskFilename);
 	voiceMessagesButton_.SubclassDlgItem(IDC_BUTTON_VOICE_MESSAGES, this);
 
-	buttonSize.cx = 35;
-	buttonSize.cy = 35;
-	maskFilename = L"/FlashDrv/debug/sClearMask.bmp";
-	clearContactsButton_.SetImage(L"/FlashDrv/debug/sClear.jpg", buttonSize, maskFilename);
-	clearContactsButton_.SubclassDlgItem(IDC_BUTTON_CLEAR_CONTACTS, this);
-	clearVoiceMessageButton_.SetImage(L"/FlashDrv/debug/sClear.jpg", buttonSize, maskFilename);
-	clearVoiceMessageButton_.SubclassDlgItem(IDC_BUTTON_CLEAR_VOICE_MESSAGES, this);
-	clearCallHistoryButton_.SetImage(L"/FlashDrv/debug/sClear.jpg", buttonSize, maskFilename);
-	clearCallHistoryButton_.SubclassDlgItem(IDC_BUTTON_CLEAR_CALL_HISTORY, this);
-
 	return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -169,29 +157,6 @@ LRESULT SystemInfoDialog::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
         case UM_SHOW_TELEPHONE:
             control = GetDlgItem(IDC_BUTTON_CALL);
             control->ShowWindow(SW_SHOW);
-            break;
-        case UM_CONFIRM:
-            if (wParam) {
-                switch (clearType_) {
-                case tContact:
-                    Contact::Remove(L"");
-                    control = GetDlgItem(IDC_STATIC_CONTACT_COUNT);
-                    control->SetWindowTextW(L"0");
-                    break;
-                case tVoice:
-                    SoundSegment::Remove(L"[contactInfoId] <> 0");
-                    control = GetDlgItem(IDC_STATIC_VOICE_MESSAGE_COUNT);
-                    control->SetWindowTextW(L"0");
-                    break;
-                case tHistory:
-                    CallInfo::Remove(L"");
-                    control = GetDlgItem(IDC_STATIC_CALL_HISTORY_COUNT);
-                    control->SetWindowTextW(L"0");
-                    break;
-                default:
-                    break;
-                }
-            }
             break;
         default:
             break;

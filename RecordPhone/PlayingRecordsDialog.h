@@ -1,5 +1,5 @@
 #pragma once
-#include "CallInfo.h"
+#include "ContactInfo.h"
 #include "ImageButton.h"
 
 // PlayingRecordsDialog dialog
@@ -19,9 +19,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
-    std::vector<std::wstring> soundSegments_;
-    size_t currentIndex_;
-    bool isFinally_;
+    std::vector<Util::shared_ptr<CallInfo> > callInfos_;
+    std::vector<Util::shared_ptr<CallInfo> >::iterator currentCallInfo_;
+    std::vector<Util::shared_ptr<SoundSegment> >::iterator currentSoundSegment_;
 	CFont font_;
 	ImageButton closeButton_;
 	ImageButton callButton_;
@@ -34,7 +34,6 @@ public:
     void SetCallInfos(std::vector<Util::shared_ptr<CallInfo> > const& callInfos);
     void SetCallInfo(Util::shared_ptr<CallInfo> const& callInfo);
     void PlayNext();
-    void StartPlay();
     afx_msg void OnBnClickedButtonClose();
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnBnClickedButtonCall();

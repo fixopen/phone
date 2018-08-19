@@ -1,6 +1,5 @@
 #include "SoundSegment.h"
 #include "RingtonePlayer.h"
-#include "WavePlayer.h"
 #include "Util/Properties.h"
 
 namespace Util {
@@ -126,8 +125,6 @@ void SoundSegment::Play() {
         case sstLocalRecord:
             //filename = folderName_ + L"/" + filename_;
             //tcpmp player
-            WavePlayer::Instance()->SetStopNotify(StopNotify);
-            WavePlayer::Instance()->Start(filename());
             break;
         case sstRingtone:
             RingtonePlayer::Instance()->SetStopNotify(StopNotify);

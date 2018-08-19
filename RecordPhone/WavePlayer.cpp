@@ -33,9 +33,7 @@ IMPLEMENT_DYNAMIC(WavePlayer, CDialog)
 
 WavePlayer::WavePlayer(CWnd* pParent /*=NULL*/)
 : CDialog(WavePlayer::IDD, pParent)
-, dataCount_(0)
-, buffer_(0)
-, notify_(0) {
+, dataCount_(0) {
     oggCodec_ = GetOggCodec();
     //prepare record component
     waveFormat_.wFormatTag = WAVE_FORMAT_PCM;
@@ -45,8 +43,10 @@ WavePlayer::WavePlayer(CWnd* pParent /*=NULL*/)
     waveFormat_.nBlockAlign = waveFormat_.nChannels * waveFormat_.wBitsPerSample / 8;
     waveFormat_.nAvgBytesPerSec = waveFormat_.nBlockAlign * waveFormat_.nSamplesPerSec;
     waveFormat_.cbSize = 0;
-    //buffer_ = reinterpret_cast<unsigned char*>(malloc(INP_BUFFER_SIZE));
-    waveHeader_ = reinterpret_cast<PWAVEHDR>(malloc(sizeof(WAVEHDR)));
+    for (int i = 0; i < WAVE_BUFFER_COUNT; ++i) {
+        buffers_[i] = reinterpret_cast<unsigned char*>(malloc(INP_BUFFER_SIZE));
+        waveHeaders_[i] = reinterpret_cast<PWAVEHDR>(malloc(sizeof(WAVEHDR)));
+    }
 }
 
 WavePlayer::~WavePlayer() {
@@ -67,8 +67,8 @@ END_MESSAGE_MAP()
 
 LRESULT WavePlayer::OnMM_WOM_OPEN(WPARAM wParam, LPARAM lParam) {
 	LRESULT result = 0;
-    waveOutPrepareHeader(waveOut_, waveHeader_, sizeof(WAVEHDR));
-    waveOutWrite(waveOut_, waveHeader_, sizeof(WAVEHDR));
+    waveOutPrepareHeader(waveOut_, waveHeaders_[0], sizeof(WAVEHDR));
+    waveOutWrite(waveOut_, waveHeaders_[0], sizeof(WAVEHDR));
     isPlaying_ = true;
 	return result;
 }
@@ -79,19 +79,16 @@ LRESULT WavePlayer::OnMM_WOM_DONE(WPARAM wParam, LPARAM lParam) {
 	waveOutUnprepareHeader(waveOut_, waveHeader, sizeof(WAVEHDR));
 	free(waveHeader->lpData);
 	free(waveHeader);
-    if (notify_) {
-        notify_();
-    }
 	return result;
 }
 
 LRESULT WavePlayer::OnMM_WOM_CLOSE(WPARAM wParam, LPARAM lParam) {
-	LRESULT result = 0;
+	LRESULT result;
     isPlaying_ = false;
 	return result;
 }
 
-bool const WavePlayer::Start(std::wstring const& filename) {
+bool const WavePlayer::Start(Util::shared_ptr<SoundSegment>& soundSegment) {
     bool result = true;
 	if (isPlaying_) {
 		waveOutReset(waveOut_);
@@ -108,16 +105,16 @@ bool const WavePlayer::Start(std::wstring const& filename) {
 		result = false;
 	}
 
- 	//waveOutMessage(0, WAV_LINEOUT_ONLY, 0, 0);
+ 	waveInMessage(0, WAV_LINEOUT_ONLY, 0, 0);
 
     CFile file;
-    file.Open(filename.c_str(), CFile::modeRead);
+    file.Open(soundSegment->filename().c_str(), CFile::modeRead);
     ULONGLONG fileLength = file.GetLength();
-    buffer_ = (unsigned char*)malloc(static_cast<size_t>(fileLength));
-    file.Read(buffer_, static_cast<UINT>(fileLength));
+    buffer_ = (unsigned char*)malloc(fileLength);
+    file.Read(buffer_, fileLength);
     file.Close();
-    waveHeader_->lpData = reinterpret_cast<LPSTR>(buffer_);
-    waveHeader_->dwBufferLength = static_cast<DWORD>(fileLength);
+    waveHeader_->lpData = buffer_;
+    waveHeader_->dwBufferLength = fileLength;
     waveHeader_->dwBytesRecorded = 0;
     waveHeader_->dwUser = 0;
     waveHeader_->dwFlags = WHDR_BEGINLOOP | WHDR_ENDLOOP;

@@ -1,5 +1,5 @@
 #pragma once
-#include "CallInfo.h"
+#include "ContactInfo.h"
 #include "ImageButton.h"
 
 // PhoneRecordsDialog dialog
@@ -31,14 +31,9 @@ private:
 	ImageButton callButton_;
 	ImageButton voiceMessagesButton_;
 	ImageButton findButton_;
-	int deleteIndex_;
     void PlayRecord(int const no);
     void Call(int const no);
     void Delete(int const no);
-    std::wstring const FormatTime(Util::Timestamp const& time) const;
-	void hideCallInfo_(int const typeId, int const nameId, int const numberId, int const durationId, int const startTimeId, int const hasRecordId, int const callId, int const deleteId);
-	void showCallInfo_(int const no, int const typeId, int const nameId, int const numberId, int const durationId, int const startTimeId, int const hasRecordId, int const callId, int const deleteId);
-	void showContactByName_(int const nameId);
 public:
     void SetCallInfos(std::vector<Util::shared_ptr<CallInfo> > const& callInfos);
     afx_msg void OnBnClickedButtonClose();
@@ -89,24 +84,6 @@ protected:
     virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	afx_msg void OnEnUpdateEditName();
-	afx_msg void OnEnUpdateEditNumber();
-	afx_msg void OnEnUpdateEditStartTime();
-	afx_msg void OnEnUpdateEditEndTime();
-	afx_msg void OnStnClickedStaticCallName0();
-	afx_msg void OnStnClickedStaticCallName1();
-	afx_msg void OnStnClickedStaticCallName2();
-	afx_msg void OnStnClickedStaticCallName3();
-	afx_msg void OnStnClickedStaticCallName4();
-	afx_msg void OnStnClickedStaticCallName5();
-	afx_msg void OnStnClickedStaticCallName6();
-	afx_msg void OnStnClickedStaticCallName7();
-	afx_msg void OnStnClickedStaticCallName8();
-	afx_msg void OnStnClickedStaticCallName9();
-	afx_msg void OnEnSetfocusEditStartTime();
-	afx_msg void OnEnSetfocusEditEndTime();
-	afx_msg void OnEnKillfocusEditStartTime();
-	afx_msg void OnEnKillfocusEditEndTime();
 };
 
 extern PhoneRecordsDialog* phoneRecordsForm;

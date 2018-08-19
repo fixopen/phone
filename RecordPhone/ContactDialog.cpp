@@ -20,8 +20,7 @@ ContactDialog* contactForm = 0;
 IMPLEMENT_DYNAMIC(ContactDialog, CDialog)
 
 ContactDialog::ContactDialog(CWnd* pParent /*=NULL*/)
-: CDialog(ContactDialog::IDD, pParent)
-, isSuppressSuggest_(false) {
+: CDialog(ContactDialog::IDD, pParent) {
 }
 
 ContactDialog::~ContactDialog() {
@@ -66,24 +65,19 @@ BEGIN_MESSAGE_MAP(ContactDialog, CDialog)
     ON_EN_KILLFOCUS(IDC_EDIT_REMARKS, &ContactDialog::OnEnKillfocusEditRemarks)
 	ON_WM_ERASEBKGND()
     ON_CBN_SELCHANGE(IDC_COMBO_CATEGORY, &ContactDialog::OnCbnSelchangeComboCategory)
-    ON_EN_CHANGE(IDC_EDIT_NAME, &ContactDialog::OnEnChangeEditName)
-    ON_LBN_SELCHANGE(IDC_LIST_SUGGEST_NAME, &ContactDialog::OnLbnSelchangeListSuggestName)
-    ON_LBN_DBLCLK(IDC_LIST_SUGGEST_NAME, &ContactDialog::OnLbnDblclkListSuggestName)
-	ON_EN_SETFOCUS(IDC_EDIT_ADDRESS2, &ContactDialog::OnEnSetfocusEditAddress2)
-	ON_EN_KILLFOCUS(IDC_EDIT_ADDRESS2, &ContactDialog::OnEnKillfocusEditAddress2)
 END_MESSAGE_MAP()
 
 
 // ContactDialog message handlers
 
 void ContactDialog::SetContact(Util::shared_ptr<Contact> const& contact) {
-    //CComboBox* categoriesControl = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_CATEGORY));
-    //categoriesControl->Clear();
-    //std::vector<Util::shared_ptr<ContactCategory> > categories = ContactCategory::All();
-    //for (size_t i = 0; i < categories.size(); ++i) {
-    //    categoriesControl->AddString(categories[i]->name().c_str());
-    //}
-    //categoriesControl->SetWindowTextW(L"");
+    CComboBox* categoriesControl = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_CATEGORY));
+	categoriesControl->Clear();
+    std::vector<Util::shared_ptr<ContactCategory> > categories = ContactCategory::All();
+    for (size_t i = 0; i < categories.size(); ++i) {
+        categoriesControl->AddString(categories[i]->name().c_str());
+    }
+    categoriesControl->SetWindowTextW(L"");
 
     contact_ = contact;
     CWnd* control = GetDlgItem(IDC_EDIT_NAME);
@@ -104,23 +98,23 @@ void ContactDialog::SetContact(Util::shared_ptr<Contact> const& contact) {
     control = GetDlgItem(IDC_EDIT_EMAIL);
     control->SetWindowTextW(contact_->email().c_str());
 
-    //control = GetDlgItem(IDC_COMBO_CATEGORY);
-    //control->SetWindowTextW(contact_->GetCategoryName().c_str());
+    control = GetDlgItem(IDC_COMBO_CATEGORY);
+    control->SetWindowTextW(contact_->GetCategoryName().c_str());
 
-    //control = GetDlgItem(IDC_COMBO_TYPE);
-    //control->SetWindowTextW(ContactTypeToString(contact_->type()).c_str());
+    control = GetDlgItem(IDC_COMBO_TYPE);
+    control->SetWindowTextW(ContactTypeToString(contact_->type()).c_str());
 
     control = GetDlgItem(IDC_EDIT_ADDRESS);
     control->SetWindowTextW(contact_->address().c_str());
 
-    //control = GetDlgItem(IDC_EDIT_COMPANY);
-    //control->SetWindowTextW(contact_->company().c_str());
+    control = GetDlgItem(IDC_EDIT_COMPANY);
+    control->SetWindowTextW(contact_->company().c_str());
 
-    //control = GetDlgItem(IDC_EDIT_DEPARTMENT);
-    //control->SetWindowTextW(contact_->department().c_str());
+    control = GetDlgItem(IDC_EDIT_DEPARTMENT);
+    control->SetWindowTextW(contact_->department().c_str());
 
-    //control = GetDlgItem(IDC_EDIT_DUTY);
-    //control->SetWindowTextW(contact_->duty().c_str());
+    control = GetDlgItem(IDC_EDIT_DUTY);
+    control->SetWindowTextW(contact_->duty().c_str());
 
     control = GetDlgItem(IDC_EDIT_REMARKS);
     control->SetWindowTextW(contact_->remarks().c_str());
@@ -152,29 +146,29 @@ void ContactDialog::SyncContact() {
     control->GetWindowTextW(value);
     contact_->email(static_cast<LPCTSTR>(value));
 
-    //control = GetDlgItem(IDC_COMBO_CATEGORY);
-    //control->GetWindowTextW(value);
-    //contact_->categoryId(ContactCategory::GetIdByName(static_cast<LPCTSTR>(value)));
+    control = GetDlgItem(IDC_COMBO_CATEGORY);
+    control->GetWindowTextW(value);
+    contact_->categoryId(ContactCategory::GetIdByName(static_cast<LPCTSTR>(value)));
 
-    //control = GetDlgItem(IDC_COMBO_TYPE);
-    //control->GetWindowTextW(value);
-    //contact_->type(StringToContactType(static_cast<LPCTSTR>(value)));
+    control = GetDlgItem(IDC_COMBO_TYPE);
+    control->GetWindowTextW(value);
+    contact_->type(StringToContactType(static_cast<LPCTSTR>(value)));
 
     control = GetDlgItem(IDC_EDIT_ADDRESS);
     control->GetWindowTextW(value);
     contact_->address(static_cast<LPCTSTR>(value));
 
-    //control = GetDlgItem(IDC_EDIT_COMPANY);
-    //control->GetWindowTextW(value);
-    //contact_->company(static_cast<LPCTSTR>(value));
+    control = GetDlgItem(IDC_EDIT_COMPANY);
+    control->GetWindowTextW(value);
+    contact_->company(static_cast<LPCTSTR>(value));
 
-    //control = GetDlgItem(IDC_EDIT_DEPARTMENT);
-    //control->GetWindowTextW(value);
-    //contact_->department(static_cast<LPCTSTR>(value));
+    control = GetDlgItem(IDC_EDIT_DEPARTMENT);
+    control->GetWindowTextW(value);
+    contact_->department(static_cast<LPCTSTR>(value));
 
-    //control = GetDlgItem(IDC_EDIT_DUTY);
-    //control->GetWindowTextW(value);
-    //contact_->duty(static_cast<LPCTSTR>(value));
+    control = GetDlgItem(IDC_EDIT_DUTY);
+    control->GetWindowTextW(value);
+    contact_->duty(static_cast<LPCTSTR>(value));
 
     control = GetDlgItem(IDC_EDIT_REMARKS);
     control->GetWindowTextW(value);
@@ -190,10 +184,10 @@ void ContactDialog::OnBnClickedButtonClose() {
     SyncContact();
     if (listener_) {
         listener_->PostMessageW(UM_CONTACT_UPDATE_FINALLY);
-        listener_ = 0;
     }
-    isSuppressSuggest_ = false;
     ShowWindow(SW_HIDE);
+    //OnOK();
+    //DestroyWindow();
 }
 
 BOOL ContactDialog::OnInitDialog() {
@@ -201,11 +195,11 @@ BOOL ContactDialog::OnInitDialog() {
 
     // TODO:  Add extra initialization here
     //setup type
-    //CComboBox* control = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_TYPE));
-    ////control->AddString(L"All");
-    //control->AddString(L"Normal");
-    //control->AddString(L"VIP");
-    //control->AddString(L"Blacklist");
+    CComboBox* control = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_TYPE));
+    //control->AddString(L"All");
+    control->AddString(L"Normal");
+    control->AddString(L"VIP");
+    control->AddString(L"Blacklist");
 
 	SIZE buttonSize;
 	buttonSize.cx = 48;
@@ -226,15 +220,13 @@ BOOL ContactDialog::OnInitDialog() {
 	GetDlgItem(IDC_EDIT_MOBILE)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_MOBILE2)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_EMAIL)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_COMBO_CATEGORY)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_COMBO_TYPE)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_COMBO_CATEGORY)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_COMBO_TYPE)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_ADDRESS)->SetFont(&font_, FALSE);
-	GetDlgItem(IDC_EDIT_ADDRESS2)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_EDIT_COMPANY)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_EDIT_DEPARTMENT)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_EDIT_DUTY)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_EDIT_COMPANY)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_EDIT_DEPARTMENT)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_EDIT_DUTY)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_REMARKS)->SetFont(&font_, FALSE);
-	GetDlgItem(IDC_LIST_SUGGEST_NAME)->SetFont(&font_, FALSE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
@@ -469,69 +461,7 @@ BOOL ContactDialog::OnEraseBkgnd(CDC* pDC) {
 	return TRUE;
 }
 
-void ContactDialog::OnCbnSelchangeComboCategory() {
+void ContactDialog::OnCbnSelchangeComboCategory()
+{
     // TODO: Add your control notification handler code here
-}
-
-void ContactDialog::OnEnChangeEditName() {
-    // TODO:  If this is a RICHEDIT control, the control will not
-    // send this notification unless you override the CDialog::OnInitDialog()
-    // function and call CRichEditCtrl().SetEventMask()
-    // with the ENM_CHANGE flag ORed into the mask.
-
-    // TODO:  Add your control notification handler code here
-    if (!isSuppressSuggest_) {
-        CListBox* nameList = static_cast<CListBox*>(GetDlgItem(IDC_LIST_SUGGEST_NAME));
-        CEdit* name = static_cast<CEdit*>(GetDlgItem(IDC_EDIT_NAME));
-        CString nameValue;
-        name->GetWindowTextW(nameValue);
-        size_t nameLength = nameValue.GetLength();
-        if ((nameLength >= 1) && (nameLength <= 5)) {
-            std::vector<Util::shared_ptr<Contact> > contacts = Contact::GetSuggestContactsByName(static_cast<LPCTSTR>(nameValue));
-            if (!contacts.empty()) {
-                for (int i = 0; i < nameList->GetCount(); ++i) {
-                    nameList->DeleteString(i);
-                }
-                //while (nameList->DeleteString(0))
-                //    ;
-                for (size_t i = 0; i < contacts.size(); ++i) {
-                    nameList->AddString(contacts[i]->name().c_str());
-                }
-                nameList->ShowWindow(SW_SHOW);
-                return;
-            }
-        }
-        nameList->ShowWindow(SW_HIDE);
-    }
-}
-
-void ContactDialog::OnLbnSelchangeListSuggestName() {
-    // TODO: Add your control notification handler code here
-    CListBox* nameList = static_cast<CListBox*>(GetDlgItem(IDC_LIST_SUGGEST_NAME));
-    CEdit* name = static_cast<CEdit*>(GetDlgItem(IDC_EDIT_NAME));
-    int index = nameList->GetCurSel();
-    CString nameValue;
-    nameList->GetText(index, nameValue);
-    Util::shared_ptr<Contact> contact = Contact::GetByName(static_cast<LPCTSTR>(nameValue));
-    //move telephone number
-    contact->telephone2(contact->telephone());
-    contact->telephone(contact->mobile2());
-    contact->mobile2(contact->mobile());
-    SetContact(contact);
-    if (listener_) {
-        listener_->PostMessageW(UM_CHANGE_CONTACT_TYPE, 1, 0);
-    }
-    nameList->ShowWindow(SW_HIDE);
-}
-
-void ContactDialog::OnLbnDblclkListSuggestName() {
-    // TODO: Add your control notification handler code here
-}
-
-void ContactDialog::OnEnSetfocusEditAddress2() {
-	SipShowIM(SIPF_ON);
-}
-
-void ContactDialog::OnEnKillfocusEditAddress2() {
-	SipShowIM(SIPF_OFF);
 }

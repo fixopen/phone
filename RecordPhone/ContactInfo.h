@@ -2,23 +2,23 @@
 #include "Util/Data.h"
 #include "Contact.h"
 
-enum CallInfoType {
+enum ContactInfoType {
     citMissed,
     citReceived,
     citDialed,
     citLeaveWord,
 };
 
-std::wstring const CallInfoTypeToString(CallInfoType const type);
-CallInfoType const StringToCallInfoType(std::wstring const& string);
+std::wstring const ContactInfoTypeToString(ContactInfoType const type);
+ContactInfoType const StringToContactInfoType(std::wstring const& string);
 
 class SoundSegment;
 class CallInfo : public Util::DataAccess<CallInfo> {
 public:
-    CallInfoType const type() const {
+    ContactInfoType const type() const {
         return type_;
     }
-    void type(CallInfoType const type) {
+    void type(ContactInfoType const type) {
         type_ = type;
     }
     Util::Timestamp const startTime() const {
@@ -51,13 +51,10 @@ public:
         //if (contact_) {
         //    result = contact_->name();
         //}
-        //if (!contactFinded_) {
-        //    contactFinded_ = true;
-            std::vector<Util::shared_ptr<Contact> > t = Contact::Select(L"id = " + Util::StringOp::FromInt(contactId_));
-            if (t.size() == 1) {
-                result = t[0]->name();
-            }
-        //}
+        std::vector<Util::shared_ptr<Contact> > t = Contact::Select(L"id = " + Util::StringOp::FromInt(contactId_));
+        if (t.size() == 1) {
+            result = t[0]->name();
+        }
         return result;
     }
 	Contact const* const contact() const {
@@ -94,11 +91,10 @@ public:
     static std::vector<Util::shared_ptr<CallInfo> > GetAllNotPlayedLeaveWord();
     Util::shared_ptr<SoundSegment> const Record();
     void StopRecord();
-	void Reset();
 private:
     static void modifyFieldByDB_(int argc, char** argv, char** columnName, Util::shared_ptr<CallInfo>& item);
 private:
-    CallInfoType type_;
+    ContactInfoType type_;
     Util::Timestamp startTime_;
     Util::TimeSpan duration_;
     //int duration_;
@@ -112,5 +108,4 @@ private:
     bool hasSound_;
     mutable bool soundsFinded_;
     mutable std::vector<Util::shared_ptr<SoundSegment> > sounds_;
-    bool isInserted_;
 };

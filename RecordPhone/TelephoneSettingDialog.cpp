@@ -15,8 +15,6 @@
 #include "Util/Properties.h"
 #include "Util/ScanDir.h"
 
-//int* p = new int[5];
-
 // TelephoneSettingDialog dialog
 
 IMPLEMENT_DYNAMIC(TelephoneSettingDialog, CDialog)
@@ -58,45 +56,45 @@ void TelephoneSettingDialog::ShowConfig() {
     delayCount->SetPos(Util::StringOp::ToInt(delayCountValue));
     delayCount->SetBuddy(control);
 
-    //ClearAllFirewall();
-    //FirewallType ft = static_cast<FirewallType>(Util::StringOp::ToInt(Util::Properties::Get(L"firewallType")));
-    //CButton* firewall;
-    //switch (ft) {
-    //    case ftNull:
-    //        //firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_NULL));
-    //        //firewall->SetCheck(BST_CHECKED);
-    //        break;
-    //    case ftBlacklist:
-    //        firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_BLACKLIST));
-    //        firewall->SetCheck(BST_CHECKED);
-    //        break;
-    //    case ftNotInContacts:
-    //        firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_NOT_IN_CONTACTS));
-    //        firewall->SetCheck(BST_CHECKED);
-    //        break;
-    //    case ftNotVIP:
-    //        firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_NOT_VIP));
-    //        firewall->SetCheck(BST_CHECKED);
-    //        break;
-    //    case ftAll:
-    //        firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_ALL));
-    //        firewall->SetCheck(BST_CHECKED);
-    //        {
-    //            CEdit* duration = static_cast<CEdit*>(GetDlgItem(IDC_EDIT_DURATION));
-    //            duration->SetReadOnly();
-    //            duration->SetWindowTextW(Util::Properties::Get(L"blockDuration").c_str());
-    //        }
-    //        break;
-    //    default:
-    //        break;
-    //}
+    ClearAllFirewall();
+    FirewallType ft = static_cast<FirewallType>(Util::StringOp::ToInt(Util::Properties::Get(L"firewallType")));
+    CButton* firewall;
+    switch (ft) {
+        case ftNull:
+            //firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_NULL));
+            //firewall->SetCheck(BST_CHECKED);
+            break;
+        case ftBlacklist:
+            firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_BLACKLIST));
+            firewall->SetCheck(BST_CHECKED);
+            break;
+        case ftNotInContacts:
+            firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_NOT_IN_CONTACTS));
+            firewall->SetCheck(BST_CHECKED);
+            break;
+        case ftNotVIP:
+            firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_NOT_VIP));
+            firewall->SetCheck(BST_CHECKED);
+            break;
+        case ftAll:
+            firewall = static_cast<CButton*>(GetDlgItem(IDC_RADIO_ALL));
+            firewall->SetCheck(BST_CHECKED);
+            {
+                CEdit* duration = static_cast<CEdit*>(GetDlgItem(IDC_EDIT_DURATION));
+                duration->SetReadOnly();
+                duration->SetWindowTextW(Util::Properties::Get(L"blockDuration").c_str());
+            }
+            break;
+        default:
+            break;
+    }
 
-    //control = GetDlgItem(IDC_CHECK_FORCE_AUTO_RECORD);
-    //(static_cast<CButton*>(control))->SetCheck(BST_CHECKED);
-    //std::wstring v = Util::Properties::Get(L"autoRecord");
-    //if (v == L"0") {
-    //    (static_cast<CButton*>(control))->SetCheck(BST_UNCHECKED);
-    //}
+    control = GetDlgItem(IDC_CHECK_FORCE_AUTO_RECORD);
+    (static_cast<CButton*>(control))->SetCheck(BST_CHECKED);
+    std::wstring v = Util::Properties::Get(L"autoRecord");
+    if (v == L"0") {
+        (static_cast<CButton*>(control))->SetCheck(BST_UNCHECKED);
+    }
 
     control = GetDlgItem(IDC_EDIT_SPEED_DIAL_1);
     control->SetWindowTextW(Util::Properties::Get(L"speedDial1").c_str());
@@ -223,28 +221,28 @@ void TelephoneSettingDialog::OnBnClickedButtonClose() {
     control->GetWindowTextW(value);
     Util::Properties::Set(L"delayCount", static_cast<LPCTSTR>(value));
 
-    //Util::Properties::Set(L"firewallType", Util::StringOp::FromInt(firewallType_));
-    //if (firewallType_ == ftAll) {
-    //    control = GetDlgItem(IDC_EDIT_DURATION);
-    //    control->GetWindowTextW(value);
-    //    Util::Properties::Set(L"blockDuration", static_cast<LPCTSTR>(value));
-    //}
+    Util::Properties::Set(L"firewallType", Util::StringOp::FromInt(firewallType_));
+    if (firewallType_ == ftAll) {
+        control = GetDlgItem(IDC_EDIT_DURATION);
+        control->GetWindowTextW(value);
+        Util::Properties::Set(L"blockDuration", static_cast<LPCTSTR>(value));
+    }
 
-    //control = GetDlgItem(IDC_CHECK_FORCE_AUTO_RECORD);
-    //std::wstring v = L"1";
-    //int checkState = (static_cast<CButton*>(control))->GetCheck();
-    //switch (checkState) {
-    //    case BST_UNCHECKED:
-    //        v = L"0";
-    //        break;
-    //    case BST_CHECKED:
-    //        break;
-    //    case BST_INDETERMINATE:
-    //        break;
-    //    default:
-    //        break;
-    //}
-    //Util::Properties::Set(L"autoRecord", v);
+    control = GetDlgItem(IDC_CHECK_FORCE_AUTO_RECORD);
+    std::wstring v = L"1";
+    int checkState = (static_cast<CButton*>(control))->GetCheck();
+    switch (checkState) {
+        case BST_UNCHECKED:
+            v = L"0";
+            break;
+        case BST_CHECKED:
+            break;
+        case BST_INDETERMINATE:
+            break;
+        default:
+            break;
+    }
+    Util::Properties::Set(L"autoRecord", v);
 
     control = GetDlgItem(IDC_EDIT_SPEED_DIAL_1);
     control->GetWindowTextW(value);
@@ -384,12 +382,12 @@ BOOL TelephoneSettingDialog::OnInitDialog() {
 	GetDlgItem(IDC_EDIT_IP_PREFIX)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_COMBO_DEFAULT_RING)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_DELAY_COUNT)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_CHECK_FORCE_AUTO_RECORD)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_RADIO_NULL)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_RADIO_BLACKLIST)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_RADIO_NOT_IN_CONTACTS)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_RADIO_NOT_VIP)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_RADIO_ALL)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_CHECK_FORCE_AUTO_RECORD)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_RADIO_NULL)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_RADIO_BLACKLIST)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_RADIO_NOT_IN_CONTACTS)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_RADIO_NOT_VIP)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_RADIO_ALL)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_SPEED_DIAL_1)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_SPEED_DIAL_2)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_SPEED_DIAL_3)->SetFont(&font_, FALSE);
@@ -402,9 +400,9 @@ BOOL TelephoneSettingDialog::OnInitDialog() {
 	GetDlgItem(IDC_EDIT_SPEED_DIAL_10)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_SPEED_DIAL_11)->SetFont(&font_, FALSE);
 	GetDlgItem(IDC_EDIT_SPEED_DIAL_12)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_EDIT_SPEED_DIAL_13)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_EDIT_SPEED_DIAL_14)->SetFont(&font_, FALSE);
-	//GetDlgItem(IDC_EDIT_SPEED_DIAL_15)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_EDIT_SPEED_DIAL_13)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_EDIT_SPEED_DIAL_14)->SetFont(&font_, FALSE);
+	GetDlgItem(IDC_EDIT_SPEED_DIAL_15)->SetFont(&font_, FALSE);
 
 	CComboBox* control = static_cast<CComboBox*>(GetDlgItem(IDC_COMBO_DEFAULT_RING));
     std::wstring ringtone = StoragePath::GetFlashDrvPath() +  L"/" + StoragePath::GetRingtonePath();

@@ -21,8 +21,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
-	void hideContact_(int const categoryId, int const nameId, int const telephoneId, int const addressId, int const typeId, int const deleteId);
-	void showContact_(int const no, int const categoryId, int const nameId, int const telephoneId, int const addressId, int const typeId, int const deleteId);
     void refreshList_();
     void drawContact_(Util::shared_ptr<Contact> const& contact, int const index);
     void CategoryEdit(int const controlId, int const no);
@@ -40,7 +38,6 @@ private:
 	ImageButton closeButton_;
 	ImageButton pageDownButton_;
 	ImageButton pageUpButton_;
-    ImageButton importButton_;
 	ImageButton clearButton_;
 	ImageButton newContactButton_;
 	ImageButton newCategoryButton_;
@@ -48,9 +45,6 @@ private:
 	ImageButton voiceMessagesButton_;
 	ImageButton findButton_;
 public:
-    void SetContactType(bool const isNew) {
-        isNewContact_ = isNew;
-    }
     void SetContacts(std::vector<Util::shared_ptr<Contact> > const& contacts);
     afx_msg void OnBnClickedButtonClose();
     afx_msg void OnBnClickedButtonNewContact();
@@ -131,11 +125,6 @@ public:
     afx_msg void OnEnSetfocusEditTelephone();
     afx_msg void OnEnKillfocusEditTelephone();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-    afx_msg void OnBnClickedButtonImportContact();
-	//afx_msg void OnEnChangeEditName();
-	//afx_msg void OnEnChangeEditTelephone();
-	afx_msg void OnEnUpdateEditName();
-	afx_msg void OnEnUpdateEditTelephone();
 };
 
 extern ContactsDialog* contactsForm;

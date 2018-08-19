@@ -8,7 +8,6 @@
 #include "PlayingRecordsDialog.h"
 #include "Telephone.h"
 #include "BackgroundImage.h"
-#include "WavePlayer.h"
 #include "Util/ImageOp.h"
 
 PlayingRecordsDialog* playingRecordsForm = 0;
@@ -18,8 +17,7 @@ PlayingRecordsDialog* playingRecordsForm = 0;
 IMPLEMENT_DYNAMIC(PlayingRecordsDialog, CDialog)
 
 PlayingRecordsDialog::PlayingRecordsDialog(CWnd* pParent /*=NULL*/)
-: CDialog(PlayingRecordsDialog::IDD, pParent)
-, isFinally_(false) {
+: CDialog(PlayingRecordsDialog::IDD, pParent) {
 }
 
 PlayingRecordsDialog::~PlayingRecordsDialog() {
@@ -44,42 +42,59 @@ BEGIN_MESSAGE_MAP(PlayingRecordsDialog, CDialog)
 END_MESSAGE_MAP()
 
 void PlayingRecordsDialog::next_() {
-    ++currentIndex_;
-    if (currentIndex_ >= soundSegments_.size()) {
-        currentIndex_ = 0;
-        isFinally_ = true;
+    std::vector<Util::shared_ptr<SoundSegment> >::iterator i = ++currentSoundSegment_;
+    if (i != (*currentCallInfo_)->sounds().end()) {
+        currentSoundSegment_ = i;
+    } else {
+        for (; currentCallInfo_ != callInfos_.end(); ++currentCallInfo_) {
+            std::vector<Util::shared_ptr<SoundSegment> > sounds = (*currentCallInfo_)->sounds();
+            if (sounds.size() > 0) {
+                currentSoundSegment_ = sounds.begin();
+                break;
+            }
+        }
     }
 }
 
 void PlayingRecordsDialog::previous_() {
-    --currentIndex_;
-    if (currentIndex_ < 0) {
-        currentIndex_ = soundSegments_.size() - 1;
+    if (currentSoundSegment_ != (*currentCallInfo_)->sounds().begin()) {
+        --currentSoundSegment_;
+    } else {
+        for (; currentCallInfo_ != callInfos_.begin() - 1; --currentCallInfo_) {
+            std::vector<Util::shared_ptr<SoundSegment> > sounds = (*currentCallInfo_)->sounds();
+            if (sounds.size() > 0) {
+                currentSoundSegment_ = sounds.end() - 1;
+                break;
+            }
+        }
     }
 }
 
 void PlayingRecordsDialog::PlayNext() {
     next_();
-    if (isFinally_) {
-        return;
-    }
-    WavePlayer::Instance()->Start(soundSegments_[currentIndex_]);
+    //std::vector<Util::shared_ptr<SoundSegment> >::iterator i = ++currentSoundSegment_;
+    //if (i != (*currentCallInfo_)->sounds().end()) {
+    //    currentSoundSegment_ = i;
+    //} else {
+    //    for (; currentCallInfo_ != callInfos_.end(); ++currentCallInfo_) {
+    //        std::vector<Util::shared_ptr<SoundSegment> > sounds = (*currentCallInfo_)->sounds();
+    //        if (sounds.size() > 0) {
+    //            currentSoundSegment_ = sounds.begin();
+    //            (*currentSoundSegment_)->Play();
+    //            break;
+    //        }
+    //    }
+    //}
+    (*currentSoundSegment_)->Play();
 }
 
+// PlayingRecordsDialog message handlers
 namespace {
     void PlayEnd() {
         playingRecordsForm->PlayNext();
     }
 }
 
-void PlayingRecordsDialog::StartPlay() {
-    if (!soundSegments_.empty()) {
-        WavePlayer::Instance()->SetStopNotify(PlayEnd);
-        WavePlayer::Instance()->Start(soundSegments_[currentIndex_]);
-    }
-}
-
-// PlayingRecordsDialog message handlers
 void PlayingRecordsDialog::SetCallInfos(std::vector<Util::shared_ptr<CallInfo> > const& callInfos) {
     bool hasCall = Telephone::Instance()->HasCall();
     if (hasCall) {
@@ -87,15 +102,18 @@ void PlayingRecordsDialog::SetCallInfos(std::vector<Util::shared_ptr<CallInfo> >
         control->ShowWindow(SW_SHOW);
     }
 
-    for (size_t i = 0; i < callInfos.size(); ++i) {
-        std::vector<Util::shared_ptr<SoundSegment> > sounds = callInfos[i]->sounds();
-        for (size_t j = 0; j < sounds.size(); ++j) {
-            soundSegments_.push_back(sounds[j]->filename());
+    callInfos_ = callInfos;
+
+    for (std::vector<Util::shared_ptr<CallInfo> >::iterator i = callInfos_.begin(); i != callInfos_.end(); ++i) {
+        std::vector<Util::shared_ptr<SoundSegment> > sounds = (*i)->sounds();
+        if (sounds.size() > 0) {
+            currentCallInfo_ = i;
+            currentSoundSegment_ = sounds.begin();
+            (*currentSoundSegment_)->StopNotify = PlayEnd;
+            (*currentSoundSegment_)->Play();
+            break;
         }
     }
-    currentIndex_ = 0;
-
-    StartPlay();
 }
 
 void PlayingRecordsDialog::SetCallInfo(Util::shared_ptr<CallInfo> const& callInfo) {
@@ -105,27 +123,8 @@ void PlayingRecordsDialog::SetCallInfo(Util::shared_ptr<CallInfo> const& callInf
         control->ShowWindow(SW_SHOW);
     }
 
-	CWnd* control = GetDlgItem(IDC_EDIT_NAME);
-	control->SetWindowTextW(callInfo->name().c_str());
-	control = GetDlgItem(IDC_EDIT_NUMBER);
-	control->SetWindowTextW(callInfo->telephoneNumber().c_str());
-	control = GetDlgItem(IDC_DATETIMEPICKER_DATE);
-	static_cast<CDateTimeCtrl*>(control)->SetTime(&callInfo->startTime());
-	control = GetDlgItem(IDC_DATETIMEPICKER_TIME);
-	static_cast<CDateTimeCtrl*>(control)->SetTime(&callInfo->startTime());
-	control = GetDlgItem(IDC_EDIT_DURATION);
-	control->SetWindowTextW(Util::StringOp::FromInt(callInfo->duration().GetTotalSeconds()).c_str());
-
-	control = GetDlgItem(IDC_PROGRESS_PLAY);
-	static_cast<CProgressCtrl*>(control)->SetPos(5);
-
-    std::vector<Util::shared_ptr<SoundSegment> > sounds = callInfo->sounds();
-    for (size_t j = 0; j < sounds.size(); ++j) {
-        soundSegments_.push_back(sounds[j]->filename());
-    }
-    currentIndex_ = 0;
-
-    StartPlay();
+    callInfos_.clear();
+    callInfos_.push_back(callInfo);
 }
 
 void PlayingRecordsDialog::OnBnClickedButtonClose() {
@@ -256,36 +255,30 @@ BOOL PlayingRecordsDialog::OnEraseBkgnd(CDC* pDC) {
 }
 
 void PlayingRecordsDialog::OnBnClickedButtonDeleteCurrent() {
+    //(*currentCallInfo_)->removeSound();
+    //SoundSegment::Remove(filter);
     WavePlayer::Instance()->Stop();
-    soundSegments_.erase(std::remove(soundSegments_.begin(), soundSegments_.end(), soundSegments_[currentIndex_]), soundSegments_.end());
+    (*currentSoundSegment_)->Remove();
     next_();
-    WavePlayer::Instance()->Start(soundSegments_[currentIndex_]);
+    WavePlayer::Instance()->Start(*currentSoundSegment_);
 }
 
 void PlayingRecordsDialog::OnBnClickedButtonResume() {
     WavePlayer::Instance()->Resume();
-    CWnd* control = GetDlgItem(IDC_BUTTON_PAUSE);
-    control->ShowWindow(SW_SHOW);
-    control = GetDlgItem(IDC_BUTTON_RESUME);
-    control->ShowWindow(SW_HIDE);
 }
 
 void PlayingRecordsDialog::OnBnClickedButtonPause() {
     WavePlayer::Instance()->Pause();
-    CWnd* control = GetDlgItem(IDC_BUTTON_PAUSE);
-    control->ShowWindow(SW_HIDE);
-    control = GetDlgItem(IDC_BUTTON_RESUME);
-    control->ShowWindow(SW_SHOW);
 }
 
 void PlayingRecordsDialog::OnBnClickedButtonPrevious() {
     WavePlayer::Instance()->Stop();
     previous_();
-    WavePlayer::Instance()->Start(soundSegments_[currentIndex_]);
+    WavePlayer::Instance()->Start(*currentSoundSegment_);
 }
 
 void PlayingRecordsDialog::OnBnClickedButtonNext() {
     WavePlayer::Instance()->Stop();
     next_();
-    WavePlayer::Instance()->Start(soundSegments_[currentIndex_]);
+    WavePlayer::Instance()->Start(*currentSoundSegment_);
 }

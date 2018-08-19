@@ -9,43 +9,43 @@ class Telephone : public Util::FSM<Telephone> {
     friend void DialThread();
 public:
 	enum State {
-		sIdle, //0
-        sSubSeqPickuping, //1
-		sPickuping, //2
-		sDialing, //3
-        sWaitingConnect, //4
-		sConnecting, //5
-		sRinging, //6
-		sCallId, //7
-        sWaitingReceive, //8
-        sDisconnecting, //9
-        sRecording, //10
-        sError, //11
+		sIdle,
+        sSubSeqPickuping,
+		sPickuping,
+		sDialing,
+        sWaitingConnect,
+		sConnecting,
+		sRinging,
+		sCallId,
+        sWaitingReceive,
+        sDisconnecting,
+        sRecording,
+        sError,
 	};
 	enum Event {
-		eHangup, //0
-		ePickup, //1
-		eDial, //2
-        eSoftDial, //3
-		eRemotePickup, //4
-		eRemoteRing, //5
-		eRemoteCallId, //6
-        eRemoteHangup, //7
-        eRemoteBusy, //8
-        eTimeout, //9
-        eLeaveWord, //10
-        eForceRecord, //11
-        eStartRecord, //12
-        eStopRecord, //13
-        eSubSeqPickup, //14
-        eSubSeqHangup, //15
+		eHangup,
+		ePickup,
+		eDial,
+        eSoftDial,
+		eRemotePickup,
+		eRemoteRing,
+		eRemoteCallId,
+        eRemoteHangup,
+        eRemoteBusy,
+        eTimeout,
+        eLeaveWord,
+        eForceRecord,
+        eStartRecord,
+        eStopRecord,
+        eSubSeqPickup,
+        eSubSeqHangup,
 	};
     enum Timer {
         tPickup = 5000,
-        tDial = 6000,
+        tDial = 3000,
         tWaitConnect = 3100,
         tConnect = 1000,
-        tRing = 8900,
+        tRing,
         tCallId = 8000,
         tWaitReceive = 3500,
         tDisconnect,
@@ -121,29 +121,24 @@ protected:
         startRecord_(param);
     }
     void recordCallInfoAndReject_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndReject_");
         recordCallInfo_(param);
         reject_(param);
     }
     void recordCallInfoAndCallinTimeout_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndCallinTimeout_");
         recordCallInfo_(param);
         callinTimeout_(param);
     }
     void startRecord_(void* param);
     void recordCallInfoAndRemoteHangup_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndRemoteHangup_");
         recordCallInfo_(param);
         remoteHangup_(param);
     }
     void recordCallInfoAndHangup_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndHangup_");
         recordCallInfo_(param);
         hangup_(param);
     }
     void ring_(void* param);
     void recordCallInfoAndCallIdTimeout_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndCallIdTimeout_");
         recordCallInfo_(param);
         callIdTimeout_(param);
     }
@@ -153,34 +148,25 @@ protected:
         startRecord_(param);
     }
     void recordCallInfoAndConnectTimeout_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndConnectTimeout_");
         recordCallInfo_(param);
         connectTimeout_(param);
     }
     void recordCallInfoAndRemoteBusy_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndRemoteBusy_");
         recordCallInfo_(param);
         remoteBusy_(param);
     }
-    void recordCallInfoAndStartRecord_(void* param) {
-        recordCallInfo_(param);
-        startRecord_(param);
-    }
     void subDial_(void* param);
     void recordCallInfoAndDialTimeout_(void* param) {
-		//AfxMessageBox(L"recordCallInfoAndDialTimeout_");
         recordCallInfo_(param);
         dialTimeout_(param);
     }
     void stopRecord_(void* param);
     void stopRecordAndRecordCallInfoAndRemoteHangup_(void* param) {
-		//AfxMessageBox(L"stopRecordAndRecordCallInfoAndRemoteHangup_");
         stopRecord_(param);
         recordCallInfo_(param);
         remoteHangup_(param);
     }
     void stopRecordAndRecordCallInfoAndHangup_(void* param) {
-		//AfxMessageBox(L"stopRecordAndRecordCallInfoAndHangup_");
         stopRecord_(param);
         recordCallInfo_(param);
         hangup_(param);

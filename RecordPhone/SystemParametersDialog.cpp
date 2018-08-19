@@ -170,13 +170,6 @@ BOOL SystemParametersDialog::OnInitDialog() {
 	voiceMessagesButton_.SetImage(L"/FlashDrv/debug/message.jpg", buttonSize, maskFilename);
 	voiceMessagesButton_.SubclassDlgItem(IDC_BUTTON_VOICE_MESSAGES, this);
 
-	SIZE screenCalibrationSize;
-	screenCalibrationSize.cx = 43;
-	screenCalibrationSize.cy = 43;
-	maskFilename = L"/FlashDrv/debug/touchPanelMask.bmp";
-	screenCalibrationButton_.SetImage(L"/FlashDrv/debug/touchPanel.jpg", buttonSize, maskFilename);
-	screenCalibrationButton_.SubclassDlgItem(IDC_BUTTON_SCREEN_CALIBRATION, this);
-
 	//font_.CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"ËÎÌו");
 	font_.CreatePointFont(Screen::fontPoint, L"ËÎÌו");
 	GetDlgItem(IDC_EDIT_RECORD_DATA_FOLDER)->SetFont(&font_, FALSE);

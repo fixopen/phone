@@ -37,8 +37,6 @@ namespace Util {
 
         static std::vector<std::wstring> const Split(std::wstring const& value, std::wstring const& delimeter);
         static std::wstring const Merge(std::vector<std::wstring> const& value, std::wstring const& delimeter);
-        static std::vector<std::string> const Split(std::string const& value, std::string const& delimeter);
-        static std::string const Merge(std::vector<std::string> const& value, std::string const& delimeter);
     public: //native <=> unicode
         static std::wstring const ToUnicode(std::string const& content);
         static std::string const FromUnicode(std::wstring const& unicode);

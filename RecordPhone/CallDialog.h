@@ -3,7 +3,7 @@
 #include <map>
 
 #include "Resource.h"
-#include "CallInfo.h"
+#include "ContactInfo.h"
 #include "CallId.h"
 #include "ImageButton.h"
 
@@ -48,31 +48,18 @@ private:
     std::map<int, int> timers_;
     CWnd* listener_;
 	bool hasCallId_;
-    bool isNewContact_;
 	CFont font_;
 	ImageButton closeButton_;
 	ImageButton hangupButton_;
 	ImageButton hiddenButton_;
 	ImageButton rejectButton_;
 	ImageButton listenButton_;
-    ImageButton holdButton_;
-    ImageButton switchButton_;
 	ImageButton callButton_;
 	ImageButton voiceMessagesButton_;
-    ImageButton newContactButton_;
-    ImageButton muteButton_;
-    ImageButton unmuteButton_;
-    ImageButton startRecordButton_;
-    ImageButton stopRecordButton_;
 public:
-    void SetContactType(bool const isNew) {
-        isNewContact_ = isNew;
-    }
     void SetNumber(std::wstring const& number);
     void SetName(std::wstring const& name);
-    void SetAddress(std::wstring const& address);
     void SetStartTime(Util::Timestamp const& time);
-    void SetRecordStartTime(Util::Timestamp const& time);
     void ClearDuration();
     void SetListener(CWnd* listener) {
         listener_ = listener;
@@ -87,7 +74,7 @@ public:
     afx_msg void OnBnClickedButtonHangup();
     afx_msg void OnBnClickedButtonHidden();
     afx_msg void OnBnClickedButtonNewContact();
-//    afx_msg void OnBnClickedButtonMute();
+    afx_msg void OnBnClickedButtonMute();
     afx_msg void OnBnClickedButtonStartRecord();
     afx_msg void OnBnClickedButtonStopRecord();
     void dial_(wchar_t const keyCode);
@@ -114,8 +101,6 @@ public:
     afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	virtual BOOL OnInitDialog();
-    afx_msg void OnBnClickedButtonMute();
-    afx_msg void OnBnClickedButtonUnmute();
 };
 
 extern CallDialog* callForm;

@@ -71,7 +71,6 @@ BOOL CRecordPhoneApp::InitInstance() {
 	images.insert(std::make_pair(L"/FlashDrv/debug/hangup.jpg", buttonSize));
 	images.insert(std::make_pair(L"/FlashDrv/debug/find.jpg", buttonSize));
 	images.insert(std::make_pair(L"/FlashDrv/debug/playMessage.jpg", buttonSize));
-	images.insert(std::make_pair(L"/FlashDrv/debug/import.jpg", buttonSize));
 	SIZE navButtonSize;
 	navButtonSize.cx = 50;
 	navButtonSize.cy = 50;

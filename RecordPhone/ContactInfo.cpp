@@ -1,4 +1,4 @@
-#include "CallInfo.h"
+#include "ContactInfo.h"
 #include "SoundSegment.h"
 #include "StoragePath.h"
 #include "WaveRecorder.h"
@@ -12,7 +12,7 @@ namespace Util {
     int DataAccess<CallInfo>::offset_ = 0;
 }
 
-std::wstring const CallInfoTypeToString(CallInfoType const type) {
+std::wstring const ContactInfoTypeToString(ContactInfoType const type) {
     std::wstring result;
     switch (type) {
         case citMissed:
@@ -33,8 +33,8 @@ std::wstring const CallInfoTypeToString(CallInfoType const type) {
     return result;
 }
 
-CallInfoType const StringToCallInfoType(std::wstring const& string) {
-    CallInfoType result;
+ContactInfoType const StringToContactInfoType(std::wstring const& string) {
+    ContactInfoType result;
     if (string == L"Missed") {
         result = citMissed;
     } else if (string == L"Received") {
@@ -72,8 +72,7 @@ CallInfo::CallInfo()
 , contactFinded_(false)
 , contact_(0)
 , hasSound_(false)
-, soundsFinded_(false)
-, isInserted_(false) {
+, soundsFinded_(false) {
 }
 
 std::vector<Util::shared_ptr<CallInfo> > CallInfo::Select(std::wstring const& filter, std::wstring const& orderFieldName, SeqenceRelation const dir, int const offset, int const pageSize) {
@@ -101,32 +100,23 @@ void CallInfo::Update() const {
 }
 
 void CallInfo::Insert() {
-    if (isInserted_) {
-		CString v;
-		v.Format(L"call info update, id is %d", id());
-		AfxMessageBox(v);
-        Update();
-    } else {
-		AfxMessageBox(L"call info insert");
-        std::wstring cmd = L"INSERT INTO ";
-        cmd += tableName_;
-        cmd += L" ( [type], [hasSound], [startTime], [duration], [telephoneNumber], [contactId] ) VALUES ( ";
-        cmd += Util::StringOp::FromInt(type_);
-        cmd += L", ";
-        cmd += Util::StringOp::FromInt(hasSound_);
-        cmd += L", '";
-        cmd += Util::StringOp::FromTimestamp(startTime_);
-        cmd += L"', '";
-        cmd += Util::StringOp::FromTimeSpan(duration_);
-        cmd += L"', '";
-        cmd += telephoneNumber_;
-        cmd += L"', ";
-        cmd += Util::StringOp::FromInt(contactId_);
-        cmd += L" )";
-        ExecCommand(cmd);
-        id(GetCurrentId());
-		isInserted_ = true;
-    }
+    std::wstring cmd = L"INSERT INTO ";
+    cmd += tableName_;
+    cmd += L" ( [type], [hasSound], [startTime], [duration], [telephoneNumber], [contactId] ) VALUES ( ";
+    cmd += Util::StringOp::FromInt(type_);
+    cmd += L", ";
+    cmd += Util::StringOp::FromInt(hasSound_);
+    cmd += L", '";
+    cmd += Util::StringOp::FromTimestamp(startTime_);
+    cmd += L"', '";
+    cmd += Util::StringOp::FromTimeSpan(duration_);
+    cmd += L"', '";
+    cmd += telephoneNumber_;
+    cmd += L"', ";
+    cmd += Util::StringOp::FromInt(contactId_);
+    cmd += L" )";
+    ExecCommand(cmd);
+    id(GetCurrentId());
 }
 
 void CallInfo::Remove() const {
@@ -159,13 +149,11 @@ std::vector<Util::shared_ptr<CallInfo> > CallInfo::GetAllNotPlayedLeaveWord() {
 }
 
 Util::shared_ptr<SoundSegment> const CallInfo::Record() {
-    Insert();
     Util::shared_ptr<SoundSegment> result(new SoundSegment());
     appendSound(result);
     Util::Timestamp now = Util::Timestamp::GetCurrentTime();
     result->startTime(now);
     result->isPlayed(false);
-    result->telephoneNumber(this->telephoneNumber());
     std::wstring path;
 	int secondBytes = BytesOfSecond2;
 	if (true/*setting->system->isDeleteProtect()*/) {
@@ -223,20 +211,13 @@ Util::shared_ptr<SoundSegment> const CallInfo::Record() {
 
 void CallInfo::StopRecord() {
     WaveRecorder::Instance()->Stop();
-    sounds_[sounds_.size() - 1]->duration(Util::Timestamp::GetCurrentTime() - sounds_[sounds_.size() - 1]->startTime());
-    sounds_[sounds_.size() - 1]->Insert();
-}
-
-void CallInfo::Reset() {
-	id(0);
-	isInserted_ = false;
 }
 
 void CallInfo::modifyFieldByDB_(int argc, char** argv, char** columnName, Util::shared_ptr<CallInfo>& item) {
     item->id(atoi(argv[GetIndexByName(argc, columnName, "id")]));
-    item->type_ = static_cast<CallInfoType>(atoi(argv[GetIndexByName(argc, columnName, "type")]));
+    item->type_ = static_cast<ContactInfoType>(atoi(argv[GetIndexByName(argc, columnName, "type")]));
     item->hasSound_ = !!atoi(argv[GetIndexByName(argc, columnName, "hasSound")]);
-    //item->startTime_ = Util::StringOp::ToTimestamp(std::string(argv[GetIndexByName(argc, columnName, "startTime")]));
+    item->startTime_ = Util::StringOp::ToTimestamp(std::string(argv[GetIndexByName(argc, columnName, "startTime")]));
     item->duration_ = Util::StringOp::ToTimeSpan(argv[GetIndexByName(argc, columnName, "duration")]);
     item->telephoneNumber_ = Util::StringOp::FromUTF8(argv[GetIndexByName(argc, columnName, "telephoneNumber")]);
     item->contactId_ = atoi(argv[GetIndexByName(argc, columnName, "contactId")]);

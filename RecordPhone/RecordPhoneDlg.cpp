@@ -11,7 +11,6 @@
 #include "CategoryDialog.h"
 #include "CategoryDialog.h"
 #include "PlayingRecordsDialog.h"
-#include "ConfirmDialog.h"
 #include "Screen.h"
 #include "SoundSegment.h"
 #include "Telephone.h"
@@ -81,18 +80,17 @@ BOOL CRecordPhoneDlg::OnInitDialog() {
     contactsForm->Create(ContactsDialog::IDD, this);
     contactForm = new ContactDialog(contactsForm);
     contactForm->Create(ContactDialog::IDD, contactsForm);
-    //categoryForm = new CategoryDialog(contactsForm);
-    //categoryForm->Create(CategoryDialog::IDD, contactsForm);
+    categoryForm = new CategoryDialog(contactsForm);
+    categoryForm->Create(CategoryDialog::IDD, contactsForm);
     phoneRecordsForm = new PhoneRecordsDialog(this);
     phoneRecordsForm->Create(PhoneRecordsDialog::IDD, this);
     playingRecordsForm = new PlayingRecordsDialog(phoneRecordsForm);
     playingRecordsForm->Create(PlayingRecordsDialog::IDD, phoneRecordsForm);
     settingForm = new SettingDialog(this);
+    //settingForm->SetBackgroundDC(dc);
     settingForm->Create(SettingDialog::IDD, this);
     callForm = new CallDialog(this);
     callForm->Create(CallDialog::IDD, this);
-    confirmForm = new ConfirmDialog(this);
-    confirmForm->Create(ConfirmDialog::IDD, this);
 
 	SIZE buttonSize;
 	buttonSize.cx = 48;

@@ -45,7 +45,6 @@ namespace Util {
         Util::shared_ptr<ReadThread> readThread_;
         unsigned char* buffer_;
         unsigned int bufferLength_;
-		bool isVirtual_;
     public:
         HANDLE handle_;
     };

@@ -15,8 +15,8 @@
 #define IDD_DIALOG_SYSTEM_PARAMETERS    137
 #define IDD_DIALOG_SYSTEM_INFO          138
 #define IDD_DIALOG_WAVE_RECORD          142
+#define IDD_DIALOG1                     143
 #define IDD_DIALOG_WAVE_PLAYER          143
-#define IDD_DIALOG_CONFIRM              144
 #define IDC_BUTTON_VOICE_MESSAGES       1000
 #define IDC_BUTTON_NEW_CALL             1001
 #define IDC_BUTTON_CALL                 1001
@@ -28,7 +28,6 @@
 #define IDC_BUTTON_NEW_CATEGORY         1007
 #define IDC_BUTTON_NEW_CONTACT          1008
 #define IDC_BUTTON_CLEAR                1009
-#define IDC_BUTTON_IMPORT_CONTACT       1009
 #define IDC_BUTTON_PAGE_UP              1010
 #define IDC_BUTTON_PAGE_DOWN            1011
 #define IDC_BUTTON_FIND                 1012
@@ -46,7 +45,6 @@
 #define IDC_EDIT_DEPARTMENT             1028
 #define IDC_EDIT_DUTY                   1029
 #define IDC_EDIT_REMARKS                1030
-#define IDC_EDIT_ADDRESS2               1031
 #define IDC_COMBO_FAVORITE_RING         1032
 #define IDC_COMBO_PROMPT_MESSAGE        1033
 #define IDC_BUTTON_PLAY_FAVORITE_RINGTONE 1034
@@ -57,10 +55,7 @@
 #define IDC_BUTTON_BREAK_PROMPT_MESSAGE 1039
 #define IDC_BUTTON_PLAY_MESSAGES        1040
 #define IDC_EDIT_NUMBER                 1045
-#define IDC_EDIT_START_TIME             1046
-#define IDC_EDIT_NUMBER2                1046
 #define IDC_BUTTON_DELETE_CURRENT       1047
-#define IDC_EDIT_END_TIME               1047
 #define IDC_BUTTON_PAUSE                1048
 #define IDC_BUTTON_RESUME               1049
 #define IDC_BUTTON_PREVIOUS             1050
@@ -74,8 +69,6 @@
 #define IDC_BUTTON_REJECT               1060
 #define IDC_BUTTON_LISTEN               1061
 #define IDC_BUTTON_HANGUP               1062
-#define IDC_BUTTON_HOLD                 1063
-#define IDC_BUTTON_SWITCH               1064
 #define IDC_STATIC_COMMUNICATION_STATUS 1066
 #define IDC_STATIC_TIME_AND_DURATION    1067
 #define IDC_STATIC_TIME                 1067
@@ -87,8 +80,6 @@
 #define IDC_STATIC_VOLUME_CONTROLLER    1073
 #define IDC_BUTTON_HIDDEN               1074
 #define IDC_BUTTON_CLOSE                1075
-#define IDC_BUTTON_MUTE2                1076
-#define IDC_BUTTON_UNMUTE               1076
 #define IDC_BUTTON_RESTORE              1077
 #define IDC_BUTTON_TELEPHONE            1078
 #define IDC_BUTTON_SYSTEM_PARAMETERS    1079
@@ -207,7 +198,6 @@
 #define IDC_STATIC_TYPE_4               1142
 #define IDC_STATIC_DURATION_3           1142
 #define IDC_BUTTON1                     1142
-#define IDC_BUTTON_YES                  1142
 #define IDC_STATIC_DELETE_4             1143
 #define IDC_STATIC_START_TIME_3         1143
 #define IDC_STATIC_CATEGORY_5           1144
@@ -272,13 +262,10 @@
 #define IDC_STATIC_NUMBER_7             1173
 #define IDC_STATIC_DURATION_7           1174
 #define IDC_BUTTON2                     1174
-#define IDC_BUTTON_NO                   1174
 #define IDC_STATIC_START_TIME_7         1175
 #define IDC_EDIT1                       1175
 #define IDC_STATIC_HAS_RECORD_7         1176
-#define IDC_LIST_SUGGEST_NAME           1176
 #define IDC_STATIC_CALL_7               1177
-#define IDC_STATIC_CONFIRM              1177
 #define IDC_STATIC_DELETE_15            1178
 #define IDC_STATIC_TYPE_17              1179
 #define IDC_STATIC_NAME_17              1180
@@ -330,9 +317,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        145
+#define _APS_NEXT_RESOURCE_VALUE        144
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1178
+#define _APS_NEXT_CONTROL_VALUE         1176
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

@@ -1,5 +1,5 @@
 #include "Contact.h"
-#include "CallInfo.h"
+#include "ContactInfo.h"
 #include "Util/Properties.h"
 
 namespace Util {
@@ -178,9 +178,9 @@ std::wstring const Contact::ToVCard() const {
 
 int const Contact::GetIdByName(std::wstring const& name) {
     int result = 0;
-    Util::shared_ptr<Contact> contact = GetByName(name);
-    if (contact) {
-        result = contact->id();
+    std::vector<Util::shared_ptr<Contact> > contacts = Select(L"[name] = '" + name + L"'");
+    if (!contacts.empty()) {
+        result = contacts[0]->id();
     }
     return result;
 }
@@ -194,15 +194,6 @@ int const Contact::GetIdByNumber(std::wstring const& number) {
     return result;
 }
 
-Util::shared_ptr<Contact> const Contact::GetByName(std::wstring const& name) {
-    Util::shared_ptr<Contact> result;
-    std::vector<Util::shared_ptr<Contact> > contacts = Select(L"[name] = '" + name + L"'");
-    if (!contacts.empty()) {
-        result = contacts[0];
-    }
-    return result;
-}
-
 Util::shared_ptr<Contact> const Contact::GetByNumber(std::wstring const& number) {
     Util::shared_ptr<Contact> result;
     std::vector<Util::shared_ptr<Contact> > contacts = Select(L"[telephone] = '" + number + L"' OR [telephone2] = '" + number + L"' OR [mobile] = '" + number + L"' OR [mobile2] = '" + number + L"'");
@@ -212,62 +203,31 @@ Util::shared_ptr<Contact> const Contact::GetByNumber(std::wstring const& number)
     return result;
 }
 
-std::vector<Util::shared_ptr<Contact> > const Contact::GetSuggestContactsByName(std::wstring const& name) {
-    return Select(L"[name] LIKE '%" + name + L"%'");
-}
-
 bool const Contact::IsBlock(std::wstring const& number) {
     bool result = false;
-    //Util::shared_ptr<Contact> contact = GetByNumber(number);
-    //FirewallType ft = static_cast<FirewallType>(Util::StringOp::ToInt(Util::Properties::Get(L"firewallType")));
-    //switch (ft) {
-    //    case ftNull:
-    //        break;
-    //    case ftBlacklist:
-    //        if (contact) {
-    //            result = contact->type() == ctBlacklist;
-    //        }
-    //        break;
-    //    case ftNotInContacts:
-    //        result = !contact;
-    //        break;
-    //    case ftNotVIP:
-    //        result = contact->type() != ctVip;
-    //        break;
-    //    case ftAll:
-    //        result = true;
-    //        break;
-    //    default:
-    //        break;
-    //}
-    return result;
-}
-
-void Contact::Import(std::wstring const& filename) {
-    FILE* file = fopen(Util::StringOp::FromUnicode(filename).c_str(), "r");
-    if (file) {
-        //std::string line;
-        //std::getline(file, line);
-        char buffer[1024];
-        Contact contact;
-        while (!feof(file)) {
-            memset(buffer, 0, 1024);
-            /*buffer = */fgets(buffer, 1024, file);
-            if (strlen(buffer) == 1023) {
-                //the buffer is overflow
-                //throw internal error
+    Util::shared_ptr<Contact> contact = GetByNumber(number);
+    FirewallType ft = static_cast<FirewallType>(Util::StringOp::ToInt(Util::Properties::Get(L"firewallType")));
+    switch (ft) {
+        case ftNull:
+            break;
+        case ftBlacklist:
+            if (contact) {
+                result = contact->type() == ctBlacklist;
             }
-            std::wstring line = Util::StringOp::ToUnicode(buffer);
-            std::vector<std::wstring> fields = Util::StringOp::Split(line, L",");
-            contact.name(fields[0]);
-            contact.mobile(fields[1]);
-            contact.street(fields[2]);
-            contact.state(fields[3]);
-            contact.postCode(fields[4]);
-            contact.Insert();
-        }
-        fclose(file);
+            break;
+        case ftNotInContacts:
+            result = !contact;
+            break;
+        case ftNotVIP:
+            result = contact->type() != ctVip;
+            break;
+        case ftAll:
+            result = true;
+            break;
+        default:
+            break;
     }
+    return result;
 }
 
 std::wstring const Contact::GetCategoryName() const {

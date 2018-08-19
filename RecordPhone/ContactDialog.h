@@ -20,7 +20,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
-    bool isSuppressSuggest_;
     Util::shared_ptr<Contact> contact_;
     CWnd* listener_;
 	CFont font_;
@@ -32,9 +31,6 @@ public:
     void SyncContact();
     void SetListener(CWnd* listener) {
         listener_ = listener;
-    }
-    void SuppressSuggest() {
-        isSuppressSuggest_ = true;
     }
     Util::shared_ptr<Contact> const GetContact() const;
     afx_msg void OnBnClickedButtonClose();
@@ -74,11 +70,6 @@ protected:
 public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     afx_msg void OnCbnSelchangeComboCategory();
-    afx_msg void OnEnChangeEditName();
-    afx_msg void OnLbnSelchangeListSuggestName();
-    afx_msg void OnLbnDblclkListSuggestName();
-	afx_msg void OnEnSetfocusEditAddress2();
-	afx_msg void OnEnKillfocusEditAddress2();
 };
 
 extern ContactDialog* contactForm;

@@ -8,13 +8,6 @@ class SystemInfoDialog : public CDialog {
 	DECLARE_DYNAMIC(SystemInfoDialog)
 
 public:
-    enum ClearType {
-        tNull,
-        tContact,
-        tVoice,
-        tHistory,
-    };
-
 	SystemInfoDialog(CWnd* pParent = NULL);   // standard constructor
 	virtual ~SystemInfoDialog();
 
@@ -26,12 +19,6 @@ protected:
 	ImageButton closeButton_;
 	ImageButton callButton_;
 	ImageButton voiceMessagesButton_;
-
-	ImageButton clearContactsButton_;
-	ImageButton clearVoiceMessageButton_;
-	ImageButton clearCallHistoryButton_;
-
-    ClearType clearType_;
 
 	DECLARE_MESSAGE_MAP()
 public:

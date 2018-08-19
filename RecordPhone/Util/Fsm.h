@@ -3,9 +3,6 @@
 
 #include <map>
 #include <vector>
-#include <winbase.h>
-
-//#include "StringOp.h" //debug info
 
 namespace Util {
     template<typename T>
@@ -13,12 +10,8 @@ namespace Util {
     public:
         typedef void (T::*EventHandle)(void* param);
 
-		FSM() : child_(0), parent_(0), errorState_(-1) {
-            ::InitializeCriticalSection(&criticalSection_);
-        }
-        virtual ~FSM() {
-            ::DeleteCriticalSection(&criticalSection_);
-        }
+		FSM() : child_(0), parent_(0), errorState_(-1) {}
+        virtual ~FSM() {}
 
         void registerRule(int const startState, int const event, int const stopState, EventHandle const action = 0) {
             std::pair<T* const, EventHandle> process = std::make_pair(static_cast<T* const>(this), action); //WinCE not support dynamic_cast, use static_cast instead of it
@@ -43,11 +36,6 @@ namespace Util {
 		    if (child_) {
 			    child_->fireEvent(event, param);
 		    } else {
-                ::EnterCriticalSection(&criticalSection_);
-                wchar_t debug[256] = {0};
-                wsprintf(debug, L"current state is %d, now event is %d", currentState_, event);
-                //std::wstring debug = "current state is " + StringOp::FromInt(currentState_) + ", now event is " + StringOp::FromInt(event);
-                AfxMessageBox(debug);
                 std::map<int, std::map<int, std::pair<int, std::pair<T* const, EventHandle> > > >::iterator i = rules_.find(currentState_);
 			    if (i != rules_.end()) {//state machine is ok
 				    std::map<int, std::pair<int, std::pair<T* const, EventHandle> > >::iterator j = i->second.find(event);
@@ -73,7 +61,6 @@ namespace Util {
 					    currentState_ = jumpTable.first;
 				    }
 			    }
-                ::LeaveCriticalSection(&criticalSection_);
 		    }
         }
 
@@ -124,7 +111,6 @@ namespace Util {
 		EventHandle notifyEnd_;
 		EventHandle notifyError_;
         std::map<int, std::map<int, std::pair<int, std::pair<T* const, EventHandle> > > > rules_;
-        CRITICAL_SECTION criticalSection_;
     };
 }
 

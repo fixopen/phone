@@ -7,7 +7,7 @@
 #include "Util/SmartPtr.h"
 #include "Util/OggCodec.h"
 #include "SoundSegment.h"
-#include "CallInfo.h"
+#include "ContactInfo.h"
 #include "Resource.h"
 
 // WaveRecord dialog

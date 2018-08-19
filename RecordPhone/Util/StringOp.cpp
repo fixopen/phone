@@ -90,8 +90,6 @@ namespace Util {
         }
         //YYYYMMDDHHMMSS format
         int year = ToInt(content.substr(0, 4));
-        if (year < 1900)
-            year = 1900;
         int month = ToInt(content.substr(4, 2));
         if (month < 1)
             month = 1;
@@ -105,8 +103,8 @@ namespace Util {
         int hour = ToInt(content.substr(8, 2));
         if (hour < 0)
             hour = 0;
-        if (hour > 23)
-            hour = 23;
+        if (hour > 59)
+            hour = 59;
         int minute = ToInt(content.substr(10, 2));
         if (minute < 0)
             minute = 0;
@@ -183,40 +181,13 @@ namespace Util {
             } else {
                 result.push_back(value.substr(startPos, findPos - startPos));
             }
-            startPos = findPos + delimeter.length();
+            startPos = findPos + 1;
         } while (findPos != std::wstring::npos);
         return result;
     }
 
     std::wstring const StringOp::Merge(std::vector<std::wstring> const& value, std::wstring const& delimeter) {
         std::wstring result;
-        for (size_t i = 0; i < value.size(); ++i) {
-            result += value[i];
-            if (i != value.size() - 1) {
-                result += delimeter;
-            }
-        }
-        return result;
-    }
-
-    std::vector<std::string> const StringOp::Split(std::string const& value, std::string const& delimeter) {
-        std::vector<std::string> result;
-        std::size_t startPos = 0;
-        std::size_t findPos = 0;
-        do {
-            findPos = value.find(delimeter, startPos);
-            if (findPos == std::string::npos) {
-                result.push_back(value.substr(startPos, value.length()));
-            } else {
-                result.push_back(value.substr(startPos, findPos - startPos));
-            }
-            startPos = findPos + delimeter.length();
-        } while (findPos != std::string::npos);
-        return result;
-    }
-
-    std::string const StringOp::Merge(std::vector<std::string> const& value, std::string const& delimeter) {
-        std::string result;
         for (size_t i = 0; i < value.size(); ++i) {
             result += value[i];
             if (i != value.size() - 1) {

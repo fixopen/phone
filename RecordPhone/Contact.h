@@ -89,23 +89,11 @@ public:
     void company(std::wstring const& company) {
         company_ = company;
     }
-    std::wstring const state() const {
-        return company_;
-    }
-    void state(std::wstring const& state) {
-        company_ = state;
-    }
     std::wstring const department() const {
         return department_;
     }
     void department(std::wstring const& department) {
         department_ = department;
-    }
-    std::wstring const postCode() const {
-        return department_;
-    }
-    void postCode(std::wstring const& postCode) {
-        department_ = postCode;
     }
     std::wstring const duty() const {
         return duty_;
@@ -118,12 +106,6 @@ public:
     }
     void address(std::wstring const& address) {
         address_ = address;
-    }
-    std::wstring const street() const {
-        return address_;
-    }
-    void street(std::wstring const& street) {
-        address_ = street;
     }
     std::wstring const remarks() const {
         return remarks_;
@@ -144,11 +126,8 @@ public:
     std::wstring const ToVCard() const;
     static int const GetIdByName(std::wstring const& name);
     static int const GetIdByNumber(std::wstring const& number);
-    static Util::shared_ptr<Contact> const GetByName(std::wstring const& name);
     static Util::shared_ptr<Contact> const GetByNumber(std::wstring const& number);
-    static std::vector<Util::shared_ptr<Contact> > const GetSuggestContactsByName(std::wstring const& name);
     static bool const IsBlock(std::wstring const& number);
-    static void Import(std::wstring const& filename);
     std::wstring const GetCategoryName() const;
 private:
     static void modifyFieldByDB_(int argc, char** argv, char** columnName, Util::shared_ptr<Contact>& item);
@@ -164,10 +143,10 @@ private:
     TelephoneNumber telephones_[2];
     std::wstring email_;
     //post
-    std::wstring company_; //65 @@rename to state
-    std::wstring department_; //65 @@rename to postCode
+    std::wstring company_; //65
+    std::wstring department_; //65
     std::wstring duty_; //25
-    std::wstring address_; //@@rename to street
+    std::wstring address_;
     //other
     std::wstring remarks_; //513
     //history

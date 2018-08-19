@@ -17,53 +17,27 @@
 #define SCL_ADJUST_BACKLIGHT CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x5,METHOD_IN_DIRECT,FILE_ANY_ACCESS)
 
 //define telephone code
-#if TEL_VERSION_LDJ == 1
-unsigned char const CMD_HANDSFREE = 0x00; //免提摘机命令（未检测摘机是否成功）
-unsigned char const CMD_OPENRING = 0xD0; //打开振铃命令
-unsigned char const CMD_CLOSERING = 0xD1; //关闭振铃命令
-unsigned char const CMD_FORCEHANGUP = 0x8B; //强制挂机命令
-unsigned char const CMD_MUTE = 0xBE; //静音命令
-unsigned char const CMD_PICKUPANDRECORD = 0x8A; //软件摘机并留言命令
-unsigned char const CMD_PICKUP = 0x82; //0x02 摘机命令
-unsigned char const CMD_HANGUP = 0x83; //0x01 挂机命令
-#else
-unsigned char const CMD_HANDSFREE = 0xDE; //0x00 免提摘机命令（未检测摘机是否成功）
-unsigned char const CMD_OPENRING = 0xD1; //0xD0 打开振铃命令
-unsigned char const CMD_CLOSERING = 0xD0; //0xD1 关闭振铃命令
-unsigned char const CMD_FORCEHANGUP = 0x8B; //强制挂机命令
-unsigned char const CMD_MUTE = 0xBE; //静音命令
-unsigned char const CMD_PICKUPANDRECORD = 0x8A; //软件摘机并留言命令
-unsigned char const CMD_PICKUP = 0x82; //0x02 摘机命令
-unsigned char const CMD_HANGUP = 0x83; //0x01 挂机命令
-#endif
+int const CMD_HANDSFREE = 0xDE; //0x00 免提摘机命令（未检测摘机是否成功）
+int const CMD_OPENRING = 0xD1; //0xD0 打开振铃命令
+int const CMD_CLOSERING = 0xD0; //0xD1 关闭振铃命令
+int const CMD_FORCEHANGUP = 0x8B; //强制挂机命令
+int const CMD_MUTE = 0xBE; //静音命令
+int const CMD_PICKUPANDRECORD = 0x8A; //软件摘机并留言命令
+int const CMD_PICKUP = 0x82; //0x02 摘机命令
+int const CMD_HANGUP = 0x83; //0x01 挂机命令
 
-#if TEL_VERSION_LDJ == 1
-unsigned char const NOTIFY_HANGUP = 0x02; //挂机通知
-unsigned char const NOTIFY_PICKUP = 0x01; //摘机通知
-unsigned char const NOTIFY_RING = 0x0C; //振铃信号【通知】
-unsigned char const NOTIFY_FSKEND = 0x8F; //FSK结束通知
-unsigned char const NOTIFY_DTMFEND = 0x8E; //DTMF结束通知
-unsigned char const NOTIFY_PAGEUP = 0xA5; //上一页通知
-unsigned char const NOTIFY_PAGEDOWN = 0xA6; //下一页通知
-unsigned char const NOTIFY_REDIAL = 0xBD; //重播通知
-unsigned char const NOTIFY_RKEY = 0xBF; //R键通知
-unsigned char const NOTIFY_HANGUPINRECORD = 0x94; //录音中挂机通知
-unsigned char const NOTIFY_PICKUPTORECORD = 0xA2; //摘机并自动录音通知
-unsigned char const NOTIFY_SUBSEQPICKUP = 0x9D; //并机摘机通知
-#else
-unsigned char const NOTIFY_HANGUP = 0x83; //0x02 挂机通知
-unsigned char const NOTIFY_PICKUP = 0x82; //0x01 摘机通知
-unsigned char const NOTIFY_RING = 0x84; //0x0C 振铃信号【通知】
-unsigned char const NOTIFY_FSKEND = 0x8F; //0x8F FSK结束通知
-unsigned char const NOTIFY_DTMFEND = 0x8E; //0x8E DTMF结束通知
-unsigned char const NOTIFY_PAGEUP = 0xA5; //上一页通知
-unsigned char const NOTIFY_PAGEDOWN = 0xA6; //下一页通知
-unsigned char const NOTIFY_REDIAL = 0xBD; //重播通知
-unsigned char const NOTIFY_RKEY = 0xBF; //R键通知
-unsigned char const NOTIFY_HANGUPINRECORD = 0x94; //录音中挂机通知
-unsigned char const NOTIFY_PICKUPTORECORD = 0xA2; //摘机并自动录音通知
-unsigned char const NOTIFY_SUBSEQPICKUP = 0x9D; //并机摘机通知
-#endif
+int const NOTIFY_HANGUP = 0x83; //0x02 挂机通知
+int const NOTIFY_PICKUP = 0x82; //0x01 摘机通知
+int const NOTIFY_RING = 0x84; //0x0C 振铃信号【通知】
+int const NOTIFY_FSKEND = 0x8F; //0x8F FSK结束通知
+int const NOTIFY_DTMFEND = 0x8E; //0x8E DTMF结束通知
+int const NOTIFY_PAGEUP = 0xA5; //上一页通知
+int const NOTIFY_PAGEDOWN = 0xA6; //下一页通知
+int const NOTIFY_REDIAL = 0xBD; //重播通知
+int const NOTIFY_RKEY = 0xBF; //R键通知
+int const NOTIFY_HANGUPINRECORD = 0x94; //录音中挂机通知
+int const NOTIFY_PICKUPTORECORD = 0xA2; //摘机并自动录音通知
+int const NOTIFY_SUBSEQPICKUP = 0x9D; //并机摘机通知
 
 int const WM_CLEARPASSWORD = 9081;
 int const WM_FORMATDATA = 9082;
@@ -99,9 +73,6 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 #if (RS232_INVERT==1)
         c = invertBit_(c);
 #endif
-		//CString v;
-		//v.Format(L"%c", c);
-		//AfxMessageBox(v);
         switch (c) {
         case NOTIFY_RING:
             Telephone::Instance()->fireEvent(Telephone::eRemoteRing, 0);
@@ -194,17 +165,17 @@ Telephone::Telephone()
     registerRule(sRinging, ePickup, sConnecting, &Telephone::connect_);
     registerRule(sRinging, eHangup, sIdle, &Telephone::recordCallInfoAndReject_);
     registerRule(sRinging, eRemoteHangup, sIdle, &Telephone::recordCallInfoAndRemoteHangup_);
-    //registerRule(sRinging, eTimeout, sIdle, &Telephone::recordCallInfoAndCallinTimeout_);
+    registerRule(sRinging, eTimeout, sIdle, &Telephone::recordCallInfoAndCallinTimeout_);
     registerRule(sRinging, eLeaveWord, sRecording, &Telephone::connectAndStartRecord_);
 
     registerRule(sCallId, eRemoteRing, sWaitingReceive, &Telephone::ring_);
     registerRule(sCallId, ePickup, sConnecting, &Telephone::connect_);
     registerRule(sCallId, eHangup, sIdle, &Telephone::recordCallInfoAndHangup_);
     registerRule(sCallId, eRemoteHangup, sIdle, &Telephone::recordCallInfoAndRemoteHangup_);
-    //registerRule(sCallId, eTimeout, sIdle, &Telephone::recordCallInfoAndCallIdTimeout_);
+    registerRule(sCallId, eTimeout, sIdle, &Telephone::recordCallInfoAndCallIdTimeout_);
     registerRule(sCallId, eLeaveWord, sRecording, &Telephone::connectAndPlayPromptAndStartRecord_);
 
-    //registerRule(sWaitingConnect, eTimeout, sError, &Telephone::recordCallInfoAndConnectTimeout_);
+    registerRule(sWaitingConnect, eTimeout, sError, &Telephone::recordCallInfoAndConnectTimeout_);
     registerRule(sWaitingConnect, eRemoteBusy, sDisconnecting, &Telephone::recordCallInfoAndRemoteBusy_);
     registerRule(sWaitingConnect, eRemotePickup, sConnecting, &Telephone::connect_);
     registerRule(sWaitingConnect, eForceRecord, sRecording, &Telephone::connectAndStartRecord_);
@@ -212,7 +183,7 @@ Telephone::Telephone()
 
     registerRule(sWaitingReceive, ePickup, sConnecting, &Telephone::connect_);
     registerRule(sWaitingReceive, eRemoteHangup, sIdle, &Telephone::recordCallInfoAndRemoteHangup_);
-    //registerRule(sWaitingReceive, eTimeout, sIdle, &Telephone::recordCallInfoAndCallinTimeout_);
+    registerRule(sWaitingReceive, eTimeout, sIdle, &Telephone::recordCallInfoAndCallinTimeout_);
     registerRule(sWaitingReceive, eLeaveWord, sRecording, &Telephone::connectAndStartRecord_);
 
     registerRule(sConnecting, eRemoteCallId, sConnecting, &Telephone::recordCallId_);
@@ -224,14 +195,14 @@ Telephone::Telephone()
     registerRule(sDialing, eRemotePickup, sConnecting, &Telephone::connect_); //拨打时，超时即为接通
     registerRule(sDialing, eHangup, sIdle, &Telephone::recordCallInfoAndHangup_);
     registerRule(sDialing, eDial, sDialing, &Telephone::dial_);
-    //registerRule(sDialing, eTimeout, sDialing, &Telephone::recordCallInfoAndDialTimeout_);
+    registerRule(sDialing, eTimeout, sDialing, &Telephone::recordCallInfoAndDialTimeout_);
     registerRule(sDialing, eRemoteBusy, sDisconnecting, &Telephone::recordCallInfoAndRemoteBusy_);
-    registerRule(sDialing, eForceRecord, sRecording, &Telephone::recordCallInfoAndStartRecord_);
+    registerRule(sDialing, eForceRecord, sRecording, &Telephone::startRecord_);
 
     registerRule(sRecording, eStopRecord, sConnecting, &Telephone::stopRecord_);
     registerRule(sRecording, eRemoteHangup, sDisconnecting, &Telephone::stopRecordAndRecordCallInfoAndRemoteHangup_);
     registerRule(sRecording, eHangup, sIdle, &Telephone::stopRecordAndRecordCallInfoAndHangup_);
-    //registerRule(sRecording, eTimeout, sConnecting, &Telephone::stopRecordAndRecordTimeout_);
+    registerRule(sRecording, eTimeout, sConnecting, &Telephone::stopRecordAndRecordTimeout_);
 
     registerRule(sDisconnecting, eHangup, sIdle);
 
@@ -367,11 +338,10 @@ std::wstring const Telephone::FindSpeedDialNumber(int const serialNo) const {
 }
 
 void Telephone::SoftHangup() {
-	//char value = CMD_FORCEHANGUP; 
-	//writePort_((unsigned char const* const)&value, 1);
-	char value = CMD_HANGUP; 
+	char value = CMD_FORCEHANGUP; 
 	writePort_((unsigned char const* const)&value, 1);
-	fireEvent(eHangup, 0);
+	value = CMD_HANGUP; 
+	writePort_((unsigned char const* const)&value, 1);
 }
 
 void Telephone::SoftPickup() {
@@ -423,13 +393,9 @@ void DialThread() {
 void Telephone::softDial_(void* param) {
     std::wstring* tnumber = reinterpret_cast<std::wstring*>(param);
     lastNumber_ = *tnumber;
-    if (callInfo_) {
-        callInfo_->telephoneNumber(lastNumber_);
-	    contact_ = Contact::GetByNumber(callInfo_->telephoneNumber());
-        if (contact_) {
-	        callInfo_->contactId(contact_->id());
-        }
-    }
+    callInfo_->telephoneNumber(lastNumber_);
+	contact_ = Contact::GetByNumber(callInfo_->telephoneNumber());
+	callInfo_->contactId(contact_->id());
     numberToDialNumber_(number_, lastNumber_);
     HANDLE hDialThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DialThread, NULL, 0, NULL);
     SetThreadPriority(hDialThread, THREAD_PRIORITY_LOWEST);
@@ -463,25 +429,16 @@ void Telephone::recordCallId_(void* param) {
         //send callid message to call form
         callForm->PostMessage(UM_TEL_CALLID, 0, reinterpret_cast<LPARAM>(callId));
     }
-	//CString v;
-	//v.Format(L"record call id Current State is : %d", getCurrentState());
-	//AfxMessageBox(v);
 }
 
 void Telephone::connect_(void* param) {
     //send connect message to call form
     callInfo_->startTime(Util::Timestamp::GetCurrentTime());
     callForm->PostMessage(UM_TEL_CONNECT, 0, 0);
-	//CString v;
-	//v.Format(L"connect Current State is : %d", getCurrentState());
-	//AfxMessageBox(v);
 }
 
 void Telephone::startRecord_(void* param) {
     Util::shared_ptr<SoundSegment> soundSegment = callInfo_->Record();
-	//CString v;
-	//v.Format(L"start record Current State is : %d", getCurrentState());
-	//AfxMessageBox(v);
     //send start-record message to call form
     callForm->PostMessage(UM_TEL_START_RECORD, 0, 0);
 }
@@ -491,16 +448,12 @@ void Telephone::ring_(void* param) {
         callInfo_ = Util::shared_ptr<CallInfo>(new CallInfo());
     }
 	callInfo_->type(citReceived);
-    callInfo_->startTime(Util::Timestamp::GetCurrentTime());
     if (callInfo_->telephoneNumber() != L"") { //has callid
         std::wstring ringtoneName = ContactCategory::GetRingtone(callInfo_->telephoneNumber());
         SoundSegment(sstRingtone, ringtoneName).Play();
     } else {
         RingControl(true);
     }
-	//CString v;
-	//v.Format(L"ring Current State is : %d", getCurrentState());
-	//AfxMessageBox(v);
     //send ring message to call form
     callForm->PostMessage(UM_TEL_RING, 0, 0);
 }
@@ -513,9 +466,6 @@ void Telephone::subDial_(void* param) {
 
 void Telephone::stopRecord_(void* param) {
     callInfo_->StopRecord();
-	//CString v;
-	//v.Format(L"stop record Current State is : %d", getCurrentState());
-	//AfxMessageBox(v);
     //send stop-record message to call form
     callForm->PostMessage(UM_TEL_STOP_RECORD, 0, 0);
 }
@@ -526,9 +476,9 @@ void Telephone::show_(void* param) {
 
 void Telephone::softPickup_(void* param) {
     SoftPickup();
-    callInfo_ = Util::shared_ptr<CallInfo>(new CallInfo());
-    //send pickup message to call form
-    callForm->PostMessage(UM_TEL_PICKUP, 0, 0);
+    //callInfo_ = Util::shared_ptr<CallInfo>(new CallInfo());
+    ////send pickup message to call form
+    //callForm->PostMessage(UM_TEL_PICKUP, 0, 0);
 }
 
 void Telephone::recordCallInfo_(void* param) {
@@ -536,17 +486,12 @@ void Telephone::recordCallInfo_(void* param) {
     if (callInfo_) {
 		callInfo_->duration(Util::Timestamp::GetCurrentTime() - callInfo_->startTime());
         callInfo_->Insert();
-		//callInfo_->telephoneNumber(L"");
-		//callInfo_->Reset();
-		callInfo_ = Util::shared_ptr<CallInfo>(new CallInfo());
+        callInfo_->telephoneNumber(L"");
     }
-	//CString v;
-	//v.Format(L"record call info Current State is : %d", getCurrentState());
-	//AfxMessageBox(v);
 }
 
 void Telephone::reject_(void* param) {
-    //SoftHangup();
+    SoftHangup();
 }
 
 void Telephone::callinTimeout_(void* param) {

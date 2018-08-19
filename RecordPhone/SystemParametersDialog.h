@@ -22,7 +22,6 @@ protected:
 	ImageButton restoreButton_;
 	ImageButton callButton_;
 	ImageButton voiceMessagesButton_;
-	ImageButton screenCalibrationButton_;
 
 	DECLARE_MESSAGE_MAP()
 public:

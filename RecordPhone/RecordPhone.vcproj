@@ -261,31 +261,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\CallInfo.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|IngenicMedia (MIPSII)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|IngenicMedia (MIPSII)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\CategoryDialog.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ConfirmDialog.cpp"
 				>
 			</File>
 			<File
@@ -331,6 +307,26 @@
 			<File
 				RelativePath=".\ContactDialog.cpp"
 				>
+			</File>
+			<File
+				RelativePath=".\ContactInfo.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|IngenicMedia (MIPSII)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|IngenicMedia (MIPSII)"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ContactsDialog.cpp"
@@ -591,15 +587,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CallInfo.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CategoryDialog.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ConfirmDialog.h"
 				>
 			</File>
 			<File
@@ -612,6 +600,10 @@
 			</File>
 			<File
 				RelativePath=".\ContactDialog.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ContactInfo.h"
 				>
 			</File>
 			<File
@@ -810,30 +802,6 @@
 			</File>
 			<File
 				RelativePath=".\Util\ImageOp.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Util\JsonParser.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|IngenicMedia (MIPSII)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|IngenicMedia (MIPSII)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Util\JsonParser.h"
 				>
 			</File>
 			<File

@@ -15,5 +15,4 @@ public:
     static bool const HasSdCard();
     static bool const HasUsbDisk();
     static bool const HasFolder(std::wstring const& folder);
-    static bool const HasFile(std::wstring const& file);
 };

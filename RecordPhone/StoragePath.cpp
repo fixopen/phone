@@ -1,5 +1,4 @@
 #include "StoragePath.h"
-#include "Util/StringOp.h"
 
 std::wstring const StoragePath::GetFlashDrvPath() {
     std::wstring result = L"/FlashDrv";
@@ -53,15 +52,5 @@ bool const StoragePath::HasUsbDisk() {
 
 bool const StoragePath::HasFolder(std::wstring const& folder) {
     bool result = false;
-    return result;
-}
-
-bool const StoragePath::HasFile(std::wstring const& filename) {
-    bool result = false;
-    FILE* file = fopen(Util::StringOp::FromUnicode(filename).c_str(), "r");
-    if (file) {
-        result = true;
-        fclose(file);
-    }
     return result;
 }

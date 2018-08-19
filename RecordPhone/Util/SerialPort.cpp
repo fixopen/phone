@@ -7,8 +7,7 @@ namespace Util {
     //, readThread_(0)
     , buffer_(0)
     , bufferLength_(0)
-    , handle_(INVALID_HANDLE_VALUE)
-	, isVirtual_(false) {
+    , handle_(INVALID_HANDLE_VALUE) {
     }
 
     void RS232::SetReadFunc(OnSerialPortDataReceived onSerialPortDataReceived) {
@@ -100,9 +99,7 @@ namespace Util {
 
             //初始化缓冲区中的信息
             PurgeComm(handle_, PURGE_TXCLEAR | PURGE_RXCLEAR);
-		} else {
-			isVirtual_ = true;
-		}
+        }
 
         //Log::Log("串口打开成功");
 
@@ -175,42 +172,90 @@ namespace Util {
         size_t const readBufferLength = 1024;
         unsigned char readBuffer[readBufferLength] = {0};
         while (!quit_) {
-			if (serialPort_->isVirtual_) {
-				unsigned long actualReadLen = 0;
-				ReadFile(serialPort_->handle_, readBuffer, readBufferLength, &actualReadLen, 0);
-				if (actualReadLen > 0) {
-				    //char buffer[1248] = {0};
-				    //sprintf(buffer, "receive data is %s", readBuffer);
-				    //Log::Log(buffer);
-				    if (serialPort_->onSerialPortDataReceived_) {
-				        serialPort_->onSerialPortDataReceived_(readBuffer, (unsigned int const)actualReadLen);
-				    }
-				    memset(readBuffer, 0, 1024);
-				} else {
-				    Sleep(100);
-				}
-			} else {
-				if (::WaitCommEvent(serialPort_->handle_, &evtMask, 0)) {
-					::SetCommMask(serialPort_->handle_, EV_RXCHAR | EV_CTS | EV_DSR);
-					if (evtMask & EV_RXCHAR) {
-						::ClearCommError(serialPort_->handle_, &readErrors, &commState);
-						int willReadLen = commState.cbInQue;
-						if (willReadLen > 0) {
-							unsigned long actualReadLen = 0;
-							ReadFile(serialPort_->handle_, readBuffer, min(willReadLen, readBufferLength), &actualReadLen, 0);
-							char buffer[1248] = {0};
-							sprintf(buffer, "receive data is %s", readBuffer);
-							Log::Log(buffer);
-							if (serialPort_->onSerialPortDataReceived_) {
-								serialPort_->onSerialPortDataReceived_(readBuffer, (unsigned int const)actualReadLen);
-								//serialPort_->onSerialPortDataReceived_(totalBuffer, totalReadChars);
-							}
-							memset(readBuffer, 0, 1024);
-						}
-					}
-				}
-			}
+            unsigned long actualReadLen = 0;
+            ReadFile(serialPort_->handle_, readBuffer, readBufferLength, &actualReadLen, 0);
+            if (actualReadLen > 0) {
+                //char buffer[1248] = {0};
+                //sprintf(buffer, "receive data is %s", readBuffer);
+                //Log::Log(buffer);
+                if (serialPort_->onSerialPortDataReceived_) {
+                    serialPort_->onSerialPortDataReceived_(readBuffer, (unsigned int const)actualReadLen);
+                }
+                memset(readBuffer, 0, 1024);
+            } else {
+                Sleep(100);
+            }
+            //if (::WaitCommEvent(serialPort_->handle_, &evtMask, 0)) {
+            //    ::SetCommMask(serialPort_->handle_, EV_RXCHAR | EV_CTS | EV_DSR);
+            //    if (evtMask & EV_RXCHAR) {
+            //        ::ClearCommError(serialPort_->handle_, &readErrors, &commState);
+            //        int willReadLen = commState.cbInQue;
+            //        if (willReadLen > 0) {
+            //            unsigned long actualReadLen = 0;
+            //            ReadFile(serialPort_->handle_, readBuffer, min(willReadLen, readBufferLength), &actualReadLen, 0);
+            //            char buffer[1248] = {0};
+            //            sprintf(buffer, "receive data is %s", readBuffer);
+            //            Log::Log(buffer);
+            //            if (serialPort_->onSerialPortDataReceived_) {
+            //                serialPort_->onSerialPortDataReceived_(readBuffer, (unsigned int const)actualReadLen);
+            //                //serialPort_->onSerialPortDataReceived_(totalBuffer, totalReadChars);
+            //            }
+            //            memset(readBuffer, 0, 1024);
+            //        }
+            //    }
+            //}
         }
         return 0;
     }
 }
+
+#if 0
+BYTE totalBuffer[20] = {0};
+int totalReadChars = 0;
+//if (frameHeadPos_ == -1)
+//{
+//	for (int i = 0; i < actualReadLen; ++i)
+//	{
+//		if (readBuffer[i] == 0xFF)
+//		{
+//			frameHeadPos_ = i;
+//			isFirstPacket_ = true;
+//			totalReadChars = 0;
+//			break;
+//		}
+//	}
+//}
+//if (isFirstPacket_)
+//{
+//	memcpy(totalBuffer + totalReadChars, readBuffer + frameHeadPos_, min(actualReadLen - frameHeadPos_, 20 - totalReadChars));
+//	totalReadChars += min(actualReadLen - frameHeadPos_, 20 - totalReadChars);
+//	isFirstPacket_ = false;
+//}
+//else
+//{
+//	memcpy(totalBuffer + totalReadChars, readBuffer, min(actualReadLen, 20 - totalReadChars));
+//	totalReadChars += min(actualReadLen, 20 - totalReadChars);
+//	if (totalReadChars >= 2)
+//	{
+//		if (totalBuffer[1] != 0xAA)
+//		{
+//			frameHeadPos_ = -1;
+//		}
+//	}
+//	if (totalReadChars >= 3)
+//	{
+//		if (totalBuffer[2] != 0x55)
+//		{
+//			frameHeadPos_ = -1;
+//		}
+//	}
+//}
+//if (totalReadChars >= 20)
+//{
+//	frameHeadPos_ = -1;
+//	isFirstPacket_ = true;
+
+
+//	totalReadChars = 0;
+//}
+#endif
