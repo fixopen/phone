@@ -148,7 +148,7 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 
 	CTelephoneDlg *PhoneDlg = reinterpret_cast<CTelephoneDlg*>(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg);
 	CSettingDlg *pSetDlg = reinterpret_cast<CSettingDlg*>(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg);
-	std::vector<std::pair<std::string, std::string> > ms =pSetDlg->m_pSetting->speedDials();
+	std::vector<std::pair<std::string, std::string> > ms =pSetDlg->m_pTempSetting->speedDials();
 	pDlg->m_listBox.AddString(_T("开始拨打电话测试:"));
 
 	//log
@@ -159,7 +159,7 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 	strTime.Format(_T("%02d-%02d-%02d %02d:%02d:%02d"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 	strInfo += strTime;
 	strInfo += _T("\r\n");
-//	Writelog(ptcFileCall, strInfo);
+	Writelog(ptcFileCall, strInfo);
 
 	while (pDlg->m_bFlagCall /* && nCount < 10000*/)
 	{
@@ -178,7 +178,7 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 		strTime.Format(_T("%02d-%02d-%02d %02d:%02d:%02d"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 		strInfo += strTime;
 		strInfo += _T("\r\n");
-//		Writelog(ptcFileCall, strInfo);
+		Writelog(ptcFileCall, strInfo);
 
 
 		PhoneDlg->HandleOn();
@@ -214,9 +214,9 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 	strTime.Format(_T("%02d-%02d-%02d %02d:%02d:%02d"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 	strInfo += strTime;
 	strInfo += _T("\r\n");
-//	Writelog(ptcFileCall, strInfo);
+	Writelog(ptcFileCall, strInfo);
 	strInfo.Format(_T("running times: %d\r\n\r\n"), nCount);
-//	Writelog(ptcFileCall, strInfo);
+	Writelog(ptcFileCall, strInfo);
 
 	if(pDlg->m_bExit)
 		pDlg->PostMessage(WM_USER+2, 0, 0);
@@ -249,7 +249,7 @@ DWORD CTestDlg::ThreadTestDbProc(LPVOID lParam)
 	strTime.Format(_T("%02d-%02d-%02d %02d:%02d:%02d"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 	strInfo += strTime;
 	strInfo += _T("\r\n");
-//	Writelog(ptcFileDbTest, strInfo);
+	Writelog(ptcFileDbTest, strInfo);
 	
 	while (pDlg->m_bFlagTestDb/* && i < 1*/)
 	{
@@ -319,7 +319,7 @@ DWORD CTestDlg::ThreadTestDbProc(LPVOID lParam)
 		strTime.Format(_T("%02d-%02d-%02d %02d:%02d:%02d"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 		strInfo += strTime;
 		strInfo += _T("\r\n");
-//		Writelog(ptcFileDbTest, strInfo);
+		Writelog(ptcFileDbTest, strInfo);
 		i++;
 	}
 
@@ -334,9 +334,9 @@ DWORD CTestDlg::ThreadTestDbProc(LPVOID lParam)
 	strTime.Format(_T("%02d-%02d-%02d %02d:%02d:%02d"), time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 	strInfo += strTime;
 	strInfo += _T("\r\n");
-//	Writelog(ptcFileDbTest, strInfo);
+	Writelog(ptcFileDbTest, strInfo);
 	strInfo.Format(_T("running times: %d\r\n\r\n"), i);
-//	Writelog(ptcFileDbTest, strInfo);
+	Writelog(ptcFileDbTest, strInfo);
 
 	if(pDlg->m_bExit)
 		pDlg->PostMessage(WM_USER+2, 0, 0);
@@ -405,7 +405,7 @@ void CTestDlg::OnTimer(UINT nIDEvent)
 		m_listBoxMem.AddString(strMemInfo);
 
 		strMemInfo += _T("\r\n");
-//		Writelog(ptcFileMem, strMemInfo);
+		Writelog(ptcFileMem, strMemInfo);
 		m_listBoxMem.PostMessage(WM_VSCROLL, SB_BOTTOM, 0);
 
 		nCount++;

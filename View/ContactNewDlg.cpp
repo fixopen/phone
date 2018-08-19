@@ -70,20 +70,11 @@ void CContactNewDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 	case 11://视频
 		break;
-	
+
 	case 12://发信息
-	case 16:
 		{	
 			CString s;
-			if ( 12 == w)
-			{
-				m_edtMobile1.GetWindowText(s);
-			}
-			else if(16 == w)
-			{
-				m_edtMobile2.GetWindowText(s);
-			}
-
+			m_edtMobile1.GetWindowText(s);
 			if(s != "")
 			{	
 				std::vector<CString> telNum ;
@@ -107,12 +98,9 @@ void CContactNewDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				pWnd_->SetSender(vname);
 				pWnd_->SetAppend(telNum);
 				pWnd_->ShowWindow(SW_SHOW);
-				
-				CWnd *p = main->m_pMainDlg->m_p3GSMSDlg ;
-				icon = Allicon[1];
-				main->AddIcon(icon,p,false);
 
-				SipShowIM(SIPF_OFF);
+				icon = Allicon[1];
+				main->AddIcon(icon);
 
 			}
 		}
@@ -161,7 +149,7 @@ BOOL CContactNewDlg::OnInitDialog()
 	height = 34;
 	yspace = 16; 
 	
-	m_cmbType.CreateEx(WS_CHILD|WS_VISIBLE, CRect(xbegin+width, ybegin-2, xbegin+width+111, ybegin-2+342), this, IDC_COMBOBOX_CONTACTNEW_TYPE,24,24,32,-1);
+	m_cmbType.CreateEx(WS_CHILD|WS_VISIBLE, CRect(xbegin+width, ybegin-2, xbegin+width+136, ybegin-2+342), this, IDC_COMBOBOX_CONTACTNEW_TYPE,24,24,32,-1);
 	m_cmbGroup.CreateEx(WS_CHILD|WS_VISIBLE, CRect(397, ybegin+yspace+height-3, 397+237, ybegin+yspace+height-3+342), this, IDC_COMBOBOX_CONTACTNEW_GROUP,24,24,32,-1);
 	
 	m_cmbType.AddString(CString(Data::LanguageResource::Get(Data::RI_CARD_COMNSTC).c_str()));
@@ -169,43 +157,40 @@ BOOL CContactNewDlg::OnInitDialog()
 	m_cmbType.AddString(CString(Data::LanguageResource::Get(Data::RI_CARD_BLACKLISTSTC).c_str()));
 
 	//姓名
-	m_edtName.Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, 
+	m_edtName.Create(WS_CHILD|WS_VISIBLE, 
 		CRect(xbegin, ybegin, xbegin+width, ybegin+height), this, IDC_EDIT_CONTACTNEW_NAME);
 	m_edtName.SetWindowText(L"");
-	m_edtName.SetLimitText(50);
+	m_edtName.SetLimitText(15);
 	
 	//移动电话1
-	width = 195;
 	ybegin += yspace+height ; 
-	m_edtMobile1.Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, 
+	m_edtMobile1.Create(WS_CHILD|WS_VISIBLE, 
 		CRect(xbegin, ybegin, xbegin+width, ybegin+height), this, IDC_EDIT_CONTACTNEW_MOBILE1);
-	m_edtMobile1.SetLimitText(20);
+	m_edtMobile1.SetLimitText(15);
 	m_edtMobile1.SetLimitDiagital();
 	
 	//移动电话2
 	ybegin += yspace+height ;
-	m_edtMobile2.Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, 
+	m_edtMobile2.Create(WS_CHILD|WS_VISIBLE, 
 		CRect(xbegin, ybegin, xbegin+width, ybegin+height), this, IDC_EDIT_CONTACTNEW_MOBILE2);
-	m_edtMobile2.SetLimitText(20);
+	m_edtMobile2.SetLimitText(15);
 	m_edtMobile2.SetLimitDiagital();
 	
 	//固定电话1
-	width = 221;
 	ybegin += yspace+height ;
-	m_edtTelephone1.Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, 
+	m_edtTelephone1.Create(WS_CHILD|WS_VISIBLE, 
 		CRect(xbegin, ybegin, xbegin+width, ybegin+height), this, IDC_EDIT_CONTACTNEW_TELEPHONE1);
-	m_edtTelephone1.SetLimitText(20);
+	m_edtTelephone1.SetLimitText(15);
 	m_edtTelephone1.SetLimitDiagital();
 	
 	//固定电话2
 	ybegin += yspace+height ;
-	m_edtTelephone2.Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, 
+	m_edtTelephone2.Create(WS_CHILD|WS_VISIBLE, 
 		CRect(xbegin, ybegin, xbegin+width, ybegin+height), this, IDC_EDIT_CONTACTNEW_TELEPHONE2);
-	m_edtTelephone2.SetLimitText(20);
+	m_edtTelephone2.SetLimitText(15);
 	m_edtTelephone2.SetLimitDiagital();
 	
 	//网址
-	width = 247;
 	ybegin += yspace+height ;
 	m_edtSite.Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,
 		CRect(xbegin, ybegin, xbegin+width, ybegin+height),this, IDC_EDIT_CONTACTNEW_SITE);
@@ -247,7 +232,7 @@ BOOL CContactNewDlg::OnInitDialog()
 	//备注
 	ybegin += yspace+height ;
 	xbegin = 92;
-	width  = 247;
+	width  = 157;
 	m_edtMemo.Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, 
 		CRect(xbegin, ybegin, xbegin+width, ybegin+height), this, IDC_EDIT_CONTACTNEW_MEMO);
 	m_edtMemo.SetLimitText(30);
@@ -337,18 +322,9 @@ void CContactNewDlg::OnButtonContactNewOk()
 	CString s;
 	m_edtName.GetWindowText(s);
 	if (s.IsEmpty())
-	{	
-		main->m_pWarningNoFlashDlg->SetTitle(L"请输入姓名");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+	{
 		return;
 	}
-
-	int oldGroupID;
-	if ( m_pContact->id() > 0)//记录下以前的GroupID
-	{
-		oldGroupID = m_pContact->groupId();
-	}
-	// add over
 
 	if (!m_pContact)
 	{
@@ -394,15 +370,7 @@ void CContactNewDlg::OnButtonContactNewOk()
 //	m_pContact->duty(ReplaceSingleQuotation(Util::StringOp::FromCString(s)));
 	
 	m_edtMemo.GetWindowText(s);
-
-	// add by qi 20100417
-	int gid = -1;
-	FindSimContactGroupID(gid);
-	if (gid != oldGroupID)
-	{
-		m_pContact->memo(ReplaceSingleQuotation(Util::StringOp::FromCString(s)));
-	}
-	//add over
+	m_pContact->memo(ReplaceSingleQuotation(Util::StringOp::FromCString(s)));
 	
 	//类型
 	if (m_cmbType.GetCurSel() == CB_ERR)
@@ -422,7 +390,7 @@ void CContactNewDlg::OnButtonContactNewOk()
 		m_pContact->groupId(0);
 	}
 	else
-	{	
+	{
 		m_pContact->groupId(m_cmbGroup.GetItemData(m_cmbGroup.GetCurSel()));
 		
 		//add by qi 2009_09_26
@@ -431,28 +399,48 @@ void CContactNewDlg::OnButtonContactNewOk()
 	
 	//处理SIM卡组
 	int id ;
-	int capacity = main->m_pContactDlg->GetSimCapacity();
 	if(m_bSIMGroup)
 	{
 		if (tel.empty())
 		{	
 			return ;
 		}
-
-		if (capacity == 0)
-		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"未插SIM卡");
-			main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-			return;
-		}
 		
 		sim.telnum = tel;
 
 		if (m_pContact->id() == 0)//插入
 		{	
-			FindSimIdleID(id);
+			//SIM卡也同步
+			for (int i = 0 ; i < m_vSimID.size() ;i++)
+			{
+				m_vSimID[i] = 0 ;	
+			}
+			
+			std::string filter = "groupId = 1";//sim卡
+			std::vector< boost::shared_ptr<Data::Contact> > result;
+			result = Data::Contact::GetFromDatabase(filter);
+			if (!result.empty())//查找sim卡中的空闲序号
+			{
+				for (int i = 0 ; i < result.size() ;i++)
+				{
+					CString memo = result[i]->memo().c_str();
+					int id = atoi(memo);
+					m_vSimID[id -1] = id ;
+				}
+			}
+			
+			for (i = 0 ; i < m_vSimID.size() ;i++)
+			{
+				if ( 0 == m_vSimID[i])
+				{	
+					id = i + 1;
+					sim.id = Util::StringOp::FromInt(id);
+					break	;
+				}
+			}
 			
 			//获得SIM卡的容量，如果容量满了,警告
+			int capacity = main->m_pContactDlg->GetSimCapacity();
 			if (id >= capacity)
 			{
 				main->m_pWarningNoFlashDlg->SetTitle(L"SIM卡已满!");
@@ -465,7 +453,7 @@ void CContactNewDlg::OnButtonContactNewOk()
 
 	if (m_pContact->id() == 0)//插入
 	{	
-		if (0 == groupname.Compare(L"SIM卡"))
+		if (m_bSIMGroup)
 		{
 			vsim.push_back(sim);
 			m_pContact->memo(Util::StringOp::FromInt(id));//现在备注记录信息在名片中的ID
@@ -485,49 +473,20 @@ void CContactNewDlg::OnButtonContactNewOk()
 	{
 		//sim卡组中的电话只有一项
 		
-		if (0 == groupname.Compare(L"SIM卡"))
-		{				
-			int gid = -1;
-			FindSimContactGroupID(gid);
-			if (gid == oldGroupID)//如果进来的名片是SIM组的，先删除SIM中的
-			{
-				//先删除，后插入
-				id = atoi(CString(m_pContact->memo().c_str()));
-				main->m_pATCommandWarp1->DeleteSim(id);
-
-			}
-			else//不是来至SIM组的，找存储在SIM卡中ID
-			{
-				//SIM卡也同步
-				FindSimIdleID(id);				
-				if (id >= capacity)//获得SIM卡的容量，如果容量满了,警告
-				{
-					main->m_pDeleteTipDlg->SetHWnd(NULL);
-					main->m_pDeleteTipDlg->SetTitle(L"SIM卡已满!");
-					main->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
-				}
-				m_pContact->memo(Util::StringOp::FromInt(id));//更新ID
-			}
-			
+		if (m_bSIMGroup)
+		{	
+			//先删除，后插入
+			int id = atoi(CString(m_pContact->memo().c_str()));
+			sim.id = Util::StringOp::FromInt(id);
 			vsim.push_back(sim);
-			main->m_pATCommandWarp1->Save2Sim(vsim);			
-			m_pContact->Update();			
-			
-		}
-		else 
-		{   
-			int gid = -1;
-			FindSimContactGroupID(gid);
-			if ( gid == oldGroupID )//SIM组转移到别的组,删除SIM卡组
-			{
-				std::string id = m_pContact->memo();
-				main->m_pATCommandWarp1->DeleteSim(Util::StringOp::ToInt(id));				
-				m_pContact->Update();
 
-			}
-			else 
-				m_pContact->Update();
+			main->m_pATCommandWarp1->DeleteSim(id);
+			main->m_pATCommandWarp1->Save2Sim(vsim);
+			
+			m_pContact->memo(Util::StringOp::FromInt(id));//现在备注记录信息在名片中的ID
+
 		}
+		m_pContact->Update();
 	}
 	
 	//显示新建的信息
@@ -535,13 +494,7 @@ void CContactNewDlg::OnButtonContactNewOk()
 	
 	ShowWindow(FALSE);
 	SipShowIM(SIPF_OFF);
-
-	//wangzhenxing20100604
-	main->m_pSMSListDlg->FromDataBase();
-	main->m_pSMSListDlg->ShowArrayInList();
-
-	main->m_pContactInfoDlg->FromContactInfoDataBase();
-	main->m_pContactInfoDlg->ShowTypeInfo();
+	
 }
 
 void CContactNewDlg::OnButtonContactNewCancel() 
@@ -593,7 +546,6 @@ void CContactNewDlg::SetContact(boost::shared_ptr<Data::Contact> contact)
 	{
 		m_bSIMGroup = false ;
 		m_MJPGList.SetUnitText(20,L"",true);
-		SetSim(false);
 	}
 	else
 	{
@@ -602,11 +554,9 @@ void CContactNewDlg::SetContact(boost::shared_ptr<Data::Contact> contact)
 		{	
 			m_MJPGList.SetUnitText(20,L"SIM卡",true);
 			m_bSIMGroup = true ;
-			SetSim(true);
 		}
 		else 
-		{	
-			SetSim(false);
+		{
 			m_MJPGList.SetUnitText(20,L"本地",true);
 			m_bSIMGroup = false ;
 		}
@@ -759,62 +709,47 @@ std::string CContactNewDlg::ReplaceSingleQuotation(std::string& field)
 }
 
 void CContactNewDlg::OnButtonContactNewDialMobile1()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+{
 	CString mobile;
 	m_edtMobile1.GetWindowText(mobile);
 	if (mobile.IsEmpty())
 	{
 		return;
 	}
-	main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 0);
-	main->m_phoneLine[0].pFSM->setStartState(CMultimediaPhoneDlg::p3gsHangOn);
-	main->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(mobile), m_pContact->id());
-	SipShowIM(SIPF_OFF);
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(mobile), m_pContact->id());
 }
 
 void CContactNewDlg::OnButtonContactNewDialMobile2()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	CString mobile;
 	m_edtMobile2.GetWindowText(mobile);
 	if (mobile.IsEmpty())
 	{
 		return;
 	}
-	main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 0);
-	main->m_phoneLine[0].pFSM->setStartState(CMultimediaPhoneDlg::p3gsHangOn);
-	main->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(mobile), m_pContact->id());
-	SipShowIM(SIPF_OFF);
-
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(mobile), m_pContact->id());
 }
 
 void CContactNewDlg::OnButtonContactNewDialTelephone1()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+{
 	CString telephone;
 	m_edtTelephone1.GetWindowText(telephone);
 	if (telephone.IsEmpty())
 	{
 		return;
 	}
-	main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 0);
-	main->m_phoneLine[0].pFSM->setStartState(CMultimediaPhoneDlg::p3gsHangOn);
-	main->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(telephone), m_pContact->id());
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(telephone), m_pContact->id());
 }
 
 void CContactNewDlg::OnButtonContactNewDialTelephone2()
 {
 	CString telephone;
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	m_edtTelephone2.GetWindowText(telephone);
 	if (telephone.IsEmpty())
 	{
 		return;
 	}
-	main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 0);
-	main->m_phoneLine[0].pFSM->setStartState(CMultimediaPhoneDlg::p3gsHangOn);
-	main->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(telephone), m_pContact->id());
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(telephone), m_pContact->id());
 }
 
 LRESULT CContactNewDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
@@ -883,127 +818,34 @@ void CContactNewDlg::ClearEdit()
 void CContactNewDlg::SetSim(bool btrue)
 {
 	m_bSIMGroup = btrue ;
+
+	m_edtMobile2.SetWindowText(L"");
+	m_edtMobile2.SetReadOnly(btrue);
 	
-	if (btrue)
-	{
-		m_edtMobile2.SetWindowText(L"");
-		m_edtTelephone1.SetWindowText(L"");
-		m_edtTelephone2.SetWindowText(L"");
-
-		m_edtEmail.SetWindowText(L"");
-		m_edtSite.SetWindowText(L"");
-		m_edtCompany.SetWindowText(L"");
-		m_edtCompanyAddress.SetWindowText(L"");
-		m_edtPostCode.SetWindowText(L"");
-		m_edtDepartment.SetWindowText(L"");
-		m_edtDuty.SetWindowText(L"");
-
-	}
-
-	m_edtMobile2.SetReadOnly(btrue);	
-	m_edtTelephone1.SetReadOnly(btrue);	
+	m_edtTelephone1.SetWindowText(L"");
+	m_edtTelephone1.SetReadOnly(btrue);
+	
+	m_edtTelephone2.SetWindowText(L"");
 	m_edtTelephone2.SetReadOnly(btrue);
-	m_edtEmail.SetReadOnly(btrue);
-	m_edtSite.SetReadOnly(btrue);
-	m_edtCompany.SetReadOnly(btrue);
-	m_edtCompanyAddress.SetReadOnly(btrue);
-	m_edtPostCode.SetReadOnly(btrue);
-	m_edtDepartment.SetReadOnly(btrue);
-	m_edtDuty.SetReadOnly(btrue);
-	m_edtMemo.SetReadOnly(btrue);
 
 }
-
 void CContactNewDlg::OnComboSelect(WPARAM w, LPARAM l)
-{	
-	if (w = IDC_COMBOBOX_CONTACTNEW_TYPE)
-	{
-		CString content;
-		m_cmbGroup.GetWindowText(content);
-		if ( 0 == content.Compare(L"SIM卡"))
-		{
-			m_MJPGList.SetUnitText(20,L"SIM卡",TRUE);
-			SetSim(true);
-		}
-		else
-		{
-			m_MJPGList.SetUnitText(20,L"本地",TRUE);
-			SetSim(false);
-		}
-	}
-	
-}
-
-void CContactNewDlg::FindSimIdleID(int &id)
 {
-	if ( 0 == m_vSimID.size())
+	CString content;
+	m_cmbGroup.GetWindowText(content);
+	if ( 0 == content.Compare(L"SIM卡"))
 	{
-		id = -1;
-		return;
+		m_MJPGList.SetUnitText(20,L"SIM卡",TRUE);
+		SetSim(true);
 	}
-
-	for (int i = 0 ; i < m_vSimID.size() ;i++)
+	else
 	{
-		m_vSimID[i] = 0 ;	
-	}
-	
-	int gid = -1;
-	FindSimContactGroupID(gid);
-	
-	std::string filter = "groupId = ";//sim卡
-	filter += Util::StringOp::FromInt(gid);
-	
-	std::vector< boost::shared_ptr<Data::Contact> > result;
-	result = Data::Contact::GetFromDatabase(filter);
-	if (!result.empty())//查找sim卡中的空闲序号
-	{
-		for (int i = 0 ; i < result.size() ;i++)
-		{
-			CString memo = result[i]->memo().c_str();
-			int index = atoi(memo);
-			m_vSimID[index -1] = index;
-		}
-	}
-	
-	for (i = 0 ; i < m_vSimID.size() ;i++)
-	{
-		if ( 0 == m_vSimID[i])
-		{	
-			id = i + 1;
-			break	;
-		}
+		m_MJPGList.SetUnitText(20,L"本地",TRUE);
+		SetSim(false);
 	}
 	
 }
 
-void CContactNewDlg::FindSimContactGroupID(int &gid)
-{
-	std::vector<boost::shared_ptr<Data::ContactGroup> > result;
-	if (Data::ContactGroup::GetDataCount("") > 0)//查找
-	{
-		result = Data::ContactGroup::GetFromDatabase("");
-		for (int i = 0; i < result.size(); ++i)
-		{
-			if(CString(result[i]->name().c_str()) == L"SIM卡")
-			{
-				gid = result[i]->id();
-				break;
-			}
-		}
-	}
-}
-
-void CContactNewDlg::InSimID(int const size)
-{
-	if (size == 0)
-	{
-		m_vSimID.resize(800);
-	}
-	else if (size > 0)
-	{
-		m_vSimID.resize(size);
-	}
-}
 void CContactNewDlg::ShowWindow_()
 {
 	m_bSIMGroup = false ;

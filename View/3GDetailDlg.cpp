@@ -175,7 +175,7 @@ int C3GDetailDlg::clickmenu(int index)
 			spCode += m_pMenuManagerresult[nIndex]->menuInfos.spCode;
 			spCode += "'";
 			int type = 1;
-			if(m_pMenuManagerresult[nIndex]->menuInfos.spCode == ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->speCode1_)    //天气预报
+			if(m_pMenuManagerresult[nIndex]->menuInfos.spCode == ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->speCode1_)    //天气预报
 			{
 				type = 0;
 				spCode = " DISTINCT datetime ";

@@ -24,7 +24,7 @@ class C3GSMSDetailDlg : public CDialog
 {
 // Construction
 public:
-	CCEComboBox12_ m_cmbType;
+	CCEComboBox_ m_cmbType;
 
 	SMSDETAILTYPE			m_nSMSType;			//0 短信阅读   1 写短信  2  彩信阅读  3  写彩信
 	int         m_nSMSId;			//记录在数据库中的位置

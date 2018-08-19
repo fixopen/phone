@@ -15,14 +15,10 @@
 #include "../Data/LanguageResource.h"
 #include "../Data/Message.h"
 #include "../Data/MMSData.h"
-#include "CSmsDetailDlg.h"
-
-#include "StorageStatusDlg.h"
 
 
 enum SMSBOX_TYPE{RECV_TYPE = 0, SEND_TYPE, DRAFT_TYPE, HOME_RECORD_TYPE};
 enum SMSMMS_TYPE{SMS_TYPE = 0, MMS_TYPE, HOME_TYPE};
-
 
 #include "3GSMSReadDlg.h"
 #include "3GMMSReadDlg.h"
@@ -32,7 +28,6 @@ class C3GSMSListDlg : public CDialog
 {
 // Construction
 public:
-	int m_nOperateType;
 	int m_nSelectItem;
 	int m_nListCountTotal;
 	int m_nPageSize;
@@ -46,6 +41,7 @@ public:
 	std::vector<boost::shared_ptr<Data::MMSData> > m_vMMSDataCurrentResult;
 
 	void ScrollItemsInList(int step, int nPos);
+
 	void DeleteRefreshList();
 
 	CCEListCtrl	m_lsList;
@@ -78,9 +74,6 @@ public:
 	CSMSReadDlg						*m_pSmsReadDlg ;
 	CMMSReadDlg						*m_pMmsReadDlg ;
 	CNumberExtractDlg				*m_pNumberExtractDlg ;
-	CSmsDetailDlg					*m_pSmsDetailDlg;
-	CStorageStatusDlg				*m_pStorageStatusDlg;
-	
 
 	void FromDataBase();//取得数据库中信息
 	void ShowArrayInList();//把数据库中信息展现在列表中	
@@ -104,20 +97,14 @@ public:
 	void SetUpPages();//设置左上角的页
 	void ShowDeleteDlg();//展示删除的按钮
 	void SetPagefont();
-	void GetPathTxt(CString const path,CString &content);//获得某个路径下的文本
-	void RefreshList(SMSMMS_TYPE st = SMS_TYPE);//更新下列表
 	bool GetFirstClickID(int &index,bool bcurrent = false);
-
-	void SetCapacity(SMSMMS_TYPE smsType);//设置短息容量
-	void SetPageTurnBtn(int type = 0);//设置翻页按钮的状态
 	
 	void Replay();
 	void Transit();//转发
 	void Details();//详情
-	bool FormatError(std::string const s);//错误格式
 	void NumberExtract();//号码提取
 	void AnalyseSender(std::string number,std::string &name);//
-	std::string GetContactName(std::string const number);
+	std::string GetContactName(std::string const number) ;
 	
 // Dialog Data
 	//{{AFX_DATA(C3GSMSListDlg)

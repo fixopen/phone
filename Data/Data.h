@@ -248,7 +248,7 @@ namespace Data
                 appendCond += Util::StringOp::FromInt(id);
             }
             cmd += appendCond;
-			cmd += " ORDER BY id ";
+            cmd += " ORDER BY id ";
             if (dir == dUp)
             {
                 cmd += "ASC";
@@ -269,7 +269,6 @@ namespace Data
                 if (indication_)
                     indication_(errorMessage);
             }
-
 			if (errorMessage) {
 				sqlite3_free(errorMessage);
 			}
@@ -394,39 +393,6 @@ namespace Data
 			}
             return result;
         }
-
-		// add by qi 20100609
-		static std::vector<boost::shared_ptr<T> > GetDatasByName(std::string const filter, ModifyFieldByDB modifyFieldByDB, int const offset, int const count) 
-        {
-			std::string cmd = "SELECT * FROM [";
-            cmd += tableName_;
-            cmd += "]";
-            if (filter != "")
-            {
-                cmd += " WHERE ";
-                cmd += filter;
-            }
-            cmd += " ORDER BY [name] DESC";
-            Parameter p(modifyFieldByDB, count);
-			p.offset = offset;
-            char* errorMessage = 0;
-			offset_ = 0;
-            rowCount_ = 0;
-			std::string ncmd = Util::StringOp::ToUTF8(cmd);
-            int rc = sqlite3_exec(db_, ncmd.c_str(), rowProcess_, &p, &errorMessage);
-            if (rc != SQLITE_OK)
-            {
-                log_(errorMessage);
-                if (indication_)
-                    indication_(errorMessage);
-            }
-			if (errorMessage) {
-				sqlite3_free(errorMessage);
-			}
-			std::vector<boost::shared_ptr<T> >(p.items).swap(p.items);
-            return p.items;
-        }
-		//add over
 
         static std::string tableName(void)
         {

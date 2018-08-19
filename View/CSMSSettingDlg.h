@@ -11,8 +11,6 @@
 // C3GSMSDlg dialog
 #include "../control/MJPGStatic.h"
 #include "../control/CEStatic.h"
-#include "../Control/CELineEdit.h"
-#include "../Data/MessageSet.h"
 #include "CSMSSettingDlg.h"
 
 class CSMSSettingDlg : public CDialog
@@ -21,18 +19,7 @@ class CSMSSettingDlg : public CDialog
 public:
 
 	CMJPGStatic		m_MJPGList;
-	CCERectEdit		m_edtSmsc;
-
 	CSMSSettingDlg(CWnd* pParent = NULL);   // standard constructor
-
-	enum VPState{
-		normal,
-		setvp,
-		setcsca,
-		restorevp
-	};
-
-	VPState m_vpState;
 
 // Dialog Data
 	//{{AFX_DATA(C3GSMSDlg)
@@ -51,36 +38,18 @@ public:
 
 private:
 	SMSMMS_TYPE	 m_smsType ;
-
 public:
 	void SetUpBtn(int ID );
-	void OnButtonOK();
-	void OnButtonCancel();
-	void SettingOK();
-	void InitData(boost::shared_ptr<Data::MessageSet> const& msgSet);
-	void ShowWindow_(int nCmdShow);
+
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(C3GSMSDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnTimer(UINT nIDEvent);
+//	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnbtnCsca();
-	afx_msg void OnbtnVp();
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-
-private:
-	//«ø÷∆ ’Õ¯
-	CCERadioButton m_Radio1;
-	CCERadioButton m_Radio2;
-	CCERadioButton m_Radio3;
-	CCERadioButton m_Radio4;
-
-	CButton m_btnSetVP;
-	CButton m_btnSetCSCA;
 };
 
 //{{AFX_INSERT_LOCATION}}

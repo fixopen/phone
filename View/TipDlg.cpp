@@ -1,9 +1,9 @@
-// deletetipdlg.cpp : implementation file
+// TipDlg.cpp : implementation file
 //
 
 #include "stdafx.h"
-#include "..\multimediaphone.h"
-#include "..\MultimediaPhoneDlg.h"
+#include "../multimediaphone.h"
+#include "../MultimediaPhoneDlg.h"
 #include "TipDlg.h"
 
 #ifdef _DEBUG
@@ -12,16 +12,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern BOOL g_bReplay;
-extern BOOL g_bStartring;
 /////////////////////////////////////////////////////////////////////////////
-// CDeleteTipDlg dialog
+// CTipDlg dialog
 
 
 CTipDlg::CTipDlg(CWnd* pParent /*=NULL*/)
-	: CCEDialog(CTipDlg::IDD, pParent)
+	: CDialog(CTipDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CDeleteTipDlg)
+	//{{AFX_DATA_INIT(CTipDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
@@ -30,74 +28,51 @@ CTipDlg::CTipDlg(CWnd* pParent /*=NULL*/)
 void CTipDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDeleteTipDlg)
+	//{{AFX_DATA_MAP(CTipDlg)
 		// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CTipDlg, CCEDialog)
-
+BEGIN_MESSAGE_MAP(CTipDlg, CDialog)
+	//{{AFX_MSG_MAP(CTipDlg)
+	ON_BN_CLICKED(IDC_BTN_OK, OnClickOK)
+	//}}AFX_MSG_MAP
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-	ON_WM_TIMER()
-
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CDeleteTipDlg message handlers
-void CTipDlg::OnClickMJPG(WPARAM w, LPARAM l)
-{
-	switch(w)
-	{
-	case 1001:
-		OnClickOK();
-		break;
-	default:
-		break;
-	}
-}
+// CTipDlg message handlers
+
 BOOL CTipDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
+	// TODO: Add extra initialization here
 	
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(190, 105, 190+440,105+270), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\提示.xml");
-	m_MJPGList.SetMJPGRect(CRect(190, 105, 190+440, 105+270));
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 440, 270), this);
+	m_MJPGList.SetCurrentLinkFile(L"./adv/mjpg/k5/中文/提示语.xml");
+	
+	MoveWindow(100, 100, 440, 270);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CTipDlg::OnClickOK()
-{	
-	ShowWindow_(SW_HIDE);
-	if(g_bReplay)
-	{
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->IsSendMessage(FALSE);
-		g_bReplay = FALSE;
-	}
-	if(g_bStartring)
-	{
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->PostMessage(WM_RINGTIME, 0, 0);
-	}
-}
-
-void CTipDlg::SetTitle(CString title,int isTime,TEXTSIZE font)
-{	
-	m_MJPGList.SetUnitFont(1,font);
-	m_MJPGList.SetUnitText(1,title,true);
-	if(isTime > 0)	
-	{
-		SetTimer(100, isTime, NULL);
-	}	
-}
-
-void CTipDlg::OnTimer(UINT nIDEvent) 
+void CTipDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-	if(nIDEvent == 100)
+	switch (w)
 	{
-		KillTimer(100);
-		OnClickOK();	
+	case 1000:
+		ShowWindow(SW_HIDE);
+		break;
+	case 1001:
+		OnClickOK();
+		break;
 	}
-	CCEDialog::OnTimer(nIDEvent);
+}
+
+void CTipDlg::OnClickOK()
+{
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->UpdateTips();
+	ShowWindow(SW_HIDE);
 }

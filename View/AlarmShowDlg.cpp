@@ -49,81 +49,84 @@ BOOL CAlarmShowDlg::OnInitDialog()
 	CCEDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(180, 120, 620, 390), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\提醒.xml");
-	m_MJPGList.SetMJPGRect(CRect(180, 120, 620, 390));
-
-	m_MJPGList.SetUnitFont(1, font_20);
-	m_MJPGList.SetUnitFont(2, font_20);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\提醒.xml");
+	m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CAlarmShowDlg::SetTxt(int nAlarmID, CString sTime, CString sContent, std::string sRing, BOOL isADDList)
+void CAlarmShowDlg::SetTxt(int nAlarmID, CString sTime, CString sTitle, CString sContent, std::string sRing, BOOL isADDList)
 {
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	
-	main->m_pSoundDlg->m_pRecordSoundDlg->CloseSound();
-	main->m_pSoundDlg->m_pPlaySoundDlg->CloseSound();
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSoundDlg->m_pRecordSoundDlg->CloseSound();
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSoundDlg->m_pPlaySoundDlg->CloseSound();
+
 	//退出屏保
-	if(main->m_pMainDlg->m_mainScreenSaveDlg_->IsWindowVisible())
+	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainScreenSaveDlg_->IsWindowVisible())
 	{
-		main->m_pMainDlg->m_mainScreenSaveDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainScreenSaveDlg_->SendMessage(WM_OUTEVENT, 0, 0);
 		
-		main->m_pMainDlg->m_mainScreenSaveDlg_->ShowWindow(SW_HIDE);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainScreenSaveDlg_->ShowWindow(SW_HIDE);
 	}
 
-	if(main->m_pMainDlg->m_mainPhotoDlg_->IsWindowVisible())
-		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainPhotoDlg_->IsWindowVisible())
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
 	
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	m_nAlarmID = nAlarmID;
 
 	if(isADDList)
 	{
-		main->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002);
+		main->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002); //SendMessage(WM_OUTEVENT, 0, 0);
 		//停止试听音乐
-		main->m_pSettingDlg->StopTryRing();
-		main->m_pContactGroupDlg->StopTryRing();
-		main->m_pMainDlg->m_mainLunarderDlg_->StopTryRing();
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->StopTryRing();
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactGroupDlg->StopTryRing();
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainLunarderDlg_->StopTryRing();
 	}
 
-	main->m_pMainDlg->m_mainVideoDlg_->OnTimer(1002);
+	main->m_pMainDlg->m_mainVideoDlg_->OnTimer(1002); //SendMessage(WM_OUTEVENT, 0, 0);
 
 	m_MJPGList.SetUnitText(1, sTime, FALSE);
-	m_MJPGList.SetUnitText(2, sContent, FALSE);
+//	m_MJPGList.SetUnitText(2, sTitle, FALSE);
+	m_MJPGList.SetUnitText(3, sContent, FALSE);
 	main->phone_->StartRing((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(sRing), 0xFF);
 	m_MJPGList.Invalidate();
 	KillTimer(1);
-	SetTimer(1, 60*1000, NULL);
+	SetTimer(1, 2*60*1000, NULL);
 }
 
 void CAlarmShowDlg::ShowWindow_(int cmdshow)
 {
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	if(cmdshow > 0)
 	{
-		main->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 1, 0);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 1, 0);
 		::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800, 480, 0);
 		CCEDialog::ShowWindow_(cmdshow);
 
-		::PostMessage(main->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
-		::PostMessage(main->m_pContactGroupDlg->m_cmbSoundTip.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactGroupDlg->m_cmbSoundTip.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		
-		::PostMessage(main->m_pContactNewDlg->m_cmbType.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(main->m_pContactNewDlg->m_cmbGroup.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(main->m_pMainDlg->m_mainLunarderDlg_->m_cmbRing.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(main->m_pMainDlg->m_pWebDialog->m_cmbURL.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbType.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainLunarderDlg_->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactDlg->m_pSimImportDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->m_cmbURL.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		
-		::PostMessage(main->m_pSettingDlg->m_cmbRingTimes.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(main->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(main->m_pSettingDlg->m_cmbWaitTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(main->m_pSettingDlg->m_cmbBlackLightWaitTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	}
 	else
 	{
 		CCEDialog::ShowWindow_(cmdshow);
-		main->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 0, 0);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 0, 0);
 	}
 	
 }
@@ -133,7 +136,7 @@ void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	switch(w)
 	{
-	case 0:
+	case 1:
 		KillTimer(1);
 		main->phone_->StartRing(L"");
 		boost::shared_ptr<Data::Scheduler> m_result = Data::Scheduler::GetFromDatabaseById(m_nAlarmID);
@@ -146,7 +149,6 @@ void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		main->m_pMainDlg->m_mainVideoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
 		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
 		break;
-
 	}
 }
 

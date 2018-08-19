@@ -20,7 +20,7 @@ class CFireWallDlg : public CDialog
 {
 // Construction
 public:
-	CCEComboBox12_ m_cmbTime;
+	CCEComboBox_ m_cmbTime;
 
 	CFireWallDlg(CWnd* pParent = NULL);   // standard constructor
 	void OnStart(BOOL isStart = TRUE);

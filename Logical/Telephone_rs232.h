@@ -70,7 +70,6 @@ typedef struct
 	BYTE day;  // 0 - 31
 	BYTE hour;  // 0 - 23
 	BYTE minute;  // 0 - 59
-	BYTE Line;
 	BYTE numberstatus; // CALLID_OK / CALLID_NONE / CALLID_FORBID / CALLID_CANNOT_GET
 	char number[CALLID_NUM_LEN];  // string ending with '\0'
 	BYTE namestatus; // CALLID_OK / CALLID_NONE / CALLID_FORBID / CALLID_CANNOT_GET

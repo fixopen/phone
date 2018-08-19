@@ -24,7 +24,6 @@ public:
 	
 	bool InitPlayer();
 	bool PlayerFile(char *filename);
-	bool PlayerFile(CString sfilename, CRect rt);
 	bool PlayerFile(CString filname);
 	bool StopPlayer();
 	bool ExitPlayerAudio();
@@ -39,7 +38,7 @@ public:
 	bool ResumePlayer();
 	bool NarrowPlay(CString filename);   //缩小显示
 	bool ZoomPlay(CString filename);	 //放大显示	
-	bool RotatePicture(CString filename); //旋转图片
+	bool RotatePicture(CString filename);    //旋转图片
 
 	int Up();
 	int Down();
@@ -59,18 +58,7 @@ public:
 			waveOutSetVolume(NULL, 0xFFFFFFFF);
 			if(volume > 15)
 			volume = 15;
-
-			int n;
-			if(volume > 0)
-			{
-				n = volume/2;
-				if(n == 0)
-					n = 1;
-			}
-			else 
-				n = 0;	
-
-			plySetVolume(n * 12, mt_);
+			plySetVolume(volume * 12, mt_);
 			extern int gVoiceVolume;
 			gVoiceVolume = volume;
 		}
@@ -88,9 +76,8 @@ public:
 	unsigned int zoom_;     //图片显示大小
 	unsigned int rotate_;
 	BOOL isPlayerRun;
-	BOOL m_videoAllScreen;
-	
-	CRect m_plyRect;
+	//CString currentFile_;
+
 	CWnd* owner_;			//playerDlg_					播放窗口
 	CWnd* playerOwner_;		//MultimediaPhoneDlg			接受播放器消息的窗口 
 };

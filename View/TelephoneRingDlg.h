@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTelephoneDialDlg dialog
 
-class CTelephoneRingDlg : public CDialog//CCEDialog
+class CTelephoneRingDlg : public CCEDialog
 {
 // Construction
 public:
@@ -60,11 +60,6 @@ public:
 	void	HideContact(int uintNo,bool bshow = true );
 	void    InitData();
 	void	ClearData(int unitNo);
-	void	RightReject();//ÓÒÂ·¾Ü½Ó
-	void	RightUnitShow(bool bshow);
-
-	void    ShowWindow_(int nCmdShow);
-
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -263,7 +263,6 @@ namespace Telephone {
 			std::string setIn = "AT^DAUDI=1,1";
             Util::ATCommand::Instance()->Write(setOut);
             Util::ATCommand::Instance()->Write(setIn);
-
         }
 
         namespace {

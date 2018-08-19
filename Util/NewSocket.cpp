@@ -43,9 +43,9 @@ void CNewSocket::OnAccept(int nErrorCode)
 void CNewSocket::OnReceive(int nErrorCode) 
 {
 	// TODO: Add your specialized code here and/or call the base class
-
 //	char buf[1024*16] = {0};
 //	int len = Receive(buf, 1024*16);
+
 /*
 	FILE *fl = fopen("/flashdrv/123.dat", "w+b");
 	if(fl)
@@ -54,8 +54,7 @@ void CNewSocket::OnReceive(int nErrorCode)
 		fclose(fl);
 	}
 */
-//	CCeSocket::OnReceive(nErrorCode);
-
+	CCeSocket::OnReceive(nErrorCode);
 }
 
 int CNewSocket::Receive(void* lpBuf, int nBufLen, int nFlags) 

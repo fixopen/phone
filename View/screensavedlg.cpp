@@ -28,7 +28,6 @@ CScreenSaveDlg::CScreenSaveDlg(CWnd* pParent /*=NULL*/)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	type_ = 0;
-	m_isScreenPlay = FALSE;
 }
 
 
@@ -42,22 +41,37 @@ void CScreenSaveDlg::DoDataExchange(CDataExchange* pDX)
 
 void CScreenSaveDlg::SetSaveScreenType(int type, BOOL Redraw)
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	
+	//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(0);   //闹铃等提示框在屏保的后面了
+
+	/*
+	if(theApp.inputDlg_->IsWindowVisible())  //hide 关闭输入法
+	{
+		theApp.inputDlg_->hide();   
+	}
+	*/
 	SipShowIM(SIPF_OFF);
 	m_passwndEdit.ShowWindow(SW_HIDE);
+//	m_warningstatic.ShowWindow(SW_HIDE);
 
-	::PostMessage(main->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
-	::PostMessage(main->m_pContactGroupDlg->m_cmbSoundTip.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactGroupDlg->m_cmbSoundTip.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	
-	::PostMessage(main->m_pContactNewDlg->m_cmbType.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(main->m_pContactNewDlg->m_cmbGroup.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(main->m_pMainDlg->m_mainLunarderDlg_->m_cmbRing.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(main->m_pMainDlg->m_pWebDialog->m_cmbURL.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbType.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainLunarderDlg_->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactDlg->m_pSimImportDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->m_cmbURL.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	
-	::PostMessage(main->m_pSettingDlg->m_cmbRingTimes.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(main->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(main->m_pSettingDlg->m_cmbWaitTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(main->m_pSettingDlg->m_cmbBlackLightWaitTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+//	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	
+//	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 
 	if(type > 1 || type < 0)
 		type = 1;
@@ -65,13 +79,10 @@ void CScreenSaveDlg::SetSaveScreenType(int type, BOOL Redraw)
 	playerDlg_->ReSetWindowsRect(CRect(0, 0, 800, 480));
 	if(type_)   //图片
 	{
-		m_isScreenPlay = TRUE;
 		::SetCursorPos(799, 479);
-		main->m_pMainDlg->m_p3GHomePicDlg->SetScreenPicture();
 		playerDlg_->SetParam("", mtImage, TRUE);
 		SetSaveScreenPhoto_();
 		playerDlg_->ShowWindow(SW_SHOW);
-		playerDlg_->player_->PlayerImage();
 	}
 	else
 	{
@@ -88,9 +99,11 @@ void CScreenSaveDlg::SetSaveScreenPhoto_()
 {
 	if(playerDlg_->SetImageListForScreenSave("/flashdrv/my_photo/screensave.pls"))
 	{
+		
 	}
 	else
 	{
+//		m_warningstatic.ShowWindow(SW_SHOW);
 	}
 }
 
@@ -119,6 +132,18 @@ BOOL CScreenSaveDlg::OnInitDialog()
 	playerDlg_ = new CPlayerDlg(main->playerimage_);
 
 	playerDlg_->Create(CPlayerDlg::IDD, this);
+	//SetSaveScreenType(0);
+
+// 	m_static.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 200, 64), this);
+// 	m_static.SetFontSize(64);
+// 	m_static1.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 200, 32), this);
+// 	m_static1.SetFontSize(24);
+// 	m_static.SetColor(RGB(0, 0, 0), RGB(0, 0, 0));
+// 	m_static1.SetColor(RGB(0, 0, 0), RGB(0, 0, 0));
+
+//	m_warningstatic.Create(L"无屏保图片,请在电子相册中设定屏保图片!", WS_CHILD, CRect(200, 220, 600, 260), this);
+//	m_warningstatic.SetFontSize(28);
+//	m_warningstatic.SetColor(RGB(255, 255, 255), RGB(128, 128, 128));
 
 	m_passwndEdit.Create(WS_CHILD|WS_VISIBLE|ES_PASSWORD|ES_CENTER, CRect(300, 225, 500, 255), this, IDC_EDIT_SCREENSAVE);
 	m_passwndEdit.ShowWindow(SW_HIDE);
@@ -135,54 +160,49 @@ void CScreenSaveDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CScreenSaveDlg::GetPassWord()
 {
-	std::string strTemp = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->screenSaverPassword();
+	std::string strTemp = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->screenSaverPassword();
 	m_password = strTemp.c_str();
 }
 
 BOOL CScreenSaveDlg::IsHaveScreenPwnd()
 {
-	bool ret = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isUseScreenSaverPassword();
-	return ret;
-}
-
-BOOL IsShowSreenSaveInput()
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	if(main->m_pMainDlg->m_mainScreenSaveDlg_->IsHaveScreenPwnd())
-	{
-		if(!main->m_pPasswordDlg->IsWindowVisible() && main->m_pMainDlg->m_mainScreenSaveDlg_->m_isScreenPlay)
-		{
-			std::string strTemp = main->m_pSettingDlg->m_pSetting->screenSaverPassword();
-			main->m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
-			main->m_pPasswordDlg->SetHWnd(main->m_pMainDlg->m_mainScreenSaveDlg_->GetSafeHwnd());
- 			main->m_pPasswordDlg->ShowWindow_(SW_SHOW);	
-			return TRUE;
-		}
-		
-	}
+	//lxz 不使用密码
 	return FALSE;
+
+	bool ret = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isUseScreenSaverPassword();
+	return ret;
 }
 
 void CScreenSaveDlg:: OnExit()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	GetPassWord();
-	main->playerimage_->isActiveMode_ = 1;  //退出屏保
+	((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->playerimage_->isActiveMode_ = 1;  //退出屏保
 	if(!IsHaveScreenPwnd())
 	{
 		m_passwndEdit.ShowWindow(SW_HIDE);
-		m_isScreenPlay = FALSE;
-		ShowWindow(SW_HIDE);
+		playerDlg_->StopTimer();
+		playerDlg_->ShowWindow(SW_HIDE);
+		((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pMainDlg->SendMessage(WM_CHANGEWINDOW, (WPARAM)this, (LPARAM)SW_HIDE);
+	//	ShowWindow(SW_HIDE);
 	}
 	else
 	{
-		m_passwndEdit.ShowWindow(SW_HIDE);
-		
-		main->m_pPasswordDlg->SettingType(CHECK_SCREENPASSWORD);
-		std::string strTemp = main->m_pSettingDlg->m_pSetting->screenSaverPassword();
-		main->m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
-		main->m_pPasswordDlg->SetHWnd(this->GetSafeHwnd());
-		main->m_pPasswordDlg->ShowWindow_(SW_SHOW);
+		KillTimer(IDT_SCREENSAVE_TIME);
+		playerDlg_->StopTimer();
+		playerDlg_->ShowWindow(SW_HIDE);
+
+		CRect rt = CRect(220, 225, 290, 255);
+		m_static.SetColor(RGB(0xFF, 0, 0), RGB(0, 0, 0));
+		m_static.MoveWindow(rt.left, rt.top, rt.Width(), rt.Height(), FALSE);
+		m_static.SetFontSize(24);
+		CString str = Data::LanguageResource::Get(Data::RI_SCREENSAVE_PASSWORDINPUT).c_str();
+		m_static.SetWindowText(L"请输入密码");
+		SetDlgItemText(IDC_EDIT_SCREENSAVE, L"");
+
+		m_static1.MoveWindow(0, 0, 0, 0, FALSE);
+		m_static1.SetColor(RGB(0xFF, 0, 0), RGB(0, 0, 0));
+
+		m_passwndEdit.ShowWindow(SW_SHOW);
 	}
 }
 	
@@ -264,6 +284,35 @@ void CScreenSaveDlg::OnTimer(UINT nIDEvent)
 			::SelectObject(dc, oldFont);
 
 			::ReleaseDC(m_hWnd, dc);
+
+			/*
+
+			SYSTEMTIME curtime;
+			GetLocalTime(&curtime);
+			char time[24];
+			sprintf(time, "%02d:%02d:%02d", curtime.wHour, curtime.wMinute, curtime.wSecond);
+			CString s = time;
+
+
+			int nx = rand();
+			int ny = rand();
+			int nc = rand();
+			
+			nx = nx % (800-210);
+			ny = ny % (480-96);
+			m_static.SetWindowText(s);
+			m_static.SetColor(nc%0xFFFFFF, RGB(0, 0, 0));
+			m_static.MoveWindow(nx, ny+26, 210, 64, FALSE);
+		//	m_static.Invalidate()//OnDraw(CRect(nx, ny+26, nx+210, ny+26+64), s);
+			
+  			int nWeekDay  = Logical::LunarderDate::WeekDay(curtime.wYear, curtime.wMonth, curtime.wDay);
+  			sprintf(time, "%02d-%02d-%02d %s", curtime.wYear, curtime.wMonth, curtime.wDay, Data::LanguageResource::Get(Data::RI_COMN_SUNSTC+nWeekDay).c_str());
+ 			s = time;
+			m_static1.SetWindowText(s);
+			m_static1.SetColor(nc%0xFFFFFF, RGB(0, 0, 0));
+		//	m_static1.OnDraw(CRect(nx, ny, nx+210, ny+28), s);
+			m_static1.MoveWindow(nx, ny, 200, 28, FALSE);
+			*/
 		}
 	}
 	else if(IDT_SCREENSAVE_INPUTTIME == nIDEvent)
@@ -271,11 +320,6 @@ void CScreenSaveDlg::OnTimer(UINT nIDEvent)
 		SipShowIM(SIPF_OFF);
 		KillTimer(IDT_SCREENSAVE_INPUTTIME);
 		SetSaveScreenType(type_, TRUE);
-	}
-	else if(1001 == nIDEvent)		//lxz 20100703 屏保
-	{
-		KillTimer(1001);
-		playerDlg_->player_->ExitPlayer(TRUE);
 	}
 
 	CDialog::OnTimer(nIDEvent);
@@ -302,6 +346,37 @@ void CScreenSaveDlg::OnPaint()
 		GetClientRect(&rt);
 		dc.FillSolidRect(&rt, RGB(0, 0, 0));
 	}
+	
+	// TODO: Add your message handler code here
+	/*
+	if(type_ == 0)
+	{
+		
+		CRect rt;
+		GetClientRect(&rt);
+	
+		//CDC *pDC = GetDC();
+		dc.FillSolidRect(&rt, RGB(0, 0, 0));
+		//ReleaseDC(pDC);
+
+		SYSTEMTIME curtime;
+		GetLocalTime(&curtime);
+		char time[24];
+		sprintf(time, "%02d:%02d", curtime.wHour, curtime.wMinute);
+		CString s = time;
+
+		int nx = rand();
+		int ny = rand();
+		int nc = rand();
+		
+		nx = nx % (480-80);
+		ny = ny % (234-32);
+		m_static.SetWindowText(s);
+		m_static.SetColor(nc%0xFFFFFF, RGB(0, 0, 0));
+		m_static.MoveWindow(nx, ny, 80, 32, FALSE);
+	}
+	*/
+	// Do not call CDialog::OnPaint() for painting messages
 }
 
 void CScreenSaveDlg::OnChangeEdit1()
@@ -337,39 +412,13 @@ void CScreenSaveDlg::OnOutEvent(WPARAM w, LPARAM l)
 		{
 			((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->SetScreenSaveTimer();
 			playerDlg_->StopTimer();
-			playerDlg_->ShowWindow(SW_HIDE);	   
-			
-			SetTimer(1001, 10, NULL);		//lxz 20100703 屏保
-			//playerDlg_->player_->ExitPlayer(TRUE);
-			
+			playerDlg_->ShowWindow(SW_HIDE);
+			playerDlg_->player_->ExitPlayer(TRUE);
+//			theApp.PostThreadMessage(WM_LBUTTONDOWN, 0, 0);
+//			ShowWindow(SW_HIDE);
 			OnExit();
 		}
 		else if(IsWindowVisible())
 			OnExit();
 	}
-}
-
-LRESULT CScreenSaveDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	switch(message)
-	{
-	case CHECK_SCREENPASSWORD:
-		if(1 == wParam)
-		{
-			ShowWindow(SW_HIDE);
-			m_isScreenPlay = FALSE;
-		}
-		else if(0 == wParam)
-		{
-			playerDlg_->SetParam("", mtImage, TRUE);
-			playerDlg_->ShowWindow(SW_SHOW);
-			playerDlg_->player_->PlayerImage();
-			m_isScreenPlay = TRUE;
-		}
-		break;
-	default:
-		break;
-	}
-	return CDialog::WindowProc(message, wParam, lParam);
 }

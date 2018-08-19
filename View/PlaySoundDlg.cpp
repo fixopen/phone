@@ -54,7 +54,6 @@ void CPlaySoundDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	DWORD volume[] = {0xFF00FF00, 0xcc00cc00, 0x88008800, 0x44004400, 0x10001000}; 
 	waveOutSetVolume(NULL, volume[m_nSoundindex]);
-
 }
 
 BEGIN_MESSAGE_MAP(CPlaySoundDlg, CCEDialog)
@@ -319,7 +318,7 @@ void CPlaySoundDlg::OnButtonClose()
 
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->ShowItemsInList(-1);
 //	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ResetTypeInfo();
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ResetTypeInfo();
 
 }
 
@@ -554,7 +553,6 @@ void CPlaySoundDlg::StopPlay(void)
 	m_procbarSound.SetPos(0);
 	m_iCurrentSecond = 0;
 	ShowSeconds();
-
 }
 
 void CPlaySoundDlg::ShowWindow_(int cmdshow)
@@ -562,7 +560,7 @@ void CPlaySoundDlg::ShowWindow_(int cmdshow)
 	if(cmdshow > 0)
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		m_nSoundindex = main->m_pSettingDlg->m_pSetting->sysVolume();
+		m_nSoundindex = main->m_pSettingDlg->m_pTempSetting->sysVolume();
 		DWORD volume[] = {0xFF00FF00, 0xcc00cc00, 0x88008800, 0x44004400, 0x10001000}; 
 		waveOutSetVolume(NULL, volume[m_nSoundindex]);
 	}

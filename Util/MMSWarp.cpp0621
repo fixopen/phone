@@ -216,7 +216,6 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 	smil += "\r\n";
 	smil += "  <body>\r\n";
 
-	unsigned int index = 0;//解决中文名字的问题，所有文件全部重新命名
 	for (/*vector<MMS_PAR>::iterator */iter = pars.begin(); iter != pars.end(); ++iter)
 	{
 		smil += "    <par dur=\"";
@@ -232,15 +231,6 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 			{
 				name = name.substr(name.rfind("/") + 1);
 			}
-			string suffix;
-			if (name.find(".") != string::npos)
-			{
-				suffix = name.substr(name.find("."));
-			}
-
-			char namebuf[128] = {0};
-			sprintf(namebuf, "file%d", index++);
-			name = namebuf + suffix;
 
 			if ((*i).type == stImge)
 			{
@@ -302,7 +292,7 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 	memcpy(pDst + length, smil.c_str(), smil.size());
 	length += smil.size();
 
-	index = 0;//
+	//content
 	for (/*vector<MMS_PAR>::iterator */iter = pars.begin(); iter != pars.end(); ++iter)
 	{
 		for (vector<MMS_SRC>::iterator i = (*iter).srcs.begin(); i != (*iter).srcs.end(); ++i)
@@ -314,16 +304,6 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 			{
 				name = filename.substr(filename.rfind("/") + 1);
 			}
-
-			string suffix;
-			if (name.find(".") != string::npos)
-			{
-				suffix = name.substr(name.find("."));
-			}
-			
-			char namebuf[128] = {0};
-			sprintf(namebuf, "file%d", index++);
-			name = namebuf + suffix;
 
 			if ((*i).type == stImge)
 			{
@@ -468,7 +448,7 @@ int MMSWarp::DecodeSubmitResponse(const unsigned char* pSrc, int srcLen, MMS_Sub
 		else
 		{
 			pSrc[length++];
-			Dprintf("DecodeSubmitResponse error flag=%x\n", flag);
+			printf("DecodeSubmitResponse error flag=%x\n", flag);
 		}
 	}
 
@@ -647,7 +627,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 				n = ((n << 8) | t);
 				length += 1;
 			}
-			pDst->DateAndTime = (n+8*3600);
+			pDst->DateAndTime = n;
 		}
 		else if (flag == 0x96)
 		{
@@ -978,7 +958,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 							pos2 = smil.find("</body>");
 							if ((pos1 != string::npos ) && (pos2 != string::npos))
 							{
-								pos1 += (sizeof("<body>")-1);
+								pos1 += sizeof("<body>");
 								string body = smil.substr(pos1, pos2 - pos1);
 								while ((body.find("<par") != string::npos) && (body.find("</par>") != string::npos))
 								{
@@ -1118,7 +1098,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 		else
 		{
 			pSrc[length++];
-		//	Dprintf("DecodeRetrieveResponse error flag=%x\n", flag);
+			printf("DecodeRetrieveResponse error flag=%x\n", flag);
 		}
 	}
 
@@ -1185,7 +1165,7 @@ int MMSWarp::DecodeDeliveryReportingRequest(const unsigned char* pSrc, int srcLe
 		else
 		{
 			pSrc[length++];
-			Dprintf("DecodeDeliveryReportingRequest error flag=%x\n", flag);
+			printf("DecodeDeliveryReportingRequest error flag=%x\n", flag);
 		}
 	}
 
@@ -1364,7 +1344,7 @@ void MMSWarp::DecodeSmil(std::string file, vector<MMS_PAR>& vpars, MMS_LAYOUT& v
 	pos2 = smil.find("</body>");
 	if ((pos1 != string::npos ) && (pos2 != string::npos))
 	{
-		pos1 += (sizeof("<body>")-1);
+		pos1 += sizeof("<body>");
 		string body = smil.substr(pos1, pos2 - pos1);
 		while ((body.find("<par") != string::npos) && (body.find("</par>") != string::npos))
 		{
@@ -1625,8 +1605,11 @@ void MMSWarp::EncodeSmil(vector<MMS_PAR> vpars, MMS_LAYOUT layout, std::string p
 			{
 				name = name.substr(name.rfind("/") + 1);
 			}
-			
-			CopyFile(ToUnicode((*i).name).c_str(), ToUnicode(path + name).c_str(), FALSE);
+			CString sDir = path.c_str();
+			sDir += name.c_str();
+			CString sRc = ((*i).name).c_str();
+			CopyFile(sRc, /*ToUnicode(path + name).c_str()*/sDir, FALSE);
+			//CopyFile(ToUnicode((*i).name).c_str(), /*ToUnicode(path + name).c_str()*/sDir, FALSE);
 
 			if ((*i).type == stImge)
 			{

@@ -79,7 +79,7 @@ BOOL CSIMImportDlg::OnInitDialog()
 	m_MJPGList.SetUnitText(2, L"", FALSE);
 	m_MJPGList.SetUnitIsShow(3, FALSE);
 
-	m_bOK = false;
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -102,12 +102,6 @@ void CSIMImportDlg::SetUnit(Destination des)
 	m_MJPGList.SetUnitIsDisable(3,true);
 	m_MJPGList.SetUnitIsShow(4,true,true);
 	m_MJPGList.SetUnitIsShow(3,true,true);
-
-	m_procbar.ShowWindow(SW_HIDE);
-	m_MJPGList.SetUnitIsShow(1001,true,true);
-	m_procbar.SetPos(0);
-
-	m_bOK = false;
 
 }
 
@@ -177,18 +171,13 @@ std::string  GetAlias(std::string name)
 
 void CSIMImportDlg::OnBtnOK()
 {	
-	if (!m_bOK)
-	{	
-		m_bOK = true;
-		m_MJPGList.SetUnitIsShow(1001,false,true);
-		::PostMessage(m_handle, WM_SIM_IMPORT,m_enumDes, 0);
-	}
-
+	m_procbar.ShowWindow(SW_SHOW);
+	m_MJPGList.SetUnitIsShow(1001,false,true);
+	::PostMessage(m_handle, WM_SIM_IMPORT,m_enumDes, 0);
 }
 
 void CSIMImportDlg::SetProcessMax(int max )
 {
-	m_procbar.ShowWindow(SW_SHOW);
 	m_MJPGList.SetUnitIsShow(1001,true,true);
 	m_procbar.SetParam(0,0,max,1);
 	m_procbar.SetPos(0);

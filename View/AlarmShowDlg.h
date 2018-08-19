@@ -19,8 +19,8 @@ public:
 	int				m_nAlarmID;
 
 	CMJPGStatic		m_MJPGList;
-	void            SetTxt(int nAlarmID, CString sTime, CString sContent, std::string sRing, BOOL isADDList = TRUE);
-	
+	void            SetTxt(int nAlarmID, CString sTime, CString sTitle, CString sContent, std::string sRing, BOOL isADDList = TRUE);
+
 	CAlarmShowDlg(CWnd* pParent = NULL);   // standard constructor
 	void ShowWindow_(int cmdshow);
 

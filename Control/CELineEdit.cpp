@@ -21,7 +21,6 @@ CCELineEdit::CCELineEdit()
 	m_nFontHeight = 28;
 	m_isAutoInPut = TRUE;
 	m_backRGB = RGB(255, 255, 255);
-
 }
 
 CCELineEdit::~CCELineEdit()
@@ -31,15 +30,13 @@ CCELineEdit::~CCELineEdit()
 HBRUSH CCELineEdit::CtlColor(CDC* pDC, UINT nCtlColor) 
 {
 	// TODO: Change any attributes of the DC here
-	
 	pDC->SetBkMode(TRANSPARENT);
 	m_brBk.DeleteObject();
 	m_brBk.CreateSolidBrush(Data::g_editBackRGB[Data::g_skinstyle]);
-	
 	return (HBRUSH)m_brBk;   
   
    // TODO: Return a non-NULL brush if the parent's handler should not be called
-  // return NULL;
+   //return NULL;
 }
 
 BEGIN_MESSAGE_MAP(CCELineEdit, CEdit)
@@ -51,10 +48,6 @@ BEGIN_MESSAGE_MAP(CCELineEdit, CEdit)
 	ON_WM_LBUTTONUP()
 	ON_WM_CTLCOLOR_REFLECT()
 	ON_WM_CHAR()
-	ON_WM_KEYDOWN()
-	
-//	ON_WM_ERASEBKGND()
-
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 	//ON_CONTROL_REFLECT(EN_CHANGE, OnChange)
@@ -64,9 +57,8 @@ END_MESSAGE_MAP()
 
 void CCELineEdit::OnPaint() 
 {
-
 	CEdit::OnPaint();
-	OnChange();	
+	OnChange();
 
 //	CPaintDC dc(this); // device context for painting
 
@@ -81,7 +73,6 @@ void CCELineEdit::OnChange()
 //	Invalidate();
 	
 	HDC pdc = ::GetDC(m_hWnd);
-
 	CRect rect;
 	this->GetClientRect(&rect);
 	CPen pen(PS_SOLID, 1, Data::g_editLineRGB[Data::g_skinstyle]);
@@ -96,10 +87,9 @@ void CCELineEdit::OnChange()
 		x = rect.right;
 		::LineTo(pdc, x, y);
 	}
-
 	::SelectObject(pdc, old);
 	::ReleaseDC(m_hWnd, pdc);
-	
+
 // 	extern void GlobelSetEditFocus(); //mhq 新建名片切换到桌面
 // 	GlobelSetEditFocus();
 	
@@ -138,14 +128,8 @@ void CCELineEdit::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		//OnChange();
 		SetTimer(0xFF00, 3, NULL);
-		Invalidate();
+		//Invalidate();
 	}
-}
-
-void CCELineEdit::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
-{
-	CEdit::OnKeyDown(nChar,nRepCnt,nFlags);
-	Invalidate();
 }
 
 void CCELineEdit::OnLButtonDown(UINT nFlags, CPoint point) 
@@ -168,9 +152,6 @@ void CCELineEdit::OnLButtonDown(UINT nFlags, CPoint point)
 		SIPINFO si; 
 		memset (&si, 0, sizeof (SIPINFO)); 
 		si.cbSize = sizeof(SIPINFO);  //  sizeof (si)= 48 
-		HWND hwnd = ::FindWindow(NULL, L"输入面板");
-		if(hwnd && ::IsWindowVisible(hwnd))
-			return;
 		if (SipGetInfo(&si)) 
 		{ 
 			//si.fdwFlags &= ~SIPF_ON; 
@@ -325,11 +306,6 @@ void CCERectEdit::OnLButtonDown(UINT nFlags, CPoint point)
 		SIPINFO si; 
 		memset (&si, 0, sizeof (SIPINFO)); 
 		si.cbSize = sizeof(SIPINFO);  //  sizeof (si)= 48 
-
-		HWND hwnd = ::FindWindow(NULL, L"输入面板");
-		if(hwnd && ::IsWindowVisible(hwnd))
-			return;
-
 		if (SipGetInfo(&si)) 
 		{ 
 			//si.fdwFlags &= ~SIPF_ON; 
@@ -372,7 +348,6 @@ void CCERectEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	else
 	{
-		Invalidate();
 		CEdit::OnChar(nChar, nRepCnt, nFlags);
 	}
 }

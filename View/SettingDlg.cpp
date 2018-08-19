@@ -23,11 +23,10 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg dialog
-//CString s_VerSionTitle = "DT_HM56.1.00.20100501";
-CString s_VerSionTitle = L"DT_HM56.1.00.20100902";   //DT_HM56.1.00.20100628
+CString s_VerSionTitle = "20100107";
 CString s_VerSion = "\
-					   6.03090325\
-					   1.修改了录音密码.\
+6.03090325\
+1.修改了录音密码.\
 6.00090319\
 1.改为录音程序\
 2.50090302\
@@ -101,18 +100,12 @@ CSettingDlg::CSettingDlg(CWnd* pParent /*=NULL*/)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	m_bLogin = FALSE;
-	m_bPasswordModify = false;
 	m_clickType = 0;
 	m_iDeleteType = 0;
+	m_systemVolume = 0;
 	m_editFocusIndex = -1;
 	memset(m_ringDir, 0, 2*128);
 	memcpy(m_ringDir, _T("/flashdrv/my_ring/"), wcslen(_T("/flashdrv/my_ring/"))*2);
-	
-	if ( 1 == VERSION_TYPE)
-	{
-		s_VerSionTitle = L"DT_HM56.1.00.20100902_Usb";
-	}
-
 }
 
 
@@ -136,8 +129,6 @@ void CSettingDlg::DoDataExchange(CDataExchange* pDX)
 #define IDC_SETTING_LSTLOCAL			9018
 #define IDC_SETTING_LSTUSB				9019
 
-CTestATDlg *m_pTestATDlg0;
-
 BEGIN_MESSAGE_MAP(CSettingDlg, CDialog)
 	//{{AFX_MSG_MAP(CSettingDlg)
 	ON_WM_TIMER()
@@ -159,13 +150,9 @@ BEGIN_MESSAGE_MAP(CSettingDlg, CDialog)
 	ON_MESSAGE(WM_MJPGTOGGLE, OnClickMJPG)
 	ON_MESSAGE(WM_STOPTRYRING, OnStopTryRing)
 	ON_MESSAGE(WM_BTNST_CLICK, OnBtnSTClick)
-//	ON_MESSAGE(WM_COMMBOX_CLICKED, OnSelectApn)
 
-	
 	ON_BN_CLICKED(IDC_BUTTON_FASTDIALS_OK, OnButtonFastDialsOk)
 	ON_MESSAGE(WM_COMMBOX_CLICKED, OnComboSelect)
-	ON_BN_CLICKED(0x106, OnBtnSetDDTM)
-
 
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
@@ -210,10 +197,6 @@ void CSettingDlg::SetShowTimer()
 	m_edtADSLPassword.ShowWindow(FALSE);
 	m_cmbSMSRing.ShowWindow(FALSE);
 	m_cmbTime.ShowWindow(FALSE);
-	m_cmbCallTransfer.ShowWindow(FALSE);
-	
-	//add by qi 20100622
-	m_cmbPhoneDialTimes.ShowWindow(FALSE);
 
 	for(int i = 0; i < 4; i++)
 	{
@@ -233,25 +216,11 @@ void CSettingDlg::SetShowTimer()
 	m_cmbWaitTime.ShowWindow(FALSE);
 	m_dtTime.ShowWindow(FALSE);
 	m_dtDate.ShowWindow(FALSE);
-
 	//blacklight
 	m_cmbBlackLightWaitTime.ShowWindow(FALSE);
 	m_cmbNightBlackLightStartTime.ShowWindow(FALSE);
 	m_cmbNightBlackLightEndTime.ShowWindow(FALSE);
 
-	//mms 设置
-	m_mmsC.ShowWindow(FALSE);
-	m_apnType.ShowWindow(FALSE);
-	m_mmsType.ShowWindow(FALSE);
-	m_apnGW[0].ShowWindow(FALSE);
-	m_apnGW[1].ShowWindow(FALSE);
-	m_apnGW[2].ShowWindow(FALSE);
-	m_apnGW[3].ShowWindow(FALSE);
-	m_apnPort.ShowWindow(FALSE);
-	m_apnDot.ShowWindow(FALSE);
-	m_apnUser.ShowWindow(FALSE);
-	m_apnPwd.ShowWindow(FALSE);
-			
 	SetTimer(0x11, 200, NULL);
 }
 
@@ -281,7 +250,7 @@ void CSettingDlg::OnBtnSTClick(WPARAM w, LPARAM l)
 			std::string strTemp = m_pTempSetting->playRecordPassword();
 			if(strTemp != "")
 			{
-				m_passwordDlg->SettingType(CHECK_PLAYPASSWORD, w);
+				m_passwordDlg->SetType(CHECK_PLAYPASSWORD, w);
 				m_passwordDlg->SetOldPassWord((char *)strTemp.c_str());
 				m_passwordDlg->SetHWnd(this->m_hWnd);
 				m_passwordDlg->ShowWindow_(SW_SHOW);	
@@ -308,6 +277,10 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	std::string soundPath;
 	BOOL sd = DetectDIR(_T("\\StorageCard"));
 	int i;
+//	if(m_uiType == 1 && w != 100)
+//	{
+//		StopTryRing();
+//	}
 	switch (w)
 	{
 	case 1:
@@ -319,25 +292,19 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		m_MJPGList.Invalidate();
 		SetShowTimer();
 		break;
-
-	case 2://网络通讯
-	case 212://在彩信设置里进去
-
-		main->m_pATCommandWarp1->DSACT(2);//查询固话的状态
-		Sleep(20);
-
+	case 2:
 		m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\网络通讯.xml");
 		
-// 		if (m_pTempSetting->linkMode() == Data::lmDirect)
-// 		{
-// 			m_MJPGList.SetUnitIsDownStatus(200, TRUE);
-// 			m_MJPGList.SetUnitIsDownStatus(201, FALSE);
-// 		}
-// 		else
-// 		{
-// 			m_MJPGList.SetUnitIsDownStatus(200, FALSE);
-// 			m_MJPGList.SetUnitIsDownStatus(201, TRUE);
-// 		}
+		if (m_pTempSetting->linkMode() == Data::lmDirect)
+		{
+			m_MJPGList.SetUnitIsDownStatus(200, TRUE);
+			m_MJPGList.SetUnitIsDownStatus(201, FALSE);
+		}
+		else
+		{
+			m_MJPGList.SetUnitIsDownStatus(200, FALSE);
+			m_MJPGList.SetUnitIsDownStatus(201, TRUE);
+		}
 		
 		if (m_ip.isDHCP)
 		{
@@ -391,19 +358,13 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 6:
 		{
-			BOOL flag1 = m_pTempSetting->isAdmin();
-			if(flag1 && !m_bLogin)
-			{
-				main->m_pPasswordDlg->SettingType(CHECK_SUPPERPASSWORD);
-				std::string strTemp = m_pTempSetting->adminPassword();
-				main->m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
-				main->m_pPasswordDlg->SetHWnd(this->m_hWnd);
-				main->m_pPasswordDlg->ShowWindow_(SW_SHOW);
-			}
-			else
-			{
-				WindowProc(CHECK_SUPPERPASSWORD, 1, 0);
-			}
+			m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\系统信息.xml");
+			m_MJPGList.Invalidate();
+			m_uiType = 6;
+			m_clickType = 6;
+			SetPageTab(m_uiType);
+			SetShowTimer();
+			m_MJPGList.Invalidate();
 			break;
 		}
 	case 100:	//	设置铃声
@@ -424,18 +385,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			m_MJPGList.SetUnitIsDownStatus(122, FALSE);
 		}
-
-		if(1 == m_pTempSetting->isAutoReply_)
-		{
-			m_MJPGList.SetUnitIsDownStatus(123, TRUE);
-			m_MJPGList.SetUnitIsShow(123,FALSE,TRUE);
-		}
-		else
-		{
-			m_MJPGList.SetUnitIsDownStatus(123, FALSE);
-			m_MJPGList.SetUnitIsShow(123,FALSE,TRUE);
-		}
-
 		SetPageTab(1);
 		m_MJPGList.Invalidate();
 		m_clickType = 101;
@@ -459,65 +408,33 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 117:
 	case 118:
 		{
-			UINT16 volume[] = {0xFF00, 0xdd00, 0xbb00, 0xaa00, 0x8800, 0x6600, 0x4400,
-					0x2200, 0x1600, 0x1000};
+			UINT16 volume[] = {0xFF00, 0xdd00, 0xbb00, 0xaa00, 0x8800, 0x6600, 0x4400, 0x2200, 0x1600, 0x1000};
 			int nVolume;
 			UINT32 v;
-			CString str = L"";
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+			CString str = L"";;
 			if(117 == w)
 			{
-				if (m_MJPGList.GetUnitIsDownStatus(117))
-				{
-					m_MJPGList.SetUnitIsDownStatus(117,false);
-					m_MJPGList.SetUnitIsShow(117,true,true);
-					main->phone_->StartRing(L"");
-					break;
-				}
-				else
-				m_MJPGList.SetUnitIsDownStatus(117,true);
-
-				m_MJPGList.SetUnitIsDownStatus(118,false);
-				m_MJPGList.SetUnitIsShow(117,true,true);
-				m_MJPGList.SetUnitIsShow(118,true,true);
-
 				m_cmbRing.GetWindowText(str);
-				nVolume = m_nphoneVolume;//add by qi 20100617
 			}
 			else if(118 == w)
-			{	
-				if (m_MJPGList.GetUnitIsDownStatus(118))
-				{
-					m_MJPGList.SetUnitIsDownStatus(118,false);
-					m_MJPGList.SetUnitIsShow(118,true,true);
-					main->phone_->StartRing(L"");
-					break;
-				}
-				else
-					m_MJPGList.SetUnitIsDownStatus(118,true);
-
-				m_MJPGList.SetUnitIsShow(118,true,true);
-				m_MJPGList.SetUnitIsDownStatus(117,false);
-				m_MJPGList.SetUnitIsShow(117,true,true);
-
+			{
 				m_cmbSMSRing.GetWindowText(str);
-				nVolume = m_nsmsVolume;//add by qi 20100617
 			}
 			
-			if(str == L"")
+			if(str == "")
 				break;
 			else
 			{
+				nVolume = m_systemVolume;
 				CString s = m_ringDir;
 				s += str;
 				v = volume[nVolume]|(volume[nVolume]<<16);
-				main->phone_->g_RingSound = v;
+				((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->g_RingSound = v;
 				
-				main->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002);
-				main->phone_->SetMsgWnd(this);
-				main->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
+				((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002);
+				((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SetMsgWnd(this);
+				((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
 			}
-
 		}
 		break;
 	case 126:		//设置速拨
@@ -537,39 +454,17 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 1261:		//新建速拨号
 	case 1262:		//添加
-		if(m_edtShowNumber < SPEED_DIAL_NUM)
+		if(m_edtShowNumber < 12)
 		{
 			m_edtFastDialNumber[m_edtShowNumber].ShowWindow(TRUE);
 			m_edtFastDialName[m_edtShowNumber].ShowWindow(TRUE);
-			
-			//add by qi 20100525
-			CString name ;
-			switch (m_edtShowNumber)
-			{	
-			case 0:
-				name = "F1";
-				break;
-			case 1:
-				name = "F2";
-				break;
-			case 2:
-				name = "F3";
-				break;
-			case 3:
-				name = "F4";
-				break;
-			}
-			m_edtFastDialName[m_edtShowNumber].SetWindowText(name);
-			m_edtFastDialName[m_edtShowNumber].SetReadOnly(true);
-			// add over
-
 			m_edtShowNumber++;
 		}
 		else
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"速拨号已达到最大限制！");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetTitle(L"速拨号已达到最大限制！");
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
 		}
 		break;
 	case 1263:		//删除
@@ -633,25 +528,25 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			m_MJPGList.SetUnitIsDownStatus(w, TRUE);
 			m_pTempSetting->isAppendIpPrefix_ = 1;
 		}
-		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
 	case 123:
 		if(m_MJPGList.GetUnitIsDownStatus(w))
 		{
 			m_MJPGList.SetUnitIsDownStatus(w, FALSE);
+			m_pTempSetting->isAutoReply_ = 0;
 		}
 		else
 		{
 			m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+			m_pTempSetting->isAutoReply_ = 1;
 		}
-		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
-	case 131://呼叫转接
+	case 131:
 		m_pCallSetDlg->m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\呼叫转接.xml");
 		m_pCallSetDlg->m_MJPGList.Invalidate();
 		m_pCallSetDlg->m_uiType = 1;
 		m_pCallSetDlg->SetCallSetParam();
-	//	m_pCallSetDlg->ShowItemsControl();
+		m_pCallSetDlg->ShowItemsControl();
 		m_pCallSetDlg->ShowWindow(SW_SHOW);
 		break;
 	case 132:
@@ -659,30 +554,22 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		m_pCallSetDlg->m_MJPGList.Invalidate();
 		m_pCallSetDlg->m_uiType = 2;
 		m_pCallSetDlg->SetCallSetParam();
-	//	m_pCallSetDlg->ShowItemsControl();
+		m_pCallSetDlg->ShowItemsControl();
 		m_pCallSetDlg->ShowWindow(SW_SHOW);
 		break;
-	case 133://呼叫等待
+	case 133:
 		m_pCallSetDlg->m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\呼叫等待.xml");
 		m_pCallSetDlg->m_MJPGList.Invalidate();
 		m_pCallSetDlg->m_uiType = 3;
 		m_pCallSetDlg->SetCallSetParam();
+		m_pCallSetDlg->ShowItemsControl();
 		m_pCallSetDlg->ShowWindow(SW_SHOW);
 		break;
-	case 134://pin码设置
-		if (main->m_bSearchNetOver)
-		{
-			m_pPinSetDlg->SetCallSetParam();
-			Sleep(500);
-			m_pPinSetDlg->ShowWindow(SW_SHOW);	
-		}
-		else
-		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"正在初始化...");
-			main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		}
+	case 134:
+		m_pPinSetDlg->SetCallSetParam();
+		m_pPinSetDlg->ShowWindow(SW_SHOW);
 		break;
-	case 140://是否开启防火墙
+	case 140:		//是否开启防火墙
 		if(m_MJPGList.GetUnitIsDownStatus(w))
 		{
 			m_MJPGList.SetUnitIsDownStatus(w, FALSE);
@@ -725,8 +612,8 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 1117:
 	case 1118:
 	case 1119:
-		m_pTempSetting->phoneCallRingVolume_ = 1119 - w + 1 ;
-		m_nphoneVolume = (1119 - w);
+		m_pTempSetting->phoneCallRingVolume_ = w + 1 - 1110;
+		m_systemVolume = w - 1110;
 		ChangeVolume(w, 0);
 		break;
 	case 1120:
@@ -739,8 +626,8 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 1127:
 	case 1128:
 	case 1129:
-		m_pTempSetting->smsRingVolume_ = 1129 - w + 1 ;
-		m_nsmsVolume = 1129 - w;
+		m_pTempSetting->smsRingVolume_ = w + 1 - 1120;
+		m_systemVolume = w - 1120;
 		ChangeVolume(w, 1);
 		break;
 	case 1130:
@@ -754,98 +641,25 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 1138:
 	case 1139:
 		m_pTempSetting->specodeRingVolume_ = w + 1 - 1130;
-		m_nspecialVolume = w - 1130;
+		m_systemVolume = w - 1130;
 		ChangeVolume(w, 2);
 		break;
-// 	case 200:
-// 	case 201:
-// 		if(200 == w)
-// 		{
-// 			m_MJPGList.SetUnitIsDownStatus(w+1, FALSE);
-// 			m_MJPGList.SetUnitIsShow(w+1, TRUE);
-// 			m_pTempSetting->linkMode(Data::lmDirect);
-// 		}
-// 		else if(201 == w)
-// 		{
-// 			m_MJPGList.SetUnitIsDownStatus(w-1, FALSE);
-// 			m_MJPGList.SetUnitIsShow(w-1, TRUE);
-// 			m_pTempSetting->linkMode(Data::lmDial);
-// 		}
-// 		m_MJPGList.SetUnitIsDownStatus(w, TRUE);
-// 		m_MJPGList.SetUnitIsShow(w, TRUE);
-// 		break;
-	case 200: //网络选择 add by qi 20100424
-		{			
-			#if(CTA_ONLY == 1)
-			{
-				if (m_MJPGList.GetUnitIsDownStatus(200))
-				{
-					m_MJPGList.SetUnitIsDownStatus(200,false);
-
-				}
-				else
-				{
-					m_MJPGList.SetUnitIsDownStatus(200,true);
-				}
-				m_MJPGList.SetUnitIsShow(200,true,true);
-			}
-			#else
-			{
-				m_MJPGList.SetUnitIsDownStatus(200,true);
-				m_MJPGList.SetUnitIsDownStatus(201,false);
-				m_MJPGList.SetUnitIsDownStatus(204,false);
-				m_MJPGList.SetUnitIsDownStatus(205,false);
-				
-				m_MJPGList.SetUnitIsShow(200,true,true);
-				m_MJPGList.SetUnitIsShow(201,true,true);
-				m_MJPGList.SetUnitIsShow(204,true,true);
-				m_MJPGList.SetUnitIsShow(205,true,true);
-			}
-			#endif
-
-		}
-		break;
+	case 200:
 	case 201:
+		if(200 == w)
 		{
-			m_MJPGList.SetUnitIsDownStatus(200,false);
-			m_MJPGList.SetUnitIsDownStatus(201,true);
-			m_MJPGList.SetUnitIsDownStatus(204,false);
-			m_MJPGList.SetUnitIsDownStatus(205,false);
-
-			m_MJPGList.SetUnitIsShow(200,true,true);
-			m_MJPGList.SetUnitIsShow(201,true,true);
-			m_MJPGList.SetUnitIsShow(204,true,true);
-			m_MJPGList.SetUnitIsShow(205,true,true);
+			m_MJPGList.SetUnitIsDownStatus(w+1, FALSE);
+			m_MJPGList.SetUnitIsShow(w+1, TRUE);
+			m_pTempSetting->linkMode(Data::lmDirect);
 		}
-		break;
-	case 204:
+		else if(201 == w)
 		{
-			m_MJPGList.SetUnitIsDownStatus(200,false);
-			m_MJPGList.SetUnitIsDownStatus(201,false);
-			m_MJPGList.SetUnitIsDownStatus(204,true);
-			m_MJPGList.SetUnitIsDownStatus(205,false);
-
-			m_MJPGList.SetUnitIsShow(200,true,true);
-			m_MJPGList.SetUnitIsShow(201,true,true);
-			m_MJPGList.SetUnitIsShow(204,true,true);
-			m_MJPGList.SetUnitIsShow(205,true,true);
+			m_MJPGList.SetUnitIsDownStatus(w-1, FALSE);
+			m_MJPGList.SetUnitIsShow(w-1, TRUE);
+			m_pTempSetting->linkMode(Data::lmDial);
 		}
-		break;
-	case 205:
-		{
-			m_MJPGList.SetUnitIsDownStatus(200,false);
-			m_MJPGList.SetUnitIsDownStatus(201,false);
-			m_MJPGList.SetUnitIsDownStatus(204,false);
-			m_MJPGList.SetUnitIsDownStatus(205,true);
-
-			m_MJPGList.SetUnitIsShow(200,true,true);
-			m_MJPGList.SetUnitIsShow(201,true,true);
-			m_MJPGList.SetUnitIsShow(204,true,true);
-			m_MJPGList.SetUnitIsShow(205,true,true);
-		}
-		break;
-	case 206://网络设置
-		OnBtnSetDDTM(0,0);
+		m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
 	case 202:
 	case 203:
@@ -866,183 +680,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		m_MJPGList.SetUnitIsDownStatus(w, TRUE);
 		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
-
-	case 207://手动收网
-		{
-			if (!m_MJPGList.GetUnitIsDownStatus(207))
-			{
-				m_MJPGList.SetUnitIsDownStatus(207,true);
-				m_MJPGList.SetUnitIsDownStatus(208,false);
-				m_MJPGList.SetUnitIsShow(207,true,true);
-				m_MJPGList.SetUnitIsShow(208,true,true);
-			}
-
-		}
-		break;
-	case 208://自动收网
-		{	
-			if (!m_MJPGList.GetUnitIsDownStatus(208))
-			{
-				m_MJPGList.SetUnitIsDownStatus(207,false);
-				m_MJPGList.SetUnitIsDownStatus(208,true);
-				m_MJPGList.SetUnitIsShow(207,true,true);
-				m_MJPGList.SetUnitIsShow(208,true,true);
-			}
-
-		}
-		break;
-	case 209://重新收网
-		{
-			if (m_MJPGList.GetUnitIsDownStatus(207))//手动
-			{	
-// 				if (m_bManualSearchNet)
-// 				{
-// 					main->m_pWarningNoFlashDlg->SetTitle(L"已经是手动模式");
-// 					main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-// 					return;
-// 				}
-// 				else
-				{	
-					main->m_pWarningNoFlashDlg->SetTitle(L"正在搜索网络运营商...",120000);
-					main->m_pWarningNoFlashDlg->SetNoClick(TRUE);
-					main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-					extern BOOL g_bAutoSearchNet ;
-					if (g_bAutoSearchNet)
-					{
-						g_bAutoSearchNet = false;	
-					}
-			
-					main->m_pATCommandWarp1->FindPLMN();
-					
-				}	
-
-			}
-			else if (m_MJPGList.GetUnitIsDownStatus(208))//自动
-			{
-// 				if (!m_bManualSearchNet)
-// 				{
-// 					main->m_pWarningNoFlashDlg->SetTitle(L"已经是自动模式");
-// 					main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-// 					return;
-// 				}
-// 				else
-				{	
-					main->m_pDeleteTipDlg->SetTitle(L"正在搜网...",120000);
-					main->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
-					main->m_pATCommandWarp1->ClosePLMN();
-					main->m_pATCommandWarp1->SearchPLMN();
-				}
-			}
-		}
-		break;
-
-	case 211://彩信设置
-		{
-			m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\彩信设置网关.xml");
-			m_uiType = 2;
-			m_clickType = 7;
-			SetPageTab(2);
-			SetShowTimer();
-			m_MJPGList.Invalidate();
-		}
-		break;
-
-	case 214://修改连接方式
-		{
-			CString filename = L"";
-			m_apnType.GetWindowText(filename);
-			m_pNewApnTypeDlg->SetWndParam(this, m_apnType.GetCurSel(), filename);
-			m_pNewApnTypeDlg->ShowWindow_(SW_SHOW);
-		}
-		break;
-		
-	case 215://固定拨号开启
-		{
-			if (!m_MJPGList.GetUnitIsDownStatus(215))
-			{
-				m_MJPGList.SetUnitIsDownStatus(215,true);	
-				m_MJPGList.SetUnitIsDownStatus(216,false);
-				m_MJPGList.Invalidate();
-			}
-		}
-		break;
-
-	case 216://固定拨号关闭
-		{
-			if (!m_MJPGList.GetUnitIsDownStatus(216))
-			{
-				m_MJPGList.SetUnitIsDownStatus(215,false);	
-				m_MJPGList.SetUnitIsDownStatus(216,true);
-				m_MJPGList.Invalidate();
-			}	
-		}
-		break;
-
-	case 217://设置
-		{	
-			if (!main->GetSimStatus())
-			{
-				main->m_pWarningNoFlashDlg->SetTitle("没插入SIM卡!");
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				return ;
-			}
-			bool b1 = m_MJPGList.GetUnitIsDownStatus(215);
-			bool b2 = m_MJPGList.GetUnitIsDownStatus(216);
-			if (b1)
-			{
-				if (m_nFDstatus == 1)
-				{
-					main->m_pWarningNoFlashDlg->SetTitle(L"固话已经是开启状态");
-					main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				}
-				else
-				{	
-					extern BOOL g_IsFDNFindDrap;
-					g_IsFDNFindDrap = TRUE;
-					main->m_pATCommandWarp1->Drap();
-				}
-			}
-			else if (b2)
-			{
-				if (m_nFDstatus == 0)
-				{
-					main->m_pWarningNoFlashDlg->SetTitle(L"固话已经是关闭状态");
-					main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				}
-				else
-				{	
-					extern BOOL g_IsFDNFindDrap;
-					g_IsFDNFindDrap = TRUE;
-					main->m_pATCommandWarp1->Drap();
-				}
-			}
-		}
-		break;
-
-	case 218://固定电话列表
-		{
-			if (!main->GetSimStatus())
-			{
-				main->m_pWarningNoFlashDlg->SetTitle("没插入SIM卡!");
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				return ;
-			}
-			m_pPstnNumberDlg->ShowPSTNList();
-		}
-		break;
-
-	case 219://UPLMN
-		{	
-			if (!main->GetSimStatus())
-			{
-				main->m_pWarningNoFlashDlg->SetTitle("没插入SIM卡!");
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				return ;
-			}
-			m_pUPLNDlg->ShowUplmn();
-		}
-		break;
-
 	case 301:		//是否启用管理员用户
 		if(m_MJPGList.GetUnitIsDownStatus(w))
 		{
@@ -1057,15 +694,18 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
 	case 302:		//是否设置屏幕保护密码
-		if(m_MJPGList.GetUnitIsDownStatus(w))
+		if(!m_MJPGList.GetUnitIsDisable(w))
 		{
-			m_pTempSetting->isUseScreenSaverPassword(false);
-			m_MJPGList.SetUnitIsDownStatus(w, FALSE);
-		}
-		else
-		{
-			m_pTempSetting->isUseScreenSaverPassword(true);
-			m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+			if(m_MJPGList.GetUnitIsDownStatus(w))
+			{
+				m_pTempSetting->isUseScreenSaverPassword(false);
+				m_MJPGList.SetUnitIsDownStatus(w, FALSE);
+			}
+			else
+			{
+				m_pTempSetting->isUseScreenSaverPassword(true);
+				m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+			}
 		}
 		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
@@ -1074,11 +714,13 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			m_pTempSetting->isUseScreenSaver(false);
 			m_MJPGList.SetUnitIsDownStatus(w, FALSE);
+			m_MJPGList.SetUnitIsDisable(302, TRUE);
 		}
 		else
 		{
 			m_pTempSetting->isUseScreenSaver(true);
 			m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+			m_MJPGList.SetUnitIsDisable(302, FALSE);
 		}
 		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
@@ -1088,20 +730,36 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 305:
 		OnSettingSaveScreenPassword();
 		break;
-	case 306://设置深度睡眠
+	case 307:
+		if(sd)
 		{
-			if(m_MJPGList.GetUnitIsDownStatus(w))
-			{
-				m_pTempSetting->isDeepSleep = false;
-				m_MJPGList.SetUnitIsDownStatus(w, FALSE);
-			}
-			else
-			{
-				m_pTempSetting->isDeepSleep = true;
-				m_MJPGList.SetUnitIsDownStatus(w, TRUE);
-			}
-			m_MJPGList.SetUnitIsShow(w, TRUE);
+			m_MJPGList.SetUnitIsDownStatus(308, FALSE);
+			m_MJPGList.SetUnitIsShow(308, TRUE);
 		}
+		
+		m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+		m_MJPGList.SetUnitIsShow(w, TRUE);
+		soundPath = "\\FlashDrv\\MY_RECORD\\";
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->OnTimer(2);
+		if (!DetectDIR((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(soundPath)))
+		{
+			CreateDirectory(Util::StringOp::ToCString(soundPath), NULL);
+		}
+		m_pTempSetting->soundPath(soundPath);
+		
+		break;
+	case 308:
+		m_MJPGList.SetUnitIsDownStatus(307, FALSE);
+		m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+		m_MJPGList.SetUnitIsShow(308, TRUE);
+		m_MJPGList.SetUnitIsShow(w, TRUE);
+		soundPath = "\\StorageCard\\MY_RECORD\\";
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->OnTimer(2);
+		if (!DetectDIR((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(soundPath)))
+		{
+			CreateDirectory(Util::StringOp::ToCString(soundPath), NULL);
+		}
+		m_pTempSetting->soundPath(soundPath);
 		break;
 	case 310:		//触屏校正
  		OnAdjustTouchPanel();
@@ -1123,6 +781,9 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 502:
 		OnRestore();
+		break;
+	case 503:
+		OnFileOut();
 		break;
 	case 504:	//MP3导入
 		{
@@ -1158,24 +819,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			m_copyfileDlg->SetType(bell_out);
 			m_copyfileDlg->ShowWindow_(SW_SHOW);
-		}
-		break;
-
-	case 609://测试CTA
-		{
-//			#if(CTA_ONLY == 1)
-			{
-				extern CTestATDlg *m_pTestATDlg0;
-				
-				if(m_pTestATDlg0 == NULL)
-				{	
-				//	m_pTestATDlg0 = new CTestATDlg(this);
-				//	m_pTestATDlg0->Create(CTestATDlg::IDD);
-				}
-				//m_pTestATDlg0->OnReadATFile();
-				//m_pTestATDlg0->ShowWindow(SW_SHOW);
-			}
-//			#endif
 		}
 		break;
 	case 401:
@@ -1224,7 +867,7 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				int v = 6-(w-410);
 				if(v == 0)
 					v = 1;
-				main->SetBackLight_(v);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(v);
 			}
 			break;
 		}
@@ -1233,7 +876,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 1002:		//保存默认设置
 		if(1000 == w)
 		{
-			main->PopbackIcon();
 			OnButtonSettingCancel();
 		}
 		else if(1001 == w)
@@ -1246,6 +888,7 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			m_iDeleteType = 2;
 			OnButtonSetting();
 		}
+		main->PopbackIcon();
 
 		break;
 	}
@@ -1278,92 +921,22 @@ BOOL CSettingDlg::OnInitDialog()
 		
 	for(int i = 0; i < 4; i++)
 	{
-		int xbegin = 362 ;
-		int vl = 60;
-		int ybegin = 283 ;
-		int yh = 30;
-		int yheight = 27;
-		m_edtIP[i].Create(WS_CHILD|WS_VISIBLE, CRect(xbegin+i*(60+5), ybegin, xbegin+vl+i*(60+5), ybegin+yheight), this, IDC_EDIT_SETTING_IP, 26);
+		m_edtIP[i].Create(WS_CHILD|WS_VISIBLE, CRect(225+i*(60+5), 258, 285+i*(60+5), 285), this, IDC_EDIT_SETTING_IP, 26);
 		m_edtIP[i].SetLimitText(3);
 		m_edtIP[i].SetLimitDiagital();
 
-		m_edtMask[i].Create(WS_CHILD|WS_VISIBLE, CRect(xbegin+i*(60+5), ybegin+yh, xbegin+vl+i*(60+5), ybegin+yh+yheight), this, IDC_EDIT_SETTING_MASK, 26);
+		m_edtMask[i].Create(WS_CHILD|WS_VISIBLE, CRect(225+i*(60+5), 291, 285+i*(60+5), 318), this, IDC_EDIT_SETTING_MASK, 26);
 		m_edtMask[i].SetLimitText(3);
 		m_edtMask[i].SetLimitDiagital();
 
-		m_edtGateway[i].Create(WS_CHILD|WS_VISIBLE, CRect(xbegin+i*(60+5), ybegin+yh*2, xbegin+vl+i*(60+5), ybegin+yh*2+yheight), this, IDC_EDIT_SETTING_GATEWAY, 26);
+		m_edtGateway[i].Create(WS_CHILD|WS_VISIBLE, CRect(225+i*(60+5), 324, 285+i*(60+5), 351), this, IDC_EDIT_SETTING_GATEWAY, 26);
 		m_edtGateway[i].SetLimitText(3);
 		m_edtGateway[i].SetLimitDiagital();
 
-		m_edtDNS[i].Create(WS_CHILD|WS_VISIBLE, CRect(xbegin+i*(60+5), ybegin+yh*3, xbegin+vl+i*(60+5),  ybegin+yh*3+yheight), this, IDC_EDIT_SETTING_DNS, 26);
+		m_edtDNS[i].Create(WS_CHILD|WS_VISIBLE, CRect(225+i*(60+5), 357, 285+i*(60+5), 384), this, IDC_EDIT_SETTING_DNS, 26);
 		m_edtDNS[i].SetLimitText(3);
 		m_edtDNS[i].SetLimitDiagital();
 	}
-	
-	//呼叫转移
-	m_cmbCallTransfer.CreateEx(WS_CHILD|WS_VISIBLE, CRect(346, 153, 346+160, 153+200), this, 0xFFFF, 22, 55, 26);
-	m_cmbCallTransfer.AddString(L"所有来电");
-	m_cmbCallTransfer.AddString(L"正在通话中");
-	m_cmbCallTransfer.AddString(L"无人接听时");
-	m_cmbCallTransfer.AddString(L"无法接通时");
-	m_cmbCallTransfer.SetCurSel(0);
-
-	//延时拨号
-	m_cmbPhoneDialTimes.CreateEx(WS_CHILD|WS_VISIBLE, CRect(220, 239, 220+219, 239+400), this, 0xFFFF, 22, 55, 26);
-	m_cmbPhoneDialTimes.AddString(L"4s");
-	m_cmbPhoneDialTimes.AddString(L"6s");
-	m_cmbPhoneDialTimes.AddString(L"8s");
-	m_cmbPhoneDialTimes.AddString(L"10s");
-	
-	//强制收网
-// 	int inter = 12;
-// 	int height = 35;
-// 	int ybegin = 220;
-// 	int xwidth = 130;
-// 	m_Radio1.Create(L"TD Only", WS_CHILD, CRect(503, ybegin, 503+xwidth, ybegin+height), this);
-// 	m_Radio2.Create(L"TD 优先", WS_CHILD, CRect(503, ybegin+height+inter, 503+xwidth,ybegin+height*2+inter), this);
-// 	m_Radio4.Create(L"G网 Only", WS_CHILD, CRect(503, ybegin+height*2+inter*2, 503+xwidth, ybegin+height*3+inter*2), this);
-// 	m_Radio3.Create(L"G网 优先", WS_CHILD, CRect(503, ybegin+height*3+inter*3, 503+xwidth, ybegin+height*4+inter*3), this);
-// 	m_Radio1.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-// 	m_Radio2.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-// 	m_Radio3.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-// 	m_Radio4.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-	
-//	m_SetDDMT.Create(L"设置", WS_VISIBLE, CRect(503, 180, 503+xwidth, 180+height), this, 0x106);
-	
-	extern int  gIsTDStatus;
-	if(gIsTDStatus == 1)
-	{
-		m_MJPGList.SetUnitIsDownStatus(200,true);
-		m_MJPGList.SetUnitIsDownStatus(201,false);
-		m_MJPGList.SetUnitIsDownStatus(204,false);
-		m_MJPGList.SetUnitIsDownStatus(205,false);
-	}
-	else if(gIsTDStatus == 2)
-	{
-
-		m_MJPGList.SetUnitIsDownStatus(200,false);
-		m_MJPGList.SetUnitIsDownStatus(201,true);
-		m_MJPGList.SetUnitIsDownStatus(204,false);
-		m_MJPGList.SetUnitIsDownStatus(205,false);
-	}
-	else if(gIsTDStatus == 0)
-	{
-
-		m_MJPGList.SetUnitIsDownStatus(200,false);
-		m_MJPGList.SetUnitIsDownStatus(201,false);
-		m_MJPGList.SetUnitIsDownStatus(204,true);
-		m_MJPGList.SetUnitIsDownStatus(205,false);
-	}
-	else
-	{
-
-		m_MJPGList.SetUnitIsDownStatus(200,false);
-		m_MJPGList.SetUnitIsDownStatus(201,false);
-		m_MJPGList.SetUnitIsDownStatus(204,false);
-		m_MJPGList.SetUnitIsDownStatus(205,true);
-	}
-	
 	//速拨
 	for (i = 0; i < 12; ++i)
 	{
@@ -1387,87 +960,21 @@ BOOL CSettingDlg::OnInitDialog()
 		}
 	}
 	//铃声
-	m_cmbRing.CreateEx(WS_CHILD|WS_VISIBLE, CRect(167, 175, 374, 400), this, IDC_COMBOBOX_SETTING_RING, 22, 55, 26);
+	m_cmbRing.CreateEx(WS_CHILD|WS_VISIBLE, CRect(167, 174, 374, 400), this, IDC_COMBOBOX_SETTING_RING, 22, 55, 26);
 	m_cmbSMSRing.CreateEx(WS_CHILD|WS_VISIBLE, CRect(167, 260, 374, 450), this, IDC_COMBOBOX_SETTING_SMSRING, 22, 55, 26);
-
 	//防火墙
 	m_cmbTime.CreateEx(WS_CHILD|WS_VISIBLE, CRect(374, 295, 500, 470), this, IDC_COMBO_FIREWALL_TIME, 22, 55, 26);
-	m_cmbTime.AddString(_T("30分钟"));	
+	m_cmbTime.AddString(_T("30分钟"));
 	m_cmbTime.AddString(_T("1小时"));
 	m_cmbTime.AddString(_T("2小时"));
 	m_cmbTime.AddString(_T("3小时"));
 	m_cmbTime.SelectString(0, _T("1小时"));
-    
-	//mms 设置 add by qi 20100515
-	
-	int xbegin = 148;
-	int ybegin = 263;
-	int xwidth = 56;
-	int ywidth = 30;
-	int xv;
-	m_mmsC.Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE, CRect(xbegin, 133, xbegin+477, 133+34), this, IDC_EDIT_MMS_CENTER);
-	
-	m_apnGW[0].Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_MMS_IP1);
-	xv = xwidth+6;
-	xbegin += xv;
-	m_apnGW[1].Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_MMS_IP2);
-	
-	xbegin += xv;
-	m_apnGW[2].Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_MMS_IP3);
 
-	xbegin += xv;
-	m_apnGW[3].Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_MMS_IP4);
-	
-	xbegin = 148;
-	xwidth = 237;
-	ybegin = 177;
-	ywidth = 300;
-	m_mmsType.CreateEx(WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_MMS_LINK, 22, 55, 26);
-	
-	ybegin = 345;
-	ywidth = 300;
-	xwidth = 180;
-	m_apnType.CreateEx(WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_SELECT_CMDAPN, 22, 55, 26);
-
-	ybegin = 304;
-	ywidth = 30;
-	xwidth = 177;
-	m_apnPort.Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_MMS_PORT);
-    
-//  	ybegin = 223;
-//  	xwidth = 236;
-//  	ywidth = 30;
-//  	m_apnDot.Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE, 
-//  		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_MMS_GETWAY);
-	
-	//tel
-	xbegin = 484;
-	xwidth = 145;
-	ybegin = 262 ;
-	ywidth = 30;
-	m_apnDot.Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_DIAL_TEL);
-	
-	ybegin = 303;
-	m_apnUser.Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE,
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_DIAL_USER);
-	
-	ybegin = 343;
-	m_apnPwd.Create(ES_AUTOHSCROLL|WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin, ybegin, xbegin+xwidth, ybegin+ywidth), this, IDC_EDIT_DIAL_PASSWORD);
-	
 	//system======================================================================================================	
 	m_cmbWaitTime.CreateEx(WS_CHILD|WS_VISIBLE, CRect(216, 219, 423, 400), this, IDC_COMBOBOX_SETTING_WAITTIME, 22, 55, 26);
 
-	m_dtDate.Create(WS_VISIBLE|WS_CHILD|DTS_SHORTDATEFORMAT, CRect(213, 262, 365, 289), this, IDC_SETTING_DATE, 22, CDateCtrl::em_mode::modeDate);
-	m_dtTime.Create(WS_VISIBLE|WS_CHILD|DTS_TIMEFORMAT, CRect(429, 262, 580, 289), this, IDC_SETTING_TIME, 22,  CDateCtrl::em_mode::modeTime);
+	m_dtDate.Create(WS_VISIBLE|WS_CHILD|DTS_SHORTDATEFORMAT, CRect(215, 303, 367, 329), this, IDC_SETTING_DATE, 22, CDateCtrl::em_mode::modeDate);
+	m_dtTime.Create(WS_VISIBLE|WS_CHILD|DTS_TIMEFORMAT, CRect(430, 303, 582, 329), this, IDC_SETTING_TIME, 22,  CDateCtrl::em_mode::modeTime);
 
 	m_Font.CreateFont(
 		28,                        // nHeight
@@ -1488,23 +995,16 @@ BOOL CSettingDlg::OnInitDialog()
 	m_dtTime.SetFont(&m_Font);
 	
 	//blacklight
-	m_cmbBlackLightWaitTime.CreateEx(WS_CHILD|WS_VISIBLE, CRect(236,241,393,410), this, IDC_BLACKLIGHTWAIT_TIME, 22, 55, 26);
+	m_cmbBlackLightWaitTime.CreateEx(WS_CHILD|WS_VISIBLE, CRect(236,242,393,410), this, IDC_BLACKLIGHTWAIT_TIME, 22, 55, 26);
 	m_cmbNightBlackLightStartTime.CreateEx(WS_VISIBLE|WS_CHILD, CRect(237, 339, 395, 470), this, IDC_NIGHTLIGHTSTART_TIME, 22, 55, 26);
 	m_cmbNightBlackLightEndTime.CreateEx(WS_VISIBLE|WS_CHILD, CRect(422, 339, 580, 470), this, IDC_NIGHTLIGHTEND_TIME, 22, 55, 26);
    
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 	
 	MoveWindow(0,57,800,423);
-	m_bManualSearchNet = false;
 
 	m_uiType = 1;
-	
-	if(m_pTestATDlg0 == NULL)
-	{
-		m_pTestATDlg0 = new CTestATDlg(this);
-		m_pTestATDlg0->Create(CTestATDlg::IDD);
-	}
 
 	m_passwordDlg = new CPasswordDlg(this);
 	m_passwordDlg->Create(CPasswordDlg::IDD);
@@ -1522,40 +1022,20 @@ BOOL CSettingDlg::OnInitDialog()
 	m_pPinSetDlg->Create(CPinSetDlg::IDD);
 
 	m_pSetting = Data::Setting::GetCurrentConfig();
-	m_pTempSetting = boost::shared_ptr<Data::Setting>(new Data::Setting);
-	if(m_pTempSetting)
+	m_pTempSetting = m_pSetting;
+	IniCtrlData();
+	OnClickMJPG(1, 0);	
+
+	if(!(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetNightControlBackLightTimer()))
 	{
-		*m_pTempSetting = *m_pSetting;
+		int v = m_pTempSetting->blackLightValue();
+		v = 6-v;
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(v);
 	}
 	else
 	{
-		m_pTempSetting = m_pSetting;
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(0);    //关闭背光
 	}
-	
-	m_pUPLNDlg = new CUPLMNDlg(this);
-	m_pUPLNDlg->Create(CUPLMNDlg::IDD);
-
-	m_pPstnNumberDlg =new CPSTNNumberDlg(this);
-	m_pPstnNumberDlg->Create(CPSTNNumberDlg::IDD);
-
-	m_pNewApnTypeDlg = new CNewApnTypeDlg(this);
-	m_pNewApnTypeDlg->Create(CNewApnTypeDlg::IDD);
-	
-
-	IniCtrlData();
-	OnClickMJPG(1, 0);	
-	
-	//检查是否打开背光
- 	if(!(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetNightControlBackLightTimer()))
- 	{
- 		int v = m_pTempSetting->blackLightValue();
- 		v = 6-v;
- 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(v);
- 	}
- 	else
- 	{
- 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(0);    //关闭背光
- 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -1639,9 +1119,6 @@ void CSettingDlg::IniCtrlData()
 
 	m_edtADSLName.SetWindowText(Util::StringOp::ToCString(m_pTempSetting->dialUsername()));
 	m_edtADSLPassword.SetWindowText(Util::StringOp::ToCString(m_pTempSetting->dialPassword()));
-	
-	//呼叫转移
-	m_cmbCallTransfer.SetCurSel(0);
 
 	//网络 从注册表中获取IP信息显示
 	GetIPInfo();
@@ -1685,7 +1162,7 @@ void CSettingDlg::IniCtrlData()
 	index1 = 0;
 	for(i = 0; i < 4; i++)
 	{
-	/*	int index = ip.Find('.', index1);
+		int index = ip.Find('.', index1);
 		CString ss;
 		if(index>0)
 		{
@@ -1695,9 +1172,8 @@ void CSettingDlg::IniCtrlData()
 		{
 			ss = ip.Mid(index1);
 		}
-		index1 = index+1;  */
-		m_edtGateway[i].SetWindowText(L"");
-		m_edtGateway[i].EnableWindow(FALSE);
+		index1 = index+1;
+		m_edtGateway[i].SetWindowText(ss);
 	}
 
 	ip = m_ip.dns;
@@ -1717,20 +1193,15 @@ void CSettingDlg::IniCtrlData()
 		index1 = index+1;
 		m_edtDNS[i].SetWindowText(ss);
 	}
-
-	//铃声	
-	UINT16 volume[] = {0xFF00, 0xdd00, 0xbb00, 0xaa00, 0x8800, 0x6600, 0x4400,
-		0x2200, 0x1600, 0x1000};
+	//铃声
+	UINT16 volume[] = {0xFF00, 0xdd00, 0xbb00, 0xaa00, 0x8800, 0x6600, 0x4400, 0x2200, 0x1600, 0x1000};
 	int nVolume;
-	nVolume = 10 - m_pTempSetting->phoneCallRingVolume_;
-	m_nphoneVolume = m_pTempSetting->phoneCallRingVolume_ - 1;//add by qi 20100617
+	nVolume = m_pTempSetting->phoneCallRingVolume_;
 	ChangeVolume(nVolume+1110, 0);
-	nVolume = 10 - m_pTempSetting->smsRingVolume_;
-	m_nsmsVolume = m_pTempSetting->smsRingVolume_ -1 ;//add by qi 20100617
+	nVolume = m_pTempSetting->smsRingVolume_;
 	ChangeVolume(nVolume+1120, 1);
 	nVolume = m_pTempSetting->specodeRingVolume_;
 	ChangeVolume(nVolume+1130, 2);
-
 	//系统参数
 	CString sSecond[5] = {"15秒", "30秒", "1分钟", "5分钟", "15分钟"};
 	m_cmbWaitTime.ResetContent();
@@ -1767,8 +1238,7 @@ void CSettingDlg::IniCtrlData()
 	m_cmbWaitTime.SetCurSel(nSel);
 	
 	//blacklight
-//	CString sWait[4] = {"1分钟", "5分钟", "10分钟", "30分钟"};
-	CString sWait[4] = {"10秒", "20秒", "30秒", "40秒"};
+	CString sWait[4] = {"1分钟", "5分钟", "10分钟", "30分钟"};
 	m_cmbBlackLightWaitTime.ResetContent();
 	m_cmbBlackLightWaitTime.AddString(sWait[0]);
 	m_cmbBlackLightWaitTime.AddString(sWait[1]);
@@ -1793,103 +1263,13 @@ void CSettingDlg::IniCtrlData()
 	m_cmbNightBlackLightEndTime.AddString(sEndTime[3]);
 	m_cmbNightBlackLightEndTime.AddString(sEndTime[4]);
 	m_cmbNightBlackLightEndTime.SetCurSel(m_pTempSetting->nightControlBlackLightEndTime());	
-	
-
-	CString s__;
-// 	extern char gCSMSC[32];
-// 	s__ = gCSMSC;
-	//if()
-	//	s__= m_pSetting->speCode12_.c_str();
-	//else
-	
-	
-	m_apnType.ResetContent();
-//	m_netType.ResetContent();
-	m_mmsType.ResetContent();
-	m_apnType.AddString(L"CMWAP");
-	m_apnType.AddString(L"CMNET");
-//	m_netType.AddString(L"CMWAP");
-//	m_netType.AddString(L"CMNET");
-	m_mmsType.AddString(L"CMWAP");
-	m_mmsType.AddString(L"CMNET");
-	//wangzhenxing20100506
-	if(m_pTempSetting->gprsType3_ != "" && m_pTempSetting->gprsType4_ != "")
-	{
-		m_apnType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType3_));
-		m_apnType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType4_));
-		
-	//	m_netType.AddString(Util::StringOp::ToCString(m_pSetting->gprsType3_));
-	//	m_netType.AddString(Util::StringOp::ToCString(m_pSetting->gprsType4_));
-		
-		m_mmsType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType3_));
-		m_mmsType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType4_));
-	}
-	else if(m_pTempSetting->gprsType3_ != "")
-	{
-		m_apnType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType3_));
-		m_apnType.AddString(L"自定义...");
-		
-	//	m_netType.AddString(Util::StringOp::ToCString(m_pSetting->gprsType3_));
-	//	m_netType.AddString(L"自定义...");
-		
-		m_mmsType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType3_));
-		m_mmsType.AddString(L"自定义...");
-	}
-	else if(m_pTempSetting->gprsType4_ != "")
-	{
-		m_apnType.AddString(L"自定义...");
-		m_apnType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType4_));
-		
-	//	m_netType.AddString(L"自定义...");
-	//	m_netType.AddString(Util::StringOp::ToCString(m_pSetting->gprsType4_));
-		
-		m_mmsType.AddString(L"自定义...");
-		m_mmsType.AddString(Util::StringOp::ToCString(m_pTempSetting->gprsType4_));
-	}
-	else
-	{
-		m_apnType.AddString(L"自定义...");
-		m_apnType.AddString(L"自定义...");
-		
-	//	m_netType.AddString(L"自定义...");
-	//	m_netType.AddString(L"自定义...");
-		
-		m_mmsType.AddString(L"自定义...");
-		m_mmsType.AddString(L"自定义...");
-	}
-	
-//	m_apnType.SetCurSel(0);
-	m_apnType.SetCurSel(m_pTempSetting->MmsReciveType());
-	m_mmsType.SetCurSel(m_pTempSetting->MmsReciveType());
-	
-	//add by qi 0518
-	switch (m_pTempSetting->MmsReciveType())
-	{
-	case 1:
-		s__ = m_pTempSetting->gprsHttp1_.c_str();
-		break;
-	case 2:
-		s__ = m_pTempSetting->gprsHttp2_.c_str();
-		break;
-	case 3:
-		s__ = m_pTempSetting->gprsHttp3_.c_str();
-		break;
-	case 4:
-		s__ = m_pTempSetting->gprsHttp4_.c_str();
-		break;
-	}
-	m_mmsC.SetWindowText(s__);	
-	SetApn(m_pTempSetting->MmsReciveType());
-
-
-//	s__ = m_pTempSetting->gprsHttp1_.c_str();
-//	m_mmsC.SetWindowText(s__);		
-//	SetApn(0);
-
 }
 
 void CSettingDlg::SetSettingOK()
 {
+	CString oldLinkFile = L"";
+	m_MJPGList.GetCurrentLinkFile(oldLinkFile);
+
 	if (m_uiType == 3)
 	{
 		SYSTEMTIME curtime, curtime1, curtime2;
@@ -1903,8 +1283,7 @@ void CSettingDlg::SetSettingOK()
 			curtime.wHour = curtime2.wHour;
 			curtime.wMinute = curtime2.wMinute;
 			curtime.wSecond = curtime2.wSecond;
-			SetLocalTime(&curtime);
-			int err = GetLastError();
+			SetLocalTime(&curtime);	
 			memcpy(&m_curtime, &curtime, sizeof(SYSTEMTIME));
 			
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetAlarmList();    //重新计算闹铃
@@ -1936,8 +1315,7 @@ void CSettingDlg::SetSettingOK()
 
 	NETWORK_ADPT_INFO ipConfig;
 	memset(&ipConfig, 0, sizeof(NETWORK_ADPT_INFO ));
-	ipConfig.fUseDHCP = m_ip.isDHCP;
-
+	
 	char txt[4][32];
 	memset(txt, 0, 4*32);
 	Data::IPAddr  nIP[4] = {0, 0, 0, 0};
@@ -1955,16 +1333,10 @@ void CSettingDlg::SetSettingOK()
 
 	sprintf(txt[0], "%d.%d.%d.%d", (nIP[0]&0xFF), ((nIP[0] >> 8)&0xFF), ((nIP[0] >> 16)&0xFF), ((nIP[0] >> 24)&0xFF));
 	sprintf(txt[1], "%d.%d.%d.%d", (nIP[1]&0xFF), ((nIP[1] >> 8)&0xFF), ((nIP[1] >> 16)&0xFF), ((nIP[1] >> 24)&0xFF));
-	
-	if(m_MJPGList.GetUnitIsDownStatus(202))
-	{
+ 	if(!m_MJPGList.GetUnitIsDownStatus(200) && !m_MJPGList.GetUnitIsDownStatus(202))
  		sprintf(txt[2], "");
-	}
- 	else if (m_MJPGList.GetUnitIsDownStatus(203))
- 	{
-		sprintf(txt[2], "%d.%d.%d.%d", (nIP[2]&0xFF), ((nIP[2] >> 8)&0xFF), ((nIP[2] >> 16)&0xFF), ((nIP[2] >> 24)&0xFF));
- 	}
- 		
+ 	else
+ 		sprintf(txt[2], "%d.%d.%d.%d", (nIP[2]&0xFF), ((nIP[2] >> 8)&0xFF), ((nIP[2] >> 16)&0xFF), ((nIP[2] >> 24)&0xFF));
 	sprintf(txt[3], "%d.%d.%d.%d", (nIP[3]&0xFF), ((nIP[3] >> 8)&0xFF), ((nIP[3] >> 16)&0xFF), ((nIP[3] >> 24)&0xFF));
 	
 	CString sIP = txt[0];
@@ -1996,40 +1368,28 @@ void CSettingDlg::SetSettingOK()
 	index = m_cmbNightBlackLightEndTime.GetCurSel();
 	m_pTempSetting->nightControlBlackLightEndTime(index);
 
-	//延时拨号
-	PhoneDialTimes();
-
-	GetApn();
-	m_pTempSetting->MmsReciveType(m_mmsType.GetCurSel());
-
 	m_pTempSetting->Update();
-	*m_pSetting = *m_pTempSetting;
 
 	if(m_bLogin)
 	{
-		if(m_pTempSetting->isAdmin() && m_bPasswordModify)
+		if(!m_pTempSetting->isAdmin())
 		{
+			m_MJPGList.SetUnitIsDownStatus(301, FALSE);
 			m_bLogin = FALSE;
-			m_bPasswordModify = false;
 		}
 	}
 
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetScreenSaveTimer();
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
+	
+	m_MJPGList.SetCurrentLinkFile(oldLinkFile);
 }
 
-void CSettingDlg::OnButtonSettingCancel()
+void CSettingDlg::OnButtonSettingCancel() 
 {
 	// TODO: Add your control notification handler code here
-	ShowWindow(SW_HIDE);
-	if(m_pTempSetting->blackLightValue() != m_pSetting->blackLightValue())
-	{
-		int v = 6 - m_pSetting->blackLightValue();
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight_(v);
-	}
-	*m_pTempSetting = *m_pSetting;
-	m_bPasswordModify = false;
 	IniCtrlData();
+	ShowWindow(SW_HIDE);
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
 }
 
@@ -2140,32 +1500,28 @@ void CSettingDlg::SetSyetemParam(boost::shared_ptr<Data::Setting> data)
 	if (data->isUseScreenSaver())
 	{
 		m_MJPGList.SetUnitIsDownStatus(303, TRUE);
+//		m_MJPGList.SetUnitIsShow(303, TRUE, FALSE);
+		m_MJPGList.SetUnitIsDisable(302, FALSE);
 	}
 	else
 	{
 		m_MJPGList.SetUnitIsDownStatus(303, FALSE);
+		m_MJPGList.SetUnitIsDisable(302, TRUE);
 	}
 	
-	if (data->isUseScreenSaverPassword())
+	if(!m_MJPGList.GetUnitIsDisable(302))
 	{
-		m_MJPGList.SetUnitIsDownStatus(302, TRUE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsDownStatus(302, FALSE);
-	}
-
-	//是否设置了深度睡眠
-	if (data->isDeepSleep)
-	{
-		m_MJPGList.SetUnitIsDownStatus(306, TRUE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsDownStatus(306, FALSE);
+		if (data->isUseScreenSaverPassword())
+		{
+			m_MJPGList.SetUnitIsDownStatus(302, TRUE);
+//			m_MJPGList.SetUnitIsShow(302, TRUE);
+		}
+		else
+		{
+			m_MJPGList.SetUnitIsDownStatus(302, FALSE);
+		}
 	}
 }
-
 
 void CSettingDlg::ShowConfigItems(void)
 {
@@ -2178,10 +1534,6 @@ void CSettingDlg::ShowConfigItems(void)
 	m_edtADSLPassword.ShowWindow(FALSE);
 	m_cmbSMSRing.ShowWindow(FALSE);
 	m_cmbTime.ShowWindow(FALSE);
-	m_cmbCallTransfer.ShowWindow(FALSE);
-
-	//add by qi 20100621
-	m_cmbPhoneDialTimes.ShowWindow(false);
 
 	for(int i = 0; i < 4; i++)
 	{
@@ -2213,8 +1565,8 @@ void CSettingDlg::ShowConfigItems(void)
 		m_cmbSMSRing.ShowWindow(TRUE);
 		break;
 	case 2:
-	//	m_edtADSLName.ShowWindow(TRUE);
-	//	m_edtADSLPassword.ShowWindow(TRUE);	
+		m_edtADSLName.ShowWindow(TRUE);
+		m_edtADSLPassword.ShowWindow(TRUE);	
 		for(i = 0; i < 4; i++)
 		{
 			m_edtIP[i].ShowWindow(TRUE);
@@ -2222,78 +1574,38 @@ void CSettingDlg::ShowConfigItems(void)
 			m_edtGateway[i].ShowWindow(TRUE);
 			m_edtDNS[i].ShowWindow(TRUE);
 		}
-
-		if (!m_bManualSearchNet)
-		{	
-			m_MJPGList.SetUnitIsDownStatus(207,false);
-			m_MJPGList.SetUnitIsDownStatus(208,true);
-			m_MJPGList.SetUnitIsShow(207,true);
-			m_MJPGList.SetUnitIsShow(208,true);
-
-		}
-		else
-		{	
-			m_MJPGList.SetUnitIsDownStatus(207,true);
-			m_MJPGList.SetUnitIsDownStatus(208,false);
-			m_MJPGList.SetUnitIsShow(207,true);
-			m_MJPGList.SetUnitIsShow(208,true);
-
-		}
-
-		//强制收网
-		extern int  gIsTDStatus;
-		if(gIsTDStatus == 1)
-		{
-			m_MJPGList.SetUnitIsDownStatus(200,true);
-			m_MJPGList.SetUnitIsDownStatus(201,false);
-			m_MJPGList.SetUnitIsDownStatus(204,false);
-			m_MJPGList.SetUnitIsDownStatus(205,false);
-		}
-		else if(gIsTDStatus == 2)
-		{
-			m_MJPGList.SetUnitIsDownStatus(200,false);
-			m_MJPGList.SetUnitIsDownStatus(201,true);
-			m_MJPGList.SetUnitIsDownStatus(204,false);
-			m_MJPGList.SetUnitIsDownStatus(205,false);
-		}
-		else if(gIsTDStatus == 0)
-		{
-			m_MJPGList.SetUnitIsDownStatus(200,false);
-			m_MJPGList.SetUnitIsDownStatus(201,false);
-			m_MJPGList.SetUnitIsDownStatus(204,true);
-			m_MJPGList.SetUnitIsDownStatus(205,false);
-		}
-		else
-		{
-			m_MJPGList.SetUnitIsDownStatus(200,false);
-			m_MJPGList.SetUnitIsDownStatus(201,false);
-			m_MJPGList.SetUnitIsDownStatus(204,false);
-			m_MJPGList.SetUnitIsDownStatus(205,true);
-		}
-		m_MJPGList.SetUnitIsShow(200,true,true);
-// 		m_MJPGList.SetUnitIsShow(201,true,true);
-// 		m_MJPGList.SetUnitIsShow(204,true,true);
-// 		m_MJPGList.SetUnitIsShow(205,true,true);
-
-		#if(CTA_ONLY == 1)
-		{
-			m_MJPGList.SetUnitIsShow(201,false,true);
-			m_MJPGList.SetUnitIsShow(204,false,true);
-			m_MJPGList.SetUnitIsShow(205,false,true);
-			
-		}
-		#else
-		{
-			m_MJPGList.SetUnitIsShow(201,true,true);
-			m_MJPGList.SetUnitIsShow(204,true,true);
-			m_MJPGList.SetUnitIsShow(205,true,true);
-		}
-		#endif
-		m_MJPGList.Invalidate();
-		
 		break;
-
 	case 3:
+		{
+			BOOL sd = DetectDIR(_T("\\StorageCard"));
+			if (sd)
+			{
+				m_MJPGList.SetUnitIsShow(308, TRUE, FALSE);
+				m_MJPGList.SetUnitFont(309, font_20);
+				m_MJPGList.SetUnitText(309, L"SD卡", FALSE);
+			}
+			else
+			{
+				m_MJPGList.SetUnitIsShow(308, FALSE, FALSE);
+				m_MJPGList.SetUnitText(309, L"", FALSE);
+			}
+			std::string soundPath = m_pTempSetting->soundPath();
+			if (soundPath.substr(0, 12) == "\\StorageCard" && sd)
+			{
+				m_MJPGList.SetUnitIsDownStatus(308, TRUE);
+				m_MJPGList.SetUnitIsDownStatus(307, FALSE);
+				m_pTempSetting->soundPath("\\StorageCard\\MY_RECORD\\");
+			}
+			else
+			{
+				m_MJPGList.SetUnitIsDownStatus(307, TRUE);
+				m_MJPGList.SetUnitIsShow(307, TRUE, FALSE);
+				m_MJPGList.SetUnitIsDownStatus(308, FALSE);
+				m_pTempSetting->soundPath("\\FlashDrv\\MY_RECORD\\");
+			}
+			
+			m_MJPGList.Invalidate();
+		}
 		GetLocalTime(&m_curtime);
 		m_dtDate.SetTime(m_curtime);
 		m_dtTime.SetTime(m_curtime);
@@ -2310,57 +1622,16 @@ void CSettingDlg::ShowConfigItems(void)
 	case 6:		//系统信息
  		SetDiskInFo();
 		break;
-	case 7: //mms 设置
-		{	
-			m_mmsC.ShowWindow(TRUE);
-			m_apnType.ShowWindow(TRUE);
-			m_mmsType.ShowWindow(TRUE);
-			m_apnGW[0].ShowWindow(TRUE);
-			m_apnGW[1].ShowWindow(TRUE);
-			m_apnGW[2].ShowWindow(TRUE);
-			m_apnGW[3].ShowWindow(TRUE);
-			m_apnPort.ShowWindow(TRUE);
-			m_apnDot.ShowWindow(TRUE);
-			m_apnUser.ShowWindow(TRUE);
-			m_apnPwd.ShowWindow(TRUE);
-
-		}
-		break;
 	case 100:		//铃声设置
 		m_cmbRing.ShowWindow(TRUE);
 		m_cmbSMSRing.ShowWindow(TRUE);
 		break;
-	case 101://号码设置
-		{
-			m_edtLocalAreaNumber.ShowWindow(TRUE);
-			m_edtOutLineDial1.ShowWindow(TRUE);
-			
-			m_cmbPhoneDialTimes.ShowWindow(true);
-			if (m_pTempSetting->isPhoneDialTimes_)
-			{
-				m_MJPGList.SetUnitIsDownStatus(123,true);
-				m_MJPGList.SetUnitIsShow(123,true,true);
-
-				int index = m_pTempSetting->PhoneDialTimes_/2 -1;
-				m_cmbPhoneDialTimes.SetCurSel(index-1);
-			}
-			else
-			{
-				m_MJPGList.SetUnitIsDownStatus(123,false);
-				m_MJPGList.SetUnitIsShow(123,true,true);
-				
-				m_cmbPhoneDialTimes.SetCurSel(-1);
-			}
-
-		}
-
-		//m_cmbRingTimes.ShowWindow(TRUE);
-		//m_cmbAutoRecoedeTimes.ShowWindow(TRUE);
+	case 101:		//号码设置
+		m_edtLocalAreaNumber.ShowWindow(TRUE);
+		m_edtOutLineDial1.ShowWindow(TRUE);
+		m_cmbRingTimes.ShowWindow(TRUE);
+		m_cmbAutoRecoedeTimes.ShowWindow(TRUE);
 		break;
-	case 102:
-		m_cmbCallTransfer.ShowWindow(TRUE);	
-		break;
-
 	case 103:		//防火墙设置
 		m_cmbTime.ShowWindow(TRUE);
 		break;
@@ -2376,9 +1647,7 @@ void CSettingDlg::ShowConfigItems(void)
 
 void CSettingDlg::ShowWindow_(int nCmdShow)
 {
-	m_pSetting = Data::Setting::GetCurrentConfig();
-	*m_pTempSetting = *m_pSetting;
-	m_bPasswordModify = false;
+	m_pTempSetting = m_pSetting;
 	IniCtrlData();
 	OnClickMJPG(1, 0);
 	ShowWindow(nCmdShow);
@@ -2451,26 +1720,7 @@ void CSettingDlg::SetDiskInFo()
 	m_MJPGList.SetUnitText(605, cHardVer, FALSE);
 
 	m_MJPGList.SetUnitText(604, s_VerSionTitle, FALSE);
-//	m_MJPGList.SetUnitText(608, L"北京易度科技", FALSE);
-	m_MJPGList.SetUnitText(608, L"大唐移动设备有限公司", FALSE);
-
-	//add by qi 20100427
-	extern char gCGMR[1024] ;
-	std::string d = gCGMR;
-	size_t t = d.find("+CGMR:");
-	if (t  != std::string::npos)//软件版本
-	{
-		d = d.substr(t+8);
-		t = d.find("\r\n");
-		if (t != std::string::npos)
-		{
-			d = d.substr(0,t);
-			m_MJPGList.SetUnitFont(609, font_20);
-			m_MJPGList.SetUnitColor(609, font_red, FALSE);
-			m_MJPGList.SetUnitText(609,Util::StringOp::ToCString(d),false);
-		}
-		
-	}
+	m_MJPGList.SetUnitText(608, L"北京易度科技", FALSE);
 
 	m_MJPGList.Invalidate();
 }
@@ -2743,56 +1993,34 @@ void CSettingDlg::OnStaticClick(WPARAM w, LPARAM l)
 }
 //速拨
 void CSettingDlg::OnButtonFastDialsOk()
-{	
-	if ( 126 == m_clickType)
+{
+	std::vector<std::pair<std::string, std::string> > diallist;
+	for (int i=0; i<12; ++i)
 	{
-		std::vector<std::pair<std::string, std::string> > diallist;
-		for (int i=0; i<5; ++i)
-		{
-			CString number;
-			CString name;
-			m_edtFastDialName[i].GetWindowText(name);
-			m_edtFastDialNumber[i].GetWindowText(number);
-			std::pair<std::string, std::string> pair(Util::StringOp::FromCString(name), Util::StringOp::FromCString(number));
-			diallist.push_back(pair);
-		}
-		
-		if(m_pTempSetting)
-		{
-			m_pTempSetting->speedDials(diallist);
-		}
-		
-		ShowWindow(FALSE);
-		SipShowIM(SIPF_OFF);
+		CString number;
+		CString name;
+		m_edtFastDialName[i].GetWindowText(name);
+		m_edtFastDialNumber[i].GetWindowText(number);
+		std::pair<std::string, std::string> pair(Util::StringOp::FromCString(name), Util::StringOp::FromCString(number));
+		diallist.push_back(pair);
 	}
-
+	if(m_pTempSetting)
+	{
+		m_pTempSetting->speedDials(diallist);
+	}
+	
+	SipShowIM(SIPF_OFF);
+	
+	ShowWindow_(FALSE);
+	SipShowIM(SIPF_OFF);
 }
 
 void CSettingDlg::OnBtnDelFastDial()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+{
 	m_iDeleteType = 3;
-	if (m_editFocusIndex == -1)
-	{
-		main->m_pWarningNoFlashDlg->SetTitle(L"请选择要删除的快捷键");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-	}
-	else if (m_editFocusIndex >=0 )
-	{
-		std::vector<std::pair<std::string, std::string> > diallist = m_pTempSetting->speedDials();
-		if(diallist[m_editFocusIndex].second != "")
-		{
-			main->m_pDeleteTipDlg->SetTitle(L"确定要删除该速拨号码吗？", 0);
-			main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pDeleteTipDlg->ShowWindow_(TRUE);
-		}
-		else
-		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"号码为空,无法删除");
-			main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		}
-	}
-
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要删除该速拨号码吗？", 0);
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 }
 
 void CSettingDlg::DeleteFastDialNum(boost::shared_ptr<Data::Setting> data)
@@ -2801,7 +2029,7 @@ void CSettingDlg::DeleteFastDialNum(boost::shared_ptr<Data::Setting> data)
 	std::vector<std::pair<std::string, std::string> >::iterator index = diallist.begin();//const_iterator
 	if(m_editFocusIndex >= 0)
 	{
-		/*index += m_editFocusIndex;
+		index += m_editFocusIndex;
 		diallist.erase(index);
 		m_edtShowNumber--;
 		if(m_editFocusIndex < m_edtShowNumber)
@@ -2809,11 +2037,8 @@ void CSettingDlg::DeleteFastDialNum(boost::shared_ptr<Data::Setting> data)
 			for(int i=m_editFocusIndex; i<m_edtShowNumber; i++)
 			{
 				CString text;
-				
 				m_edtFastDialName[i+1].GetWindowText(text);
-	
 				m_edtFastDialName[i].SetWindowText(text);
-
 				text.Empty();
 				m_edtFastDialNumber[i+1].GetWindowText(text);
 				m_edtFastDialNumber[i].SetWindowText(text);
@@ -2822,11 +2047,8 @@ void CSettingDlg::DeleteFastDialNum(boost::shared_ptr<Data::Setting> data)
 		m_edtFastDialName[m_edtShowNumber].SetWindowText(L"");
 		m_edtFastDialNumber[m_edtShowNumber].SetWindowText(L"");
 		m_edtFastDialName[m_edtShowNumber].ShowWindow(FALSE);
-		m_edtFastDialNumber[m_edtShowNumber].ShowWindow(FALSE);*/
-
-		m_edtFastDialNumber[m_editFocusIndex].SetWindowText(L"");
+		m_edtFastDialNumber[m_edtShowNumber].ShowWindow(FALSE);
 		m_editFocusIndex = -1;
-
 	}
 }
 
@@ -2848,10 +2070,6 @@ void CSettingDlg::SetFastDialParam(boost::shared_ptr<Data::Setting> data)
 			m_edtShowNumber++;
 			m_edtFastDialName[idx].SetWindowText(Util::StringOp::ToCString(name));
 			m_edtFastDialNumber[idx].SetWindowText(Util::StringOp::ToCString(number));
-			
-			//add by qi 20100525
-			m_edtFastDialName[idx].SetReadOnly(true);
-
 			idx++;
 		}
 	}
@@ -2874,7 +2092,7 @@ void CSettingDlg::OnButtonFireWallOk()
 		m_pTempSetting->blockAllTimeDuration(nSecond);
 	}
 	
-	::PostMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
+	::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SetStatusAll(FALSE);
 }
 
@@ -2917,7 +2135,6 @@ int CSettingDlg::GetFirewallType()
 		return -1;
 	return m_pTempSetting->firewallType();
 }
-
 //铃声设置
 void CSettingDlg::OnComboSelect(WPARAM w, LPARAM l)
 {
@@ -2925,7 +2142,7 @@ void CSettingDlg::OnComboSelect(WPARAM w, LPARAM l)
 	CString sFile = "/flashdrv/my_ring/";
 	
 	if(w == IDC_COMBOBOX_SETTING_RING || w == IDC_COMBOBOX_SETTING_RINGV)
-	{	
+	{
 		m_cmbRing.GetWindowText(s);
 		m_pTempSetting->phoneCallRingFilename_ = Util::StringOp::FromCString(sFile + s);
 	}
@@ -2934,12 +2151,6 @@ void CSettingDlg::OnComboSelect(WPARAM w, LPARAM l)
 		m_cmbSMSRing.GetWindowText(s);
 		m_pTempSetting->smsRingFilename_ = Util::StringOp::FromCString(sFile + s);
 	}
-	else if(w == IDC_SELECT_CMDAPN)
-	{
-		int nSel = m_apnType.GetCurSel();
-		SetApn(nSel);
-	}
-
 }
 
 void CSettingDlg::SetRingLst(TCHAR *dir)
@@ -3024,13 +2235,12 @@ void CSettingDlg::SetRingSetParam(boost::shared_ptr<Data::Setting> data)
 	{
 		m_MJPGList.SetUnitIsDownStatus(111, FALSE);
 	}
-
 	s = Util::StringOp::ToCString(data->phoneCallRingFilename_);
 	filename = "";
 	FindFileEx(s, path, filename);
 	m_cmbRing.SetWindowText_(filename);
-	nVolume = 10 - data->phoneCallRingVolume_;
-	ChangeVolume(nVolume+1110, 0);
+	nVolume = data->phoneCallRingVolume_;
+	ChangeVolume(nVolume+1110-1, 0);
 
 	if (data->isSmsRing_)
 	{
@@ -3044,9 +2254,8 @@ void CSettingDlg::SetRingSetParam(boost::shared_ptr<Data::Setting> data)
 	filename = "";
 	FindFileEx(s, path, filename);
 	m_cmbSMSRing.SetWindowText_(filename);
-	nVolume =10 - data->smsRingVolume_;
-	ChangeVolume(nVolume+1120, 1);
-
+	nVolume = data->smsRingVolume_;
+	ChangeVolume(nVolume+1120-1, 1);
 }
 
 void CSettingDlg::ChangeVolume(int w, const int type)
@@ -3074,10 +2283,8 @@ void CSettingDlg::ChangeVolume(int w, const int type)
 		{
 			m_MJPGList.SetUnitIsDownStatus(index, FALSE);
 		}
-
 	}
 	m_MJPGList.Invalidate();
-
 }
 
 //特服号
@@ -3135,7 +2342,6 @@ void CSettingDlg::SetSpecCodeParam(boost::shared_ptr<Data::Setting> data)
 LRESULT CSettingDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	int count = 0;
 	CString text;
 	switch (message)
@@ -3143,12 +2349,10 @@ LRESULT CSettingDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DELETESELITEM:
 		if(1 == m_iDeleteType)
 		{
-			main->PopIcon(this);
 			SetSettingOK();
 		}
 		else if(2 == m_iDeleteType)		//恢复成默认设置
 		{
-			main->PopIcon(this);
 			SetSettingDefault();
 		}
 		else if(3 == m_iDeleteType)
@@ -3156,7 +2360,6 @@ LRESULT CSettingDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			DeleteFastDialNum(m_pTempSetting);
 		}
 		break;
-
 	case WM_SETTINGPASSWORD:
 		if(lParam == SETTINGPLAY_PASSWORD)
 		{
@@ -3170,142 +2373,28 @@ LRESULT CSettingDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			m_pTempSetting->screenSaverPassword(g_tempPassword);
 		}
-		m_bPasswordModify = TRUE;
+		m_pTempSetting->Update();
 		break;
-	case CHECK_SUPPERPASSWORD:
-		if(1 == wParam)
-		{
-			m_bLogin = TRUE;
-
-			m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\系统信息.xml");
-			m_MJPGList.Invalidate();
-			m_uiType = 6;
-			m_clickType = 6;
-			SetPageTab(m_uiType);
-			SetShowTimer();
-			m_MJPGList.Invalidate();
-		}
-		break;
-	case WM_NEW_APN:
-		{
-			CString filename = L"";
-			m_pNewApnTypeDlg->m_cApn.GetWindowText(filename);
-			m_apnType.DeleteString(wParam);
-			if(filename == L"")
-			{
-				filename = L"自定义...";
-			}
-			m_apnType.InsertString(wParam, filename);
-			m_apnType.SetWindowText_(filename);
-			m_apnType.SetCurSel(wParam);
-		}
-		break;
-		
-	case WM_DSACT_DEACTIVE:
-		{	
-			m_nFDstatus = 0;
-			m_MJPGList.SetUnitIsDownStatus(216,true);
-			m_MJPGList.SetUnitIsDownStatus(215,false);
-			m_MJPGList.Invalidate();
-		}
-		break;
-
-	case WM_DSACT_ACTIVE:
-		{
-			m_nFDstatus = 1;
-			m_MJPGList.SetUnitIsDownStatus(216,false);
-			m_MJPGList.SetUnitIsDownStatus(215,true);
-			m_MJPGList.Invalidate();	
-		}
-		break;
-	case WM_FD_STATATUS:
-		{
-			m_nFDstatus = wParam;
-			if ( 1== m_nFDstatus)
-			{
-				m_MJPGList.SetUnitIsDownStatus(215,true);//开启
-				m_MJPGList.SetUnitIsDownStatus(216,false);
-			}
-			else
-			{
-				m_MJPGList.SetUnitIsDownStatus(215,false);
-				m_MJPGList.SetUnitIsDownStatus(216,true);
-			}
-			m_MJPGList.Invalidate();
-		}
-		break;
-
-	case WM_DRAP_DATA:
-		{	
-			CString c ;
-			std::string *data = (std::string *)wParam;
-			std::string s = *data ;
-			uchar pin2 = 3;
-			uchar puk2 = 10;
-			if (s.find("^DRAP: ") != std::string::npos)
-			{
-				size_t t = s.find("^DRAP: ");
-				s = s.substr(t+7);
-				t = s.find(",");
-				if (t != std::string::npos)
-				{
-					s = s.substr(t+1);
-					t = s.find(",");
-					c = Util::StringOp::ToCString(s);
-					pin2 = atoi(c);
-					if (t != std::string::npos)
-					{
-						s = s.substr(t+1);
-						t = s.find(",");
-						
-						if (t != std::string::npos)
-						{
-							s = s.substr(t+1);
-							c = Util::StringOp::ToCString(s);
-							puk2 = atoi(c);
-						}
-					}
-				}
-				
-				if (pin2 > 0)//剩余数大于零次
-				{
-					m_pPinSetDlg->m_pPinInputDlg->m_nType = 7;
-					m_pPinSetDlg->m_pPinInputDlg->ShowPin2InputView();
-					m_pPinSetDlg->m_pPinInputDlg->SetErrorCount(pin2);
-					m_pPinSetDlg->m_pPinInputDlg->ShowWindow_(SW_SHOW);
-
-				}
-				else //请输入PUK2码
-				{
-					::PostMessage(theApp.m_pMainWnd->m_hWnd,WM_INPUT_PUK2,0,puk2);	
-				}
-			}
-		}
-		break;
-	}
+	}	
 	return CDialog::WindowProc(message, wParam, lParam);
 }
 
-bool CSettingDlg::DeleteStartFlag()
-{
-	bool result = false;
-	DeleteFile(L"/Hive/startflag.txt");
-	return result;
-}
-
 void CSettingDlg::SetSettingDefault()
-{	
-	DeleteStartFlag();
+{
 	int id = m_pTempSetting->id();
 	Data::SettingType type = m_pTempSetting->type();
 	m_pTempSetting = Data::Setting::GetDefaultConfig();
 	m_pTempSetting->id(id);
 	m_pTempSetting->type(type);
 	m_pTempSetting->Update();
-	*m_pSetting = *m_pTempSetting;
-	m_bPasswordModify = false;
 	IniCtrlData();
 	ShowConfigItems();
+
+	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+	{
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_MJPGList.SetUnitIsDownStatus(170, FALSE);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin = FALSE;
+	}
 }
 
 void CSettingDlg::UpdateTips(void)
@@ -3335,65 +2424,6 @@ void CSettingDlg::UpdateTips(void)
 */
 }
 
-void CSettingDlg::OnBtnSetDDTM(WPARAM w, LPARAM l)
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	char cmd[32];
-	if (m_MJPGList.GetUnitIsDownStatus(200))
-	{
-		strcpy(cmd, "AT^DDTM=1,2\r");
-	}
-	else if (m_MJPGList.GetUnitIsDownStatus(201))
-	{
-		strcpy(cmd, "AT^DDTM=0,2\r");
-	}
-	else if (m_MJPGList.GetUnitIsDownStatus(204))
-	{
-		strcpy(cmd, "AT^DDTM=0,0\r");
-	}
-	else if (m_MJPGList.GetUnitIsDownStatus(205))
-	{
-		strcpy(cmd, "AT^DDTM=1,0\r");
-	}
-
-// 	if(m_Radio1.GetCheck_())
-// 	{
-// 		strcpy(cmd, "AT^DDTM=1,2\r");
-// 	}
-// 	else if(m_Radio2.GetCheck_())
-// 	{
-// 		strcpy(cmd, "AT^DDTM=0,2\r");
-// 	}
-// 	else if(m_Radio3.GetCheck_())
-// 		strcpy(cmd, "AT^DDTM=0,0\r");
-// 	else
-// 		strcpy(cmd, "AT^DDTM=1,0\r");
-	
-	char ans[1024] = {0};
-	
-	extern Util::ATCommandWarp* GetATCommandWarp();
-	Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
-	if (!(main->m_bSearchNetOver))
-	{
-		pATCommanWarp->Command(cmd,strlen(cmd),ans);
-		if (strstr(ans,"OK") != NULL)
-		{
-			main->m_pDeleteTipDlg->SetTitle(L"网络设置成功,重启话机才生效!");
-			main->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
-		}
-		else
-		{
-			main->m_pDeleteTipDlg->SetTitle(L"网络设置失败");
-			main->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
-		}
-
-	}
-	else
-	{
-		pATCommanWarp->Transaction_(cmd, strlen(cmd),"",okDdtm);
-	}
-}
-
 void CSettingDlg::OnPaint()     
 {   
 	//   TODO:   Add   your   message   handler   code   here   
@@ -3416,392 +2446,4 @@ void CSettingDlg::OnTimer(UINT nIDEvent)
 		::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_FIRENOTIFY, 0, 0);
 	}
 	CDialog::OnTimer(nIDEvent);
-}
-
-
-void CSettingDlg::SetApn(int type)
-{
-	if(type == 0)
-	{
-		CString s__;
-		CString ip = m_pTempSetting->gprsProxyIp1_.c_str();
-		int index1 = 0;
-		for(int i = 0; i < 4; i++)
-		{
-			int index = ip.Find('.', index1);
-			CString ss;
-			if(index>0)
-			{
-				ss = ip.Mid(index1, index-index1);
-			}
-			else
-			{
-				ss = ip.Mid(index1);
-			}
-			index1 = index+1;
-			m_apnGW[i].SetWindowText(ss);
-		}
-		
-		s__ = Util::StringOp::ToCString(Util::StringOp::FromInt(m_pSetting->gprsProxyPort1_));
-		m_apnPort.SetWindowText(s__);
-		
-		s__ = m_pTempSetting->gprsDialnumber1_.c_str();
-		m_apnDot.SetWindowText(s__);
-		
-		m_apnUser.SetWindowText(L"");
-		m_apnPwd.SetWindowText(L"");
-
-		s__ = m_pTempSetting->gprsHttp1_.c_str();
-		m_mmsC.SetWindowText(s__);
-
-	}
-	else if(type == 1)
-	{
-		CString s__;
-		CString ip = m_pTempSetting->gprsProxyIp2_.c_str();
-		int index1 = 0;
-		for(int i = 0; i < 4; i++)
-		{
-			int index = ip.Find('.', index1);
-			CString ss;
-			if(index>0)
-			{
-				ss = ip.Mid(index1, index-index1);
-			}
-			else
-			{
-				ss = ip.Mid(index1);
-			}
-			index1 = index+1;
-			m_apnGW[i].SetWindowText(ss);
-		}
-		
-		s__ = Util::StringOp::ToCString(Util::StringOp::FromInt(m_pSetting->gprsProxyPort2_));
-		m_apnPort.SetWindowText(s__);
-		
-		s__ = m_pTempSetting->gprsDialnumber2_.c_str();
-		m_apnDot.SetWindowText(s__);
-		
-		m_apnUser.SetWindowText(L"");
-		m_apnPwd.SetWindowText(L"");
-
-		s__ = m_pTempSetting->gprsHttp2_.c_str();
-		m_mmsC.SetWindowText(s__);
-
-	}
-	else if(type == 2)
-	{
-		CString s__;
-		CString ip = m_pSetting->gprsProxyIp3_.c_str();
-		int index1 = 0;
-		for(int i = 0; i < 4; i++)
-		{
-			int index = ip.Find('.', index1);
-			CString ss;
-			if(index>0)
-			{
-				ss = ip.Mid(index1, index-index1);
-			}
-			else
-			{
-				ss = ip.Mid(index1);
-			}
-			index1 = index+1;
-			m_apnGW[i].SetWindowText(ss);
-		}
-		
-		s__ = Util::StringOp::ToCString(Util::StringOp::FromInt(m_pSetting->gprsProxyPort3_));
-		m_apnPort.SetWindowText(s__);
-		
-		s__ = m_pTempSetting->gprsDialnumber3_.c_str();
-		m_apnDot.SetWindowText(s__);
-		
-		m_apnUser.SetWindowText(L"");
-		m_apnPwd.SetWindowText(L"");
-
-		s__ = m_pTempSetting->gprsHttp3_.c_str();
-		m_mmsC.SetWindowText(s__);
-
-	}
-	else if(type == 3)
-	{
-		CString s__;
-		CString ip = m_pTempSetting->gprsProxyIp4_.c_str();
-		int index1 = 0;
-		for(int i = 0; i < 4; i++)
-		{
-			int index = ip.Find('.', index1);
-			CString ss;
-			if(index>0)
-			{
-				ss = ip.Mid(index1, index-index1);
-			}
-			else
-			{
-				ss = ip.Mid(index1);
-			}
-			index1 = index+1;
-			m_apnGW[i].SetWindowText(ss);
-		}
-		
-		s__ = Util::StringOp::ToCString(Util::StringOp::FromInt(m_pSetting->gprsProxyPort4_));
-		m_apnPort.SetWindowText(s__);
-		
-		s__ = m_pTempSetting->gprsDialnumber4_.c_str();
-		m_apnDot.SetWindowText(s__);
-		
-		m_apnUser.SetWindowText(L"");
-		m_apnPwd.SetWindowText(L"");
-
-		s__ = m_pTempSetting->gprsHttp4_.c_str();
-		m_mmsC.SetWindowText(s__);
-
-	}
-}
-
-void CSettingDlg::PhoneDialTimes()
-{
-	if ( 101 == m_clickType)
-	{
-		if (m_MJPGList.GetUnitIsDownStatus(123))
-		{
-			m_pTempSetting->isPhoneDialTimes_ = 1;
-			CString times;
-			m_cmbPhoneDialTimes.GetWindowText(times);
-			if (times.IsEmpty())
-			{
-				m_pTempSetting->PhoneDialTimes_ = 4;
-			}
-			else
-			{
-				m_pTempSetting->PhoneDialTimes_ = atoi(times);
-			}
-		}
-		else
-		{
-			m_pTempSetting->isPhoneDialTimes_ = 0;
-		}
-	}
-
-}
-
-void CSettingDlg::GetApn()
-{
-		BOOL isEmpty = TRUE;
-	if(m_apnType.GetCurSel() == 0)
-	{
-		CString s__;
-		char txt[32];
-		memset(txt, 0, 32);
-		int ip[4];
-		for(int i = 0; i < 4; i++)
-		{
-			CString str;
-			m_apnGW[i].GetWindowText(str);
-			if(str != L"")
-			{
-				isEmpty = FALSE;
-				break;
-			}
-		}
-		
-		if(!isEmpty)
-		{
-			for(int i = 0; i < 4; i++)
-			{
-				CString str;
-				m_apnGW[i].GetWindowText(str);
-				ip[i] = Util::StringOp::ToInt(Util::StringOp::FromCString(str));
-			}
-			sprintf(txt, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-		}
-		m_pTempSetting->gprsProxyIp1_ = txt;
-		
-		m_apnPort.GetWindowText(s__);
-		m_pTempSetting->gprsProxyPort1_ = Util::StringOp::ToInt(Util::StringOp::FromCString(s__));
-		
-		m_apnDot.GetWindowText(s__);
-		m_pTempSetting->gprsDialnumber1_ = Util::StringOp::FromCString(s__);
-
-		m_mmsC.GetWindowText(s__);
-		m_pTempSetting->gprsHttp1_ = Util::StringOp::FromCString(s__);
-	}
-	else if(m_apnType.GetCurSel() == 1)
-	{
-		CString s__;
-		char txt[32];
-		memset(txt, 0, 32);
-		int ip[4];
-		for(int i = 0; i < 4; i++)
-		{
-			CString str;
-			m_apnGW[i].GetWindowText(str);
-			if(str != L"")
-			{
-				isEmpty = FALSE;
-				break;
-			}
-		}
-		
-		if(!isEmpty)
-		{
-			for(int i = 0; i < 4; i++)
-			{
-				CString str;
-				m_apnGW[i].GetWindowText(str);
-				ip[i] = Util::StringOp::ToInt(Util::StringOp::FromCString(str));
-			}
-			sprintf(txt, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-		}
-		m_pTempSetting->gprsProxyIp2_ = txt;
-		
-		m_apnPort.GetWindowText(s__);
-		m_pTempSetting->gprsProxyPort2_ = Util::StringOp::ToInt(Util::StringOp::FromCString(s__));
-		
-		m_apnDot.GetWindowText(s__);
-		m_pTempSetting->gprsDialnumber2_ = Util::StringOp::FromCString(s__);
-
-		m_mmsC.GetWindowText(s__);
-		m_pTempSetting->gprsHttp2_ = Util::StringOp::FromCString(s__);
-	}
-	else if(m_apnType.GetCurSel() == 2)
-	{
-		CString s__;
-		char txt[32];
-		memset(txt, 0, 32);
-		int ip[4];
-		for(int i = 0; i < 4; i++)
-		{
-			CString str;
-			m_apnGW[i].GetWindowText(str);
-			if(str != L"")
-			{
-				isEmpty = FALSE;
-				break;
-			}
-		}
-		
-		if(!isEmpty)
-		{
-			for(int i=0; i<4; i++)
-			{
-				CString str;
-				m_apnGW[i].GetWindowText(str);
-				ip[i] = Util::StringOp::ToInt(Util::StringOp::FromCString(str));
-			}
-			sprintf(txt, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-		}
-		m_pTempSetting->gprsProxyIp3_ = txt;
-		
-		m_apnPort.GetWindowText(s__);
-		m_pTempSetting->gprsProxyPort3_ = Util::StringOp::ToInt(Util::StringOp::FromCString(s__));
-		
-		m_apnDot.GetWindowText(s__);
-		m_pTempSetting->gprsDialnumber3_ = Util::StringOp::FromCString(s__);
-
-		m_apnType.GetWindowText(s__);
-		if(s__.Find(L"自定义") != -1)
-		{
-			m_pTempSetting->gprsType3_ = "";
-		}
-		else
-		{
-			m_pTempSetting->gprsType3_ = Util::StringOp::FromCString(s__);
-		}
-
-		m_mmsC.GetWindowText(s__);
-		m_pTempSetting->gprsHttp3_ = Util::StringOp::FromCString(s__);
-	}
-	else if(m_apnType.GetCurSel() == 3)
-	{
-		CString s__;
-		char txt[32];
-		memset(txt, 0, 32);
-		int ip[4];
-		for(int i = 0; i < 4; i++)
-		{
-			CString str;
-			m_apnGW[i].GetWindowText(str);
-			if(str != L"")
-			{
-				isEmpty = FALSE;
-				break;
-			}
-		}
-		
-		if(!isEmpty)
-		{
-			for(int i = 0; i < 4; i++)
-			{
-				CString str;
-				m_apnGW[i].GetWindowText(str);
-				ip[i] = Util::StringOp::ToInt(Util::StringOp::FromCString(str));
-			}
-			sprintf(txt, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-		}
-		m_pTempSetting->gprsProxyIp4_ = txt;
-		
-		m_apnPort.GetWindowText(s__);
-		m_pTempSetting->gprsProxyPort4_ = Util::StringOp::ToInt(Util::StringOp::FromCString(s__));
-		
-		m_apnDot.GetWindowText(s__);
-		m_pTempSetting->gprsDialnumber4_ = Util::StringOp::FromCString(s__);
-
-		m_apnType.GetWindowText(s__);
-		if(s__.Find(L"自定义") != -1)
-		{
-			m_pTempSetting->gprsType4_ = "";
-		}
-		else
-		{
-			m_pTempSetting->gprsType4_ = Util::StringOp::FromCString(s__);
-		}
-
-		m_mmsC.GetWindowText(s__);
-		m_pTempSetting->gprsHttp4_ = Util::StringOp::FromCString(s__);
-	}
-}
-
-void SetProxyOption(TCHAR *pIP, BOOL isProXY)
-{
-	ULONG       uSize;
-	INTERNET_PER_CONN_OPTION_LIST iOptionList;
-	INTERNET_PER_CONN_OPTION  iOptions[3];
-	
-	iOptionList.dwSize   = uSize = sizeof(iOptionList);
-	iOptionList.pszConnection = NULL;
-	iOptionList.dwOptionCount = 1;
-	iOptionList.pOptions  = iOptions;
-	
-	// set proxy type direct or proxy server
-	iOptions[0].dwOption  = INTERNET_PER_CONN_FLAGS;
-	// set the PROXY_TYPE_PROXY and PROXY_TYPE_DIRECT or we won't connect to servers in bypass list
-	
-	int m_dwAccessType;
-	if(isProXY)
-		m_dwAccessType = PROXY_TYPE_DIRECT|PROXY_TYPE_PROXY;
-	else
-		m_dwAccessType = PROXY_TYPE_DIRECT;
-	iOptions[0].Value.dwValue = m_dwAccessType|PROXY_TYPE_DIRECT;
-	
-	if(m_dwAccessType&PROXY_TYPE_PROXY)
-	{
-		iOptions[0].Value.dwValue = m_dwAccessType|PROXY_TYPE_DIRECT;
-		iOptionList.dwOptionCount = 3;
-		// set proxy server if exists
-		iOptions[1].dwOption  = INTERNET_PER_CONN_PROXY_SERVER;
-		iOptions[1].Value.pszValue = pIP;
-		
-		iOptions[2].dwOption  = INTERNET_PER_CONN_PROXY_BYPASS;
-		iOptions[2].Value.pszValue = L"<local>";
-	}
-	else
-	{
-		iOptions[0].Value.dwValue = m_dwAccessType;
-	}
-	InternetSetOption(NULL,INTERNET_OPTION_PER_CONNECTION_OPTION ,(LPVOID)(&iOptionList),uSize);
-	
-	RegFlushKey(HKEY_CLASSES_ROOT);
-	RegFlushKey(HKEY_CURRENT_USER);
-	RegFlushKey(HKEY_LOCAL_MACHINE);
 }

@@ -429,6 +429,7 @@ void CDateCtrl::FormatDateOrTime(CString &strData, const int nYear, const int nM
 	}
 	
 	
+	
 	_itot(nYear, tBuf, 10);
 	if (nYear < 10)
 	{

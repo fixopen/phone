@@ -18,8 +18,6 @@ static char THIS_FILE[] = __FILE__;
 static int gVideo3PuaseCount = 0;
 extern int gPlayIndex;
 extern BOOL DetectDIR(TCHAR *sDir);
-BOOL g_bManulStop = FALSE;
-
 //#define IDT_GETINFO_TIIMER	8000
 /////////////////////////////////////////////////////////////////////////////
 // CMainVideoDlg dialog
@@ -38,7 +36,6 @@ CMainVideoDlg::CMainVideoDlg(CWnd* pParent /*=NULL*/)
 	m_Volume = SOUND_DEFAULT_VOLUME;
 	m_bIsPausebyEvent = FALSE;
 	m_pageSize = 5;
-	m_bAllScreen = FALSE;
 }
 
 
@@ -87,7 +84,7 @@ void CMainVideoDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CMainVideoDlg::SetVolume()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int index = main->m_pSettingDlg->m_pSetting->sysVolume();
+	int index = main->m_pSettingDlg->m_pTempSetting->sysVolume();
 	int Volume[] = {10, 8, 6, 4, 2};
 	main->playervideo_->SetVolume(Volume[index]);
 	m_Volume = Volume[index];
@@ -115,7 +112,7 @@ BOOL CMainVideoDlg::OnInitDialog()
 	playerDlg_->Create(CPlayerDlg::IDD, this);
 	playerDlg_->ReSetWindowsRect(CRect(36, 52, 474, 320));
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\视频播放.xml");
 
 	MoveWindow(0, 57, 800, 423);
@@ -143,8 +140,7 @@ void CMainVideoDlg::SetVideo(CString filename)
 	sprintf(filename_, "%s", str.c_str());
 	playerDlg_->SetParam(filename_, mtVideo);
 	playerDlg_->ReSetWindowsRect(CRect(36, 109, 474, 377));
-	playerDlg_->Show();
-
+	
 	if ((gPlayIndex > 0) && (0 == gPlayIndex%m_pageSize))
 	{
 		m_MJPGList.SetUnitColor(25, font_blue, TRUE);
@@ -153,9 +149,6 @@ void CMainVideoDlg::SetVideo(CString filename)
 	{
 		m_MJPGList.SetUnitColor((gPlayIndex%m_pageSize)+20, font_blue, TRUE);
 	}
-
-	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
-	m_MoveText->SetTimer(0xFFF0, 100, NULL);
 }
 
 void CMainVideoDlg::OnExit()
@@ -177,7 +170,6 @@ void CMainVideoDlg::OnExit()
 	m_MJPGList.SetUnitIsDownStatus(3, FALSE);
 	m_MJPGList.SetUnitIsShow(3, TRUE);
 	ClearAll();
-	main->PopbackIcon();		//lxz 20100528
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)this, (LPARAM)SW_HIDE);
 }
 
@@ -223,13 +215,6 @@ void CMainVideoDlg::OnPlayer()
 			//调用播放窗口
 			if(playerDlg_)
 			{
-				HWND hWnd1 = ::FindWindow(L"csplayer_win1", L"csplayer window1");
-				if(hWnd1 != NULL || main->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic)  //如果正在播放MP3，则停止其播放。
-				{
-					main->m_pMainDlg->m_mainMp3Dlg_->OnExit_(TRUE);
-					main->AddDesktopBtn();
-					gPlayIndex = 1;
-				}
 				m_MoveText->KillTimer(0xFFF0);
 				m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 				m_MoveText->m_nCount = 0;
@@ -241,7 +226,6 @@ void CMainVideoDlg::OnPlayer()
 			}
 			delete []buffer;
 			m_IsPlay = 1;
-			g_bManulStop = FALSE;  //
 			m_MJPGList.SetUnitIsDownStatus(3, TRUE);
 			m_MJPGList.SetUnitIsShow(3, TRUE);
 
@@ -283,7 +267,6 @@ void CMainVideoDlg::OnPlayer()
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		main->playervideo_->PausePlayer(FALSE);
 		m_IsPlay = 1;
-		g_bManulStop = FALSE;
 		SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
 		m_MoveText->SetTimer(0xFFF0, 100, NULL);
 	}
@@ -305,94 +288,68 @@ void CMainVideoDlg::OnStop()
 		m_MoveText->KillTimer(0xFFF0);
 		m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 		m_MoveText->m_nCount = 0;
-		m_MJPGList.SetUnitIsDownStatus(4, FALSE);
-		m_MJPGList.SetUnitIsShow(4, TRUE);
-		m_MJPGList.Invalidate();
 	}
 }
 
 //前一条
 void CMainVideoDlg::OnPre()
 {
-	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
+	if(m_IsPlay == 2 || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
 		return;
 	KillTimer(IDT_GETINFO_TIIMER);
 	m_MoveText->KillTimer(0xFFF0);
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 	
-	if ((gPlayIndex > 0) && (0 == gPlayIndex%m_pageSize))
-	{
-		m_MJPGList.SetUnitColor(25, font_red, TRUE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitColor((gPlayIndex%m_pageSize)+20, font_red, TRUE);
-	}
-	
+	m_MJPGList.SetUnitColor(((gPlayIndex)%m_pageSize)+20, font_red, TRUE);
+	m_MJPGList.SetUnitText(((gPlayIndex)%m_pageSize)+20, m_ShowList[gPlayIndex-1], TRUE);
 	gPlayIndex--;
 	
 	if(0 == gPlayIndex)
 	{
 		OnLast();
 	}
-	else
+	else if (0 == gPlayIndex%m_pageSize)
 	{
-		if ((gPlayIndex != 0)&&(0 == gPlayIndex%m_pageSize))
-		{
-			PageUp();
-		}
-
-		SetVideo(m_MovieList[gPlayIndex-1]);
-		m_IsPlay = 1;
-		m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
-
-		CString str;
-		str.Format(L"%d", gPlayIndex);
-		m_MJPGList.SetUnitText(40, str, TRUE);
+		PageUp();
 	}
+	SetVideo(m_MovieList[gPlayIndex-1]);
+	playerDlg_->Show();
+	m_IsPlay = 1;
+	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
+	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
+	m_MoveText->SetTimer(0xFFF0, 100, NULL);
 }
 
 //后一条
 void CMainVideoDlg::OnBack()
 {
-	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
+	if(m_IsPlay == 2 || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
 		return;
 	KillTimer(IDT_GETINFO_TIIMER);
 	m_MoveText->KillTimer(0xFFF0);
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 	
-	if ((gPlayIndex > 0) && (0 == gPlayIndex%m_pageSize))
-	{
-		m_MJPGList.SetUnitColor(25, font_red, TRUE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitColor((gPlayIndex%m_pageSize)+20, font_red, TRUE);
-	}
-
+	m_MJPGList.SetUnitColor(((gPlayIndex)%m_pageSize)+20, font_red, TRUE);
+	m_MJPGList.SetUnitText(((gPlayIndex)%m_pageSize)+20, m_ShowList[gPlayIndex-1], TRUE);
 	gPlayIndex++;
 	
+	if ((gPlayIndex > 1) && (1 == gPlayIndex%m_pageSize))
+	{
+		PageDown();
+	}
 	if(m_MovieList.size() < gPlayIndex)
 	{
 		OnFirst();
 	}
-	else
-	{
-		if ((gPlayIndex > 1) && (1 == gPlayIndex%m_pageSize))
-		{
-			PageDown();
-		}
-
-		SetVideo(m_MovieList[gPlayIndex-1]);
-		m_IsPlay = 1;
-		m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
-
-		CString str;
-		str.Format(L"%d", gPlayIndex);
-		m_MJPGList.SetUnitText(40, str, TRUE);
-	}
+	
+	SetVideo(m_MovieList[gPlayIndex-1]);
+	playerDlg_->Show();
+	m_IsPlay = 1;
+	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
+	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
+	m_MoveText->SetTimer(0xFFF0, 100, NULL);
 }
 
 void CMainVideoDlg::OnFirst()
@@ -403,12 +360,13 @@ void CMainVideoDlg::OnFirst()
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 	
-	//main->playervideo_->First();
-	m_MJPGList.SetUnitText(40, L"1", TRUE);
+	main->playervideo_->First();
+	m_selectCurrentPage = 1;
+	CString str;
+	str.Format(L"%d", m_selectCurrentPage);
+	m_MJPGList.SetUnitText(40, str, TRUE);
 	
 	gPlayIndex = 1;
-	SetVideo(m_MovieList[gPlayIndex-1]);
-	m_selectCurrentPage = 1;
 	m_IsPlay = 1;
 	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 	m_MJPGList.SetUnitIsDisable(9, TRUE);
@@ -416,8 +374,9 @@ void CMainVideoDlg::OnFirst()
 	{
 		m_MJPGList.SetUnitIsDisable(10, FALSE);
 	}
-
 	ShowArrayInList(m_ShowList);
+	m_MoveText->SetTimer(0xFFF0, 100, NULL);
+	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
 }
 
 void CMainVideoDlg::OnLast()
@@ -428,13 +387,13 @@ void CMainVideoDlg::OnLast()
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 	
+	main->playervideo_->Last();
+	m_selectCurrentPage = m_selectPageCount;
 	CString str;
-	str.Format(L"%d", m_MovieList.size());
+	str.Format(L"%d", m_selectCurrentPage);
 	m_MJPGList.SetUnitText(40, str, TRUE);
 	
 	gPlayIndex = m_MovieList.size();
-	SetVideo(m_MovieList[gPlayIndex-1]);
-	m_selectCurrentPage = m_selectPageCount;
 	m_IsPlay = 1;
 	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 	m_MJPGList.SetUnitIsDisable(10, TRUE);
@@ -442,8 +401,9 @@ void CMainVideoDlg::OnLast()
 	{
 		m_MJPGList.SetUnitIsDisable(9, FALSE);
 	}
-
 	ShowArrayInList(m_ShowList);
+	m_MoveText->SetTimer(0xFFF0, 100, NULL);
+	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
 }
 
 //打开播放列表
@@ -458,30 +418,13 @@ void CMainVideoDlg::OnOpenFile()
 	KillTimer(IDT_GETINFO_TIIMER);
 	m_prgPlayTime.SetPos(0);
 }
-
-void CMainVideoDlg::SetAllScreenPlayer(BOOL flag)
-{
-	if(flag)
-	{
-		CRect rt = CRect(0, 0, 800, 480);
-		playerDlg_->MoveWindow(&rt);
-	}
-	else
-	{
-		CRect rt = CRect(36, 109, 474, 377);
-		playerDlg_->MoveWindow(&rt);
-	}
-	m_bAllScreen = flag;
-	playerDlg_->player_->SetAllScreenPlayer(flag);
-	Invalidate();
-}
-
 //全屏播放
 void CMainVideoDlg::OnPlayerAll()
 {
 	if(m_IsPlay == 2)
 		return;
-	SetAllScreenPlayer(TRUE);
+	GetParent()->SendMessage(WM_PLAYVIDEO, 2);	
+
 	::SetCursorPos(799, 479);
 }
 //设置声音开关
@@ -560,16 +503,8 @@ void CMainVideoDlg::OnTimer(UINT nIDEvent)
 			m_MJPGList.SetUnitIsShow((gPlayIndex%m_pageSize)+20, TRUE);
 		}	
 	}
-	else if(0x101 == nIDEvent)
-	{
-		KillTimer(nIDEvent);
-		ChangeVolume(50+m_Volume);
-		main->playervideo_->SetVolume(m_Volume);
-		OnPlayer();
-		Sleep(200);
-		SetForegroundWindow();
-	}
-	else if(IDT_GETINFO_TIIMER == nIDEvent && m_MJPGList.GetUnitIsDownStatus(3))
+	
+	if(IDT_GETINFO_TIIMER == nIDEvent && m_MJPGList.GetUnitIsDownStatus(3))
 	{
 		MEDIA_INFO info;
 		main->playervideo_->GetVideoFileInfo(&info);
@@ -614,31 +549,25 @@ void CMainVideoDlg::OnTimer(UINT nIDEvent)
 		m_MJPGList.SetUnitText(0, sFilename1, TRUE);
 		
 		char txt[32];
-		sprintf(txt, "%02d:%02d:%02d/", Hour, Min, Sec);
+		sprintf(txt, "%02d:%02d:%02d", Hour, Min, Sec);
 		CString s = txt;
-		m_MJPGList.SetUnitText(30, s, TRUE);
+		m_MJPGList.SetUnitText(31, s, TRUE);
 		sprintf(txt, "%02d:%02d:%02d", Hour1, Min1, Sec1);
 		s = txt;
-		m_MJPGList.SetUnitText(31, s, TRUE);
+		m_MJPGList.SetUnitText(30, s, TRUE);
 
-		if(((n1 >= (n2 - 1)) && n1 != 0) || n2 == 0)		//换到下一首
+		if(((n1 >= (n2 - 3)) && n1 != 0) || n2 == 0)		//换到下一首
 		{
 			if(main->playervideo_->isPlaying_)
 			{	
-				int index = 0;
-				if(gPlayIndex%m_pageSize == 0 && gPlayIndex > 0)
-				{
-					index = 25;
-				}
-				else
-				{
-					index = (gPlayIndex%m_pageSize)+20;
-				}
- 				m_MJPGList.SetUnitColor(index, font_red, TRUE);
-				m_MJPGList.SetUnitText(index, m_ShowList[gPlayIndex-1], TRUE);
-				
+				m_MJPGList.SetUnitColor(((gPlayIndex)%m_pageSize)+20, font_red, TRUE);
+				m_MJPGList.SetUnitText(((gPlayIndex)%m_pageSize)+20, m_ShowList[gPlayIndex-1], TRUE);
 				gPlayIndex++;
 				
+				if ((1 == gPlayIndex%m_pageSize) && (gPlayIndex > 1))
+				{
+					PageDown();
+				}
 				if(gPlayIndex > m_MovieList.size())
 				{
 					gPlayIndex = 1;
@@ -647,23 +576,11 @@ void CMainVideoDlg::OnTimer(UINT nIDEvent)
 						OnFirst();
 					}
 				}
-				else
-				{
-					if ((1 == gPlayIndex%m_pageSize) && (gPlayIndex > 1))
-					{
-						PageDown();
-					}
-
-					std::string s = Util::StringOp::FromCString(m_MovieList[gPlayIndex-1]);
-					char filename_[128];
-					sprintf(filename_, "%s", s.c_str());
-					SetVideo(filename_);
-
-					CString str;
-					str.Format(L"%d", gPlayIndex);
-					m_MJPGList.SetUnitText(40, str, TRUE);
-				}
-
+				std::string s = Util::StringOp::FromCString(m_MovieList[gPlayIndex-1]);
+				char filename_[128];
+				sprintf(filename_, "%s", s.c_str());
+				SetVideo(filename_);
+				playerDlg_->Show();
 				m_MoveText->m_nCount = 0;
 				m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 			}
@@ -701,9 +618,6 @@ void CMainVideoDlg::OnTimer(UINT nIDEvent)
 				}
 
 				main->KillScreenSaveTimer();  //恢复播放时,停止屏保
-				::Sleep(200);
-				SetForegroundWindow();
-				Invalidate();
 			}
 		}
 	}
@@ -717,10 +631,6 @@ void CMainVideoDlg::OnTimer(UINT nIDEvent)
 		if(main->playervideo_->isPlaying_)
 		{
 			KillTimer(IDT_GETINFO_TIIMER);
-			if(m_bAllScreen)
-			{
-				SetAllScreenPlayer(FALSE);
-			}
 			main->playervideo_->ExitPlayer(TRUE);
 			m_bIsPausebyEvent = TRUE;
 		}
@@ -734,18 +644,12 @@ void CMainVideoDlg::OnOutEvent(WPARAM w, LPARAM l)
 	
 	if(l == 0)  //暂停播放
 	{
+		//SetTimer(1002, 5, NULL);
 		OnTimer(1002);
 	}
 	else if(l == 1) //恢复播放
 	{
-		if(g_bManulStop)
-		{
-			playerDlg_->ShowWindow(SW_SHOW);
-		}
-		else
-		{
-			SetTimer(1001, 50, NULL);
-		}
+		SetTimer(1001, 50, NULL);
 	}
 }
 
@@ -771,14 +675,6 @@ void CMainVideoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		m_MJPGList.SetUnitIsShow(3, TRUE);
 		break;
 	case 3:			//播放
-		if(m_MJPGList.GetUnitIsDownStatus(w))
-		{
-			g_bManulStop = TRUE;  //人工操作暂停
-		}
-		else
-		{
-			g_bManulStop = FALSE;
-		}
 		OnPlayer();
 		break;      
 	case 4:			//停止
@@ -878,9 +774,11 @@ void CMainVideoDlg::CalculatePage(int dataCount)
 	}
 	
 	CString str;
-	str.Format(L"/ %d",dataCount);
+	str.Format(L"/%d",m_selectPageCount);
 	m_MJPGList.SetUnitText(41, str, TRUE);
-	m_MJPGList.SetUnitText(40, L"1", TRUE);
+	str.Empty();
+	str.Format(L"%d",m_selectCurrentPage);
+	m_MJPGList.SetUnitText(40, str, TRUE);
 	
 	m_MJPGList.SetUnitIsDisable(9, TRUE);
 	if (m_selectPageCount <= 1)		//当总数小于pagesize时设置下翻按钮不可用
@@ -896,7 +794,7 @@ void CMainVideoDlg::CalculatePage(int dataCount)
 void CMainVideoDlg::ShowArrayInList(std::vector<CString> fileName)
 {
 	ClearAll();
-	if (gPlayIndex <= m_selectCurrentPage*m_pageSize && gPlayIndex > (m_selectCurrentPage-1)*m_pageSize)
+	if (gPlayIndex <= m_selectCurrentPage*m_pageSize && gPlayIndex >= (m_selectCurrentPage-1)*m_pageSize)
 	{
 		if ((gPlayIndex > 0) && (0 == gPlayIndex%m_pageSize))
 		{
@@ -969,6 +867,10 @@ void CMainVideoDlg::PageUp()
 		m_MJPGList.SetUnitIsDisable(10, FALSE);
 	}
 	
+	CString str;
+	str.Format(L"%d", m_selectCurrentPage);
+	m_MJPGList.SetUnitText(40, str, TRUE);
+	str.Empty();
 	ShowArrayInList(m_ShowList);
 }
 
@@ -985,6 +887,10 @@ void CMainVideoDlg::PageDown()
 		m_MJPGList.SetUnitIsDisable(10, TRUE);
 	}
 	
+	CString str;
+	str.Format(L"%d", m_selectCurrentPage);
+	m_MJPGList.SetUnitText(40, str, TRUE);
+	str.Empty();
 	ShowArrayInList(m_ShowList);
 }
 
@@ -1022,25 +928,14 @@ void CMainVideoDlg::OnDBClickShowList(int unitNO)
 	m_MJPGList.SetUnitIsDownStatus(3, FALSE);
 	m_MJPGList.SetUnitIsShow(3, TRUE);
 	KillTimer(IDT_GETINFO_TIIMER);
-	if ((gPlayIndex > 0) && (0 == gPlayIndex%m_pageSize))
-	{
-		m_MJPGList.SetUnitColor(25, font_red, TRUE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitColor((gPlayIndex%m_pageSize)+20, font_red, TRUE);
-	}
-
+	m_MJPGList.SetUnitColor((gPlayIndex%m_pageSize)+20, font_red, TRUE);
 	gPlayIndex = (m_selectCurrentPage-1)*m_pageSize + unitNO - 20;
 	SetVideo(m_MovieList[gPlayIndex-1]);
+	playerDlg_->Show();
 	m_IsPlay = 1;
 	m_MoveText->m_nCount = 0;
 	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
 	m_MJPGList.SetUnitIsDownStatus(3, TRUE);
 	m_MJPGList.SetUnitIsShow(3, TRUE);
-
-	CString str;
-	str.Format(L"%d", gPlayIndex);
-	m_MJPGList.SetUnitText(40, str, TRUE);
 }

@@ -13,7 +13,6 @@
 #include "../Data/SoundSegment.h"
 #include "../inc/SABTD.h"
 #include "../Util/OggCodec.h"
-#include "CTelePhoneOptionDlg.h"
 
 #include "../control/MJPGStatic.h"
 
@@ -21,7 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTelephoneDlg dialog
 
-class CTelephoneDlg : public CDialog //CCEDialog
+class CTelephoneDlg : public CCEDialog
 {
 // Construction
 public:
@@ -34,7 +33,8 @@ public:
 
 	CTelephoneDlg(CWnd* pParent = NULL);   // standard constructor
 	BOOL m_bRecording;
-//	UINT m_uiIgnoreRingCount;
+	UINT m_uiIgnoreRingCount;
+	UINT m_uTelSecondOff;
 
 // Dialog Data
 	//{{AFX_DATA(CTelephoneDlg)
@@ -42,11 +42,9 @@ public:
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
-	afx_msg void OnButtonTelephoneRecord();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+		afx_msg void OnButtonTelephoneRecord();
 
 	void ShowWindow_(int cmdshow);
-	afx_msg void OnButtonTelephoneHide();
 
 
 // Overrides
@@ -71,8 +69,10 @@ protected:
 	afx_msg void OnMM_WOM_CLOSE(UINT wParam,LONG lParam);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	//}}AFX_MSG
+	afx_msg void OnButtonTelephoneHide();
 	afx_msg void OnButtonTelephoneNote();
 	afx_msg void OnButtonTelephoneHandle();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnTelStatus(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 
@@ -83,6 +83,7 @@ private:
 	
 	CCEFramePartStatic m_sticBackground;
 
+	boost::shared_ptr<Data::ContactInfo> m_spContactInfo;
 	boost::shared_ptr<Data::SoundSegment> m_spSoundSegment;
 	boost::shared_ptr<Data::ContactInfo> m_spPstnContactInfo;
 	std::vector<boost::shared_ptr<Data::SoundSegment> >m_vSoundSegment;
@@ -90,25 +91,26 @@ private:
 	CString m_strStopRecord;
 	CString m_strHangOff;
 	CString m_strHangOn;
-//	UINT m_uiTelephoneSecond;
+	UINT m_uiTelephoneTimer;
+	UINT m_uiTelephoneSecond;
 	UINT m_uiRecordTimer;
 	UINT m_uiRecordSecond;
-//	UINT m_uiRingCount;
+	UINT m_uiRingCount;
 	UINT m_uiTipTimer;
 	UINT m_uiInNoCount;
 	UINT m_uiRecordCound;
-//	BOOL m_bHasCallID;
-//	BOOL m_bFirwall;
+	BOOL m_bHasCallID;
+	BOOL m_bFirwall;
 	UINT m_uiRemainRecordSecond;
 	std::string m_sTelephoneNumber;
 	std::string m_sTipFilename;
-//	std::string m_sRingFilename;
+	std::string m_sRingFilename;
 	std::string m_sDialNumber;
 	std::string m_sOutLine;
 	std::string m_sTel;
 	std::string m_sCity;
-//	BOOL m_bRing;
-//	BOOL m_bRingPlayed;
+	BOOL m_bRing;
+	BOOL m_bRingPlayed;
 
 private:
 	UINT m_uiPstnRingCount;
@@ -155,17 +157,9 @@ private:
 	std::string GetSoundPath(void);
 
 	OggCodec* m_pOggCodec;
-	int  m_nLevel ;
-	int  m_nSelectLine;//选择的线路
-	bool m_bClickSubDial;
-	bool m_bSoftWareOff;
-
-	CTelePhoneOptionDlg *m_pTelePhoneOptionDlg;
+	int  m_Volume ;
 
 public:
-
-	boost::shared_ptr<Data::ContactInfo> m_spContactInfo[2];
-
 	void HandleOn(void);
 	void HandleOff(void);
 	
@@ -197,44 +191,12 @@ public:
 	void PstnHangOff_(void* param);
 
 	void G3HangOff();//单独挂断3G
-	void G3HangOff(int const line);//挂断一路
-	void G3AllHangOff();//所有路全部挂断
-	void HandleOff(int const line);//处理某一路
-	void CommonDataInit();//所有公共的数据清空
-	void Hold2Dial();//保持一路去拨号
-	void LineDurTimer(int nline);//电话的时长
-	void LineStatusTimer(int nline);//电话线路的状态
-	void ShowLineStatus(int nline);//展示线路状态
 
-	void FromTelDial(std::string tel);//把电话拨打界面的信息传过来
+	void FromTelDial(boost::shared_ptr<Data::ContactInfo> pContactInfo,std::string tel);//把电话拨打界面的信息传过来
 	void SetVolume(unsigned int volume);
 	void VolumeSwitch();
 	void HandleAudio(bool bt);
-	void SetAudioLevel();
-	void PhoneSwitch();//线路切换
 	void Dialback(std::string telnum);
-	void SelectNum(int id);//选择线路
-	void ShowMainInfo();//展示主窗口信息
-	void Option();//选项
-	void SetFirstItem(CString info,bool bfresh);//设置最上一行的信息
-
-	void SwitchPstnTo3G();//从pstn转换到3G1
-
-	void SwitchAnother3G();//切换到另一路3G
-	void ShowPstnInfo();//把PSTN的信息显示在主界面上
-	void Show3gInfo(int const line);//展示3g的信息
-	void ActivePstn();//把隐藏的pstn这路激活
-	void SetContactInfoOK(int const index);//设置通话记录信息
-
-
-
-	afx_msg void OnCallWaitting(WPARAM w, LPARAM l);
-
-public:
-		BOOL m_bPstnReject;
-		BOOL m_bSend0x82Win;
-		BOOL m_bPstnFirstRing;//来判断哪路振铃先进来
-		UINT  m_nAllPhoneNum;//电话的总路数
 
 };
 

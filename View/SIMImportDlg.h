@@ -28,7 +28,6 @@ private:
 	HWND			m_handle;
 	CMJPGStatic		m_MJPGList;
 	CCEProcessBar	m_procbar;
-	bool			m_bOK;
 
 	boost::shared_ptr<Data::Contact> m_pContact;
 
@@ -70,7 +69,6 @@ protected:
 	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-
 };
 
 //{{AFX_INSERT_LOCATION}}

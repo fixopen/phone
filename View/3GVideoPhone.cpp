@@ -270,7 +270,7 @@ void C3GVideoPhone::ChangeVolume(int w)
 
 std::string C3GVideoPhone::GetSoundPath(void)
 {
-	path = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->soundPath();
+	path = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->soundPath();
 	
 	BOOL DetectDIR(TCHAR *sDir);
 	if (path == ssStorageCardRecordPath)
@@ -309,7 +309,7 @@ void C3GVideoPhone::OnButtonTelephoneRecord()
 		GetDiskFreeSpaceEx(Util::StringOp::ToCString(path), &freeBytes, &totalBytes, NULL);
 
 		int secondBytes = SECONDBYTES8;
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isDeleteProtect())
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isDeleteProtect())
 		{
 			secondBytes = SECONDBYTES8;
 		}
@@ -351,7 +351,7 @@ void C3GVideoPhone::OnButtonTelephoneRecord()
 			t = CTime::GetCurrentTime();
 			CString filename;
 			
-			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isDeleteProtect())
+			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isDeleteProtect())
 			{
 				m_pOggCodec->SetQuality(8);
 				filename.Format(_T("%02d%02d%02dHQ.spx"), t.GetHour(), t.GetMinute(), t.GetSecond());
@@ -394,7 +394,7 @@ void C3GVideoPhone::OnButtonTelephoneRecord()
 				//m_sticRecord.ShowWindow(TRUE);
 				//m_btnRecord.SetWindowText(m_strStopRecord);
 				
-				if (((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isMustRecord())
+				if (((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isMustRecord())
 				{
 					m_MJPGList.SetUnitIsShow(2, FALSE);
 					m_MJPGList.SetUnitIsShow(8, FALSE);
@@ -452,7 +452,7 @@ bool C3GVideoPhone::RecStart(void)
 		return false;
 	}
 	waveInMessage(m_hWaveIn,WAV_LINEIN_MIC,0,0);
-	Dprintf("Wav_WAV_LINEIN_MIC\r\n");
+	
 	
 	// 	m_pWaveHdr1->lpData=(char*)m_pBuffer1;
 	// 	m_pWaveHdr1->dwBufferLength=INP_BUFFER_SIZE;

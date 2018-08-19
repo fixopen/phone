@@ -32,10 +32,8 @@ CLunarderDlg::CLunarderDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 
 	m_type = 0;
-	m_nAlarmCount = 0;
 	m_maindeskIn = FALSE;
 	m_curIndex = -1;
-	m_TimeOutAlarmCount = 0;
 
 	VERIFY(m_font.CreateFont(
 		24,                        // nHeight
@@ -91,20 +89,19 @@ BOOL CLunarderDlg::OnInitDialog()
 	m_dtDateShow.Create(WS_CHILD|DTS_SHORTDATEFORMAT, CRect(43,37,262,90), this, IDC_DATE_SHOW, 30, CDateCtrl::em_mode::modeDate);
 	m_dtTimeShow.Create(WS_CHILD|DTS_TIMEFORMAT, CRect(339,37,339+219,90), this, IDC_TIME_SHOW, 30, CDateCtrl::em_mode::modeTime);
 
-	m_dtDate.Create(WS_CHILD|DTS_SHORTDATEFORMAT, CRect(42, 31, 197, 84), this, IDC_SETTING_DATE, 28, CDateCtrl::em_mode::modeDate);
-	m_dtTime.Create(WS_CHILD|DTS_TIMEFORMAT, CRect(262, 31, 417, 84), this, IDC_SETTING_TIME, 28, CDateCtrl::em_mode::modeTime);
+	m_dtDate.Create(WS_CHILD|DTS_SHORTDATEFORMAT, CRect(41, 30, 197, 84), this, IDC_SETTING_DATE, 28, CDateCtrl::em_mode::modeDate);
+	m_dtTime.Create(WS_CHILD|DTS_TIMEFORMAT, CRect(261, 30, 417, 84), this, IDC_SETTING_TIME, 28, CDateCtrl::em_mode::modeTime);
  
- 	m_cmbRing.CreateEx(WS_CHILD, CRect(202, 124, 413, 302), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP, 22, 55, 26);
+ 	m_cmbRing.Create(WS_CHILD, CRect(202, 122, 413, 300), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
  	SetRingLst();
  
  	m_alarmEdit.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(203, 217, 554, 360), this, 0xFFFF);
  	m_alarmEdit.SetLimitText(768);
 
 	m_editTaboo.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(42, 94, 617, 394), this, 0xFFFF);
-	m_editTaboo.SetReadOnly(true);
 	m_editTaboo.SetLimitText(768);
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\日程提醒.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 
@@ -168,17 +165,10 @@ void CLunarderDlg::SetRingLst()
 
 void CLunarderDlg::OnExit()
 {
-	ShowWindow(SW_HIDE);
-	
 	if(m_maindeskIn)
-	{
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
-		m_maindeskIn = FALSE;
-	}
 	else
-	{
 		GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)this, (LPARAM)SW_HIDE);
-	}
 }
 
 void CLunarderDlg::OnDateUp()
@@ -197,15 +187,7 @@ void CLunarderDlg::OnDateUp()
 	}
 	else
 	{
-		if(IsHaveAlarm(m_Year, m_Month, m_Day+1))
-		{
-			m_MJPGList.SetUnitColor(m_curIndex, font_purple, TRUE);
-		}
-		else
-		{
-			m_MJPGList.SetUnitColor(m_curIndex, font_black, TRUE);
-		}
-
+		m_MJPGList.SetUnitColor(m_curIndex, font_black, TRUE);
 		if (m_Day >= 1)
 		{
 			m_curIndex--;
@@ -233,15 +215,7 @@ void CLunarderDlg::OnDateDown()
 	}
 	else
 	{
-		if(IsHaveAlarm(m_Year, m_Month, m_Day-1))
-		{
-			m_MJPGList.SetUnitColor(m_curIndex, font_purple, TRUE);
-		}
-		else
-		{
-			m_MJPGList.SetUnitColor(m_curIndex, font_black, TRUE);
-		}
-
+		m_MJPGList.SetUnitColor(m_curIndex, font_black, TRUE);
 		if (m_Day <= nDay)
 		{
 			m_curIndex++;
@@ -286,34 +260,12 @@ void CLunarderDlg::OnDelete()
 
 void CLunarderDlg::OnAlarmDateDown()
 {
-	SYSTEMTIME datetime;
 	m_dtDate.OnButtonDown();
-	m_dtDate.GetTime(datetime);
-	if(IsHaveAlarm(datetime.wYear, datetime.wMonth, datetime.wDay))
-	{
-		ShowAlarmDlg(FALSE);
-	}
-	else
-	{
-		NewAlarm(FALSE);
-	}
-	GetSchedulerCount();
 }
 
 void CLunarderDlg::OnAlarmDateUp()
 {
-	SYSTEMTIME datetime;
 	m_dtDate.OnButtonUp();
-	m_dtDate.GetTime(datetime);
-	if(IsHaveAlarm(datetime.wYear, datetime.wMonth, datetime.wDay))
-	{
-		ShowAlarmDlg(FALSE);
-	}
-	else
-	{
-		NewAlarm(FALSE);
-	}
-	GetSchedulerCount();
 }
 
 extern const char *month[];
@@ -424,7 +376,7 @@ void CLunarderDlg::SetData(int y, int m, int d, BOOL flag)
 
 			//如果有提醒，将显示的文字改为红色
 			if(IsHaveAlarm(m_Year, m_Month, i+1-nWeek))
-				m_MJPGList.SetUnitColor(nIndex, font_purple, FALSE);
+				m_MJPGList.SetUnitColor(nIndex, font_red, FALSE);
 		}
 		
 		//判断天，toggle
@@ -461,13 +413,13 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			SYSTEMTIME datetime;
 			m_dtDateShow.GetTime(date);
 			m_dtTimeShow.GetTime(time);
-			memcpy(&datetime, &date, sizeof(SYSTEMTIME));
+			datetime.wYear = date.wYear;
+			datetime.wMonth = date.wMonth;
+			datetime.wDay = date.wDay;
 			datetime.wHour = time.wHour;
 			datetime.wMinute = time.wMinute;
 			datetime.wSecond = time.wSecond;
 			SetLocalTime(&datetime);
-			//重新计算闹铃
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetAlarmList();
 		}
 		break;
 	case 7:				//记事
@@ -479,7 +431,6 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			ShowAlarmDlg(TRUE);
 		}
-		GetSchedulerCount();  //求日程提醒总数
 		break;
 	case 8:			//宜忌
 		ShowTaboo();
@@ -506,7 +457,10 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		DeleteCurrentAlarm();
 		break;
 	case 208:			//新建
-		NewAlarm(TRUE);
+		{
+			if(m_nAlarmCount < 20)
+				ShowAlarmDlg(TRUE);
+		}
 		break;
 	case 209:   //试听铃声
 		{
@@ -520,10 +474,10 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 					CString s = "\\flashdrv\\my_ring\\"; 
 					s += str;
 					
-					main->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002); //SendMessage(WM_OUTEVENT, 0, 0);
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002); //SendMessage(WM_OUTEVENT, 0, 0);
 					
-					main->phone_->SetMsgWnd(this);
-					main->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SetMsgWnd(this);
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
 					m_MJPGList.SetUnitIsDownStatus(209, TRUE);
 					m_MJPGList.SetUnitIsShow(209, TRUE);
 				}
@@ -560,8 +514,8 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			}
 			else
 			{
-				main->m_pWarningNoFlashDlg->SetTitle(L"请输入提示内容");     //提示输入内容
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(0);     //提示输入内容
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 			}
 		}
 		break;
@@ -576,8 +530,8 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		ShowLunarderDlg();
 		break;
 	case 1000:
+		OnExit();	
 		main->PopbackIcon();
-		OnExit();
 		break;
 	}
 	if( 10 <= w && w <= 51) 
@@ -588,10 +542,7 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		if(i >= nWeek && i < (nWeek+nDay))
 		{
 			int nIndex = i+10;
-			if(!IsHaveAlarm(m_Year, m_Month, m_Day))
-			{
-				m_MJPGList.SetUnitColor(m_curIndex, font_black, TRUE);
-			}
+			m_MJPGList.SetUnitColor(m_curIndex, font_black, TRUE);
 			m_MJPGList.SetUnitColor(nIndex, font_green, TRUE);
 			m_curIndex = nIndex;
 			m_Day = i - nWeek + 1;
@@ -605,16 +556,12 @@ void CLunarderDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			curtime.wMinute = time.wMinute;
 			curtime.wSecond = time.wSecond;
 			m_dtDateShow.SetTime(curtime);
-			//m_dtDateShow.SetSel(8, -1);
-			//m_dtDateShow.m_curSel = CDateCtrl::em_selection::esel_day;
-			CPoint point(110, 15);
-			m_dtDateShow.OnLButtonDown(TRUE, point);
+			m_dtDateShow.SetSel(8, -1);
 
 			//显示提醒
 			if(IsHaveAlarm(m_Year, m_Month, m_Day))
 			{
 				ShowAlarmDlg(FALSE);
-				GetSchedulerCount();
 			}
 		}
 	}
@@ -699,27 +646,9 @@ void CLunarderDlg::ShowWindow_(int nCmdShow)
 	SetCtrlHide();
 }
 
-void CLunarderDlg::HideWindow()
-{
-	m_bIsMainLunder = TRUE;
-	m_type = 1;
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\日程提醒.xml");
-
-	m_dtTime.ShowWindow(FALSE);
-	m_dtDate.ShowWindow(FALSE);
-	m_alarmEdit.ShowWindow(FALSE);
-	m_cmbRing.ShowWindow(FALSE);
-	m_dtDateShow.ShowWindow(FALSE);
-	m_dtTimeShow.ShowWindow(FALSE);
-	m_editTaboo.ShowWindow(FALSE);
-
-	ShowWindow(SW_HIDE);
-}
-
 void CLunarderDlg::OnDeleteItem(WPARAM w, LPARAM l)
 {
 	m_pScheduler->Remove();
-	m_nAlarmCount--;
 	if(IsHaveAlarm(m_Year, m_Month, m_Day))
 	{
 		SetAlarmCtrl(FALSE);
@@ -729,17 +658,16 @@ void CLunarderDlg::OnDeleteItem(WPARAM w, LPARAM l)
 		ShowLunarderDlg();
 	}
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetAlarmList();
-	GetSchedulerCount();
 }
 
 void CLunarderDlg::DeleteCurrentAlarm()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	if(!m_bIsNewAlarm && m_pScheduler)
 	{
-		main->m_pDeleteTipDlg->SetTitle(L"确定删除该记事吗?");
-		main->m_pDeleteTipDlg->SetHWnd(m_hWnd);
-		main->m_pDeleteTipDlg->ShowWindow_(TRUE);
+		std::string strTemp = ".\\adv\\mjpg\\k1\\common\\删除记事.bmp";
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 	}
 }
 
@@ -856,15 +784,10 @@ void CLunarderDlg::SetAlarmCtrl(BOOL isNew)
 		m_dtDate.SetTime(&tm);
 
 		std::string s = m_pScheduler->ring();
-		m_cmbRing.SetWindowText_(Util::StringOp::ToCString(s));
+		m_cmbRing.SetWindowText(Util::StringOp::ToCString(s));
 		m_cmbRing.Invalidate();
 		s = m_pScheduler->what();
-		m_alarmEdit.SetWindowText(L"");
 		m_alarmEdit.SetWindowText(Util::StringOp::ToCString(s));
-		//wangzhenxing20100610
-		m_pScheduler->tipsType(Data::ttRead);
-		m_pScheduler->Update();
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->FindTodayAlarm();
 	}
 }
 
@@ -922,53 +845,5 @@ void CLunarderDlg::OnTimer(UINT nIDEvent)
 	{
 		KillTimer(nIDEvent);
 		ShowControl();
-	}
-}
-
-void CLunarderDlg::GetSchedulerCount()
-{
-	CString str;
-	str.Format(L"%d", m_nAlarmCount);
-	m_MJPGList.SetUnitText(214, str, FALSE);
-	m_MJPGList.Invalidate();
-}
-
-void CLunarderDlg::NewAlarm(BOOL isNew)
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	m_bIsNewAlarm = isNew;
-	if(m_nAlarmCount < 20)
-	{
-		m_nAlarmCurrent = -1;
-		m_MJPGList.SetUnitIsDownStatus(210, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(211, TRUE);
-		m_MJPGList.SetUnitIsShow(210, TRUE);
-		m_MJPGList.SetUnitIsShow(211, TRUE);
-		
-		CTime tm2 = CTime(m_Year, m_Month, m_Day, 8, 0, 0);
-		m_dtTime.SetTime(&tm2);
-		m_cmbRing.SetCurSel(0);
-		m_alarmEdit.SetWindowText(L"");
-	}
-	else
-	{
-		if(isNew)
-		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"记事项已超过最大值");
-			main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		}
-		else
-		{
-			m_nAlarmCurrent = -1;
-			m_MJPGList.SetUnitIsDownStatus(211, FALSE);
-			m_MJPGList.SetUnitIsDownStatus(210, TRUE);
-			m_MJPGList.SetUnitIsShow(210, TRUE);
-			m_MJPGList.SetUnitIsShow(211, TRUE);
-			
-			CTime tm2 = CTime(m_Year, m_Month, m_Day, 8, 0, 0);
-			m_dtTime.SetTime(&tm2);
-			m_cmbRing.SetCurSel(0);
-			m_alarmEdit.SetWindowText(L"");
-		}
 	}
 }

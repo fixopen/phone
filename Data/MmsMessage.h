@@ -26,7 +26,6 @@
             //union {
             unsigned char validityPeriod; //FF == max
             SMSCTimestamp timestamp;
-			SMSCTimestamp localReciveTime;
             //} timeInfo;
 
             //////////////////////////////////////////////////////////////////////////////
@@ -37,7 +36,6 @@
                 stUnParse,
                 stParsed,
 				stDownloadedError,
-				stRepeatDownload
             };
             State state;
 
@@ -45,8 +43,6 @@
             unsigned char messageClass;
             unsigned int messageSize;
             unsigned int timeOfExpiry;
-			unsigned int downloadCount;
-			unsigned int repeatCount;
 			std::string url;
 
             //////////////////////////////////////////////////////////////////////////////            	

@@ -19,8 +19,6 @@
 #include "../control/CEDialog.h"
 #include "CSelectNumberDlg.h"
 
-#include "../Util/ATCommandWarp.h"
-
 /////////////////////////////////////////////////////////////////////////////
 // CContactDlg dialog
 
@@ -60,6 +58,7 @@ protected:
 	afx_msg void OnButtonContactSearch();
 	afx_msg void OnButtonContactClose();
 	afx_msg LRESULT OnSoftKeyMessage(WPARAM wParam, LPARAM lParam);   
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnClickMJPG_Toggle(WPARAM w, LPARAM l);
 
 	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
@@ -118,7 +117,6 @@ public:
 	void ShowTypeItems(void);
 	int	 GetTypeListSelected(void);
 	void Search(std::string filter);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 
 //add by qi 2009_09_17
 private:
@@ -128,7 +126,6 @@ private:
 	std::vector<int>				m_vContactID;//保存联系人的ID
 	int								m_iCurrentPage;//当前的页
 	int								m_iTotalPages;//一个多少页
-	int								m_nAllContact;//contact数据库中所有的名片
 	bool							m_bSelectAll;//是否全选
 	bool							m_bSearch;//是否查找
 	int								m_iUpCurrentPage;//左右翻页
@@ -141,7 +138,6 @@ private:
 	std::vector<CString>			m_vName;//保存名字
 	CString							m_sName;//联系人的名字
 	
-	int								m_operateType;  //操作类型
 	int								m_nSimCapacity;//SIM卡容量
 	int								m_iSelectNum;//选择的号码数
 	int								m_ntype;//类型
@@ -153,9 +149,6 @@ private:
 	const int						m_iClassMate;//同学组在数据库的ID
 	CSIMImportDlg					m_simImportDlg;//SIM导入
 	CSelectNumberDlg				m_pSelectNumberDlg;//选择号码
-
-	std::vector<boost::shared_ptr<Data::Contact> > m_pContact ;//名片的链表
-	bool							m_bGroupSend;//是否群组发送
 
 public:
 	enum Action{
@@ -180,7 +173,6 @@ public:
 	void Clear();//数据重新分配
 	void Add(CString ch);//按数字处理 
 	void HandleSimImport(WPARAM wp);//处理SIM 和 LOCAL之间的互倒
-	bool HanldeTel(WPARAM wp,int &pos,std::vector< Util::ATCommandWarp::SIM_FORMAT > &vsim,	std::vector< int> &vID,int const id);
 	std::string GetAlias(std::string name);//别名
 	void ShowDeleteDlg();//弹出确认删除的画面
 	void OnBtnEditContact(int item);//编辑联系人
@@ -193,7 +185,6 @@ public:
 	void ShowGroupInfo();//显示每组的信息
 	void SetContactFilter(int index);//设置查询条件
 	void FromContactDataBase();//从联系人里获得数据
-	void SearchBtnHide();//寻找按钮隐藏
 
 	void ClearUp();//清空上面组的信息
 	void ClearUpGroup();//清除上面的组的Unit
@@ -205,23 +196,16 @@ public:
 	void ShowWindow_();
 	void ShowRightBtn(bool bshow);//是否显示右边的按钮
 	void Contact2Sms();//把联系人的插入到SIM名片中
-	void GetNumFromContactDB(boost::shared_ptr<Data::Contact > pContact);//从名片结构中获得号码
 	void SetType(int type);//设置类型
 	void SetNumber(std::string num,int index);
 	void AddNumbertoContact();//
 	void OnBtnOK();
 	void HandleNumber(LPARAM lParam);//处理选择的号码
-	void ExtractContact();//
-	void InContact2Phone(LPARAM lParam);//
 	void SetSimID(int id);
 	int	 GetSimID();
 	void BackupSim();
-	void SetPageTurnBtn(int type = 0 );//设置翻页按钮的状态,0 = 初始话，1，操作过程中
 	int  GetSimCapacity();
 	std::string GetContactName(std::string const number);
-
-	//
-	void InsertGroup2Sms();//插入名片去信息
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -18,7 +18,6 @@
 
 #include "../control/MJPGStatic.h"
 #include "../view/PasswordDlg.h"
-#include "../view/PinInputDlg.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPinSetDlg dialog
@@ -27,12 +26,12 @@ class CPinSetDlg : public CCEDialog
 {
 // Construction
 public:
+	CPasswordDlg*  m_pPasswordDlg;
 	BOOL m_bPin;
+	void SetButtonDefaultColor(CCEButtonST* button);
 	CCERectEdit m_edtPinNumber;
 	
-	CPinInputDlg *m_pPinInputDlg;
 	void SetCallSetParam();
-	void SetPinStatus();
 	CPinSetDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -47,7 +46,6 @@ public:
 	//{{AFX_VIRTUAL(CPinSetDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam) ;
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -55,12 +53,15 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CPinSetDlg)
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
+	afx_msg void OnButtonFastDialsOk();
+	afx_msg void OnButtonFastDialsCancel();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnCheckPIN(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 		
-public:
+private:
 	CMJPGStatic		m_MJPGList;
 };
 

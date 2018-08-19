@@ -5,7 +5,6 @@
 
 //#include "../GPhone.h"
 #include "../MultimediaPhoneDlg.h"
-#include "../MultimediaPhone.h"
 
 namespace Util {
     namespace AT {
@@ -424,88 +423,36 @@ namespace Util {
 
     void ATCommand::Write(std::string const& data,std::string const& finallyResponse, RS232* const port) {
         
-//  		for (;;) {
-//              if (actionState_ == sIdle) {
-//                  RS232* p = serialPort_;
-//                  if (port) {
-//                      p = port;
-//                  }
-//  				TRACE(L"Begin actionState_ : %d\r\n" , (int)actionState_);
-//  
-// 				TRACE(L"Write:" );
-//  				TRACE(Util::StringOp::ToCString(data.c_str()));
-//  				TRACE(L"\r\n");
-//  				
-//  				extern VOID WriteMyLog_(char *ptr, int size);
-//  				WriteMyLog_((char*)data.c_str(),data.size());
-//  
-//  				// add by qi
-//  				finallyResponse_ = finallyResponse;
-//  				//Log::Log(data);
-//  				
-//  				EnterCriticalSection(&m_csWrite);
-//                  actionState_ = sBusy;
-//  				TRACE(L"actionState_ : %d\r\n" , (int)actionState_);
-//  
-//                  p->WritePort(reinterpret_cast<unsigned char const* const>(data.data()), data.length());
-//  				LeaveCriticalSection(&m_csWrite);
-//  
-//  				// old by qi
-//  				//finallyResponse_ = finallyResponse;
-//  				//Log::Log(data);
-//                  //actionState_ = sBusy;
-//  				//TRACE(L"actionState_ : %d\r\n" , (int)actionState_);
-//                  break;
-//  
-//              } else {
-//  
-//                ::Sleep(100);
-//  
-//              }
-//  
-//          }
-			
-			//change by qi 20100415
-            RS232* p = serialPort_;
-            if (port) {
-                p = port;
+		DWORD Dstart = GetTickCount();
+		for (;;) {
+            if (actionState_ == sIdle) {
+                RS232* p = serialPort_;
+                if (port) {
+                    p = port;
+                }				
+			//	Dprintf("Write:" );
+			//	Dprintf(data.c_str());
+			//	Dprintf("\r\n");
+                p->WritePort(reinterpret_cast<unsigned char const* const>(data.data()), data.length());
+				finallyResponse_ = finallyResponse;
+				//Log::Log(data);
+                actionState_ = sBusy;
+                break;
+            } else {
+			//	Dprintf("Write BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\r\n");
+				if (finallyResponse == "")
+				{
+					if ( (GetTickCount() - Dstart) > 1000)//超过一秒后就可以写
+					{	
+			//			Dprintf("Write CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\r\n");
+						actionState_ = sIdle	;
+					}
+				}
+                ::Sleep(100);
+
             }
 
-			//TRACE(L"Begin actionState_ : %d\r\n" , (int)actionState_);			
-			Dprintf("\r\nWrite:\r\n" );
-			Dprintf(data.c_str());
-			Dprintf("\r\n" );
-
-			extern VOID WriteMyLog_(char *ptr, int size);
-			WriteMyLog_((char*)data.c_str(),data.size());			
-			
-			//Dprintf("actionState_ : %d\r\n" , (int)actionState_);			
-            bool b = p->WritePort(reinterpret_cast<unsigned char const* const>(data.data()), data.length());
-			
-			char log[100] = {0};
-			if (!b)
-			{
-				DWORD dw = GetLastError();
-				memset(log,0,100);
-				sprintf(log,"error:%d",dw);
-				WriteMyLog_(log,strlen(log));
-				p->ClearWriteCom();
-	//			p->WritePort(reinterpret_cast<unsigned char const* const>(data.data()), data.length());
-
-				PostMessage(theApp.m_pMainWnd->m_hWnd,WM_C0M8_ERROR,0,0);
-			}
-
-			sprintf(log,"WritePort:%d",(int)b);
-		//	WriteMyLog_(log,strlen(log));
-		
-			static std::string d ;
-			d = data ;
-			PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PRINTF_DATA,(WPARAM)&d,0);
-
-			//add by qi 20100602
-			//extern void EditPrintf(char *ptr);
-			//EditPrintf((char *)data.c_str());
- 			
+        }
     }
 
     void ATCommand::Start() {
@@ -736,14 +683,11 @@ namespace Util {
         , event_(eNull)
         , isRegister_(false)
         , serialPort_(0) {
-			m_bPortOpen = false ;
-            initSerialPort_(port);//57600
-			InitializeCriticalSection(&m_csWrite);
+            initSerialPort_(port, 0);
     }
 
     ATCommand::~ATCommand() {
         finallySerialPort_();
-		DeleteCriticalSection(&m_csWrite);
     }
 
     void ATCommand::reset3GModule() {
@@ -897,418 +841,29 @@ namespace Util {
         Write(DSOFF);
         currentAction_ = aSoftwarePowerOff;
     }
-	
-	std::deque<char> dq ;
+
     void ATCommand::disptch_(unsigned char const* const data, unsigned int const length) {
 //      Log::Log(reinterpret_cast<char const* const>(data));
-   /*    std::string d(reinterpret_cast<char const*>(data), length);
-	   TRACE(L"Read:");
-	   TRACE(Util::StringOp::ToCString(d.c_str()));
-	   TRACE(L"\r\n");
-	   TRACE(L"Read end\r\n");
-	   
-	   extern VOID WriteMyLog_(char *ptr, int size);
-	   WriteMyLog_((char*)d.c_str(),d.size());
-
-		
-	   // add by qi 20100330
-		if (d.find(">") != std::string::npos)
-		{
-			ATCommand::Instance()->actionState_ = ATCommand::sIdle;
-		//	LeaveCriticalSection(&(ATCommand::Instance()->m_csWrite));
-			ATCommand::Instance()->Notify(d);
-			TRACE(L"Br\r\n");
-			return ;
-		}
-		// add by qi over
-
-		ATCommand::Instance()->Notify(d);
-		TRACE(L"Notify \r\n");
-	   
-	   TRACE(L"finallyResponse_ : %s\r\n",Util::StringOp::ToCString(ATCommand::Instance()->finallyResponse_));
+       std::string d(reinterpret_cast<char const*>(data), length);
+//	   Dprintf("Read:");
+//	   Dprintf(d.c_str());
+//	   Dprintf("\r\n");
+	   ATCommand::Instance()->Notify(d);
 	   
 	   if (ATCommand::Instance()->finallyResponse_ == "") { //ok or error
-		   if (d.find("OK\xD\xA") != std::string::npos || d.find("OK") != std::string::npos) {
+		   if (d.find("OK\xD\xA") != std::string::npos) {
 			   ATCommand::Instance()->actionState_ = sIdle;
-			 //  LeaveCriticalSection(&(ATCommand::Instance()->m_csWrite));
-			   TRACE(L"Response OK\r\n");
-
-		   } else if (d.find("ERROR\xD\xA") != std::string::npos || d.find("ERROR") != std::string::npos) {
+		   } else if (d.find("ERROR\xD\xA") != std::string::npos) {
 			   ATCommand::Instance()->actionState_ = sIdle;
-			 //  LeaveCriticalSection(&(ATCommand::Instance()->m_csWrite));
-			   TRACE(L"Response Error\r\n");
 			   //Error e(d);
 			   //process e;
 		   }
 	   } else { //spec response
 		   if (d.find(ATCommand::Instance()->finallyResponse_) != std::string::npos) {
 			   ATCommand::Instance()->actionState_ = sIdle;
-			  // LeaveCriticalSection(&(ATCommand::Instance()->m_csWrite));
-			   TRACE(L"Recive Response \r\n");
 		   }
-		   else if (d.find("OK\xD\xA") != std::string::npos || d.find("OK") != std::string::npos) {
-			   ATCommand::Instance()->actionState_ = sIdle;
-			   TRACE(L"finallyResponse_ Response OK\r\n");
-			   
-		   } else if (d.find("ERROR\xD\xA") != std::string::npos || d.find("ERROR") != std::string::npos) {
-			   ATCommand::Instance()->actionState_ = sIdle;
-			   TRACE(L"finallyResponse_ Response Error\r\n");
-		   }
-	   }*/
-		
-
-		std::string d(reinterpret_cast<char const*>(data), length);
-		Dprintf("\r\nTrueRead:\r\n");
-		Dprintf(d.c_str());
-		Dprintf("\r\n");
-		
-		extern VOID WriteMyLog_(char *ptr, int size);
-		WriteMyLog_("TrueRead:",strlen("TrueRead:"));
-		char log[1024] = {0}; 
-		sprintf(log,"%s",(char *)d.c_str());
-		WriteMyLog_(log,strlen(log));
-
-	//	TRACE(L"Read:");
-	//	TRACE(Util::StringOp::ToCString(d.c_str()));
-	//	TRACE(L"\r\n");
-	//	TRACE(L"Read end\r\n");
-		
-		for (int i = 0 ; i < d.size() ;i++)
-		{
-			dq.push_back(d[i]);
-		};
-		
-		int n = dq.size();
-		char *DqData = new char[dq.size() + 1];
-		std::string uData;
-		std::string TempData;//临时数据
-		int nsize = strlen("\r\n");
-		if (DqData)
-		{	
-			for (i = 0 ; i < dq.size();i++)
-			{
-				DqData[i] = dq[i];
-			}
-			
-			std::string dqs(DqData);
-
-			if (DqData)
-			{
-				delete []DqData;
-				DqData = NULL;
-			}
-
-			size_t t;
-			
-			while (dqs.find("\r\n") != std::string::npos)
-			{		
-				//去掉无数据的\r\n
-				while ((t = dqs.find("\r\n")) != std::string::npos)
-				{	
-					std::string s = dqs.substr(0,t+nsize);
-					if (s.compare("\r\n") == 0)
-					{
-						dqs = dqs.substr(t+nsize);
-
-						for (int i = 0 ; i < nsize;i++)
-						{
-							if (dq.size())
-							{
-								dq.pop_front();
-							}	
-						}
-											
-						if (dqs.empty())
-						{	
-							return;
-						}
-					}
-					else
-					{
-						break; //有数据就退出
-					}
-				}
-
-				//解析\r\n之前的的数据
-				if ((t = dqs.find("\r\n")) != std::string::npos)
-				{
-					size_t allSize = 0;
-					TempData = dqs.substr(0,t+nsize);
-					
-					//判断下\r\n之前的数据内容	
-					if (TempData.find("+CMGL:") != std::string::npos || 
-						TempData.find("+CDS:") != std::string::npos )
-					{	
-						//当有+CMGL:,"+CDS:" 需要找两个"\r\n"
-						std::string s = dqs.substr(t+nsize);
-						allSize += t+nsize;
-
-						if ((t = s.find("\r\n")) != std::string::npos)
-						{	
-							//如果第二个"\r\n"之前没数据继续往下找
-							
-							std::string s1 = s.substr(0,t+nsize);
-							while(s1.compare("\r\n") == 0)//没数据继续找
-							{
-								s = s.substr(t+nsize);
-								allSize += t+nsize;	
-
-								if ((t = s.find("\r\n")) != std::string::npos)
-								{
-									s1 = s.substr(0,t+nsize);
-								}
-								else
-								{
-									return;
-								}
-							}
-							//
-
-							size_t t1;
-							if ((t1 = s.find("\r\n")) != std::string::npos)
-							{										
-								int size = allSize +  t1 +nsize;
-								uData = dqs.substr(0,size);
-								dqs = dqs.substr(size);
-								
-								//队列里的数据到也清空
-								for (i = 0 ; i < size;i++)
-								{
-									if (dq.size())
-									{
-										dq.pop_front();
-									}
-								}	
-							}
-							else
-							{	
-								return;
-							}
-
-						}
-						else
-						{
-							return ;
-						}
-
-					}
-					else if(TempData.find("+CLCC:") != std::string::npos)//电话状态
-					{
-						//继续找完整的+CLCC:,直到找到OK
-						std::string s = dqs.substr(t+nsize);
-						allSize += t+nsize;
-						if((t = s.find("OK")) != std::string::npos)
-						{						
-							allSize += t+strlen("OK")+nsize;										
-						}
-						else//没找到OK就退出
-						{
-							return ;
-						}
-
-						uData = dqs.substr(0,allSize);
-						dqs = dqs.substr(allSize);
-						
-						//队列里的数据到也清空					
-						for (i = 0 ; i < allSize;i++)
-						{	
-							if (dq.size())
-							{
-								dq.pop_front();
-							}							
-						}
-
-					}
-					else 
-					{
-						uData = TempData;
-						dqs = dqs.substr(t+nsize);
-						
-						//队列里的数据到也清空					
-						for (i = 0 ; i < t+nsize;i++)
-						{	
-							if (dq.size())
-							{
-								dq.pop_front();
-							}							
-						}
-					}
-
-				}
-				else if ((t = dqs.find(">")) != std::string::npos)
-				{
-					uData = dqs.substr(0,t+1);
-					dqs = dqs.substr(t+1);
-					
-					for (i = 0 ; i < t+1;i++)
-					{	
-						if (dq.size())
-						{
-							dq.pop_front();
-						}
-					}
-				}
-				else //没找到\r\n退出
-				{
-					return;
-				}
-				
-
-			/*	if (dqs.find("+CMGL:") != std::string::npos || 
-					dqs.find("+CDS:") != std::string::npos)
-				{	
-					//当有+CMGL: 需要找两个"\r\n"
-					if ((t = dqs.find("\r\n")) != std::string::npos)
-					{
-						std::string s = dqs.substr(t+nsize);
-						size_t t1;
-						
-						//如果第二个"\r\n"之前没数据继续往下找
-						while ((t1 = s.find("\r\n")) != std::string::npos)
-						{	
-							std::string s1 = s.substr(0,t1);
-							if (s1.size() < 3)
-							{
-								s = s.substr(t1+nsize);
-							}
-							else
-							{
-								break;
-							}
-						}
-						//
-
-						if ((t1 = s.find("\r\n")) != std::string::npos)
-						{		
-												
-							int size = t+nsize+ t1 +nsize;
-							uData = dqs.substr(0,size);
-							dqs = dqs.substr(size);
-							
-							//队列里的数据到也清空
-							for (i = 0 ; i < size;i++)
-							{
-								if (dq.size())
-								{
-									dq.pop_front();
-								}
-							}	
-						}
-						else
-						{	
-							return;
-						}
-					}
-					else
-					{	
-						return;
-					}
-				}
-				else
-				{	
-					if ((t = dqs.find("\r\n")) != std::string::npos)
-					{
-						uData = dqs.substr(0,t+nsize);
-						dqs = dqs.substr(t+nsize);
-						
-						 //队列里的数据到也清空
-
-						 for (i = 0 ; i < t+nsize;i++)
-						 {	
-							 if (dq.size())
-							 {
-								dq.pop_front();
-							 }							
-						 }
-					}
-					else if ((t = dqs.find(">")) != std::string::npos)
-					{
-						uData = dqs.substr(0,t+1);
-						dqs = dqs.substr(t+1);
-
-						for (i = 0 ; i < t+1;i++)
-						{	
-							if (dq.size())
-							{
-								dq.pop_front();
-							}	
-						 }
-					}
-					else
-					{	
-						return;
-					}
-				}*/
-				
-				d = uData;
-
-				Dprintf("\r\nRead:\r\n");
-				Dprintf(d.c_str());
-				Dprintf("\r\n");
-
-				extern VOID WriteMyLog_(char *ptr, int size);
-				WriteMyLog_("Read:",strlen("Read:"));
-				memset(log,0,1024);
-				sprintf(log,"%s",(char *)d.c_str());	
-				WriteMyLog_(log,strlen(log));
-				
-				ATCommand::Instance()->Notify(d);
-
-				//add by qi 20100827
-				if (d.find("ERROR") != std::string::npos || 
-					d.find("OK") != std::string::npos)
-				{	
-					CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-					sprintf(log,"OkStatus:%d",(char)main->m_pATCommandWarp1->GetOkStatus());
-					WriteMyLog_(log,strlen(log));
-					if (main->m_pATCommandWarp1->GetOkStatus() != okSmsSend)
-					{
-						main->m_pATCommandWarp1->SetOkStatus(okIdle);
-					}
-				}
-
-				WriteMyLog_("Notify_End",strlen("Notify_End"));
-								
-				//add by qi 20100602
-				static std::string d1 ;
-				d1 = d ;
-				PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PRINTF_DATA,(WPARAM)&d1,0);
-				
-				WriteMyLog_("Notify_Printf",strlen("Notify_Printf"));
-
-				//Sleep(20);
-
-			}
-		}
-
-		
-/*		extern VOID WriteMyLog_(char *ptr, int size);
-		WriteMyLog_((char*)d.c_str(),d.size());
-		
-		ATCommand::Instance()->Notify(d);
-
-		WriteMyLog_("Notify_End",strlen("Notify_End"));
-		
-		//add by qi 20100602
-		static std::string d1 ;
-		d1 = d ;
-		PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PRINTF_DATA,(WPARAM)&d1,0);
- */
-		
-//		extern IsTestCTA();
-//		if(IsTestCTA())
-//  		{
-//  			extern void EditPrintf(char *ptr);
-//  			EditPrintf((char *)d.c_str());
-//  		}
-
-//		Dprintf("Notify:%d\r\n",main->m_pATCommandWarp1->GetOkStatus());
-//  	if(main->m_pATCommandWarp1->GetOkStatus())
-//  	{
-//  		main->m_pATCommandWarp1->SetOkStatus(okIdle);
-//  	}
-//		Dprintf("Notify \r\n");	
-
+	   }
+   
     }
 
     void ATCommand::CommonResponseProcess(std::string const& data) {
@@ -1348,8 +903,8 @@ namespace Util {
 
     void ATCommand::initSerialPort_(unsigned int portNo, unsigned int baud, unsigned int parity, unsigned int databits, unsigned int stopbits) {     
 		serialPort_ = new Util::RS232();
-        m_bPortOpen = serialPort_->OpenPort(portNo, baud, parity, databits, stopbits);
-		serialPort_->SetReadFunc(disptch_);
+        serialPort_->OpenPort(portNo, baud, parity, databits, stopbits);
+        serialPort_->SetReadFunc(disptch_);
     }
 
     void ATCommand::finallySerialPort_() {

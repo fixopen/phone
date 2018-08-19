@@ -31,7 +31,6 @@ public:
 	BOOL m_bIsMainLunder;
 	BOOL m_bIsHaveNote;
 	int m_type;
-	int m_TimeOutAlarmCount;
 
 	CFont m_font;
 	CDateCtrl	m_dtTime;
@@ -50,17 +49,15 @@ public:
 	void SetPreAlarm();
 	void SetNextAlarm();
 	void DeleteCurrentAlarm();
-	void DeleteAlarm();
 	void ShowAlarmDlg(BOOL isNew);
 	void ShowLunarderDlg();
 	void ShowTaboo();		//“Àº…
 	void OnAlarmDateUp();
 	void OnAlarmDateDown();
 	BOOL IsHaveAlarm(int y, int m ,int d);
-	void NewAlarm(BOOL isNew);
 
 	//—°‘Ò¡Â…˘
-	CCEComboBox12_ m_cmbRing;
+	CCEComboBox_ m_cmbRing;
 	void SetRingLst();
 	
 	CMJPGStatic		m_MJPGList;
@@ -68,11 +65,9 @@ public:
 	int             m_curIndex;
 	boost::shared_ptr<Data::Scheduler> m_pScheduler;
 
-	void GetSchedulerCount();
 	void SetCtrlHide();
 	void ShowControl();
 	void ShowWindow_(int nCmdShow);
-	void HideWindow();
 	void SetData(int y, int m, int d, BOOL flag = TRUE);
 	BOOL m_maindeskIn;
 	void SetIn(BOOL isMainDeskIn = TRUE){m_maindeskIn = isMainDeskIn;}

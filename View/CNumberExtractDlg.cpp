@@ -125,16 +125,13 @@ void CNumberExtractDlg::SetNumber(std::vector<CString> vNumber)
 	m_iCurrentPage = 1;
 
 	m_vNumber.swap(vNumber);
-
-	m_MJPGList.SetUnitIsShow(10,false,true);
-	m_MJPGList.SetUnitIsShow(11,false,true);
 	
-	if (m_vNumber.size() > m_nPagesize)
+	for (int i = 0 ; i < m_vNumber.size() ;i++ )
 	{
-		m_MJPGList.SetUnitIsShow(11,true,true);
+		CString t = m_vNumber[i];
 	}
 
-	m_iTotalPage = m_vNumber.size()/m_nPagesize ;
+	m_iTotalPage = vNumber.size()/m_nPagesize ;
 	if (vNumber.size()%m_nPagesize != 1)
 	{
 		m_iTotalPage += 1;
@@ -150,17 +147,6 @@ void CNumberExtractDlg::PageDown()
 		m_iCurrentPage--;
 		return ;
 	}
-	
-	if ((m_iCurrentPage+1) <= m_iTotalPage )
-	{
-		m_MJPGList.SetUnitIsShow(11,true,true);		
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsShow(11,false,true);		
-	}
-	m_MJPGList.SetUnitIsShow(10,true,true);
-
 	ShowNumber();
 }
 
@@ -172,17 +158,6 @@ void CNumberExtractDlg::PageUp()
 		m_iCurrentPage++;
 		return ;
 	}
-	
-	if ((m_iCurrentPage - 1) >= 1)
-	{
-		m_MJPGList.SetUnitIsShow(10,true,true);		
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsShow(10,false,true);		
-	}
-	m_MJPGList.SetUnitIsShow(11,true,true);
-
 	ShowNumber();
 }
 
@@ -207,7 +182,7 @@ void CNumberExtractDlg::ShowNumber()
 		m_MJPGList.SetUnitIsShow(i*10+20,true,false);
 		m_MJPGList.SetUnitText(i*10+21,m_vNumber[(m_iCurrentPage-1)*m_nPagesize+i],false);
 	}
-	
+
 	m_MJPGList.Invalidate();
 }
 void CNumberExtractDlg::ClickNumber(int item)
@@ -297,8 +272,7 @@ void CNumberExtractDlg::OldContact()
 		main->m_pContactDlg->ShowWindow_();
 		
 		ShowWindow_(SW_HIDE);
-		CWnd *p = main->m_pContactDlg;
-		main->AddIcon(Allicon[2],p,false);
+		main->AddIcon(Allicon[2]);
 	}
 
 }

@@ -11,7 +11,7 @@ void Dprintf(CString s)
 	printf("\r\n");
 #else
  //	wprintf(s);
-// 	printf("\r\n");
+ //	printf("\r\n");
 #endif
 }
 
@@ -26,14 +26,18 @@ int  Dprintf(const char *format, ...)
    va_end(ap);   
      
    printf(buf); 
+
 #else
-  //	char   buf[4096];   
-  //	va_list   ap;   
-  
-  //	va_start(ap,   format);   
-  //	int   len   =   vsprintf(buf,   format,   ap);   
-  //	va_end(ap);   
-  //	printf(buf); 
+// 	char   buf[4096];   
+// 	va_list   ap;   
+// 
+// 	va_start(ap,   format);   
+// 	int   len   =   vsprintf(buf,   format,   ap);   
+// 	va_end(ap);   
+// 
+
+
+// 	printf(buf); 
    
 #endif
 
@@ -46,12 +50,11 @@ int DMemprintf(char *title)
 	mem.dwLength=sizeof(mem);     
 	GlobalMemoryStatus(&mem);  
 #ifdef _DEBUG
-//	Dprintf("%s: T/A:  %x B /%x B V T/A: %x B /%x B\r\n", title, mem.dwTotalPhys, mem.dwAvailPhys, mem.dwTotalVirtual, mem.dwAvailVirtual);//mem.dwTotalPhys, mem.dwAvailPhys); 
+	Dprintf("%s: T/A:  %x B /%x B V T/A: %x B /%x B\r\n", title, mem.dwTotalPhys, mem.dwAvailPhys, mem.dwTotalVirtual, mem.dwAvailVirtual);//mem.dwTotalPhys, mem.dwAvailPhys); 
 	return mem.dwAvailPhys; //mem.dwAvailPhys;
 #else
 #endif
 	return mem.dwAvailPhys;
-
 }
 
 int DMemprintf(char *title, DWORD &total, DWORD &avalid)

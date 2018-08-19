@@ -8,7 +8,6 @@
 #include <Ras.h>
 #include <Wininet.h>
 #include <Raserror.h>
-#include "../resource.h"
 
 /*
 艺术源于灵感，而设计源于动机。
@@ -376,16 +375,8 @@ namespace Util {
     class ATCommand : public Observable {
     public:
         static ATCommand* const Instance() {
-			if (0  == VERSION_TYPE)//Uart口
-			{
-				 static ATCommand *result = new ATCommand(2);
-				 return result ;
-			}
-			else
-			{
-				static ATCommand *result = new ATCommand(8);//usb口
-				return result ;
-			}
+            static ATCommand* result = new ATCommand(8);
+            return result;
         }
     public:
         enum ActionState {
@@ -495,12 +486,12 @@ namespace Util {
         void initSerialPort_(unsigned int const portNo = 1, unsigned int const baud = 9600, unsigned int const parity = NOPARITY, unsigned int const databits = 8, unsigned int const stopbits = 1);
         void finallySerialPort_();
         static void disptch_(unsigned char const* const data, unsigned int const length);
+        Util::RS232* serialPort_; // = 0;
 
         HRASCONN rasConn_;
         //int rasConnState_;
-		
-		CRITICAL_SECTION m_csWrite;
-		volatile ActionState actionState_;
+
+        ActionState actionState_;
         Action currentAction_;
         Event event_;
         bool isRegister_;
@@ -508,12 +499,6 @@ namespace Util {
 		std::string  finallyResponse_;
 		//DWORD startTime_;
 		SYSTEMTIME startTime_;
-		
-		//add by qi 20100409
-	public:
-		bool m_bPortOpen;
-		Util::RS232* serialPort_; // = 0;
-
     };
 }
 

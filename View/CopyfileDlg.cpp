@@ -55,6 +55,9 @@ void copyfileDlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 	else if (w == 0x8004) //remove
 	{
+		//BOOL bUsb = DetectDIR(_T("/UsbDisk"));
+		//if( bUsb || DetectDIR(L"/StorageCard"))
+		//{
 		BOOL bExitFlag = FALSE;
 		Sleep(2000);
 		if(m_devStatus == usb_device)
@@ -97,14 +100,32 @@ END_MESSAGE_MAP()
 
 void copyfileDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+	// 	switch(w)
+	// 	{
+	// 	case 1:
+	// 		OnButtonOk();
+	// 		break;
+	// 	case 2:
+	// 		OnButtonCancel();
+	// 		break;
+	// 	}
+	
 	switch(w)
 	{
-	case 1000:
-		OnButtonCancel();
+	case 1:
+	//	OnButtonOk();
+		Import(TRUE);
+			break;
+	case 2:
+	case 5:
+		OnButtonCancel();	 // no 4
 		break;
-	case 1001:
+	case 3:			//替换     no 5
 		Import(TRUE);
 		break;
+	case 4:			//添加     no  6
+		Import(FALSE);
+		break;		
 	}
 	
 }
@@ -114,19 +135,50 @@ BOOL copyfileDlg::OnInitDialog()
 
 	std::string strTemp;
 	CString str;
-	m_procbarSound.Create(WS_CHILD, CRect(200, 287, 200+403, 287 + 30), this, 0xFF10);
+/*
+	m_sticTitle.Create(L"", WS_CHILD|WS_VISIBLE, CRect(42 + 54, 70 + 62, 410 + 54, 102 + 62), this);
+	m_sticTitle.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
+*/
+	m_procbarSound.Create(WS_CHILD, CRect(57 + 54, 190 + 62, 522 + 54, 217 + 62), this, 0xFF10);
 	m_procbarSound.SetParam(0, 0, 4, 1);
 	m_procbarSound.SetPos(0);
-		
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(190, 120, 190+440, 120+270), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\文件备份.xml");
-	m_MJPGList.SetMJPGRect(CRect(190, 120, 190+440, 120+270));
 	
-	m_MJPGList.SetUnitColor(1, font_black, TRUE);
-	m_MJPGList.SetUnitFont(1, font_22);
-	m_MJPGList.SetUnitColor(2, font_black, TRUE);
-	m_MJPGList.SetUnitFont(2, font_22);
+/*
+	strTemp = Data::LanguageResource::Get(Data::RI_COMN_OKBTN);
+	str = strTemp.c_str();
+	m_btnOk.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 78, 434, 98), this, IDC_BUTTON_FIREWALL_OK);
+	m_btnOk.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
+	
+	strTemp = Data::LanguageResource::Get(Data::RI_COMN_CANCELBTN);
+	str = strTemp.c_str();
+	m_btnCancel.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 103, 434, 123), this, IDC_BUTTON_FIREWALL_CANCEL);
+	m_btnCancel.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
+	
+	m_sticBackground.Create(CRect(34, 40, 448, 184), this, 1);
+	
+	TextStruct ts[1];
+	memset(ts, 0, sizeof(TextStruct) * 1);
+	
+	ts[0].txtRect = CRect(8, 0, 160, 20);
+	ts[0].txtFontSize = 16;
+	ts[0].sAlign = DT_LEFT | DT_BOTTOM;
+	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE).c_str(), Data::LanguageResource::Get(Data::RI_SOUND_PLAY_TITLE).length());
+	
+	m_sticBackground.SetTextStruct(ts, 1);
+	*/
+		
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\文件备份.xml");
+	m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
 
+//	m_MJPGList.SetUnitIsShow(0, FALSE);
+	m_MJPGList.SetUnitIsShow(1, FALSE);
+	m_MJPGList.SetUnitIsShow(2, FALSE);
+	m_MJPGList.SetUnitIsShow(3, FALSE);
+	m_MJPGList.SetUnitIsShow(4, FALSE);
+	m_MJPGList.SetUnitIsShow(5, FALSE);
+	m_MJPGList.SetUnitIsShow(6, FALSE);
+	m_MJPGList.SetUnitIsShow(7, FALSE);
 	return TRUE;
 }
 
@@ -134,6 +186,7 @@ void copyfileDlg::SetType(operater_type type)
 {
 	type_ = type;
 	m_procbarSound.ShowWindow(SW_HIDE);
+//	m_MJPGList.SetUnitIsShow(2, FALSE);
 	
 	BOOL bUsb = DetectDIR(_T("/UsbDisk"));
 	if( bUsb || DetectDIR(L"/StorageCard"))
@@ -144,21 +197,43 @@ void copyfileDlg::SetType(operater_type type)
 			m_devStatus = sdcard_device;
 
 		progress_status_ = isexitfile_status;
+		std::string strTemp;
+		CString str;
+		
+		strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR2);
+		str = strTemp.c_str();
+		m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+		
 		switch(type_)
 		{
 		case backup_file:
+		case restore_file:
+		case copy_file:
 		case mp3_out:
 		case photo_out:
-		case bell_out: 
-			m_MJPGList.SetUnitText(2, L"是否将文件备份到移动设备?", FALSE);
+		case bell_out:
+		case show_out:
+			m_MJPGList.SetUnitIsShow(3, TRUE);
+			m_MJPGList.SetUnitIsShow(4, TRUE);
+			m_MJPGList.SetUnitIsShow(5, FALSE);
+			m_MJPGList.SetUnitIsShow(6, FALSE);
+			m_MJPGList.SetUnitIsShow(7, FALSE);
+			m_MJPGList.SetUnitIsDisable(3, FALSE);
 			break;
-		case restore_file:
 		case mp3_in:
 		case photo_in:
 		case bell_in:
-			m_MJPGList.SetUnitText(2, L"是否将文件导入到本地?", FALSE);
+		case show_in:
+			m_MJPGList.SetUnitIsShow(3, FALSE);
+			m_MJPGList.SetUnitIsShow(4, FALSE);
+			m_MJPGList.SetUnitIsShow(5, TRUE);
+			m_MJPGList.SetUnitIsShow(6, TRUE);
+			m_MJPGList.SetUnitIsShow(7, TRUE);
+			m_MJPGList.SetUnitIsDisable(3, FALSE);
+		default:
 			break;
 		}
+
 	}
 	else 
 	{
@@ -166,13 +241,34 @@ void copyfileDlg::SetType(operater_type type)
 		memset(m_chExtPath, 0, sizeof(m_chExtPath));
 
 		progress_status_ = nousb_status;
-		m_MJPGList.SetUnitText(2, L"移动设备不存在,请插入", FALSE);
+		std::string strTemp;
+		CString str;
+		
+		strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR1);
+		str = strTemp.c_str();
+		m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+		
+		m_MJPGList.SetUnitIsDisable(3, FALSE);
+		m_MJPGList.SetUnitIsShow(3, TRUE);
+		m_MJPGList.SetUnitIsShow(4, TRUE);
+		m_MJPGList.SetUnitIsShow(5, FALSE);
+		m_MJPGList.SetUnitIsShow(6, FALSE);
+		m_MJPGList.SetUnitIsShow(7, FALSE);
 	}
-	m_MJPGList.Invalidate();
 }
 
 void copyfileDlg::Import(BOOL bOverflow)
-{			
+{
+	m_MJPGList.SetUnitIsShow(3, TRUE);
+	m_MJPGList.SetUnitIsShow(4, TRUE);
+	m_MJPGList.SetUnitIsShow(5, FALSE);
+	m_MJPGList.SetUnitIsShow(6, FALSE);
+	m_MJPGList.SetUnitIsShow(7, FALSE);
+	m_MJPGList.Invalidate();
+
+	std::string strTemp;
+	CString str;
+				
 	if(progress_status_ == nousb_status || progress_status_ == finish_status)
 	{
 		KillTimer(IDT_COPYFILE_TIMER);
@@ -185,35 +281,64 @@ void copyfileDlg::Import(BOOL bOverflow)
 		TCHAR tchFile[MAX_PATH] = {0};
 		tchLocalFile[0] = L'\0';
 		int nFlags = 0;
+
 		switch(type_ )
 		{
 		case backup_file:
+		case copy_file:
 		case mp3_out:
 		case photo_out:
 		case bell_out:
+		case show_out:
+// 			m_MJPGList.SetUnitIsShow(2, TRUE);
+// 			StartCopyFile();
 			break;
 		case restore_file:
-			{
+			{		
+// 				if(!DetectFile(L"/UsbDisk/mediaphone/backup/mmp.db"))
+// 				{
+// 					progress_status_ = finish_status;
+// 					
+// 					strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+// 					str = strTemp.c_str();
+// 					m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+// 				}
+// 				else			//copy
+// 				{
+// 					m_MJPGList.SetUnitIsShow(2, TRUE);
+// 					StartCopyFile();
+// 					
+// 				}
 				lstrcpy(m_chExtPath, ptchExtDb[m_devStatus]);
+				//lstrcpy(tchFile, ptchExtDb);
 				nFlags = 1;
 			}
 			break;
 		case mp3_in:
 			lstrcpy(m_chExtPath, ptchExtMp3[m_devStatus]);
+			//lstrcpy(tchFile, ptchExtMp3);
 			lstrcpy(tchLocalFile, ptchLocalMp3);
-			//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_mainMp3Dlg_->OnExit_(TRUE);    //退出mp3
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_mainMp3Dlg_->OnExit_(TRUE);    //退出mp3
 			nFlags = 2;
 		    break;
 		case photo_in:
 			lstrcpy(m_chExtPath, ptchExtPhoto[m_devStatus]);
+			//lstrcpy(tchFile, ptchExtPhoto);
 			lstrcpy(tchLocalFile, ptchLocalPhoto);
 			nFlags = 2;
 			break;
 		case bell_in:
 			lstrcpy(m_chExtPath, ptchExtBell[m_devStatus]);
+			//lstrcpy(tchFile, ptchExtBell);
 			lstrcpy(tchLocalFile, ptchLocalBell);
 			nFlags = 2;
 		    break;
+		case show_in:
+			lstrcpy(m_chExtPath, ptchExtShow[m_devStatus]);
+			//lstrcpy(tchFile, ptchExtShow);
+			lstrcpy(tchLocalFile, ptchLocalShow);
+			nFlags = 2;
+			break;
 		default:
 		    return;
 		}
@@ -223,7 +348,10 @@ void copyfileDlg::Import(BOOL bOverflow)
 			if(!DetectFile(m_chExtPath/*tchFile*/))
 			{
 				progress_status_ = finish_status;
-				m_MJPGList.SetUnitText(2, L"文件不存在,无法恢复", TRUE);
+				
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+				str = strTemp.c_str();
+				m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				return;
 			}
 		}
@@ -233,7 +361,9 @@ void copyfileDlg::Import(BOOL bOverflow)
 			{
 				progress_status_ = finish_status;
 				
-				m_MJPGList.SetUnitText(2, L"路径不存在,无法导入", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+				str = strTemp.c_str();
+				m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				return;
 			}
 		}
@@ -243,15 +373,29 @@ void copyfileDlg::Import(BOOL bOverflow)
 			g_bOverWrite = TRUE;
 			if(tchLocalFile[0] != L'\0')
 				lstrcat(tchLocalFile, _T("\\*"));
+			
+		/*
+			switch(type_)
+			{
+			case mp3_in:
+			case photo_in:
+			case bell_in:
+			case show_in:
+				{
+					lstrcat(tchLocalFile, _T("\\*"));
+					DeleteFiles(tchLocalFile);
+				}
+				break;
+			}
+			*/
 		}
 		else
 		{
 			tchLocalFile[0] = L'\0';
 			g_bOverWrite = FALSE;
 		}
-		m_MJPGList.SetUnitText(1, L"此操作会覆盖已有文件", FALSE);
-		m_MJPGList.SetUnitText(2, L"", FALSE);
-		m_MJPGList.Invalidate();
+		
+//		m_MJPGList.SetUnitIsShow(2, TRUE);
 		StartCopyFile();
 
 	}
@@ -274,6 +418,16 @@ void copyfileDlg::OnTimer(UINT nIDEvent)
 {
 	if(nIDEvent == IDT_COPYFILE_TIMER)
 	{
+		//20090408
+		/*
+		static int nCount_ =0;
+		 if(nCount_++%3 == 0)
+		 {
+			 CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+			 main->CancelBalckLightSaveTimer();
+		 }
+		 m_procbarSound.SetPos(nCount_%5);
+		 */
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		main->CancelBalckLightSaveTimer();
 	}
@@ -292,10 +446,10 @@ void copyfileDlg::CopyFileProc(void)
 	if(g_bOverWrite)
 	{
 		g_bOverWrite = FALSE;
-		//if(pDlg->tchLocalFile[0] != L'\0')   //wangzhenxing20100607
-		//{
-		//	DeleteFiles(pDlg->tchLocalFile);
-		//}
+		if(pDlg->tchLocalFile[0] != L'\0')
+		{
+			DeleteFiles(pDlg->tchLocalFile);
+		}
 	}
 	switch(pDlg->type_)
 	{
@@ -303,7 +457,9 @@ void copyfileDlg::CopyFileProc(void)
 		{
 			pDlg->m_procbarSound.SetParam(0, 0, 4, 1);
 			pDlg->progress_status_ = copying_status;			
-			pDlg->m_MJPGList.SetUnitText(2, L"正在备份数据库,请稍后...", TRUE);
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 			pDlg->m_procbarSound.SetPos(1);
 			pDlg->m_nPos = 1;
@@ -323,9 +479,10 @@ void copyfileDlg::CopyFileProc(void)
 			pDlg->KillTimer(IDT_COPYFILE_TIMER);
 			pDlg->m_procbarSound.SetPos(4);
 			
-			pDlg->progress_status_ = finish_status;
-			pDlg->m_MJPGList.SetUnitText(1, L"", TRUE);
-			pDlg->m_MJPGList.SetUnitText(2, L"备份成功", FALSE);
+			pDlg->progress_status_ = finish_status;			
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 		}
 		break;
 	case restore_file:
@@ -336,33 +493,41 @@ void copyfileDlg::CopyFileProc(void)
 			{
 				pDlg->progress_status_ = finish_status;
 				
-				pDlg->m_MJPGList.SetUnitText(2, L"文件不存在,无法恢复数据库", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 			}
 			else			//copy
 			{
 				pDlg->progress_status_ = copying_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"正在恢复数据库,请稍后...", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				
 				pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 				pDlg->m_procbarSound.SetPos(1);
 				pDlg->m_nPos = 1;
 				main->m_pSettingDlg->m_copyfileDlg->SetTimer(IDT_COPYFILE_TIMER, 1000, 0);
 				
+				//CopyFile(L"/UsbDisk/mediaphone/mmp.db", L"/flashdrv/res_dat/mmp.db", FALSE);
 				CopyFile(m_chExtPath, L"/flashdrv/res_dat/mmp.db", FALSE);
 				
-				::SendMessage(main->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 0, 0);
+				::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 0, 0);
 			
-				//main->m_pContactDlg->ShowTypeItems();
-				//main->m_pContactDlg->ShowItemsInList();
-				//main->m_pSoundDlg->ShowItemsInList(-1);
-				//main->m_pContactInfoDlg->ResetTypeInfo();
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowTypeItems();
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->ShowItemsInList(-1);
+			//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ResetTypeInfo();
 
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 				pDlg->m_procbarSound.SetPos(4);
 				
 				pDlg->progress_status_ = finish_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"数据库恢复成功", FALSE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			}
 		}
 		break;
@@ -372,7 +537,7 @@ void copyfileDlg::CopyFileProc(void)
 			pDlg->progress_status_ = copying_status;			
 			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
 			str = strTemp.c_str();
-			pDlg->m_MJPGList.SetUnitBitmap(2, str, "", TRUE) ;
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 			pDlg->m_procbarSound.SetPos(0);
 			pDlg->m_nPos = 1;
@@ -409,45 +574,53 @@ void copyfileDlg::CopyFileProc(void)
 			pDlg->progress_status_ = finish_status;			
 			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
 			str = strTemp.c_str();
-			pDlg->m_MJPGList.SetUnitBitmap(2, str, "", TRUE) ;
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 		}
 		break;
 	case mp3_in:
 		{
-			if(!DetectDIR(m_chExtPath))
+			if(!DetectDIR(m_chExtPath/*L"/UsbDisk/mediaphone/my_music"*/))
 			{
 				pDlg->progress_status_ = finish_status;
-
-				pDlg->m_MJPGList.SetUnitText(2, L"路径不存在,无法导入MP3", TRUE);
+				
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE);
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 			}
 			else			//copy
 			{
 				pDlg->progress_status_ = copying_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"正在导入MP3,请稍后...", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				
 				pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 				pDlg->m_procbarSound.SetPos(0);
 				pDlg->m_nPos = 1;
 				main->m_pSettingDlg->m_copyfileDlg->SetTimer(IDT_COPYFILE_TIMER, 1000, 0);
 				
-				//CopyDirFiles(m_chExtPath, L"/flashdrv/my_music", FALSE);
-				CopyDirFiles(m_chExtPath, L"/flashdrv/my_music");
+				//CopyDirFiles(L"/UsbDisk/mediaphone/my_music", L"/flashdrv/my_music", FALSE);
+				CopyDirFiles(m_chExtPath, L"/flashdrv/my_music", FALSE);
 				
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 			//	pDlg->m_procbarSound.SetPos(4);
 				
 				pDlg->progress_status_ = finish_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"导入完成", FALSE) ;
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			}
 		}
 		break;
 	case mp3_out:
 		{
-			//main->m_pMainDlg->m_mainMp3Dlg_->OnExit_(TRUE);    //退出mp3
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_mainMp3Dlg_->OnExit_(TRUE);    //退出mp3
 
 			pDlg->progress_status_ = copying_status;			
-			pDlg->m_MJPGList.SetUnitText(2, L"正在导出MP3,请稍后...", TRUE);
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 			pDlg->m_procbarSound.SetPos(0);
 			pDlg->m_nPos = 1;
@@ -474,6 +647,11 @@ void copyfileDlg::CopyFileProc(void)
 				}
 				
 				CopyDirFiles(L"/flashdrv/my_music", L"/UsbDisk/mediaphone/my_music");
+
+// 				if (DetectFile(ptcPlayList[m_devStatus]))
+// 				{
+// 					CFile::Remove(ptcPlayList[m_devStatus]);
+// 				}
 			}
 			else if (m_devStatus == sdcard_device)
 			{
@@ -481,48 +659,64 @@ void copyfileDlg::CopyFileProc(void)
 				CreateDirectoryW(L"/StorageCard/mediaphone/my_music", 0);
 				
 				CopyDirFiles(L"/flashdrv/my_music", L"/StorageCard/mediaphone/my_music");
+
+// 				if (DetectFile(ptcPlayList[m_devStatus]))
+// 				{
+// 					CFile::Remove(ptcPlayList[m_devStatus]);
+// 				}
 			}
 
 			pDlg->KillTimer(IDT_COPYFILE_TIMER);
 		//	pDlg->m_procbarSound.SetPos(4);
 			
 			pDlg->progress_status_ = finish_status;			
-			pDlg->m_MJPGList.SetUnitText(2, L"导出完成", FALSE);
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 		}
 		break;
 	case photo_in:
 		{
-			if(!DetectDIR(m_chExtPath))
+			if(!DetectDIR(m_chExtPath/*L"/UsbDisk/mediaphone/my_photo"*/))
 			{
 				pDlg->progress_status_ = finish_status;
 				
-				pDlg->m_MJPGList.SetUnitText(2, L"路径不存在,无法导入相册", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 			}
 			else			//copy
 			{
 				pDlg->progress_status_ = copying_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"正在导入相册,请稍后...", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				
 				pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 				pDlg->m_procbarSound.SetPos(0);
 				pDlg->m_nPos = 1;
 				main->m_pSettingDlg->m_copyfileDlg->SetTimer(IDT_COPYFILE_TIMER, 1000, 0);
 				
-				//CopyDirFiles(m_chExtPath, L"/flashdrv/my_photo", FALSE);
-				CopyDirFiles(m_chExtPath, L"/flashdrv/my_photo");  //wangzhenxing20100607
+				//CopyDirFiles(L"/UsbDisk/mediaphone/my_photo", L"/flashdrv/my_photo", FALSE);
+				CopyDirFiles(m_chExtPath, L"/flashdrv/my_photo", FALSE);
 
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
+		//		pDlg->m_procbarSound.SetPos(4);
 				
 				pDlg->progress_status_ = finish_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"导入完成", FALSE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			}
 		}
 		break;
 	case photo_out:
 		{
 			pDlg->progress_status_ = copying_status;			
-			pDlg->m_MJPGList.SetUnitText(2, L"正在导出相册,请稍后...", TRUE);
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 			pDlg->m_procbarSound.SetPos(0);
 			pDlg->m_nPos = 1;
@@ -546,9 +740,12 @@ void copyfileDlg::CopyFileProc(void)
 			}
 						
 			pDlg->KillTimer(IDT_COPYFILE_TIMER);
+	//		pDlg->m_procbarSound.SetPos(4);
 			
 			pDlg->progress_status_ = finish_status;			
-			pDlg->m_MJPGList.SetUnitText(2, L"导出完成", FALSE);
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 		}
 		break;
 	case bell_in:
@@ -557,34 +754,42 @@ void copyfileDlg::CopyFileProc(void)
 			{
 				pDlg->progress_status_ = finish_status;
 				
-				pDlg->m_MJPGList.SetUnitText(2, L"路径不存在,无法导入振铃音乐", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 			}
 			else			//copy
 			{
 				pDlg->progress_status_ = copying_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"正在导入振铃音乐,请稍后...", TRUE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 				
 				pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 				pDlg->m_procbarSound.SetPos(0);
 				pDlg->m_nPos = 1;
 				main->m_pSettingDlg->m_copyfileDlg->SetTimer(IDT_COPYFILE_TIMER, 1000, 0);
 				
-				//CopyDirFiles(m_chExtPath, L"/flashdrv/my_ring", FALSE);
-				CopyDirFiles(m_chExtPath, L"/flashdrv/my_ring");
+				//CopyDirFiles(L"/UsbDisk/mediaphone/my_ring", L"/flashdrv/my_ring", FALSE);
+				CopyDirFiles(m_chExtPath, L"/flashdrv/my_ring", FALSE);
 				
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 			//	pDlg->m_procbarSound.SetPos(4);
 				
 				pDlg->progress_status_ = finish_status;			
-				pDlg->m_MJPGList.SetUnitText(2, L"导入完成", FALSE);
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			}
 		}
 		break;
 	case bell_out:
 		{
 			pDlg->progress_status_ = copying_status;			
-			pDlg->m_MJPGList.SetUnitText(2, L"正在导出振铃音乐,请稍后...", TRUE);
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 			pDlg->m_procbarSound.ShowWindow(SW_SHOW);
 			pDlg->m_procbarSound.SetPos(0);
 			pDlg->m_nPos = 1;
@@ -608,21 +813,178 @@ void copyfileDlg::CopyFileProc(void)
 			}
 					
 			pDlg->KillTimer(IDT_COPYFILE_TIMER);
+	//		pDlg->m_procbarSound.SetPos(4);
 			
 			pDlg->progress_status_ = finish_status;			
-			pDlg->m_MJPGList.SetUnitText(2, L"导出完成", FALSE);
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+		}
+		break;
+	case show_in:
+		{
+			if(!DetectDIR(m_chExtPath/*L"/UsbDisk/mediaphone/my_show"*/))
+			{
+				pDlg->progress_status_ = finish_status;
+				
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+				pDlg->KillTimer(IDT_COPYFILE_TIMER);
+			}
+			else			//copy
+			{
+				pDlg->progress_status_ = copying_status;			
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+				
+				pDlg->m_procbarSound.ShowWindow(SW_SHOW);
+				pDlg->m_procbarSound.SetPos(1);
+				pDlg->m_nPos = 1;
+				main->m_pSettingDlg->m_copyfileDlg->SetTimer(IDT_COPYFILE_TIMER, 1000, 0);
+				
+				//CopyDirFiles(L"/UsbDisk/mediaphone/my_show", L"/flashdrv/my_show", FALSE);
+				CopyDirFiles(m_chExtPath, L"/flashdrv/my_show", FALSE);
+				
+				pDlg->KillTimer(IDT_COPYFILE_TIMER);
+				pDlg->m_procbarSound.SetPos(4);
+				
+				pDlg->progress_status_ = finish_status;			
+				strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+				str = strTemp.c_str();
+				pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+			}
+		}
+		break;
+	case show_out:
+		{
+			pDlg->progress_status_ = copying_status;			
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+			pDlg->m_procbarSound.ShowWindow(SW_SHOW);
+			pDlg->m_procbarSound.SetPos(1);
+			pDlg->m_nPos = 1;
+			pDlg->SetTimer(IDT_COPYFILE_TIMER, 1000, 0);
+			
+			//在USB上建立目录
+			if (m_devStatus == usb_device)
+			{
+				CreateDirectoryW(L"/UsbDisk/mediaphone", 0);
+				CreateDirectoryW(L"/UsbDisk/mediaphone/my_show", 0);
+				
+				CopyDirFiles(L"/flashdrv/my_show", L"/UsbDisk/mediaphone/my_show");
+			}
+			else if (m_devStatus == sdcard_device)
+			{
+				CreateDirectoryW(L"/StorageCard/mediaphone", 0);
+				CreateDirectoryW(L"/StorageCard/mediaphone/my_show", 0);
+				
+				CopyDirFiles(L"/flashdrv/my_show", L"/StorageCard/mediaphone/my_show");
+
+			}
+							
+			pDlg->KillTimer(IDT_COPYFILE_TIMER);
+			pDlg->m_procbarSound.SetPos(4);
+			
+			pDlg->progress_status_ = finish_status;			
+			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+			str = strTemp.c_str();
+			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
 		}
 		break;
 	}
-	if(pDlg->progress_status_ == finish_status)
-	{
-		pDlg->m_MJPGList.SetUnitText(1, L"", FALSE);
-		pDlg->m_MJPGList.Invalidate();
-		Sleep(2000);
-		pDlg->ShowWindow_(SW_HIDE);
-		//wangzhenxing20100608
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetScreenSaveTimer();
-	}
+	
+	// 	if(pDlg->type_ == backup_file)		//copy
+	// 	{
+	// 		pDlg->progress_status_ = copying_status;			
+	// 		strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+	// 		str = strTemp.c_str();
+	// 		pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+	// 		pDlg->m_procbarSound.ShowWindow(SW_SHOW);
+	// 		pDlg->m_procbarSound.SetPos(1);
+	// 		pDlg->m_nPos = 1;
+	// 		pDlg->SetTimer(IDT_COPYFILE_TIMER, 300, 0);
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone", 0);
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone/backup", 0);
+	// 		CopyFile(L"/flashdrv/res_dat/mmp.db", L"/UsbDisk/mediaphone/backup/mmp.db",  FALSE);
+	// 		
+	// 		pDlg->KillTimer(IDT_COPYFILE_TIMER);
+	// 		pDlg->m_procbarSound.SetPos(4);
+	// 		
+	// 		pDlg->progress_status_ = finish_status;			
+	// 		strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+	// 		str = strTemp.c_str();
+	// 		pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+	// 	}
+	// 	else if(pDlg->type_ == restore_file)
+	// 	{
+	// 		BOOL DetectFile(TCHAR *sDir);
+	// 		if(!DetectFile(L"/UsbDisk/mediaphone/backup/mmp.db"))
+	// 		{
+	// 			pDlg->progress_status_ = finish_status;
+	// 			
+	// 			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_ERROR3);
+	// 			str = strTemp.c_str();
+	// 			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+	// 		}
+	// 		else			//copy
+	// 		{
+	// 			pDlg->progress_status_ = copying_status;			
+	// 			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+	// 			str = strTemp.c_str();
+	// 			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+	// 			
+	// 			pDlg->m_procbarSound.ShowWindow(SW_SHOW);
+	// 			pDlg->m_procbarSound.SetPos(1);
+	// 			pDlg->m_nPos = 1;
+	// 			main->m_pSettingDlg->m_copyfileDlg->SetTimer(IDT_COPYFILE_TIMER, 300, 0);
+	// 			
+	// 			CopyFile(L"/UsbDisk/mediaphone/backup/mmp.db", L"/flashdrv/res_dat/mmp.db", FALSE);
+	// 			
+	// 			pDlg->KillTimer(IDT_COPYFILE_TIMER);
+	// 			pDlg->m_procbarSound.SetPos(4);
+	// 			
+	// 			pDlg->progress_status_ = finish_status;			
+	// 			strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+	// 			str = strTemp.c_str();
+	// 			pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+	// 		}
+	// 	}
+	// 	else if(pDlg->type_ == copy_file)
+	// 	{
+	// 		//录音备份
+	// 		pDlg->progress_status_ = copying_status;			
+	// 		strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_DOWITH);
+	// 		str = strTemp.c_str();
+	// 		pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+	// 		pDlg->m_procbarSound.ShowWindow(SW_SHOW);
+	// 		pDlg->m_procbarSound.SetPos(1);
+	// 		pDlg->m_nPos = 1;
+	// 		pDlg->SetTimer(IDT_COPYFILE_TIMER, 300, 0);
+	// 		
+	// 		//在USB上建立目录
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone", 0);
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone/backup", 0);
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone/backup/flashdrv", 0);
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone/backup/SDcard", 0);
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone/backup/flashdrv/my_record", 0);
+	// 		CreateDirectoryW(L"/UsbDisk/mediaphone/backup/SDcard/my_record", 0);
+	// 		
+	// 		extern void CopyDirFiles(TCHAR *src, TCHAR *des);
+	// 		CopyDirFiles(L"/flashdrv/my_record", L"/UsbDisk/mediaphone/backup/flashdrv/my_record");
+	// 		CopyDirFiles(L"/storagecard/my_record", L"/UsbDisk/mediaphone/backup/SDcard/my_record");
+	// 		
+	// 		pDlg->KillTimer(IDT_COPYFILE_TIMER);
+	// 		pDlg->m_procbarSound.SetPos(4);
+	// 		
+	// 		pDlg->progress_status_ = finish_status;			
+	// 		strTemp = Data::LanguageResource::Get(Data::RI_SETTING_COPYFILE_FINISH);
+	// 		str = strTemp.c_str();
+	// 		pDlg->m_MJPGList.SetUnitBitmap(0, str, "", TRUE) ;
+	// 	}
+	pDlg->m_MJPGList.SetUnitIsDisable(3, FALSE);
 }
 
 void copyfileDlg::StartCopyFile()
@@ -631,3 +993,5 @@ void copyfileDlg::StartCopyFile()
 	hCopyFileThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CopyFileProc, NULL, 0, NULL);
 //	CloseHandle(hCopyFileThread);
 }
+/////////////////////////////////////////////////////////////////////////////
+// copyfileDlg message handlers

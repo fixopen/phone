@@ -57,7 +57,7 @@ namespace Data {
             cmd += "' WHERE [id] = ";
             cmd += Util::StringOp::FromInt(id());
 			extern VOID WriteLog(CHAR* str);
-	//		WriteLog((char *)cmd.c_str());
+			WriteLog((char *)cmd.c_str());
             ExecCommand(cmd);
         }
 

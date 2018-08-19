@@ -4,12 +4,10 @@
 #include "stdafx.h"
 #include "MmsShow.h"
 #include "../Util/stringOp.h"
-#include "../multimediaphone.h"
-#include "../MultimediaPhoneDlg.h"
 
 // ImageShow
 
-int  UnicodeToUTF_8(char* des, wchar_t* src, int size_d, int size_s)
+static int  UnicodeToUTF_8(char* des, wchar_t* src, int size_d, int size_s)
 {
 	// 注意 WCHAR高低字的顺序,低字节在前，高字节在后
 	enum Hex{ Hex80 = 0x80, Hex800 = 0x800, Hex10000 = 0x10000, Hex200000 = 0x200000
@@ -60,15 +58,13 @@ int  UnicodeToUTF_8(char* des, wchar_t* src, int size_d, int size_s)
 		}
 	}
 	return d;
-
 }
-
 // UTF-8的unicode表示方法到unicode的值转换函数
- int utf82unicode(unsigned char  *byte, int index, int count, WCHAR &unicode)
+static int utf82unicode(unsigned char  *byte, int index, int count, WCHAR &unicode)
 {
 	int offset = 0;
 	if (index >= count) return -1;
-	if ( (byte[index] & 0x80) == 0x0) // 一位
+	if ( (byte[index] & 0x80) == 0x0)              //  一位
 	{
 		unicode = byte[index];
 		offset = 1;
@@ -214,11 +210,10 @@ MmsShow::MmsShow()
 
 //	m_cMmsLayOut.regions.clear();
 	m_cAudioName		=	L""		;
-	m_cVideoName		=	L""		;
+	m_cVedioName		=	L""		;
 	m_bFindSiml			=	false	;
 	m_uMmsParPlay		=	0		;
 	m_cImageTime		=	0		;
-	m_uAudioTime		=	0		;
 	m_cImagePath		=   L""		;
 	m_uImageDur			=	0		;//图片的显示时间
 	m_uTxtDur			=	0		;//文本显示时间
@@ -233,13 +228,8 @@ MmsShow::MmsShow()
 	m_uDefImageTime	= 0				;//显示的时间
 	m_uDefTxtItem	= 0				;//正在
 	m_uDefImageItem	= 0				;//显示的时间
-	m_uDefAudioItem = 0				;
 	m_iPageNum		= 0				;//文本页数
-	m_addtionSize	= 0;
 	
-//	m_pMidiPlayer = MediaPlayer::MidiPlayer::GetMidiPlayer();
-	m_isMidInit = FALSE;
-	m_bIsTextClick = FALSE;
 }
 
 MmsShow::~MmsShow()
@@ -254,106 +244,98 @@ BEGIN_MESSAGE_MAP(MmsShow, CWnd)
 	ON_WM_CTLCOLOR()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BTN_PICTURE,OnBtnPicture)
+	ON_BN_CLICKED(IDC_BTN_MUSIC,OnBtnMusic)
+	ON_BN_CLICKED(IDC_BTN_VEDIO,OnBtnVedio)
 	ON_BN_CLICKED(IDC_BTN_NEXT_PAGE,OnBtnNext)
 	ON_BN_CLICKED(IDC_BTN_UP_PAGE,OnBtnUp)
-	ON_BN_CLICKED(IDC_BTN_TEXT_UP,OnBtnTextUp)
-	ON_BN_CLICKED(IDC_BTN_TEXT_DOWN,OnBtnTextDown)
-	ON_MESSAGE(WM_CHARNUMBER,AllFileSize)
-	ON_MESSAGE(WM_STATIC_CLICK, OnPicClicked)
-	ON_WM_LBUTTONDOWN()
+	ON_BN_CLICKED(IDC_BTN_SAVE,OnBtnSave)
 END_MESSAGE_MAP()
 
 // ImageShow message handlers
-
-void MmsShow::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	if(!m_cVideoName.IsEmpty())
-	{
-		StopVideo();
-		CString name = m_cVideoName.Mid( m_cVideoName.ReverseFind('/')+1 );
-		m_cPic.SetTitle(name);
-	}
-}
-
-void MmsShow::OnPicClicked(WPARAM w, LPARAM l)
-{
-	if(!m_cVideoName.IsEmpty())
-	{
-		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		main->playervideo_->SetPlayerOwner(this);
-		main->playervideo_->InitPlayer();
-		main->playervideo_->SetVolume(6);
-		main->playervideo_->PlayerFile(m_cVideoName, CRect(0, 0, 800, 480));
-	}
-}
-
-BOOL MmsShow::PreTranslateMessage(MSG* pMsg)
-{
-	if ( pMsg->message == WM_LBUTTONUP )
-	{
-		if (pMsg->hwnd == m_cTextView.m_hWnd)
-		{
-			m_bIsTextClick = TRUE;
-		}
-	}
-	return CWnd::PreTranslateMessage(pMsg);
-
-}
 
 int MmsShow::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	int titleHeight = 60;
+	int titleHeight = 29;
 	int titleWidth	= 60 ;
-	int textHeight  = 240;
-	int textWidth   = 200;
-	int btntop;
+	int textHeight  = 210;
+	int textWidth   = 200 ;
 
 	m_cPic.Create(L"my static", WS_CHILD|WS_VISIBLE|SS_CENTER, 
-		CRect(0,titleHeight,textWidth,titleHeight+textHeight), this, 0x401);
+		CRect(0,titleHeight,textWidth,titleHeight+textHeight), this,0xFFFF);
 
 	m_cTextView.Create(WS_CHILD|WS_VISIBLE|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN, 
 		CRect(textWidth,titleHeight,textWidth+219,titleHeight+210), this,0xFFFF); 
 
-	m_cMmsTitle.Create(WS_CHILD|WS_VISIBLE|ES_AUTOVSCROLL|ES_MULTILINE,
-		CRect(titleWidth,0,m_cMmscRect.Width(),titleHeight),this,0xFFFF);
-	m_cMmsTitle.SetLimitText(40);
-	
-	btntop = 230 + (m_cMmscRect.Height() - 200 - 60)/2;
-	COLORREF m_bkRGB = ::GetSysColor(COLOR_STATIC);//背景色是STATIC
-//	m_cstcAudio.Create(L"",RGB(128, 128, 128),WS_CHILD|WS_VISIBLE,CRect(0,205,195,235),this);
-	m_cstcAudio.Create(L"",RGB(128, 128, 128),WS_CHILD|WS_VISIBLE,CRect(0,btntop,195,btntop+30),this);
+	m_cMmsTitle.Create(WS_CHILD|WS_VISIBLE|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN,
+		CRect(titleWidth,0,590,titleHeight),this,0xFFFF);
 
+/*	LOGFONT lf;
+	memset(&lf, 0, sizeof(LOGFONT));	// zero out structure
+	lf.lfHeight = 20;					// request a 12-pixel-height font
+	_tcscpy(lf.lfFaceName, _T("Arial")); // request a face name "Arial"	
+	SetTextFont(lf);//设置字体	
+	SetTextColor(RGB(0,255,0),RGB(204, 184, 218));//设置背景色 和 颜色
+	SetTextSize(CPoint(100,100),CSize(400,400));
+	Invalidate(false);
+*/
+/*	m_btnPicture.Create(L"保存图片",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(25,BTN_HEITHT,25+BTN_WIDTH,BTN_HEITHT+40),this,IDC_BTN_PICTURE);
+	m_btnPicture.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
+	m_btnPicture.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
+	m_btnPicture.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
+	m_btnPicture.DrawBorder();
+
+	m_btnMusic.Create(L"保存音乐",WS_CHILD|BS_PUSHBUTTON,CRect(25+BTN_INTERVAL+BTN_WIDTH ,BTN_HEITHT,25+BTN_INTERVAL+BTN_WIDTH*2 ,BTN_HEITHT+40),this,IDC_BTN_MUSIC);
+	m_btnMusic.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
+	m_btnMusic.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
+	m_btnMusic.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
+	m_btnMusic.DrawBorder();
+
+	m_btnVedio.Create(L"保存音频",WS_CHILD|BS_PUSHBUTTON,CRect(25+BTN_INTERVAL*2 + BTN_WIDTH*2 ,BTN_HEITHT,25+BTN_INTERVAL*2 +BTN_WIDTH*3 ,BTN_HEITHT+40),this,IDC_BTN_VEDIO);
+	m_btnVedio.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
+	m_btnVedio.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
+	m_btnVedio.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
+	m_btnVedio.DrawBorder();
+
+	m_btnUpPage.Create(L"上一页",WS_CHILD|BS_PUSHBUTTON,CRect(320 ,BTN_HEITHT,320+80 ,BTN_HEITHT+40),this,IDC_BTN_UP_PAGE);
+	m_btnUpPage.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
+	m_btnUpPage.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
+	m_btnUpPage.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
+	m_btnUpPage.DrawBorder();
+
+	m_btnNextPage.Create(L"下一页",WS_CHILD|BS_PUSHBUTTON,CRect(410 ,BTN_HEITHT,410+80,BTN_HEITHT+40),this,IDC_BTN_NEXT_PAGE);
+	m_btnNextPage.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
+	m_btnNextPage.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
+	m_btnNextPage.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
+	m_btnNextPage.DrawBorder();
+
+	m_btnSave.Create(L"保存编辑",WS_CHILD|BS_PUSHBUTTON,CRect(240 ,BTN_HEITHT,320,BTN_HEITHT+40),this,IDC_BTN_SAVE);
+	m_btnSave.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
+	m_btnSave.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
+	m_btnSave.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
+	m_btnSave.DrawBorder();
+	*/
+
+	COLORREF m_bkRGB = ::GetSysColor(COLOR_STATIC);//背景色是STATIC
 	m_cstcTitle.Create(L"标题:",WS_CHILD|WS_VISIBLE,CRect(0,0,titleWidth,titleHeight),this);
 	m_cstcTitle.SetColor(RGB(0, 0, 0), m_bkRGB);
 	
-	btntop = 230 + (m_cMmscRect.Height() - 200 - 60)/2 ;
-//	m_btnUp.Create(L"上一页",WS_CHILD|BS_PUSHBUTTON,CRect(200,200+5,200+PIC_BTN_WIDTH-5,200+5+34),this,IDC_BTN_TEXT_UP);
-	m_btnUp.Create(L"上翻",WS_CHILD|BS_PUSHBUTTON,CRect(200,btntop,200+PIC_BTN_WIDTH-5,btntop+34),this,IDC_BTN_TEXT_UP);
-	m_btnUp.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
-	m_btnUp.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
-	m_btnUp.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
-	m_btnUp.DrawBorder();
-	
-//	m_btnDown.Create(L"下一页",WS_CHILD|BS_PUSHBUTTON,CRect(200+PIC_BTN_WIDTH,200+5 ,200+PIC_BTN_WIDTH*2-5,200+5+34),this,IDC_BTN_TEXT_DOWN);
-	m_btnDown.Create(L"下翻",WS_CHILD|BS_PUSHBUTTON,CRect(m_cMmscRect.Width() - PIC_BTN_WIDTH -1,btntop ,m_cMmscRect.Width() -1,btntop+34),this,IDC_BTN_TEXT_DOWN);
-	m_btnDown.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
-	m_btnDown.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
-	m_btnDown.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
-	m_btnDown.DrawBorder();
-
 	m_picPathDlg.Create(IDD_PIC_SELECT_DLG,this);
 	m_picPathDlg.MoveWindow(0,0,320,170);
 	m_picPathDlg.CenterWindow();
 
-	m_bHaveInsertPic = false;
+//	m_btnMusic.ShowWindow(TRUE);
+//	m_btnVedio.ShowWindow(TRUE);
+
+//	m_listCtral.Create(IDD_LIST_DLG,this);
+//	m_listCtral.MoveWindow(30,30,600,400);
 
 	return 0;
 }
 
-void MmsShow::GetImage(CString &fl)
+void MmsShow::GetName(CString &fl)
 {
 	fl = m_cImagePath ;
 }
@@ -372,16 +354,13 @@ BOOL MmsShow::Create(DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID
 			NULL,
 			(HBRUSH) ::GetStockObject(WHITE_BRUSH),
 			NULL);
-
 	}
 	catch (CResourceException* pEx)
 	{
 		AfxMessageBox(_T("Couldn't register class! (Already registered?)"));
 		pEx->Delete();
 	}
-	
-	m_cMmscRect = rect ;
-	
+		
 	BOOL b =  CWnd::CreateEx(WS_EX_STATICEDGE, (LPCTSTR)strMyClass, NULL, dwStyle|WS_CHILD, rect, pParentWnd, nID);
 
 	return b ;
@@ -410,7 +389,7 @@ void MmsShow::SetImagePos(CRect &rct)
 
 void MmsShow::SetImageShow(BOOL show /* = true */)
 {	
-	if (show && m_cMmsRegion.size() > 1)      //lxz
+	if (show)      //lxz
 	{	
 		CRect rct ;
 		rct.left	= m_cMmsRegion[1].left ;
@@ -429,83 +408,75 @@ void MmsShow::SetImageShow(BOOL show /* = true */)
 
 void MmsShow::SetTextColor(COLORREF bkclor,COLORREF txtclor)
 {
-	//	m_cTextView.SetTextColor(bkclor,txtclor);
+//	m_cTextView.SetTextColor(bkclor,txtclor);
 }
 void MmsShow::SetTextContent(std::wstring const& text)
 {
 	m_cTextView.SetWindowText(text.c_str());
+//	m_cTextView.SetTextContent(text);
 }
 void MmsShow::SetTextFont(const LOGFONT &font)
 {
-	//	m_cTextView.SetFont(font);
+//	m_cTextView.SetFont(font);
 }
 void MmsShow::SetTextSize(CPoint const& origin, CSize const& size)
 {
-	//	m_cTextView.SetTextSize(origin,size);
+//	m_cTextView.SetTextSize(origin,size);
 }
 void MmsShow::SetTextUpdate()
 {
-	//	m_cTextView.Update();
-}
-void MmsShow::TextScrollDown()
-{
-	m_cTextView.SendMessage(WM_VSCROLL, MAKELONG(SB_PAGEDOWN,0),NULL);
-	m_cTextView.Invalidate();
-}
-
-void MmsShow::TextScrollUp()
-{
-	m_cTextView.SendMessage(WM_VSCROLL, MAKELONG(SB_PAGEUP,0),NULL);
-	m_cTextView.Invalidate();
+//	m_cTextView.Update();
 }
 
 void MmsShow::FromListName(CString const allpath)
-{
+{ 
+// 	CFile file;
+// 	if (file.Open(allpath,CFile::modeRead,NULL))
+// 	{
+// 		ULONGLONG dwLength = file.GetLength();
+// 		if (dwLength <= 48 * 1024)//文件小于48K
+// 		{
+// 			m_cImagePath = allpath ;
+// 		}
+// 		else
+// 		{
+// 			m_picPathDlg.SetClue(L"图片太大,不能插入!");
+// 			m_picPathDlg.SetTimer(PIC_SAVE_TIMER,1000,NULL);
+// 			return;
+// 
+// 		}
+// 	}
+
+	m_cImagePath = allpath ;
+
 	InitialDefRegion();//设置缺省的区域
-	if(allpath.Right(4) == L".3gp" || allpath.Right(4) == L".3GP" || allpath.Right(4) == L".mp4" || allpath.Right(4) == L".MP4")
-	{
-		InsertVideo(allpath);
-	}
-	else
-	{
-		m_cImagePath = allpath ;
-	}
 	InsertPicture();//插入图片
 }
-
+	
 void MmsShow::SetTextShow(BOOL show /* = true */)
 {	
-	CRect rct ;
-	if (m_cMmsRegion.size() > 0)
-	{
-		rct.left	= m_cMmsRegion[0].left ;
-		rct.top		= m_cMmsRegion[0].top;
-		rct.right	= m_cMmsRegion[0].left + m_cMmsRegion[0].width;
-		rct.bottom	= m_cMmsRegion[0].top  + m_cMmsRegion[0].height;
-	}
 
+	CRect rct ;
+	rct.left	= m_cMmsRegion[0].left ;
+	rct.top		= m_cMmsRegion[0].top;
+	rct.right	= m_cMmsRegion[0].left + m_cMmsRegion[0].width;
+	rct.bottom	= m_cMmsRegion[0].top  + m_cMmsRegion[0].height;
 	m_cTextView.MoveWindow(rct.left,rct.top,rct.Width(),rct.Height());
 
 	if (show)
 	{
 		std::wstring ws ;
-		ws = m_cTxtContent ;
+		ws		=	m_cTxtContent ;
 		SetTextContent(ws);	
 		m_cTextView.SetWindowText(ws.c_str());
 	}
 	m_cTextView.ShowWindow(show);
 
 }
-
 BOOL MmsShow::FindFileSmil(std::wstring const filename)
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	main->m_pSMSListDlg->m_pMmsReadDlg->m_currentPage = 0;
-	main->m_pSMSListDlg->m_pMmsReadDlg->m_pageCount = 0;
-
+{  
 	Clear();
 	SetMmsRead();
-	CString LowerStr;
 	CString	str = filename.c_str();
 	CString str1 = str ;//保存全路径
 	m_cSmilPath	 = str ;
@@ -541,43 +512,48 @@ BOOL MmsShow::FindFileSmil(std::wstring const filename)
 					
 					if (m_cMmsPar.size() > 1)//有两个以上par,显示上下页
 					{
-
+//						m_btnNextPage.ShowWindow(TRUE);
+//						m_btnUpPage.ShowWindow(TRUE);
 					}
-					main->m_pSMSListDlg->m_pMmsReadDlg->m_currentPage = 1;
-					main->m_pSMSListDlg->m_pMmsReadDlg->m_pageCount = m_cMmsPar.size();  //wangzhenxing20100422
-
+					
 					m_bFindSiml	= TRUE ;
 					GetMmsRegionInfo();
 					InitialRegion();
 					SetImageShow(true);
-					SetAudioShow();
 					SetTextShow(true);
-					SetVideoShow(true);
+					if(m_cMmsPar.size() > 1)
+					{
+						SetTimer(PAR_SHOW_TIMER,1000,NULL);
+						SetTimer(IMAGE_TIMER,1000,NULL);
+						SetTimer(TXT_TIMER,1000,NULL);					
+					}
 					return	TRUE ;
 
 				}
-				
-				LowerStr = strfl;
-				LowerStr.MakeLower();
-				if(LowerStr.Find(L".txt") > 0)
+
+				if(strfl.Find(L".txt") > 0)
 				{						
 					CFile f;
 					CFileException e;
 					//char wr[1000]	;
 					if( f.Open(str1 +strfl, CFile::modeRead, &e ) )
-					{	
-						int length = f.GetLength();
+					{
 						char *wr ;
-						wr = new CHAR[length+1];//10k
-						memset(wr,0,length+1);
+						wr = new CHAR[1024*10];//10k
+						memset(wr,0,1024*10);
 
 						wchar_t *uicode = NULL ;//转化成uicode
-						uicode = new wchar_t[length+1];//10k
-						memset(uicode,0,sizeof(wchar_t)*(length+1));
+						uicode = new wchar_t[1024*10];//10k
+						memset(uicode,0,1024*10);
 						
-						
+						int length = f.GetLength() ;
 						f.Read(wr,length);
 						wr[length] = '\0';
+					//	m_cTxtContent = wr;//CString 不能转化成 char *指针
+					//	wchar_t uicode[1000] ;//转化成uicode
+					//	memset(uicode,0,2000);
+						
+					//	memset(uicode,0,1024*8*20);
 						int index = 0 ;
 						int count = strlen(wr);//
 						int iNum =0 ;
@@ -596,24 +572,10 @@ BOOL MmsShow::FindFileSmil(std::wstring const filename)
 					}
 
 				}
-				
-				if(LowerStr.Find(L".jpg") > 0 || LowerStr.Find(L".bmp") > 0 ||
-				   LowerStr.Find(L".png") > 0 || LowerStr.Find(L".gif") > 0)
+				if(strfl.Find(L".jpg") > 0 || strfl.Find(L".bmp") > 0 || strfl.Find(L".png") > 0 || strfl.Find(L".gif") > 0)
 				{
 					m_cImagePath		= str1 + strfl;
 					m_cDefImagePath.push_back(str1 + strfl);
-				}
-				
-				if ( LowerStr.Find(L".wav") > 0 || LowerStr.Find(L".mid") > 0 ||
-					LowerStr.Find(L".midi") > 0 || LowerStr.Find(L".amr") > 0)
-				{
-					m_cDefAudio.push_back(str1 + strfl);
-				}
-				
-				if(LowerStr.Find(L".3gp") > 0 || LowerStr.Find(L".mp4") > 0)
-				{
-					m_cVideoName		= str1 + strfl;
-					m_cDefVideo.push_back(str1 + strfl);
 				}
 			}
 		}
@@ -631,17 +593,15 @@ BOOL MmsShow::FindFileSmil(std::wstring const filename)
 //			m_btnNextPage.ShowWindow(TRUE);//有两个以上par,显示上下页
 //			m_btnUpPage.ShowWindow(TRUE);	
 		}
-		
-		main->m_pSMSListDlg->m_pMmsReadDlg->m_currentPage = 1;
-		main->m_pSMSListDlg->m_pMmsReadDlg->m_pageCount = 1;
 
 		m_bFindSiml	= FALSE;
 		GetDefRegionInfo();
 		InitialDefRegion();
 		SetImageShow(true);
-		SetAudioShow();
 		SetTextShow(true);
-		SetVideoShow(true);
+		SetTimer(DEF_IMAGE_SHOW,2000,NULL);
+		SetTimer(DEF_TXT_SHOW,2000,NULL);
+
 	}
 	return TRUE	;
 
@@ -650,8 +610,7 @@ void MmsShow::SetTransit(std::wstring const filename)
 {
 	Clear();
 
-	CString LowerStr;
-	m_uState  =	2 ;
+	m_uState  =		2 ;
 	m_cMmsTitle.SetReadOnly(FALSE);
 	m_cTextView.SetReadOnly(FALSE);
 
@@ -689,48 +648,54 @@ void MmsShow::SetTransit(std::wstring const filename)
 					
 					m_bFindSiml	= TRUE ;
 					GetMmsRegionInfo();
-					ShowTextBtn();
 					InitialRegion();
 					SetImageShow(true);
 					SetTextShow(true);
-					SetAudioShow();
-					SetVideoShow(true);
-					MsgPost();
-					m_addtionSize = m_cMmsPar.size() * 0.2;
-					if(m_addtionSize == 0)
-					{
-						m_addtionSize = 0.2;
-					}
-					::PostMessage(m_pHwnd,WM_PAR_SIZE,m_iPageNum,m_cMmsPar.size()); 
+					
 					return ;
 
 				}
-				
-				LowerStr = strfl;
-				LowerStr.MakeLower();
 
-				if(LowerStr.Find(L".txt") > 0 )
+				if(strfl.Find(L".txt") > 0)
 				{						
-					m_cDefTxtContent.push_back(str1 + strfl);
-				}
+					CFile f;
+					CFileException e;
+					if( f.Open(str1 +strfl, CFile::modeRead, &e ) )
+					{
+						char *wr ;
+						wr = new CHAR[1024*10];//10k
+						memset(wr,0,1024*10);
 
-				if(LowerStr.Find(L".jpg") > 0 || LowerStr.Find(L".bmp") > 0 ||
-					LowerStr.Find(L".png") > 0 || LowerStr.Find(L".gif") > 0)
+						wchar_t *uicode = NULL ;//转化成uicode
+						uicode = new wchar_t[1024*10];//10k
+						memset(uicode,0,1024*10);
+						
+						int length = f.GetLength() ;
+						f.Read(wr,length);
+						wr[length] = '\0';
+
+						int index = 0 ;
+						int count = strlen(wr);//
+						int iNum =0 ;
+						int offset =0 ;
+						while( offset!= -1 && index < count)
+						{
+							offset  = utf82unicode((unsigned char *)wr,index,count,uicode[iNum]);
+							index += offset;
+							iNum++;					
+						}
+						m_cTxtContent = uicode ;
+						m_cDefTxtContent.push_back(m_cTxtContent);
+						delete []wr ;
+						delete []uicode ;
+						f.Close();
+					}
+
+				}
+				if(strfl.Find(L".jpg") > 0 || strfl.Find(L".bmp") > 0 || strfl.Find(L".png") > 0 || strfl.Find(L".gif") > 0)
 				{
-					m_cImagePath = str1 + strfl;
+					m_cImagePath		= str1 + strfl;
 					m_cDefImagePath.push_back(str1 + strfl);
-				}
-
-				if ( LowerStr.Find(L".wav") > 0 || LowerStr.Find(L".mid") > 0 ||
-					LowerStr.Find(L".midi") > 0 || LowerStr.Find(L".amr") > 0)
-				{
-					m_cDefAudio.push_back(str1 + strfl);
-				}
-				
-				if(LowerStr.Find(L".3gp") > 0 || LowerStr.Find(L".mp4") > 0)
-				{
-					m_cVideoName = str1 + strfl;
-					m_cDefVideo.push_back(str1 + strfl);
 				}
 			}
 		}
@@ -739,47 +704,50 @@ void MmsShow::SetTransit(std::wstring const filename)
 	
 	if(!m_bFindSiml)//没有smil文件
 	{  	
-		int MaxLength = 0;
+		int length = 0;
 		MMS::MMSWarp::MMS_PAR par;
 		MMS::MMSWarp::MMS_SRC src ;
-		MaxLength = MAX(MAX(m_cDefImagePath.size(),m_cDefTxtContent.size()),m_cDefAudio.size());
-		MaxLength = MaxLength>m_cDefVideo.size() ? MaxLength:m_cDefVideo.size();
-
-		if (MaxLength == m_cDefImagePath.size())
+		
+		if (m_cDefImagePath.size() > m_cDefTxtContent.size())
 		{
-			src.type	= MMS::MMSWarp::stImge ;
+			length = m_cDefTxtContent.size();
 		}
-		else if (MaxLength == m_cDefTxtContent.size())
+		else
+		{
+			length = m_cDefImagePath.size();
+		}
+
+		for (int i = 0  ; i < length ;i++)
 		{
 			src.type	= MMS::MMSWarp::stText ;
+			src.name	= Util::StringOp::FromCString(m_cDefTxtContent[i]);
+			src.alt		= "";
+			src.dur		= 5;
+			src.end		= 5;
+			src.region	= "";
+			src.begin	= 0 ;
+			
+			par.srcs.push_back(src);
+			
+			src.type	= MMS::MMSWarp::stImge ;
+			src.name	= Util::StringOp::FromCString(m_cDefImagePath[i]);
+			src.alt		= "";
+			src.dur		= 5;
+			src.end		= 5;
+			src.region	= "";
+			src.begin	= 0 ;
+			
+			par.srcs.push_back(src);
+
+			m_cMmsPar.push_back(par);
+			par.srcs.clear();
+
 		}
-		else if (MaxLength == m_cDefAudio.size())
+
+		for (;i < m_cDefImagePath.size() ;i++)
 		{
-			src.type	= MMS::MMSWarp::stAudio ;
-		}
-		else if(MaxLength == m_cDefVideo.size())
-		{
-			src.type	= MMS::MMSWarp::stVideo ;
-		}
-		
-		for (int i = 0  ; i < MaxLength ;i++)
-		{	
-			if (src.type == MMS::MMSWarp::stText)
-			{
-				src.name	= Util::StringOp::FromCString(m_cDefTxtContent[i]);
-			}
-			else if (src.type == MMS::MMSWarp::stImge)
-			{
-				src.name	= Util::StringOp::FromCString(m_cDefImagePath[i]);
-			}
-			else if (src.type == MMS::MMSWarp::stAudio)
-			{
-				src.name	= Util::StringOp::FromCString(m_cDefAudio[i]);
-			}
-			else if(src.type == MMS::MMSWarp::stVideo)
-			{
-				src.name	= Util::StringOp::FromCString(m_cDefVideo[i]);
-			}
+			src.type	= MMS::MMSWarp::stImge ;
+			src.name	= Util::StringOp::FromCString(m_cDefImagePath[i]);
 			src.alt		= "";
 			src.dur		= 5;
 			src.end		= 5;
@@ -788,174 +756,64 @@ void MmsShow::SetTransit(std::wstring const filename)
 			
 			par.srcs.push_back(src);
 			m_cMmsPar.push_back(par);
+			par.srcs.clear();
 
 		}
-		
-		if (src.type != MMS::MMSWarp::stImge){
-			for ( i = 0 ; i < m_cDefImagePath.size() ;i++){
-				src.type	= MMS::MMSWarp::stImge ;
-				src.name	= Util::StringOp::FromCString(m_cDefImagePath[i]);
-				src.alt		= "";
-				src.dur		= 5;
-				src.end		= 5;
-				src.region	= "";
-				src.begin	= 0 ;
-				
-				m_cMmsPar[i].srcs.push_back(src);
-				
-			}
-		}
-		
-		if (src.type != MMS::MMSWarp::stAudio){
-			for (i = 0;i < m_cDefAudio.size() ;i++){
-				src.type	= MMS::MMSWarp::stAudio ;
-				src.name	= Util::StringOp::FromCString(m_cDefAudio[i]);
-				src.alt		= "";
-				src.dur		= 5;
-				src.end		= 5;
-				src.region	= "";
-				src.begin	= 0 ;
-				
-				m_cMmsPar[i].srcs.push_back(src);				
-				
-			}
-		}
-		
-		if (src.type != MMS::MMSWarp::stText){
-			for (i = 0;i < m_cDefTxtContent.size() ;i++){
-				src.type	= MMS::MMSWarp::stText ;
-				src.name	= Util::StringOp::FromCString(m_cDefTxtContent[i]);
-				src.alt		= "";
-				src.dur		= 5;
-				src.end		= 5;
-				src.region	= "";
-				src.begin	= 0 ;
-				
-				m_cMmsPar[i].srcs.push_back(src);				
-				
-			}
-		}
-		
-		if (src.type != MMS::MMSWarp::stVideo)
+
+		for (;i < m_cDefTxtContent.size() ;i++)
 		{
-			for ( i = 0 ; i < m_cDefVideo.size() ;i++)
-			{
-				src.type	= MMS::MMSWarp::stVideo ;
-				src.name	= Util::StringOp::FromCString(m_cDefVideo[i]);
-				src.alt		= "";
-				src.dur		= 5;
-				src.end		= 5;
-				src.region	= "";
-				src.begin	= 0 ;
-				
-				m_cMmsPar[i].srcs.push_back(src);
-				
-			}
-		}
+			src.type	= MMS::MMSWarp::stText ;
+			src.name	= Util::StringOp::FromCString(m_cDefTxtContent[i]);
+			src.alt		= "";
+			src.dur		= 5;
+			src.end		= 5;
+			src.region	= "";
+			src.begin	= 0 ;
+			
+			par.srcs.push_back(src);
+			m_cMmsPar.push_back(par);
+			par.srcs.clear();
 
+		}
+		
 		GetMmsRegionInfo();
-		ShowTextBtn();
 		InitialRegion();
 		SetImageShow(true);
 		SetTextShow(true);
-		SetAudioShow();
-		SetVideoShow(true);
-		MsgPost();
 	}
-	
-	m_addtionSize = m_cMmsPar.size() * 0.2;
-	if(m_addtionSize == 0)
-	{
-		m_addtionSize = 0.2;
-	}
+
 }
 
 void MmsShow::InsertPicture()
 {
-	if(!m_cVideoName.IsEmpty())
-	{
-		SetVideoShow();
-	}
-	else
-		SetImageShow();
+	SetImageShow();
 	if (m_cImagePath.Find(L".JPG") >0 ||m_cImagePath.Find(L".jpg") >0 ||
 		m_cImagePath.Find(L".PNG") >0 ||m_cImagePath.Find(L".png") >0 ||
 		m_cImagePath.Find(L".GIF") >0 ||m_cImagePath.Find(L".gif") >0 ||
-		m_cImagePath.Find(L".3gp") >0 ||m_cImagePath.Find(L".3GP") >0 ||
-		m_cImagePath.Find(L".mp4") >0 ||m_cImagePath.Find(L".MP4") >0 ||
 		m_cImagePath.Find(L".BMP") >0 ||m_cImagePath.Find(L".bmp") >0)
 	{
-		::PostMessage(m_pHwnd,WM_IMAGE,0,0);//删除图片
-		m_bHaveInsertPic = true;
+//		m_btnPicture.SetWindowText(L"删除图片");
+		m_uState = 3;
 	}
 	
 }
 void MmsShow::ClosePicture()
 {
-	if(!m_cVideoName.IsEmpty())
-	{
-		StopVideo();
-		DeleteVideo();
-	}
-	else
-	{
-		m_cImagePath = L"";
-		SetImageShow();//重新加载
-	}
-	::PostMessage(m_pHwnd,WM_IMAGE,1,0);//插入图片
+	m_cImagePath = L"";
+	SetImageShow();//重新加载
 	m_cPic.Invalidate(FALSE);
-	m_bHaveInsertPic = false;
 }
-
-void MmsShow::SavePicture()
-{
-	if (1 == m_uState)//只读状态,保存图片有两个路径需要选择。
-	{
-		if(0 == m_picPathDlg.m_uSaveType)
-		{
-			if (m_cImagePath != L"")
-			{
-				m_picPathDlg.ShowWindow(TRUE);
-				m_picPathDlg.GetMainWnd(this);
-				m_picPathDlg.SetState(1);
-				CString name = GetFileName(m_cImagePath);
-				m_picPathDlg.SetCopyPath(m_cImagePath,name);
-			}
-		}
-		else if(1 == m_picPathDlg.m_uSaveType)
-		{
-			if(m_cAudioName != L"")
-			{
-				m_picPathDlg.ShowWindow(TRUE);
-				m_picPathDlg.GetMainWnd(this);
-				m_picPathDlg.SetState(1);
-				CString name = GetFileName(m_cAudioName);
-				m_picPathDlg.SetCopyPath(m_cAudioName,name);
-			}
-		}
-		else if(2 == m_picPathDlg.m_uSaveType)
-		{
-			
-		}
-		
-	}
-
-}
-
 void MmsShow::Clear()
 {   
 	KillTimer(IMAGE_TIMER);
 	KillTimer(PAR_SHOW_TIMER);
 	KillTimer(TXT_TIMER);
-	KillTimer(AUDIO_TIMER);
 	KillTimer(DEF_TXT_SHOW);
 	KillTimer(DEF_IMAGE_SHOW);
-	KillTimer(DEF_AUDIO_TIMER);
-	
+
 	m_iPageNum			=	0		;
 	m_uMmsParPlay		=	0		;
 	m_cImageTime		=	0		;
-	m_uAudioTime		=	0		;
 	m_cImagePath		=   L""		;
 	m_uImageDur			=	0		;//图片的显示时间
 	m_uTxtDur			=	0		;//文本显示时间
@@ -965,39 +823,16 @@ void MmsShow::Clear()
 	m_uParTime			=	0		;//
 	m_bFindSiml			=	FALSE	;//没找到
 	m_cTitleName		=	L""		;
-	m_cAudioName		=   L""		;//
-	m_cVideoName		=	L""		;
-	m_addtionSize		=	0;
-	m_cPic.SetTitle(L"");
-
 	m_cMmsTitle.SetWindowText(L"");
-	m_cstcAudio.SetWindowText(L"");
-    m_cstcAudio.ShowWindow(false);
-	//wangzhenxing20100610
-	m_cTextView.SetWindowText(L"");
-	SetImageFileName(L"");
-	
-	m_btnDown.ShowWindow(false);
-	m_btnUp.ShowWindow(false);
-
+    
 	if (m_cDefImagePath.size() > 0)
 	{
-		m_cDefImagePath.clear()	;//没有SMIL文件，加载该路径的全部图片
+		m_cDefImagePath.clear()			;//没有SMIL文件，加载该路径的全部图片
 
 	}
 	if (m_cDefTxtContent.size() >0)
 	{
-		m_cDefTxtContent.clear();//没有SMIL文件，加载文本
-	}
-
-	if (m_cDefAudio.size() > 0)
-	{
-		m_cDefAudio.clear();	
-	}
-
-	if (m_cDefVideo.size() > 0)
-	{
-		m_cDefVideo.clear();	
+		m_cDefTxtContent.clear()		;//没有SMIL文件，加载文本
 	}
 
 	if (m_cMmsPar.size() > 0)//清除
@@ -1006,308 +841,132 @@ void MmsShow::Clear()
 	}
 	if (m_cMmsRegion.size() > 0)
 	{
-		extern VOID WriteMyLog_(char *ptr, int size);
-		WriteMyLog_("mms_Region3",strlen("mms_Region3")); 
 		m_cMmsRegion.clear();
 	}
-	
-	m_vText.resize(PAR_SIZE);
-	for (int i = 0 ; i < PAR_SIZE;i++)
-	{
-		m_vText[i].second = L"";
-	}
-
 	m_uDefTxtTime	= 0				;//文本显示了多长时间
 	m_uDefImageTime	= 0				;//显示的时间
 	m_uDefTxtItem	= 0				;//正在
 	m_uDefImageItem	= 0				;//显示的时间
-	m_uDefAudioItem = 0;
-
 }
 void MmsShow::InitialDefRegion()
 {
 	if (m_cMmsRegion.size() > 0)
 	{
-		extern VOID WriteMyLog_(char *ptr, int size);
-		WriteMyLog_("mms_Region2",strlen("mms_Region2")); 
 		m_cMmsRegion.clear();
-	}	
-	
-	int textWidth = 0			;
-	int textHeight = 0			;
-	int textLeft = 	0			;
-	int textTop	= TEXT_TOP		;
-
-	int imageWidth	= 0			;
-	int imageHeight	= 0			;
-	int imageLeft	= 0			;
-	int imageTop	= TEXT_TOP	;
-	
-	if (1 == m_uState)
-	{	
-		int btntop = 230 + (m_cMmscRect.Height() - 200 - 60)/2;
-		m_cstcAudio.MoveWindow(0,btntop,195,30);
-		if ((!m_cImagePath.IsEmpty() || !m_cVideoName.IsEmpty()) && m_cTxtContent.IsEmpty())
-		{
-			textWidth	= 0;
-			textHeight  = 0;
-			textLeft	= 0;
-			textTop     = 0;
-			
-			imageWidth  = m_cMmscRect.Width();
-			imageHeight = IMAGE_REGION_HEIGHT;
-			imageLeft	= 0;
-			imageTop	= TEXT_TOP;
-			
-		}
-		else if ((m_cImagePath.IsEmpty() && m_cVideoName.IsEmpty()) && !m_cTxtContent.IsEmpty())
-		{
-			textWidth	= m_cMmscRect.Width();
-			textHeight  = IMAGE_REGION_HEIGHT;
-			textLeft	= 0;
-			textTop    = TEXT_TOP;
-			
-			imageWidth  = 0;
-			imageHeight = 0;
-			imageLeft	= 0;
-			imageTop    = 0;
-		}
-		else if ((!m_cImagePath.IsEmpty() || !m_cVideoName.IsEmpty()) && !m_cTxtContent.IsEmpty())
-		{
-			textWidth	= m_cMmscRect.Width() - IMAGE_REGION_WIDTH;;
-			textHeight  = IMAGE_REGION_HEIGHT;
-			textLeft	= IMAGE_REGION_WIDTH;
-			textTop		= TEXT_TOP;
-			
-			imageWidth  = IMAGE_REGION_WIDTH;
-			imageHeight = IMAGE_REGION_HEIGHT;
-			imageLeft	= 0;
-			imageTop	= TEXT_TOP;
-		}
-		else if ((m_cImagePath.IsEmpty() && m_cVideoName.IsEmpty()) && m_cTxtContent.IsEmpty())
-		{
-			if (!m_cAudioName.IsEmpty())
-			{	
-				CRect rect;
-				int xbegin , ybegin ; 
-				m_cstcAudio.GetClientRect(rect);
-				
-				xbegin = (m_cMmscRect.Width() - rect.Width())/2;
-				ybegin = (m_cMmscRect.Height() - rect.Height())/2;
-				m_cstcAudio.MoveWindow(xbegin,ybegin,rect.Width(),rect.Height());//最中间
-
-			}
-		}
 	}
-	
-	if (2 == m_uState || 3 == m_uState )
-	{
-		textWidth	= m_cMmscRect.Width() - IMAGE_REGION_WIDTH;;
-		textHeight  = IMAGE_REGION_HEIGHT;
-		textLeft	= IMAGE_REGION_WIDTH;
-		textTop		= TEXT_TOP;
-		
-		imageWidth  = IMAGE_REGION_WIDTH;
-		imageHeight = IMAGE_REGION_HEIGHT;
-		imageLeft	= 0;
-		imageTop	= TEXT_TOP;
-	}
-	
-	MMS::MMSWarp::MMS_REGION	region;
+	MMS::MMSWarp::MMS_REGION		region			;//文本
 	region.id		= "text"						;
-	region.width	= textWidth						;
-	region.height	= textHeight					;
+	region.width	= TEXT_REGION_WIDTH				;
+	region.height	= TEXT_REGION_HEIGHT			;
 	region.fit		= ""							;
-	region.left		= textLeft						;
-	region.top		= textTop						;
-	
-	MMS::MMSWarp::MMS_REGION		region1	;
+	region.left		= IMAGE_REGION_WIDTH			;
+	region.top		= TEXT_TOP						;
+	m_cMmsRegion.push_back(region)					;		
+
+	MMS::MMSWarp::MMS_REGION		region1			;//图片
 	region1.id		= "image"						;
-	region1.width	= imageWidth					;
-	region1.height	= imageHeight					;
+	region1.width	= IMAGE_REGION_WIDTH			;
+	region1.height	= IMAGE_REGION_HEIGHT			;
 	region1.fit		= ""							;
-	region1.left	= imageLeft						;
-	region1.top		= imageTop						;
+	region1.left	= 0								;
+	region1.top		= TEXT_TOP						;
+	m_cMmsRegion.push_back(region1)					;
 
-	m_cMmsRegion.push_back(region)	;
-	m_cMmsRegion.push_back(region1)	;
-
-
-// 	int textWidth	= m_cMmscRect.Width() - IMAGE_REGION_WIDTH;
-// 	int textHeight  = IMAGE_REGION_HEIGHT ;
-// 
-// 	MMS::MMSWarp::MMS_REGION	region				;//文本
-// 	region.id		= "text"						;
-// 	region.width	= textWidth						;
-// 	region.height	= textHeight					;
-// 	region.fit		= ""							;
-// 	region.left		= IMAGE_REGION_WIDTH			;
-// 	region.top		= TEXT_TOP						;
-// 	m_cMmsRegion.push_back(region)					;		
-
-// 	MMS::MMSWarp::MMS_REGION		region1			;//图片
-// 	region1.id		= "image"						;
-// 	region1.width	= IMAGE_REGION_WIDTH			;
-// 	region1.height	= IMAGE_REGION_HEIGHT			;
-// 	region1.fit		= ""							;
-// 	region1.left	= 0								;
-// 	region1.top		= TEXT_TOP						;
-//	m_cMmsRegion.push_back(region1)					;
-	
+}
+void MmsShow::InitialDefPar()
+{	
+	MMS::MMSWarp::MMS_SRC		mmspar					;//文本
+	std::wstring path	= m_cImagePath					;
+	mmspar.name			= Util::StringOp::FromCString(path.c_str())					;
+	mmspar.region		= "text"						;
+	mmspar.type			= MMS::MMSWarp::stText			;
+	mmspar.dur			= 0								;
+	mmspar.begin		= 0								;
+	mmspar.end			= 0								;
+//	m_cMmsPar.duration = 0			;
+//	m_cMmsPar.srcs.push_back(mmspar);
 }
 
 void MmsShow::InitialRegion()
 {
-
-//
-//	if (m_cMmsPar.size() == 0)
-//	{
-//		return ;
-//	}
+	//
+	if (m_cMmsPar.size() == 0)
+	{
+		return ;
+	}
 
 	MMS::MMSWarp::MMS_REGION		region			;//文本
 	MMS::MMSWarp::MMS_REGION		region1			;//图片
-	
-// 	int textWidth	= m_cMmscRect.Width() - IMAGE_REGION_WIDTH;
-// 	int textHeight  = IMAGE_REGION_HEIGHT ;
 
-	int textWidth = 0			;
-	int textHeight = 0			;
-	int textLeft = 	0			;
-	int textTop	= TEXT_TOP		;
 
-	int imageWidth	= 0			;
-	int imageHeight	= 0			;
-	int imageLeft	= 0			;
-	int imageTop	= TEXT_TOP	;
-	
-	if (1 == m_uState)
-	{	
-		int btntop = 230 + (m_cMmscRect.Height() - 200 - 60)/2;
-		m_cstcAudio.MoveWindow(0,btntop,195,30);
-		if ((!m_cImagePath.IsEmpty() || !m_cVideoName.IsEmpty()) && m_cTxtContent.IsEmpty())
+	region.id		= "text"						;
+	region.width	= TEXT_REGION_WIDTH				;
+	region.height	= TEXT_REGION_HEIGHT			;
+	region.fit		= ""							;
+	region.left		= IMAGE_REGION_WIDTH			;
+	region.top		= TEXT_TOP						;
+
+	region1.id		= "image"						;
+	region1.width	= IMAGE_REGION_WIDTH			;
+	region1.height	= IMAGE_REGION_HEIGHT			;
+	region1.fit		= ""							;
+	region1.left	= 0								;
+	region1.top		= TEXT_TOP								;
+
+	// 目前只能显示一张图片，一个文本
+	for (int j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
+	{   
+		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("image") == 0 )
 		{
-			textWidth	= 0;
-			textHeight  = 0;
-			textLeft	= 0;
-			textTop     = 0;
-			
-		//	imageWidth = m_cMmscRect.Height() - TEXT_TOP;
-			imageWidth = m_cMmscRect.Width();
-			if (m_cAudioName.IsEmpty())
+			if (m_cMmsLayOut.regions["image"].width < 160 && m_cMmsLayOut.regions["image"].height <120)//没有宽度，使用默认的
+			{   
+				region1.width	= IMAGE_REGION_WIDTH					;
+				region1.height	= IMAGE_REGION_HEIGHT					;
+			}
+			else
+			{  
+				region1.width	= IMAGE_REGION_WIDTH					;
+				region1.height	= IMAGE_REGION_HEIGHT					;
+			}
+			region1.id		= "image"									;
+			region1.fit		= ""										;
+			region1.left	= 0		;
+			region1.top		= TEXT_TOP		;
+
+		}
+	
+		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("text") == 0 )
+		{
+			//Text
+			if (m_cMmsLayOut.regions["text"].width <160 || m_cMmsLayOut.regions["text"].height <120)//没有宽度，使用默认的
 			{
-				imageHeight = m_cMmscRect.Height() - TEXT_TOP;
+
+				region.width	= TEXT_REGION_WIDTH						;
+				region.height	= TEXT_REGION_HEIGHT					;
 			}
 			else
 			{
-				imageHeight = IMAGE_REGION_HEIGHT;
+				region.width	= TEXT_REGION_WIDTH						;
+				region.height	= TEXT_REGION_HEIGHT					;
+
 			}
+			region.id			= "text"								;
+			region.fit			= ""									;
+			region.left			= IMAGE_REGION_WIDTH					;							
+			region.top			= TEXT_TOP										;		
 
-		//	imageLeft	= (m_cMmscRect.Width() - imageWidth)/2 ;
-			imageLeft	= 0;
-			imageTop	= TEXT_TOP;
-			
-		}
-		else if ((m_cImagePath.IsEmpty() && m_cVideoName.IsEmpty()) && !m_cTxtContent.IsEmpty())
-		{
-			textWidth	= m_cMmscRect.Width();
-		//	if (m_cAudioName.IsEmpty())
-		//	{
-		//		textHeight = m_cMmscRect.Height() - TEXT_TOP;
-		//	}
-		//	else
-		//	{
-			textHeight = IMAGE_REGION_HEIGHT;
-		//	}
-			textLeft	= 0;
-			textTop    = TEXT_TOP;
-			
-			imageWidth  = 0;
-			imageHeight = 0;
-			imageLeft	= 0;
-			imageTop    = 0;
-		}
-		else if ((!m_cImagePath.IsEmpty() || !m_cVideoName.IsEmpty()) && !m_cTxtContent.IsEmpty())
-		{
-			textWidth	= m_cMmscRect.Width() - IMAGE_REGION_WIDTH;;
-			textHeight  = IMAGE_REGION_HEIGHT;
-			textLeft	= IMAGE_REGION_WIDTH;
-			textTop		= TEXT_TOP;
-			
-			imageWidth  = IMAGE_REGION_WIDTH;
-			imageHeight = IMAGE_REGION_HEIGHT;
-			imageLeft	= 0;
-			imageTop	= TEXT_TOP;
 
 		}
-		else if ( (m_cImagePath.IsEmpty() && m_cVideoName.IsEmpty()) && m_cTxtContent.IsEmpty())
-		{
-			if (!m_cAudioName.IsEmpty())
-			{	
-				CRect rect;
-				int xbegin , ybegin ; 
-				m_cstcAudio.GetClientRect(rect);
-				
-				xbegin = (m_cMmscRect.Width() - rect.Width())/2;
-				ybegin = (m_cMmscRect.Height() - rect.Height())/2;
-				m_cstcAudio.MoveWindow(xbegin,ybegin,rect.Width(),rect.Height());//最中间
-				
-			}
-		}
-
-	}
-	
-	if (2 == m_uState || 3 == m_uState )
-	{
-		textWidth	= m_cMmscRect.Width() - IMAGE_REGION_WIDTH;;
-		textHeight  = IMAGE_REGION_HEIGHT;
-		textLeft	= IMAGE_REGION_WIDTH;
-		textTop		= TEXT_TOP;
 		
-		imageWidth  = IMAGE_REGION_WIDTH;
-		imageHeight = IMAGE_REGION_HEIGHT;
-		imageLeft	= 0;
-		imageTop	= TEXT_TOP;
 	}
 	
-	
-	region.id		= "text"						;
-	region.width	= textWidth						;
-	region.height	= textHeight					;
-	region.fit		= ""							;
-	region.left		= textLeft						;
-	region.top		= textTop						;
-	
-	region1.id		= "image"						;
-	region1.width	= imageWidth					;
-	region1.height	= imageHeight					;
-	region1.fit		= ""							;
-	region1.left	= imageLeft						;
-	region1.top		= imageTop						;
+	if ( j == m_cMmsPar[m_uMmsParPlay].srcs.size())
+	{
+		m_cMmsRegion.push_back(region)	;
+		m_cMmsRegion.push_back(region1)	;
+	}
+		
 
-// 	region.id		= "text"						;
-// 	region.width	= textWidth						;
-// 	region.height	= textHeight					;
-// 	region.fit		= ""							;
-// 	region.left		= IMAGE_REGION_WIDTH			;
-// 	region.top		= TEXT_TOP						;
-// 
-// 	region1.id		= "image"						;
-// 	region1.width	= IMAGE_REGION_WIDTH			;
-// 	region1.height	= IMAGE_REGION_HEIGHT			;
-// 	region1.fit		= ""							;
-// 	region1.left	= 0								;
-// 	region1.top		= TEXT_TOP						;
-	
-	if (m_cMmsRegion.size())
-	{	
-		extern VOID WriteMyLog_(char *ptr, int size);
-		WriteMyLog_("mms_Region1",strlen("mms_Region1")); 
-		m_cMmsRegion.clear();	
-	}
-	m_cMmsRegion.push_back(region)	;
-	m_cMmsRegion.push_back(region1)	;
-	
 }
 void MmsShow::GetHouZhui(CString &houzui,CString const fl)
 {
@@ -1320,77 +979,55 @@ void MmsShow::GetHouZhui(CString &houzui,CString const fl)
 	if (::GetFileAttributes(temp + L".png") != 0xFFFFFFFF)
 	{
 		houzui = L".png" ;
+	
 	}
 
 	if (::GetFileAttributes(temp + L".bmp") != 0xFFFFFFFF)
 	{
-		houzui = L".bmp" ;	
-	}
+		houzui = L".bmp" ;
 	
+	}	
 	if (::GetFileAttributes(temp + L".gif") != 0xFFFFFFFF)
 	{
 		houzui = L".gif" ;	
 	}
 					
 }
-
-
-void MmsShow::GetAllFileInfo(std::wstring &image,std::wstring &text,std::wstring &aduio,std::wstring &video)
+void MmsShow::GetAllFileInfo(std::wstring &image,std::wstring &text,std::wstring &aduio,std::wstring &vedio)
 {   
-	GetText();
+	wchar_t buf[100];
+	memset(buf,0,200);
+	m_cTextView.GetWindowText(buf,100)	;
+	m_cTxtContent = buf				;
 	image = m_cImagePath			;
 	text  = m_cTxtContent			;
 	aduio = m_cAudioName			;
-	video = m_cVideoName			;
-
+	vedio = m_cVedioName			;
 }
 
 void MmsShow::SaveParInfo()
 {   
 	wchar_t buf[200];
 	memset(buf,0,400);
-	m_cTextView.GetWindowText(buf,200);
+	m_cTextView.GetWindowText(buf,200)	;
 	m_cTxtContent = buf ;
-		
+
 	std::wstring wr			;		
 	std::string	 sr			;
 	BOOL btext  = FALSE		;
 	BOOL bimage = FALSE		;
-	BOOL baudio = FALSE		;
-	BOOL bvideo = FALSE		;
 	BOOL bWrite = FALSE     ;
 
 	//内容再次保存
 	CString strOut  = L"";
-// 	CString str = L"";
-// 	str.Format(L"%d",m_uMmsParPlay);
-// 	CString txtname = str +L".txt";
-// 	CString allpath = L"FlashDrv/3g/mms/" + txtname ;//不能包含空的文件夹名字
-
-	//在文本管理容器中查找可用的文本
-	CString txtname ;
-	CString allpath ;
-	int		index = 0 ;
-	std::string name ;
-	if (m_cTxtContent != L"")
-	{
-		for (int i = 0 ; i < PAR_SIZE;i++)
-		{
-			if (m_vText[i].second == L"")
-			{	
-				index = i;
-				txtname.Format(L"%d.txt",index);
-				allpath = L"FlashDrv/3g/mms/" + txtname ;
-				break;
-			}
-		}
-		//
-	}
-
+	CString str = L"";
+	str.Format(L"%d",m_uMmsParPlay);
+	CString txtname = str +L".txt";
+	CString allpath = L"FlashDrv/3g/mms/" + txtname ;//不能包含空的文件夹名字
+	
 	for (int i = 0 ; i < m_cMmsPar[m_uMmsParPlay].srcs.size() ; i++)
 	{		 
-
-		/*if (m_cTxtContent != L"" && !bWrite)
+		if (m_cTxtContent !=L"" && !bWrite)
 		{	
 			bWrite	= TRUE ;
 			HANDLE hFile = CreateFile(allpath, //创建文件的名称。
@@ -1414,55 +1051,32 @@ void MmsShow::SaveParInfo()
 				BOOL bRet = ::WriteFile(hFile,strWout,strlen(strWout),&dwWritenSize,NULL);
 				CloseHandle(hFile);
 			}
-		}*/
+		}
 		
-	//	if ( 0 == m_cMmsPar[m_uMmsParPlay].srcs[i].region.compare("text"))
-		if (m_cMmsPar[m_uMmsParPlay].srcs[i].type == MMS::MMSWarp::stText ) //内容更改
+		if ( 0 == m_cMmsPar[m_uMmsParPlay].srcs[i].region.compare("text"))
 		{
 			btext = true ;
-			name = m_cMmsPar[m_uMmsParPlay].srcs[i].name ;
 			if (m_cTxtContent == L"")
 			{
 				//删除txt
-				std::wstring wr = Util::StringOp::ToCString(name);
-				DeleteFile(wr.c_str());
-				
-				//也清空文本管理器中的
-				for (int j = 0 ; j < PAR_SIZE;j++)
-				{	
-					if (m_vText[j].second.compare(wr) == 0)
-					{
-						m_vText[j].second = L"";
-						break;
-					}						
-				}
+				std::string sr = m_cMmsPar[m_uMmsParPlay].srcs[i].name ;
+				std::wstring wr = Util::StringOp::ToCString(sr);
+				DeleteFile(wr.c_str());							
 				
 				//删除par里src容器中的文本项
 				std::vector<MMS::MMSWarp::MMS_SRC>::iterator it;
 				for(it=m_cMmsPar[m_uMmsParPlay].srcs.begin();it!= m_cMmsPar[m_uMmsParPlay].srcs.end();it++)
 				{
-				//	if ( 0 == (*it).region.compare("text"))
-					if ( (*it).type == MMS::MMSWarp::stText)
+					if ( 0 == (*it).region.compare("text"))
 					{
 						m_cMmsPar[m_uMmsParPlay].srcs.erase(it);
-						i--;
 						break;
 					}
 				}	
 			}
-			else
-			{	
-				//在文本管理器中更新下
-// 
-// 				wr = allpath									;
-// 				sr = Util::StringOp::FromCString(wr.c_str())	;
-// 				m_cMmsPar[m_uMmsParPlay].srcs[i].name = sr		;
-				
-			}
 		}
 		
-	//	if (0 == m_cMmsPar[m_uMmsParPlay].srcs[i].region.compare("image"))
-		if (m_cMmsPar[m_uMmsParPlay].srcs[i].type == MMS::MMSWarp::stImge ) 
+		if (0 == m_cMmsPar[m_uMmsParPlay].srcs[i].region.compare("image"))
 		{	 
 			bimage = TRUE ;
 			if (m_cImagePath !=L"")//再次保存
@@ -1477,63 +1091,9 @@ void MmsShow::SaveParInfo()
 				std::vector<MMS::MMSWarp::MMS_SRC>::iterator it;
 				for(it=m_cMmsPar[m_uMmsParPlay].srcs.begin();it!= m_cMmsPar[m_uMmsParPlay].srcs.end();it++)
 				{
-				//	if ( 0 == (*it).region.compare("image"))
-					if ( (*it).type == MMS::MMSWarp::stImge)
+					if ( 0 == (*it).region.compare("image"))
 					{
 						m_cMmsPar[m_uMmsParPlay].srcs.erase(it);
-						i--;
-						break;
-					}
-				}
-			}
-		}
-
-	//	if (0 == m_cMmsPar[m_uMmsParPlay].srcs[i].region.compare("audio"))
-		if (m_cMmsPar[m_uMmsParPlay].srcs[i].type == MMS::MMSWarp::stAudio ) 
-		{	 
-			baudio = TRUE ;
-			if (m_cAudioName != L"")//再次保存
-			{
-				wr = m_cAudioName								;
-				sr = Util::StringOp::FromCString(wr.c_str())	;
-				m_cMmsPar[m_uMmsParPlay].srcs[i].name = sr		;  
-			}
-			else
-			{
-				// 图片项是空的，删除par里src容器中的图片
-				std::vector<MMS::MMSWarp::MMS_SRC>::iterator it;
-				for(it=m_cMmsPar[m_uMmsParPlay].srcs.begin();it!= m_cMmsPar[m_uMmsParPlay].srcs.end();it++)
-				{
-				//	if ( 0 == (*it).region.compare("audio"))
-					if ( (*it).type == MMS::MMSWarp::stAudio)
-					{
-						m_cMmsPar[m_uMmsParPlay].srcs.erase(it);
-						i--;
-						break;
-					}
-				}
-			}
-		}
-
-		if (m_cMmsPar[m_uMmsParPlay].srcs[i].type == MMS::MMSWarp::stVideo ) 
-		{	 
-			bvideo = TRUE ;
-			if (m_cVideoName != L"")//再次保存
-			{
-				wr = m_cVideoName								;
-				sr = Util::StringOp::FromCString(wr.c_str())	;
-				m_cMmsPar[m_uMmsParPlay].srcs[i].name = sr		;  
-			}
-			else
-			{
-				// 视频项是空的，删除par里src容器中的视频
-				std::vector<MMS::MMSWarp::MMS_SRC>::iterator it;
-				for(it=m_cMmsPar[m_uMmsParPlay].srcs.begin();it!= m_cMmsPar[m_uMmsParPlay].srcs.end();it++)
-				{
-					if ( (*it).type == MMS::MMSWarp::stVideo)
-					{
-						m_cMmsPar[m_uMmsParPlay].srcs.erase(it);
-						i--;
 						break;
 					}
 				}
@@ -1541,38 +1101,6 @@ void MmsShow::SaveParInfo()
 		}
 
 	}
-
-	//往文本里写
-	if (btext)//文本里以前有，就用以前的路径
-	{
-		allpath = Util::StringOp::ToCString(name);
-	}
-
-	if (m_cTxtContent != L"")
-	{	
-		HANDLE hFile = CreateFile(allpath, //创建文件的名称。
-			GENERIC_WRITE|GENERIC_READ,  // 写和读文件。
-			0,                      // 不共享读写。
-			NULL,                  // 缺省安全属性。
-			CREATE_ALWAYS,         // 如果文件存在，也创建。
-			FILE_ATTRIBUTE_NORMAL, // 一般的文件。     
-			NULL);                // 模板文件为空。
-		if (hFile == INVALID_HANDLE_VALUE)
-		{    
-			GetLastError();
-		}
-		else
-		{
-			//往文件里写数据。
-			DWORD dwWritenSize = 0;
-			char strWout[200];
-			memset(strWout,0,200);
-			UnicodeToUTF_8(strWout,buf,wcslen(buf)*3,wcslen(buf));//再从Unicode转化成UTF_8
-			BOOL bRet = ::WriteFile(hFile,strWout,strlen(strWout),&dwWritenSize,NULL);
-			CloseHandle(hFile);
-		}
-	}
-
 	if (!btext)//如果文本以前没内容，现在添加内容了，插入text
 	{
 		if(!m_cTxtContent.IsEmpty())
@@ -1582,7 +1110,7 @@ void MmsShow::SaveParInfo()
 			{	
 				MMS::MMSWarp::MMS_SRC  src1			;
 				wr = allpath						;
-				sr = Util::StringOp::FromCString(wr.c_str());
+				sr = Util::StringOp::FromCString(wr.c_str())						;
 				src1.alt	= ""					;
 				src1.begin	= 0						;
 				src1.dur	= 2000					;
@@ -1590,9 +1118,6 @@ void MmsShow::SaveParInfo()
 				src1.region  ="text"				;
 				src1.type	= MMS::MMSWarp::stText	;
 				m_cMmsPar[m_uMmsParPlay].srcs.push_back(src1);
-
-				//文本管理器里也添加
-				m_vText[index].second = wr;
 			}
 		}
 	}
@@ -1614,81 +1139,42 @@ void MmsShow::SaveParInfo()
 		}	
 	}
 
-	
-	if (!baudio)
-	{
-		if (m_cAudioName != L"")//新的插入
-		{	
-			MMS::MMSWarp::MMS_SRC  src2			;
-			wr = m_cAudioName					;
-			sr = Util::StringOp::FromCString(wr.c_str());		
-			src2.alt		= ""					;
-			src2.begin		= 0						;
-			src2.dur		= 2000					;
-			src2.name		= sr					;
-			src2.region		 ="audio"				;
-			src2.type		= MMS::MMSWarp::stAudio	;
-			m_cMmsPar[m_uMmsParPlay].srcs.push_back(src2);
-		}
-	}
-
-	if (!bvideo)
-	{
-		if (m_cVideoName != L"")//新的插入
-		{	
-			MMS::MMSWarp::MMS_SRC  src2			;
-			wr = m_cVideoName					;
-			sr = Util::StringOp::FromCString(wr.c_str());		
-			src2.alt		= ""					;
-			src2.begin		= 0						;
-			src2.dur		= 2000					;
-			src2.name		= sr					;
-			src2.region		 ="video"				;
-			src2.type		= MMS::MMSWarp::stVideo	;
-			m_cMmsPar[m_uMmsParPlay].srcs.push_back(src2);
-		}
-	}
-
-	if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty() && m_cAudioName.IsEmpty() && m_cVideoName.IsEmpty())
+	if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty())
 	{
 		//这页的内容全是空的，清除该页
 		std::vector<MMS::MMSWarp::MMS_PAR>::iterator it;
-		for(it = m_cMmsPar.begin(); it!= m_cMmsPar.end();it++)
+		for(it=m_cMmsPar.begin();it!= m_cMmsPar.end();it++)
 		{
 			if ( 0 == (*it).srcs.size())
 			{
 				m_cMmsPar.erase(it);
-				CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-				m_addtionSize -= 0.2;
-				main->m_pMMSDlg->m_MmsSize -= 0.2;
-				main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
 				break;
 			}
 		}
 
+	//	GetMmsRegionInfo();
 	}
 }
-void MmsShow::AddParInfo(bool binsert)
+void MmsShow::AddParInfo()
 {
 	wchar_t buf[200];
 	memset(buf,0,400);
-	m_cTextView.GetWindowText(buf,200);
+	m_cTextView.GetWindowText(buf,200)	;
 	m_cTxtContent = buf ;
 	
-	if (m_cImagePath != L"" || m_cTxtContent != L"" || m_cAudioName != L"" || m_cVideoName != L"")
+	if (m_cImagePath != L"" || m_cTxtContent != L"" )
 	{
 		//记录下上一页的内容
 		MMS::MMSWarp::MMS_PAR  par ;
 		par.duration = 5 ;
 		MMS::MMSWarp::MMS_SRC  src ;
 		MMS::MMSWarp::MMS_SRC  src1 ;
-		MMS::MMSWarp::MMS_SRC  src2 ;
 		std::wstring wr	;		
 		std::string	 sr ;
-		if (m_cImagePath != L"")
+		if (m_cImagePath !=L"")
 		{
 			wr = m_cImagePath					;
-			sr = Util::StringOp::FromCString(wr.c_str()) ;		
+			sr = Util::StringOp::FromCString(wr.c_str())						;		
 			src.alt		= ""					;
 			src.begin	= 0						;
 			src.dur		= 2000					;
@@ -1698,62 +1184,15 @@ void MmsShow::AddParInfo(bool binsert)
 			par.srcs.push_back(src);
 		}
 		
-		//audio
-		if (m_cAudioName != L"")
-		{
-			wr = m_cAudioName						;
-			sr = Util::StringOp::FromCString(wr.c_str()) ;		
-			src2.alt		= ""					;
-			src2.begin		= 0						;
-			src2.dur		= 2000					;
-			src2.name		= sr					;
-			src2.region		="audio"				;
-			src2.type		= MMS::MMSWarp::stAudio	;
-			par.srcs.push_back(src2);
-
-		}
-		
-		if(m_cVideoName != L"")
-		{
-			wr = m_cVideoName					;
-			sr = Util::StringOp::FromCString(wr.c_str()) ;		
-			src.alt		= ""					;
-			src.begin	= 0						;
-			src.dur		= 2000					;
-			src.name	= sr					;
-			src.region  ="video";
-			src.type	= MMS::MMSWarp::stVideo	;
-			par.srcs.push_back(src);
-		}
-
 		//写文件		
 		if (m_cTxtContent !=L"")
 		{
 			CString strOut  = L"";
-// 			CString str = L"";
-// 			str.Format(L"%d",m_uMmsParPlay);
-// 			CString txtname = str +L".txt";
-// 
-// 			//不能包含空的文件夹名字
-// 			CString allpath = L"FlashDrv/3g/mms/" + txtname ;
-
-			CString txtname ;
-			CString allpath ;
-			int		index = 0 ;
-			if (m_cTxtContent != L"")
-			{
-				for (int i = 0 ; i < PAR_SIZE;i++)
-				{
-					if (m_vText[i].second == L"")
-					{	
-						index = i;
-						txtname.Format(L"%d.txt",index);
-						allpath = L"FlashDrv/3g/mms/" + txtname ;
-						break;
-					}
-				}
-			}
-
+			CString str = L"";
+			str.Format(L"%d",m_uMmsParPlay);
+			CString txtname = str +L".txt";
+			//不能包含空的文件夹名字
+			CString allpath = L"FlashDrv/3g/mms/" + txtname ;
 			HANDLE hFile = CreateFile(allpath, //创建文件的名称。
 				GENERIC_WRITE|GENERIC_READ,  // 写和读文件。
 				0,                      // 不共享读写。
@@ -1773,9 +1212,12 @@ void MmsShow::AddParInfo(bool binsert)
 				memset(strWout,0,200);
 				UnicodeToUTF_8(strWout,buf,wcslen(buf)*3,wcslen(buf));//再从Unicode转化成UTF_8
 				BOOL bRet = ::WriteFile(hFile,strWout,strlen(strWout),&dwWritenSize,NULL);
-
+				if (bRet)
+				{   
+					
+				}
 				wr = allpath						;
-				sr = Util::StringOp::FromCString(wr.c_str());
+				sr = Util::StringOp::FromCString(wr.c_str())						;
 				src1.alt	= ""					;
 				src1.begin	= 0						;
 				src1.dur	= 2000					;
@@ -1783,25 +1225,11 @@ void MmsShow::AddParInfo(bool binsert)
 				src1.region  ="text"				;
 				src1.type	= MMS::MMSWarp::stText	;
 				par.srcs.push_back(src1);
-
-				//文本管理器中也添加
-				m_vText[index].second = wr ;
-
 				CloseHandle(hFile);
 			}
 			
 		}
-
-		if (!binsert)
-		{
-			m_cMmsPar.push_back(par);
-		}
-		else
-		{	
-			std::vector<MMS::MMSWarp::MMS_PAR>::iterator it;
-			it = m_cMmsPar.begin() + m_uMmsParPlay ; 
-			m_cMmsPar.insert(it,par);	
-		}
+		m_cMmsPar.push_back(par);
 	}
 	
 }
@@ -1845,19 +1273,14 @@ BOOL MmsShow::GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp
 	mmsLayout.regions[region.id] = region;
 	
 	m_uMmsParPlay = m_iPageNum	;
-	
+
 	if (m_iPageNum == m_cMmsPar.size())//添加最后的内容
 	{
 		AddParInfo();
 	}
-
 	if (m_iPageNum < m_cMmsPar.size())
-	{	
-		if ( 3 == m_uState )//再次插入添加
-		{
-			AddParInfo(true);//添加
-		}
-		else //再次保存下当前页的内容
+	{
+		//再次保存下当前页的内容
 		SaveParInfo();
 	}
 
@@ -1871,12 +1294,12 @@ BOOL MmsShow::GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp
 		mmsPar.push_back(m_cMmsPar[i]);
 	}
 
+
     if (mmsPar.size() > 0)
     {
 		set = TRUE ;
     }
 	return set ;
-
 }
 void MmsShow::SetTitle(std::wstring const title)
 {
@@ -1895,39 +1318,6 @@ CString MmsShow::GetFileName(CString const allpath)
 	}
 	return str ;
 }
-
-BOOL MmsShow::GetPicMp3Count()
-{
-	if ( m_cMmsPar.size() == 0)
-	{
-		return FALSE;
-	}
-
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	BOOL flag = FALSE;
-	for(int i = 0; i < m_cMmsPar.size(); i++)
-	{
-		for (int j = 0 ; j < m_cMmsPar[i].srcs.size();j++)
-		{    
-			std::string sr = m_cMmsPar[i].srcs[j].region;
-			if(m_cMmsPar[m_uMmsParPlay].srcs[j].type == MMS::MMSWarp::stImge ) 
-			{
-				//图片
-				main->m_pMMSDlg->m_picCount++;
-				flag = TRUE;
-			}
-			
-			if(m_cMmsPar[m_uMmsParPlay].srcs[j].type == MMS::MMSWarp::stAudio) 
-			{
-				//audio
-				main->m_pMMSDlg->m_mp3Count++;
-				flag = TRUE;
-			}
-		}
-	}
-	return flag;
-}
-
 void MmsShow::GetMmsRegionInfo()
 {
 	if ( m_cMmsPar.size() == 0)
@@ -1938,13 +1328,10 @@ void MmsShow::GetMmsRegionInfo()
 	m_uParDur	= m_cMmsPar[m_uMmsParPlay].duration ;//一个par的显示时间
 	m_cTxtContent	= L"";
 	m_cImagePath	= L"";
-	m_cAudioName	= L"";
-	m_cVideoName	= L"";
 	for (int j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
 	{    
 		std::string sr = m_cMmsPar[m_uMmsParPlay].srcs[j].region;
-	//	if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("image") == 0 )
-		if(m_cMmsPar[m_uMmsParPlay].srcs[j].type == MMS::MMSWarp::stImge ) 
+		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("image") == 0 )
 		{
 			//找图片的Region
 			m_uImageDur		=  m_cMmsPar[m_uMmsParPlay].srcs[j].end ;
@@ -1956,117 +1343,88 @@ void MmsShow::GetMmsRegionInfo()
 				fl.Find(L".bmp") > 0 || fl.Find(L".BMP") > 0 ||
 				fl.Find(L".gif") > 0 ||	fl.Find(L".GIF") > 0)//判断从SMIL解析的文件是否有后缀名
 			{
+			//	m_cImagePath	=	 m_cSmilPath+	fl			;
 				m_cImagePath	=	 fl			;
 			}
-			
+		//	else//没有后缀名自己查找该图片
+		//	{
+		//		CString allfl	=	m_cSmilPath + fl				;
+		//		CString houzhui =	L"";
+		//		GetHouZhui(houzhui,allfl)							;
+		//		m_cImagePath	=	allfl+ houzhui					;
+		//	}
+
 		}
 		
-		//	if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("text") == 0 )
-		if(m_cMmsPar[m_uMmsParPlay].srcs[j].type == MMS::MMSWarp::stText ) 
+		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("text") == 0 )
 		{
 			//Text
 			m_uTxtDur			=  m_cMmsPar[m_uMmsParPlay].srcs[j].end		;
 			std::string	 s		=  m_cMmsPar[m_uMmsParPlay].srcs[j].name	;
-			ReadName(s,m_cTxtContent);
-			/*	std::wstring wsr	=  Util::StringOp::ToCString(s);
+			std::wstring wsr	=  Util::StringOp::ToCString(s);
 			CString	 fl			=	wsr.c_str() ;//文件名
+		//	if (fl.Find(L".txt") <= 0 )//文本没有后缀名自己加
+		//	{
+		//		fl = fl + L".txt" ;
+		//	}
 			
-			  if (fl.Find(L".txt") == -1 && fl.Find(L".text") == -1 )
-			  {
-			  continue ;
-			  }
-			  CFile f;
-			  CFileException e;
-			  if( f.Open( fl, CFile::modeRead, &e ) )
-			  {
-			  char *wr ;
-			  wr = new char[1024*20];//10k
-			  memset(wr,0,1024*20);
-			  wchar_t *uicode;//转化成uicode
-			  uicode = new wchar_t[1024*20];//10k
-			  memset(uicode,0,1024*20);
-			  
+			if (fl.Find(L".txt") == -1 && fl.Find(L".text") == -1 )
+			{
+				return ;
+			}
+			CFile f;
+			CFileException e;
+		//	char wr[1000];
+			if( f.Open( fl, CFile::modeRead, &e ) )
+			{
+				char *wr ;
+				wr = new char[1024*10];//10k
+				memset(wr,0,1024*10);
+				wchar_t *uicode;//转化成uicode
+				uicode = new wchar_t[1024*10];//10k
+				memset(uicode,0,1024*10);
+
 				int length = f.GetLength() ;
 				f.Read(wr,length);
 				wr[length] = '\0';				
+				//m_cTxtContent = wr;	
+				
+				//wchar_t uicode[1000] ;//转化成uicode
+				//memset(uicode,0,2000);
+//				memset(uicode,0,1024*8*20);
 				int index = 0 ;
 				int count = strlen(wr);//
 				int iNum =0 ;
 				int offset =0 ;
 				while( offset!= -1 && index < count)
 				{
-				offset  = utf82unicode((unsigned char *)wr,index,count,uicode[iNum]);
-				index += offset;
-				iNum++;					
+					offset  = utf82unicode((unsigned char *)wr,index,count,uicode[iNum]);
+					index += offset;
+					iNum++;					
 				}
 				m_cTxtContent = uicode ;
 				delete []wr ;
 				delete []uicode ;
 				f.Close();
-		}*/
-			
-		}
-		
-		//	if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("audio") == 0 )
-		if(m_cMmsPar[m_uMmsParPlay].srcs[j].type == MMS::MMSWarp::stAudio ) 
-		{
-			//audio
-			m_uAudioDur			=  m_cMmsPar[m_uMmsParPlay].srcs[j].end		;
-			std::string	 s		=  m_cMmsPar[m_uMmsParPlay].srcs[j].name	;
-			std::wstring wsr	=  Util::StringOp::ToCString(s);
-			CString	 fl			=	wsr.c_str() ;//文件名
-			if (fl.Find(L".wav") > 0 || fl.Find(L".WAV") > 0 ||
-				fl.Find(L".arm") > 0 || fl.Find(L".ARM") > 0 ||
-				fl.Find(L".mid") > 0 || fl.Find(L".MID") > 0 ||
-				fl.Find(L".midi") > 0 ||fl.Find(L".MIDI") > 0||
-				fl.Find(L".mp3") > 0 ||	fl.Find(L".MP3") > 0)//
-			{
-				m_cAudioName	=	 fl			;
 			}
-			
-		}
-		
-		if(m_cMmsPar[m_uMmsParPlay].srcs[j].type == MMS::MMSWarp::stVideo) 
-		{
-			//找图片的Region
-			m_uVideoDur		=  m_cMmsPar[m_uMmsParPlay].srcs[j].end ;
-			std::string	 s	=  m_cMmsPar[m_uMmsParPlay].srcs[j].name;
-			std::wstring ws	=  Util::StringOp::ToCString(s);
-			CString fl		=  ws.c_str();
-			if (fl.Find(L".3gp") > 0 || fl.Find(L".3GP") > 0 ||
-				fl.Find(L".mp4") > 0 || fl.Find(L".MP4") > 0)//判断从SMIL解析的文件是否有后缀名
-			{
-				m_cVideoName	=	 fl			;
-			}
-			
-		}
+						
+		}	
 	}
 
-	if (1 == m_uState)//只读状态检查内容是否保存
+	if (1 == m_uState)//只读状态才检查
 	{
-		if (m_cImagePath != L"" || m_cVideoName != L"")//保存图片
-		{	
-			::PostMessage(m_pHwnd,WM_IMAGE,2,0);	
+		if (m_cImagePath != L"")//每次检查按钮是否可用
+		{
+//			m_btnPicture.ShowWindow(TRUE);
 		}
 		else
 		{
-			::PostMessage(m_pHwnd,WM_IMAGE,3,0);//按钮隐藏	
+//			m_btnPicture.ShowWindow(FALSE);
 		}
-
-		HandleAudio();
-		ShowTextBtn();
-
 	}
-
 }
 void MmsShow::GetDefRegionInfo()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-	m_cTxtContent	= L"";
-	m_cImagePath	= L"";
-	m_cAudioName	= L"";
-	m_cVideoName	= L"";
 	int a = m_cDefTxtContent.size() ;
 	if ( a > 0 )
 	{
@@ -2079,53 +1437,25 @@ void MmsShow::GetDefRegionInfo()
 		m_cImagePath  = m_cDefImagePath[m_uDefImageItem];
 	}
 
-	int c = m_cDefAudio.size();
-	if (c > 0)
-	{
-		m_cAudioName = m_cDefAudio[m_uDefAudioItem];
-	}
-
-	int v = m_cDefVideo.size();
-	if(v > 0)
-	{
-		m_cVideoName = m_cDefVideo[m_uDefVideoItem];
-	}
-	
-	if (1 == m_uState)//只读状态检查内容是否保存
-	{
-		if (m_cImagePath != L"" || m_cVideoName != L"")//保存图片
-		{	
-			::PostMessage(m_pHwnd,WM_IMAGE,2,0);	
-		}
-		else
-		{
-			::PostMessage(m_pHwnd,WM_IMAGE,3,0);//按钮隐藏	
-		}
-		
-		HandleAudio();
-		ShowTextBtn();
-	}
-	
-	if(a>0 || b>0 || c>0 || v>0)
-	{
-		main->m_pSMSListDlg->m_pMmsReadDlg->m_currentPage = 1;
-		main->m_pSMSListDlg->m_pMmsReadDlg->m_pageCount = ((a>b ? a:b) > c ? (a>b ? a:b):c) > v ? ((a>b ? a:b) > c ? (a>b ? a:b):c):v;
-	}
 }
 
 void MmsShow::SetMmsEdit()
 {
 	Clear();
 	m_uState  =	2 ;
-	m_addtionSize = 0.2;
 	m_cMmsTitle.SetReadOnly(FALSE);
-	m_cTextView.SetReadOnly(FALSE);	
+	m_cTextView.SetReadOnly(FALSE);
+
+// 	m_btnPicture.SetWindowText(L"插入图片");
+// 	m_btnMusic.SetWindowText(L"插入音乐");
+// 	m_btnVedio.SetWindowText(L"插入视频");
+// 	m_btnNextPage.ShowWindow(TRUE);
+// 	m_btnUpPage.ShowWindow(TRUE);
 	
 	InitialDefRegion();
 	SetImageShow();
-	SetAudioShow();
 	SetTextShow();
-	SetVideoShow(true);
+
 }
 void MmsShow::SetMmsRead()
 {	
@@ -2133,234 +1463,18 @@ void MmsShow::SetMmsRead()
 	m_cTextView.SetReadOnly(TRUE);
 	m_cMmsTitle.SetReadOnly(TRUE);
 	
-}
+// 	m_btnPicture.SetWindowText(L"保存图片");
+// 	m_btnMusic.SetWindowText(L"保存音乐");
+// 	m_btnVedio.SetWindowText(L"保存视频");
+// 	m_btnNextPage.ShowWindow(FALSE);
+// 	m_btnUpPage.ShowWindow(FALSE);
 
-void MmsShow::SetMmsInsert()
-{	
-	GetText();
-	
-	if (m_cTxtContent.IsEmpty() && m_cAudioName.IsEmpty() && m_cImagePath.IsEmpty() && m_cVideoName.IsEmpty())
-	{	
-		::PostMessage(m_pHwnd,WM_MMS_INSERT,3,0);//不能插入
-		return ;
-	}
-
-
-	if (m_iPageNum < m_cMmsPar.size())
-	{
-		//再次保存下当前页的内容
-		if ( 3 == m_uState )//再次插入添加
-		{
-			AddParInfo(true);//添加
-		}
-		else
-		{
-			SaveParInfo();
-		}
-		
-	}
-	else
-	{
-		AddParInfo();//添加
-	}
-
-	if (m_cMmsPar.size() == 0 )
-	{	
-		::PostMessage(m_pHwnd,WM_MMS_INSERT,3,0);//不能插入
-		return;
-	}
-	
-	m_cTxtContent = L"";
-	ClosePicture();
-	SetTextShow();
-	
-	m_cAudioName = L"";
-	SetAudioShow();
-
-	m_cVideoName = L"";
-	SetVideoShow();
-	
-	m_cTextView.Invalidate(FALSE);
-	m_uState = 3 ;//插入图片
-
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	m_addtionSize += 0.2;
-	main->m_pMMSDlg->m_MmsSize += 0.2;
-	main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
-
-	m_btnDown.ShowWindow(false);
-	m_btnUp.ShowWindow(false);
-	
-	::PostMessage(m_pHwnd,WM_IMAGE,1,0);
-	::PostMessage(m_pHwnd,WM_AUDIO,1,0);
-	::PostMessage(m_pHwnd,WM_AUDIO,5,0);//试听按钮消失
-
-	::PostMessage(m_pHwnd,WM_MMS_INSERT,1,0);//插入成功
-
-	//当前页的状态
-	::PostMessage(m_pHwnd,WM_PAR_SIZE,m_iPageNum,m_cMmsPar.size()+1);
-	
-}
-
-void MmsShow::MsgPost()
-{
-	if (m_cImagePath != L"")
-	{
-		::PostMessage(m_pHwnd,WM_IMAGE,0,0);//删除图片
-		m_bHaveInsertPic = true;
-	}
-	else
-	{
-		::PostMessage(m_pHwnd,WM_IMAGE,1,0);//插入图片
-		m_bHaveInsertPic = false;
-	}
-		
-	if (m_cAudioName != L"")
-	{
-		::PostMessage(m_pHwnd,WM_AUDIO,0,0);//删除音频
-		::PostMessage(m_pHwnd,WM_AUDIO,3,0);//试听
-		
-	}
-	else
-	{					
-		::PostMessage(m_pHwnd,WM_AUDIO,1,0);//插入音频
-		::PostMessage(m_pHwnd,WM_AUDIO,5,0);//试听消失
-	}
-
-	if(m_cVideoName != L"")
-	{
-	}
-	else
-	{
-	}
-}
-
-void MmsShow::NewPar()
-{
-	//上一页清空			
-	m_cTxtContent = L"";
-	ClosePicture();
-	SetTextShow();
-	
-	m_cAudioName = L"";
-	SetAudioShow();
-
-	m_cVideoName = L"";
-	SetVideoShow();
-	//每增加一个par总大小增加0.2K
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	m_addtionSize += 0.2;//wangzhenxing20100625
-	main->m_pMMSDlg->m_MmsSize += 0.2;
-	main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
-	
-	m_cTextView.Invalidate(FALSE);
-	m_uState = 2 ;//插入图片
-
-	m_btnDown.ShowWindow(false);
-	m_btnUp.ShowWindow(false);
-	
-	::PostMessage(m_pHwnd,WM_IMAGE,1,0);
-	::PostMessage(m_pHwnd,WM_AUDIO,1,0);
-	::PostMessage(m_pHwnd,WM_AUDIO,5,0);//试听按钮消失
-
-}
-
-void MmsShow::AllFileSize()
-{	
-	long double filesize = 0;
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	CFile File;
-	CString text ;//每50个算0.1K
-	if ( 0 == m_cMmsPar.size())
-	{
-		//当前页面
-		GetCurrentPageFileSize(filesize,text);		
-	}
-	else 
-	{	
-		for (int i = 0 ; i < m_cMmsPar.size(); i++)
-		{	
-			if (m_iPageNum == i)//当前页在文件数据大小
-			{
-				GetCurrentPageFileSize(filesize,text);
-			}
-			else
-			{
-				for (int j = 0 ; j < m_cMmsPar[i].srcs.size();j++)
-				{
-					std::string path = m_cMmsPar[i].srcs[j].name;
-					
-					if (m_cMmsPar[i].srcs[j].type == MMS::MMSWarp::stText)
-					{	
-						CString content;
-						ReadName(path,content);
-						text += content;
-					}
-					else
-					{
-						if (File.Open(Util::StringOp::ToCString(path),CFile::modeRead,NULL))
-						{
-							filesize += File.GetLength();
-							File.Close();
-						}
-					}
-					
-				}
-			}
-			
-		}
-
-		if((m_iPageNum == m_cMmsPar.size() && 2 == m_uState) || 3 == m_uState )
-		{	
-			//当前页面
-			GetCurrentPageFileSize(filesize,text);
-		}
-	}
-
-	//获得标题
-	CString title;
-	m_cMmsTitle.GetWindowText(title);
-	text += title ;
-	
-	//每50个算0.1K
-	filesize += text.GetLength()/50 * 102.4;
-
-	main->m_pMMSDlg->m_MmsSize = filesize/1024 + m_addtionSize;
-	main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
-}
-
-void MmsShow::GetCurrentPageFileSize(long double &filesize,CString &text)
-{
-	//当前页面
-	CFile File;
-	if (File.Open(m_cAudioName,CFile::modeRead,NULL))
-	{
-		filesize += File.GetLength();
-		File.Close();
-	}
-	
-	if (File.Open(m_cImagePath,CFile::modeRead,NULL))
-	{
-		filesize += File.GetLength();
-		File.Close();
-	}
-
-	if(File.Open(m_cVideoName, CFile::modeRead, NULL))
-	{
-		filesize += File.GetLength();
-		File.Close();
-	}
-	
-	CString content;
-	m_cTextView.GetWindowText(content);
-	text += content;
 }
 
 void MmsShow::OnTimer(UINT nIDEvent) 
 {
 	// TODO: Add your message handler code here and/or call default
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
+		
 	if (nIDEvent == PAR_SHOW_TIMER)
 	{  
 		if (m_uParTime >= m_uParDur/TIME_BASE)
@@ -2368,7 +1482,6 @@ void MmsShow::OnTimer(UINT nIDEvent)
 			KillTimer(PAR_SHOW_TIMER);
 			KillTimer(TXT_TIMER);
 			KillTimer(IMAGE_TIMER);
-			KillTimer(AUDIO_TIMER);
 			if (m_cMmsPar.size() == 1)
 			{
 				return ;
@@ -2378,30 +1491,39 @@ void MmsShow::OnTimer(UINT nIDEvent)
 			m_uParTime		=	0		;
 			m_cImageTime	=	0		;
 			m_uTxtTime		=	0		;
-			m_uAudioTime	=	0		;
 			m_uMmsParPlay++				;//找下一个par
-			SetReadPage();
 			
-			if (m_uMmsParPlay  > m_cMmsPar.size() -1)//循环
-			{
-				m_uMmsParPlay = 0		;
-				//SetReadPage();
-			}
+			if (m_uMmsParPlay  > m_cMmsPar.size() -1)
+			{	
+				m_uMmsParPlay		= 0		;
+				m_uImageDur			= 0		;
+				m_cImagePath		= L""	;
+				m_uTxtDur			= 0		;
+				m_cTxtContent		= L""	;
+				GetMmsRegionInfo();
+				InitialRegion();
+				SetImageShow();
+				SetTextShow();
+				SetTimer(PAR_SHOW_TIMER,1000,NULL);
+				SetTimer(IMAGE_TIMER,1000,NULL);
+				SetTimer(TXT_TIMER,1000,NULL);
 
-			m_uImageDur			= 0		;
-			m_cImagePath		= L""	;
-			m_uTxtDur			= 0		;
-			m_cTxtContent		= L""	;
-			GetMmsRegionInfo();
-			InitialRegion();
-			SetImageShow();
-			SetAudioShow();
-			SetTextShow();
-			SetVideoShow(true);
-			SetTimer(PAR_SHOW_TIMER,1000,NULL);
-			SetTimer(IMAGE_TIMER,1000,NULL);
-			SetTimer(TXT_TIMER,1000,NULL);
-			SetTimer(AUDIO_TIMER,1000,NULL);
+			}
+			else//读取下一个par
+			{	
+				m_uImageDur			= 0		;
+				m_cImagePath		= L""	;
+				m_uTxtDur			= 0		;
+				m_cTxtContent		= L""	;
+				GetMmsRegionInfo();
+				InitialRegion();
+				SetImageShow();
+				SetTextShow();
+				SetTimer(PAR_SHOW_TIMER,1000,NULL);
+				SetTimer(IMAGE_TIMER,1000,NULL);
+				SetTimer(TXT_TIMER,1000,NULL);
+
+			}
 
 		}
 		else
@@ -2414,12 +1536,7 @@ void MmsShow::OnTimer(UINT nIDEvent)
 		if ( 0 == m_cImagePath.GetLength())//路径不存在
 		{
 			KillTimer(IMAGE_TIMER);
-		//	m_cPic.ShowWindow(false);
-			return ;
-		}
-
-		if (  0 == m_uImageDur)
-		{
+			m_cPic.ShowWindow(false);
 			return ;
 		}
 		
@@ -2435,35 +1552,6 @@ void MmsShow::OnTimer(UINT nIDEvent)
 		}		
 		
 	}
-	else if(nIDEvent == VIDEO_TIMER)//////////////////
-	{
-
-	}
-	else if (nIDEvent == AUDIO_TIMER)
-	{
-		if ( 0 == m_cAudioName.GetLength())//路径不存在
-		{
-			KillTimer(AUDIO_TIMER);
-			m_cstcAudio.ShowWindow(false);
-			return ;
-		}
-		
-		if (  0 == m_uAudioDur)
-		{
-			return ;
-		}
-
-		if (m_uAudioTime > m_uAudioDur/TIME_BASE)
-		{
-			KillTimer(AUDIO_TIMER);
-			m_cAudioName = L"";
-		}
-		else
-		{
-			m_uAudioTime++ ;
-		}
-
-	}
 	else if(nIDEvent == TXT_TIMER)
 	{
 		if ( 0 == m_cTxtContent.GetLength())//没内容
@@ -2472,11 +1560,6 @@ void MmsShow::OnTimer(UINT nIDEvent)
 			return ;
 		}
 		
-		if (  0 == m_uTxtDur)
-		{
-			return ;
-		}
-
 		if (m_uTxtTime > m_uTxtDur /TIME_BASE)
 		{
 			KillTimer(TXT_TIMER);
@@ -2491,15 +1574,15 @@ void MmsShow::OnTimer(UINT nIDEvent)
 	}
 	else if (nIDEvent == DEF_IMAGE_SHOW)
 	{
-		if (m_cDefImagePath.size() == 0 ||
-			m_cDefImagePath.size() == 1)
+		if (m_cDefImagePath.size() == 0)
 		{
 			KillTimer(DEF_IMAGE_SHOW);
-			if(m_cDefImagePath.size() == 1)
-			{
-				m_cImagePath  = m_cDefImagePath[0];
-				SetImageShow(true);
-			}
+			return ;
+		}
+		
+		if (m_cDefImagePath.size() == 1)
+		{
+			KillTimer(DEF_IMAGE_SHOW);
 			return ;
 		}
 		
@@ -2511,68 +1594,22 @@ void MmsShow::OnTimer(UINT nIDEvent)
 		{
 			m_uDefImageItem++	;
 		}
-		int size = m_cDefImagePath.size() 	;
-		if (size > 0 )
-		{
-			m_cImagePath  = m_cDefImagePath[m_uDefImageItem];
-		}
-	//	GetDefRegionInfo()	;
-	//	InitialDefRegion()	;
+		GetDefRegionInfo()	;
+		InitialDefRegion()	;
 		SetImageShow()		;
-
-	}
-	else if(nIDEvent == DEF_VIDEO_TIMER)//缺省视频时钟
-	{
-	}
-	else if (nIDEvent == DEF_AUDIO_TIMER)
-	{
-		if (m_cDefAudio.size() == 0 || 
-			m_cDefAudio.size() == 1)
-		{
-			KillTimer(DEF_AUDIO_TIMER);
-			if(m_cDefAudio.size() == 1)
-			{
-				if(main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid)
-				{
-					main->m_pMMSDlg->StopAudio();
-				}
-				m_cAudioName = m_cDefAudio[0];
-				main->m_pMainDlg->m_mainMp3Dlg_->PlayAudio(m_cAudioName);
-				main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid = TRUE;
-			}
-			return ;
-		}
-				
-		if (m_uDefAudioItem >= m_cDefAudio.size() -1 )
-		{
-			m_uDefAudioItem = 0 ;	
-		}
-		else
-		{
-			m_uDefAudioItem++	;
-		}
-		
-		int size = m_cDefAudio.size();
-		if ( size > 0)
-		{
-			m_cAudioName = m_cDefAudio[m_uDefAudioItem];
-		}
-		
-		HandleAudio();
-	//	GetDefRegionInfo()	;
 
 	}
 	else if (nIDEvent == DEF_TXT_SHOW)
 	{
-		if (m_cDefTxtContent.size() == 0 ||
-			m_cDefTxtContent.size() == 1)
+		if (m_cDefTxtContent.size() == 0)
 		{
 			KillTimer(DEF_TXT_SHOW);
-			if(m_cDefTxtContent.size() == 1)
-			{
-				m_cTxtContent  = m_cDefTxtContent[0];
-				SetTextShow(true);
-			}
+			return ;
+		}
+		
+		if (m_cDefTxtContent.size() == 1)
+		{
+			KillTimer(DEF_TXT_SHOW);
 			return ;
 		}
 		
@@ -2584,23 +1621,9 @@ void MmsShow::OnTimer(UINT nIDEvent)
 		{
 			m_uDefTxtItem++	;
 		}
-		
-		int size = m_cDefTxtContent.size() ;
-		if ( size > 0 )
-		{
-			m_cTxtContent  = m_cDefTxtContent[m_uDefTxtItem];
-		}
-
-	//	GetDefRegionInfo()	;
-	//	InitialDefRegion()	;
+		GetDefRegionInfo()	;
+		InitialDefRegion()	;
 		SetTextShow()		;
-
-	}
-	else if(nIDEvent == 0x111)
-	{
-		KillTimer(0x111);
-		main->m_pMainDlg->m_mainMp3Dlg_->PlayAudio(m_cAudioName);
-		main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid = TRUE;
 	}
 
 	CWnd::OnTimer(nIDEvent);
@@ -2612,41 +1635,15 @@ void MmsShow::OnBtnPicture()
 {	
 //	SetMmsEdit();
 	if (1 == m_uState)//只读状态,保存图片有两个路径需要选择。
-	{
-		if(0 == m_picPathDlg.m_uSaveType)
+	{   
+		if (m_cImagePath !=L"")
 		{
-			if (m_cImagePath != L"")
-			{
-				m_picPathDlg.ShowWindow(TRUE);
-				m_picPathDlg.GetMainWnd(this);
-				m_picPathDlg.SetState(1);
-				CString name = GetFileName(m_cImagePath);
-				m_picPathDlg.SetCopyPath(m_cImagePath,name);
-			}
+			m_picPathDlg.ShowWindow(TRUE);
+			m_picPathDlg.GetMainWnd(this);
+			m_picPathDlg.SetState(1);
+			CString name = GetFileName(m_cImagePath);
+			m_picPathDlg.SetCopyPath(m_cImagePath,name);
 		}
-		else if(1 == m_picPathDlg.m_uSaveType)
-		{
-			if(m_cAudioName != L"")
-			{
-				m_picPathDlg.ShowWindow(TRUE);
-				m_picPathDlg.GetMainWnd(this);
-				m_picPathDlg.SetState(1);
-				CString name = GetFileName(m_cAudioName);
-				m_picPathDlg.SetCopyPath(m_cAudioName,name);
-			}
-		}
-		else if(2 == m_picPathDlg.m_uSaveType)
-		{
-			if(m_cVideoName != L"")
-			{
-				m_picPathDlg.ShowWindow(TRUE);
-				m_picPathDlg.GetMainWnd(this);
-				m_picPathDlg.SetState(1);
-				CString name = GetFileName(m_cVideoName);
-				m_picPathDlg.SetCopyPath(m_cVideoName,name);
-			}
-		}
-
 	}
 	else if (2 == m_uState)//编辑，插入
 	{
@@ -2657,243 +1654,120 @@ void MmsShow::OnBtnPicture()
 		m_picPathDlg.SetState(2);
 
 	}
-
-	if (m_bHaveInsertPic)//删除
+	else if (3 == m_uState)//删除
 	{
 		ClosePicture();
-		m_bHaveInsertPic = false;
+//		m_btnPicture.SetWindowText(L"插入图片");
+		m_uState = 2;
+
 	}
+
 }
 
-void MmsShow::DeleteAudio()
+void MmsShow::OnBtnMusic()
 {
-	if (2 == m_uState || 3 == m_uState)//edit
-	{
-		if (m_cAudioName != L"")
-		{	
-			m_cAudioName = L"";
-			m_cstcAudio.SetTxt(L"",0,RGB(255,255,255));
-			m_cstcAudio.ShowWindow(false);
-			::PostMessage(m_pHwnd,WM_AUDIO,1,0);//插入音频
-			::PostMessage(m_pHwnd,WM_AUDIO,5,0);//试听按钮消失
-		}		
-	}
-}
 
-void MmsShow::SaveAudio()
-{
-	if (1 == m_uState)//只读状态,保存图片有两个路径需要选择。
-	{
-		if(1 == m_picPathDlg.m_uSaveType)
+/*	std::vector<MMS::MMSWarp::MMS_PAR> par	 ;
+	MMS::MMSWarp::MMS_LAYOUT lay ;
+	std::wstring wr ;
+	GetParInfo(par,lay,wr);
+	
+	for (int i = 0 ;i < par.size() ;i++)
+	{   
+		std::vector<MMS::MMSWarp::MMS_SRC>::iterator it;
+		for(it = par[i].srcs.begin(); it!= par[i].srcs.end(); it++)
 		{
-			if(m_cAudioName != L"")
-			{
-				m_picPathDlg.ShowWindow(TRUE);
-				m_picPathDlg.GetMainWnd(this);
-				m_picPathDlg.SetState(1);
-				CString name = GetFileName(m_cAudioName);
-				m_picPathDlg.SetCopyPath(m_cAudioName,name);
-			}
-		}		
+			int a ;
+		}	
 	}
-}
-
-void MmsShow::InsertAudio(CString const audioPath)
-{	
-	if (2 == m_uState || 3 == m_uState )
+	SetMmsEdit();
+*/  
+	if (1 == m_uState)//只读状态
 	{
-		CString name = audioPath.Mid( audioPath.ReverseFind('/')+1 );
-		m_cAudioName = audioPath;
-		m_cstcAudio.SetTxt(name,26,RGB(255,255,255));
-		m_cstcAudio.ShowWindow(true);
-		::PostMessage(m_pHwnd,WM_AUDIO,0,0);//删除音频
-		::PostMessage(m_pHwnd,WM_AUDIO,3,0);//试听音频
-	}
-}
-
-void MmsShow::HandleAudio()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (m_cAudioName != L"")//保存音频文件
-	{
-		if(main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid)
+	/*	CreateDirectoryW(L"FlashDrv/3G/mms/my_music/", 0);
+		CString name = L"FlashDrv/3G/mms/my_music/" + GetFileName(m_cImagePath);
+		if ( 0 == CopyFile(m_cImagePath,name,FALSE))
 		{
-			main->m_pMMSDlg->StopAudio();
+			
 		}
+	*/
+
+	}
+	else if (2 == m_uState)//编辑，插入
+	{
+		//找出FlashDrv/3G/mms/my_photo/路径下的图
 		
-		SetTimer(0x111, 50, NULL);
-		SetAudioShow();
-		::PostMessage(m_pHwnd,WM_AUDIO,2,0);//保存
-		::PostMessage(m_pHwnd,WM_AUDIO,3,0);//试听
 	}
-	else
-	{	
-		SetAudioShow();
-		::PostMessage(m_pHwnd,WM_AUDIO,4,0);//保存按钮消失
-		::PostMessage(m_pHwnd,WM_AUDIO,5,0);//试听按钮消失
-		if(main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid)
-		{
-			main->m_pMMSDlg->StopAudio();
-		}
-		main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid = FALSE;
-	}
-
-}
-
-void MmsShow::ShowTextBtn()
-{
-	bool bshow = false;
-	if (!m_cTxtContent.IsEmpty())
+	else if (3 == m_uState)//删除
 	{
-		bshow = true ;
+		
 	}
+}
+void MmsShow::OnBtnVedio()
+{
+ 
 
-	m_btnUp.ShowWindow(bshow);
-	m_btnDown.ShowWindow(bshow);
+	if (1 == m_uState)//只读状态
+	{
+	/*	CreateDirectoryW(L"FlashDrv/3G/mms/my_vedio/", 0);
+		CString name = L"FlashDrv/3G/mms/my_vedio/" + GetFileName(m_cImagePath);
+		if ( 0 == CopyFile(m_cImagePath,name,FALSE))
+		{
+			
+		}
+	*/
+	}
+	else if (2 == m_uState)//编辑，插入
+	{
+		//找出FlashDrv/3G/mms/my_photo/路径下的图		
+	}
+	else if (3 == m_uState)//删除
+	{
+		
+	}
+}
+void MmsShow::OnBtnSave()
+{
 	
 }
-
-CString MmsShow::GetAudio()
-{
-	return m_cAudioName ;
-}
-
-void MmsShow::SetAudioShow()
-{	
-	bool bshow = false;
-	if (m_cAudioName != L"")
-	{
-		CString name = m_cAudioName.Mid(m_cAudioName.ReverseFind('/')+1);
-		m_cstcAudio.SetTxt(name,26,RGB(255,255,255));
-		bshow = true ;	
-	}
-	else
-	{
-		m_cstcAudio.SetWindowText(L"");
-	}
-	m_cstcAudio.ShowWindow(bshow);
-}
-
-void MmsShow::SetVideoShow(BOOL show)
-{
-	if(!m_cVideoName.IsEmpty())
-	{
-		CString name = m_cVideoName.Mid( m_cVideoName.ReverseFind('/')+1 );
-		m_cPic.SetTitle(name);
-	}
-	else
-		m_cPic.SetTitle(L"");
-}
-
-void MmsShow::StopVideo()
-{
-	if(!m_cVideoName.IsEmpty())
-	{
-		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		main->playervideo_->ExitPlayer();
-	}
-}
-
-void MmsShow::DeleteVideo()
-{
-	if (2 == m_uState || 3 == m_uState)//edit
-	{
-		if (!m_cVideoName.IsEmpty())
-		{	
-			m_cVideoName.Empty();
-		}
-	}
-}
-
-void MmsShow::SaveVideo()
-{
-	if (1 == m_uState)//只读状态,保存视频有两个路径需要选择。
-	{
-		if(1 == m_picPathDlg.m_uSaveType)
-		{
-			if(!m_cVideoName.IsEmpty())
-			{
-				m_picPathDlg.ShowWindow(TRUE);
-				m_picPathDlg.GetMainWnd(this);
-				m_picPathDlg.SetState(1);
-				CString name = GetFileName(m_cVideoName);
-				m_picPathDlg.SetCopyPath(m_cVideoName,name);
-			}
-		}		
-	}
-}
-
-void MmsShow::InsertVideo(CString const videoPath)
-{
-	if (2 == m_uState || 3 == m_uState )
-	{	
-		CString name = videoPath.Mid( videoPath.ReverseFind('/')+1 );
-		m_cVideoName = videoPath;
-	}
-}
-
-CString MmsShow::GetVideo()
-{
-	return m_cVideoName;
-}
-
 void MmsShow::OnBtnUp()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if ( 2 == m_uState || 3 == m_uState )//编辑状态
+	if ( 2 == m_uState || 3 == m_uState)//编辑状态
 	{
 		m_iPageNum-- ;
 		if (m_iPageNum < 0 )
 		{	
+//			m_btnUpPage.EnableWindow(FALSE);
 			m_iPageNum = 0;
 			return ;
 		}
-		
-		GetText();
-		bool binsert = false;
-		if ( 3 == m_uState )
+
+		m_uMmsParPlay =	m_iPageNum+1	;
+
+		if (m_iPageNum < m_cMmsPar.size()-1)//在已经有的页面内翻页,保存下一页的内容
+		{   
+			SaveParInfo();	
+		}
+		else if(m_iPageNum == m_cMmsPar.size()-1)//保存下最后一页
 		{
-			if (!m_cImagePath.IsEmpty() || !m_cTxtContent.IsEmpty() || 
-				!m_cAudioName.IsEmpty() || !m_cVideoName.IsEmpty())//内容为空不新建
-			{	
-				m_uMmsParPlay = m_iPageNum+1;
-				AddParInfo(true);//插入
-				m_uMmsParPlay = m_iPageNum;
-				binsert = true;
-			}
-			m_uState = 2;
-			ShowParInfo();
-			m_addtionSize -= 0.2;
-			main->m_pMMSDlg->m_MmsSize -= 0.2;
-			main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
+			AddParInfo();
+		}
+		
+		// 显示上一页的信息
+		m_uMmsParPlay = m_iPageNum;
+		GetMmsRegionInfo();
+		SetImageShow();
+		SetTextShow();
+		if (m_cImagePath != L"")
+		{
+//			m_btnPicture.SetWindowText(L"删除图片")	;
+			m_uState = 3;
 		}
 		else
 		{
-			m_uMmsParPlay =	m_iPageNum+1 ;
-
-			if (m_iPageNum < m_cMmsPar.size()-1)//在已经有的页面内翻页,保存下一页的内容
-			{   
-				SaveParInfo();	
-			}
-			else if(m_iPageNum == m_cMmsPar.size()-1)//保存下最后一页
-			{
-				AddParInfo();
-				if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty() && m_cAudioName.IsEmpty() && m_cVideoName.IsEmpty())
-				{
-					m_addtionSize -= 0.2;
-					main->m_pMMSDlg->m_MmsSize -= 0.2;
-					main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
-				}
-			}
-			
-			// 显示上一页的信息
-			m_uMmsParPlay = m_iPageNum;
-			ShowParInfo();
-			
+//			m_btnPicture.SetWindowText(L"插入图片")	;
+			m_uState = 2;
 		}
-
-		//当前页的状态
-		::PostMessage(m_pHwnd,WM_PAR_SIZE,m_iPageNum,m_cMmsPar.size());
 		
 	}
 	
@@ -2908,23 +1782,16 @@ void MmsShow::OnBtnUp()
 				{
 					m_uMmsParPlay = m_cMmsPar.size() -1 ;
 				}
-
-// 				KillTimer(PAR_SHOW_TIMER);
-// 				KillTimer(IMAGE_TIMER);
-// 				KillTimer(TXT_TIMER);
-// 				KillTimer(IMAGE_TIMER);
-
+				KillTimer(PAR_SHOW_TIMER);
+				KillTimer(IMAGE_TIMER);
+				KillTimer(TXT_TIMER);
 				GetMmsRegionInfo();
 				InitialRegion();
 				SetImageShow(true);
-				SetAudioShow();
 				SetTextShow(true);
-				SetVideoShow(true);
-
-// 				SetTimer(PAR_SHOW_TIMER,1000,NULL);
-// 				SetTimer(IMAGE_TIMER,1000,NULL);
-// 				SetTimer(TXT_TIMER,1000,NULL);
-// 				SetTimer(AUDIO_TIMER,1000,NULL);
+				SetTimer(PAR_SHOW_TIMER,1000,NULL);
+				SetTimer(IMAGE_TIMER,1000,NULL);
+				SetTimer(TXT_TIMER,1000,NULL);
 			}
 			
 		}
@@ -2943,110 +1810,90 @@ void MmsShow::OnBtnUp()
 				{	
 					m_uDefTxtItem  = m_cDefTxtContent.size() -1 ;	
 				}
-
-// 				KillTimer(DEF_IMAGE_SHOW);
-// 				KillTimer(DEF_TXT_SHOW);
-// 				KillTimer(DEF_AUDIO_TIMER);
-
+				KillTimer(DEF_IMAGE_SHOW);
+				KillTimer(DEF_TXT_SHOW);
 				GetDefRegionInfo();
 				InitialDefRegion();
 				SetImageShow(true);
-				SetAudioShow();
 				SetTextShow(true);
-				SetVideoShow(true);
-
-// 				SetTimer(DEF_IMAGE_SHOW,2000,NULL);
-// 				SetTimer(DEF_TXT_SHOW,2000,NULL);
-// 				SetTimer(DEF_AUDIO_TIMER,2000,NULL);
+				SetTimer(DEF_IMAGE_SHOW,2000,NULL);
+				SetTimer(DEF_TXT_SHOW,2000,NULL);
 
 			}
 		}
-//		SetReadPage();
+		
 	}
 	
 }
 
 void MmsShow::OnBtnNext()
 {   
-	//插入状态
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (2 == m_uState || 3 == m_uState )
+	if (2 == m_uState || 3 == m_uState)
 	{
 		//如果当前页数小于PAR,PAR就不添加
-		
-		bool binsert = false;
+//		m_btnUpPage.EnableWindow(TRUE);
+		m_iPageNum++ ;
+		m_uMmsParPlay = m_iPageNum -1 ;
 
-		GetText();
-		
-		//插入状态
-		if ( 3 == m_uState)
-		{
-			if (!m_cImagePath.IsEmpty() || !m_cTxtContent.IsEmpty() || 
-				!m_cAudioName.IsEmpty() || !m_cVideoName.IsEmpty())//内容为空不新建
-			{
-				AddParInfo(true);//插入
-				m_iPageNum++ ;
-				m_uMmsParPlay = m_iPageNum;
-				binsert = true;
-			}
-			m_addtionSize -= 0.2;
-			main->m_pMMSDlg->m_MmsSize -= 0.2;
-			main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
-		}
-		else
-		{
-			m_iPageNum++ ;
-			m_uMmsParPlay = m_iPageNum -1 ;
-		}
-		
-		//插入一个Par
-		if (m_uState == 3)
-		{	
-			m_uState = 2;
-			ShowParInfo();
-		}
-		else
-		{
-			if (m_iPageNum <= m_cMmsPar.size())//在已经有的页面内翻页
-			{   
-				SaveParInfo();
-				if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty() && 
-					m_cAudioName.IsEmpty() && m_cVideoName.IsEmpty())//内容为空不新建
-				{
-					m_iPageNum--;
-					m_uMmsParPlay--;
-				}
-				
-				//如果下一页有内容就显示
-				m_uMmsParPlay += 1 ;
-				if (m_uMmsParPlay < m_cMmsPar.size())
-				{
-					ShowParInfo();			
-				}
-				else//下一页是空的，就是新建
-				{
-					NewPar();
-				}
-				
-			}
-			else//新建下一页，上一页内容添加到par里
-			{
-				if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty() &&
-					m_cAudioName.IsEmpty() && m_cVideoName.IsEmpty())//内容为空不新建
-				{
-					m_iPageNum--;
-					m_addtionSize -= 0.2;
-					main->m_pMMSDlg->m_MmsSize -= 0.2;
-					main->m_pMMSDlg->SetMmsSize(main->m_pMMSDlg->m_MmsSize);
-				}
-				AddParInfo();
-				NewPar();
-			}
+		wchar_t buf[200];
+		memset(buf,0,400);
+		m_cTextView.GetWindowText(buf,200)	;
+		m_cTxtContent = buf ;
+		if (m_iPageNum <= m_cMmsPar.size())//在已经有的页面内翻页
+		{   
 
+			SaveParInfo();
+			if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty())//内容为空不新建
+			{
+				m_iPageNum--;
+
+				m_uMmsParPlay--;
+			}			
+			//如果下一页有内容就显示
+			m_uMmsParPlay += 1 ;
+			if (m_uMmsParPlay < m_cMmsPar.size())
+			{
+				GetMmsRegionInfo();
+				SetImageShow();
+				SetTextShow();
+				if (m_cImagePath != L"")
+				{
+//					m_btnPicture.SetWindowText(L"删除图片")	;
+					m_uState = 3;
+				}
+				else
+				{
+//					m_btnPicture.SetWindowText(L"插入图片")	;
+					m_uState = 2;
+				}
+			}
+			else//下一页是空的，就是新建
+			{
+				m_cTxtContent = L"";
+				ClosePicture();
+				SetTextShow();
+				m_cTextView.Invalidate(FALSE);
+				m_uState = 2 ;//插入图片
+//				m_btnPicture.SetWindowText(L"插入图片");
+			}
+			
 		}
-		
-		//当前页的状态
-		::PostMessage(m_pHwnd,WM_PAR_SIZE,m_iPageNum,m_cMmsPar.size());
+		else//新建下一页，上一页内容添加到par里
+		{
+			if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty())//内容为空不新建
+			{
+				m_iPageNum--;
+			}
+			AddParInfo();
+			//上一页清空			
+			m_cTxtContent = L"";
+			ClosePicture();
+			SetTextShow();
+			m_cTextView.Invalidate(FALSE);
+			m_uState = 2 ;//插入图片
+//			m_btnPicture.SetWindowText(L"插入图片");			
+			
+		}
 
 	}
 
@@ -3062,20 +1909,16 @@ void MmsShow::OnBtnNext()
 				{
 					m_uMmsParPlay = 0 ;
 				}
-// 				KillTimer(PAR_SHOW_TIMER);
-// 				KillTimer(IMAGE_TIMER);
-// 				KillTimer(TXT_TIMER);
-// 				KillTimer(AUDIO_TIMER);
+				KillTimer(PAR_SHOW_TIMER);
+				KillTimer(IMAGE_TIMER);
+				KillTimer(TXT_TIMER);
 				GetMmsRegionInfo();
 				InitialRegion();
 				SetImageShow(true);
-				SetAudioShow();
 				SetTextShow(true);
-				SetVideoShow(true);
-// 				SetTimer(PAR_SHOW_TIMER,1000,NULL);
-// 				SetTimer(IMAGE_TIMER,1000,NULL);
-// 				SetTimer(TXT_TIMER,1000,NULL);
-// 				SetTimer(AUDIO_TIMER,1000,NULL);
+				SetTimer(PAR_SHOW_TIMER,1000,NULL);
+				SetTimer(IMAGE_TIMER,1000,NULL);
+				SetTimer(TXT_TIMER,1000,NULL);
 			}
 			
 		}
@@ -3095,174 +1938,19 @@ void MmsShow::OnBtnNext()
 					m_uDefTxtItem  =  0;	
 				}
 				
-// 				KillTimer(DEF_IMAGE_SHOW);
-// 				KillTimer(DEF_TXT_SHOW);
-// 				KillTimer(DEF_AUDIO_TIMER);
+				KillTimer(DEF_IMAGE_SHOW);
+				KillTimer(DEF_TXT_SHOW);
 				GetDefRegionInfo();
 				InitialDefRegion();
 				SetImageShow(true);
-				SetAudioShow();
 				SetTextShow(true);
-				SetVideoShow(true);
-// 				SetTimer(DEF_IMAGE_SHOW,2000,NULL);
-// 				SetTimer(DEF_TXT_SHOW,2000,NULL);
-// 				SetTimer(DEF_AUDIO_TIMER,2000,NULL);
-
+				SetTimer(DEF_IMAGE_SHOW,1000,NULL);
+				SetTimer(DEF_TXT_SHOW,1000,NULL);
 			}
 		}
-//		SetReadPage();
-	}
-	
-}
-
-void MmsShow::OnBtnTextUp()
-{
-	TextScrollUp();
-}
-
-void MmsShow::OnBtnTextDown()
-{
-	TextScrollDown();
-}
-
-void MmsShow::SetpWnd(CWnd const * pWnd)
-{
-	m_pHwnd = pWnd->GetSafeHwnd();
-}
-
-void MmsShow::SetReadPage()
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	main->m_pSMSListDlg->m_pMmsReadDlg->m_currentPage = m_uMmsParPlay + 1;
-	main->m_pSMSListDlg->m_pMmsReadDlg->SetReadPage();
-}
-
-void MmsShow::ShowParInfo()
-{
-	GetMmsRegionInfo();
-	SetImageShow();
-	SetTextShow();
-	SetAudioShow();
-	SetVideoShow(true);
-	ShowTextBtn();
-	MsgPost();
-}
-
-void MmsShow::GetText()
-{
-	wchar_t buf[200];
-	memset(buf,0,400);
-	m_cTextView.GetWindowText(buf,200);
-	m_cTxtContent = buf ;
-}
-
-bool MmsShow::ReadName(std::string name,CString &content)
-{
-	
-	std::wstring wsr	=  Util::StringOp::ToCString(name);
-	CString	 fl			=	wsr.c_str() ;//文件名
-	
-	if (fl.Find(L".txt") == -1 && fl.Find(L".text") == -1 )
-	{
-		return false ;
-	}
-	CFile f;
-	CFileException e;
-	if( f.Open( fl, CFile::modeRead, &e ) )
-	{	
-		int length = f.GetLength() ;
-		char *wr ;
-		wr = new char[length+1];//10k
-		memset(wr,0,length+1);
-		wchar_t *uicode;//转化成uicode
-		uicode = new wchar_t[length+1];//10k
-		memset(uicode,0,sizeof(wchar_t)*(length+1));
 		
-		f.Read(wr,length);
-		wr[length] = '\0';				
-		int index = 0 ;
-		int count = strlen(wr);//
-		int iNum =0 ;
-		int offset =0 ;
-		while( offset!= -1 && index < count)
-		{
-			offset  = utf82unicode((unsigned char *)wr,index,count,uicode[iNum]);
-			index += offset;
-			iNum++;					
-		}
-		content = uicode ;
-		delete []wr ;
-		delete []uicode ;
-		f.Close();
 	}
-	return true;
-}
-
-void MmsShow::AutoPlay(bool bauto)
-{	
-	m_uParTime = 0 ;
-	m_uTxtTime = 0;
-	m_uAudioTime = 0 ;
-	m_cImageTime = 0;
-
-	if (m_bFindSiml)
-	{
-		if(m_cMmsPar.size() > 1)
-		{
-			if (bauto)
-			{
-				SetTimer(PAR_SHOW_TIMER,1000,NULL);
-				SetTimer(IMAGE_TIMER,1000,NULL);
-				SetTimer(TXT_TIMER,1000,NULL);	
-				SetTimer(AUDIO_TIMER,1000,NULL);
-			}
-			else
-			{
-				KillTimer(PAR_SHOW_TIMER);
-				KillTimer(IMAGE_TIMER);
-				KillTimer(TXT_TIMER);
-				KillTimer(AUDIO_TIMER);
-			}
-		}
-		else
-		{
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-			KillTimer(PAR_SHOW_TIMER);
-			KillTimer(IMAGE_TIMER);
-			KillTimer(TXT_TIMER);
-			KillTimer(AUDIO_TIMER);
-
-			if (m_cAudioName != L"")
-			{
-				if(main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid)
-				{
-					main->m_pMMSDlg->StopAudio();
-				}
-				main->m_pMainDlg->m_mainMp3Dlg_->PlayAudio(m_cAudioName);
-				main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid = TRUE;
-			}
-
-			SetImageShow(true);
-			SetTextShow(true);
-			SetVideoShow(true);
-		}
-	}
-	else
-	{	
-		if (bauto)
-		{
-			SetTimer(DEF_IMAGE_SHOW,1000,NULL);
-			SetTimer(DEF_TXT_SHOW,1000,NULL);	
-			SetTimer(DEF_AUDIO_TIMER,1000,NULL);
-		}
-		else
-		{
-			KillTimer(DEF_IMAGE_SHOW);
-			KillTimer(DEF_TXT_SHOW);
-			KillTimer(DEF_AUDIO_TIMER);
-		}	
-	}
+	
 }
 
 HBRUSH MmsShow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) 
@@ -3288,7 +1976,6 @@ BEGIN_MESSAGE_MAP(CImageViewer, CStatic)
 	ON_WM_DESTROY()
 	ON_WM_PAINT()
 	ON_WM_SIZE()
-	ON_CONTROL_REFLECT(BN_CLICKED, OnClicked)
 //	ON_WM_CTLCOLOR()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -3358,26 +2045,9 @@ CImageViewer::~CImageViewer()
 
 }
 
-void CImageViewer::OnClicked() 
-{
-	// TODO: Add your control notification handler code here
-	if((GetDlgCtrlID() != 0xFFFF))
-	{
-		GetParent()->SendMessage(WM_STATIC_CLICK, GetDlgCtrlID());
-	}
-}
-
-void CImageViewer::PreSubclassWindow() 
-{
-	// TODO: Add your specialized code here and/or call the base class
-	DWORD dwStyle = GetStyle();
-    ::SetWindowLong(GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY | BS_OWNERDRAW);
-
-	CStatic::PreSubclassWindow();
-}
-
 void CImageViewer::UnLoad()
 {
+
 	Stop();
 	GifStop();
 	if (m_pPicture){
@@ -3419,7 +2089,6 @@ void CImageViewer::UnLoad()
 	m_nCurrFrame	   = 0;
 	m_nDataSize		   = 0;
 	m_nSizeMode		   = FitControl;
-
 }
 
 BOOL CImageViewer::PrepareDC(int nWidth, int nHeight)
@@ -3484,8 +2153,8 @@ BOOL CImageViewer::SetBitmap(HBITMAP hBitmap, EImageSize Emode)
 
 	m_PictureSize.cx = m_pPicture->GetWidth();
 	m_PictureSize.cy = m_pPicture->GetHeight();
-	
 	m_nFrameCount = m_pPicture->GetNumFrames();
+
 	bRet = (PrepareDC(m_PictureSize.cx, m_PictureSize.cy)!=0);
 	if (!bRet) return FALSE;
 
@@ -3654,7 +2323,7 @@ BOOL CImageViewer::DrawBitmap()
 		else{ 
 			m_pThread->ResumeThread();
 		}
-	}
+	} 
 	else{
 		if ( m_pPicture ){
 			long hmWidth  = m_pPicture->GetWidth();
@@ -3667,13 +2336,14 @@ BOOL CImageViewer::DrawBitmap()
 	}
 
 	return FALSE;
-
 }
 
 SIZE CImageViewer::GetSize() const
 {
 	return m_PictureSize;
 }
+
+
 
 
 //============================================================================
@@ -3791,12 +2461,6 @@ COLORREF CImageViewer::GetBkColor() const
 // WINDOWS MESSAGE HANDLING
 //============================================================================
 
-void CImageViewer::SetTitle(CString s)
-{
-	sTitle = s;
-	Invalidate();
-}
-
 void CImageViewer::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
@@ -3828,85 +2492,29 @@ void CImageViewer::OnPaint()
 	{	
 		if (rect.Width() > m_PictureSize.cx && rect.Height() > m_PictureSize.cy )//图片区域小于设置的区域
 		{   
-	
 			UINT xbegin = (rect.Width() - m_PictureSize.cx)/2	;
 			UINT ybegin	= (rect.Height() - m_PictureSize.cy)/2	;
 			::StretchBlt(dc.m_hDC, xbegin, ybegin, m_PictureSize.cx, m_PictureSize.cy,
 				m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
-
 		}
-		else if (rect.Width() <= m_PictureSize.cx && m_PictureSize.cy < rect.Height() )//
+		else if (rect.Width() <= m_PictureSize.cx && m_PictureSize.cy <rect.Height() )//
 		{   
-			
-			UINT xbegin,ybegin ;
-			UINT width,height  ;
-			
-			ybegin = (rect.Height() - m_PictureSize.cy)/2;
-			height = m_PictureSize.cy;
-			width  = rect.Width(); 
-			xbegin = 0;
-			
-			::StretchBlt(dc.m_hDC, xbegin, ybegin, width, height,
-			 	m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
-			
-// 			UINT ybegin	= (rect.Height() - m_PictureSize.cy)/2	;
-// 			::StretchBlt(dc.m_hDC, 0, ybegin, rect.Width(), m_PictureSize.cy,
-// 				m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
+			UINT ybegin	= (rect.Height() - m_PictureSize.cy)/2	;
+			::StretchBlt(dc.m_hDC, 0, ybegin, rect.Width(), m_PictureSize.cy,
+				m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
 
 		}
 		else if (rect.Width() > m_PictureSize.cx && m_PictureSize.cy >= rect.Height() )
 		{   
-			UINT xbegin,ybegin ;
-			UINT width,height  ;
-			
-			if (m_PictureSize.cx > m_PictureSize.cy)
-			{
-				ybegin = 0;
-				height = rect.Height();
-				width  = (height*m_PictureSize.cx/m_PictureSize.cy) ; 
-				xbegin = (rect.Width() - width) /2 ; 
-			}
-			else 
-			{
-				width  = m_PictureSize.cx;
-				xbegin = (rect.Width() - width) /2 ;					
-				height = rect.Height();
-				ybegin = 0;
-
-			}
-	
-			::StretchBlt(dc.m_hDC, xbegin, ybegin, width, height,
-			 	m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
-
-
-// 			UINT xbegin = (rect.Width() - m_PictureSize.cx)/2	;
-// 			::StretchBlt(dc.m_hDC, xbegin, 0, m_PictureSize.cx, rect.Height(),
-// 				m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
+			UINT xbegin = (rect.Width() - m_PictureSize.cx)/2	;
+			::StretchBlt(dc.m_hDC, xbegin, 0, m_PictureSize.cx, rect.Height(),
+				m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
 	
 		}
 		else if (rect.Width() <= m_PictureSize.cx && m_PictureSize.cy >=rect.Height() )
-		{	
-			UINT xbegin,ybegin;
-			UINT width,height ;
-				
-			ybegin = 0;
-			height = rect.Height();
-			width  = (height*m_PictureSize.cx/m_PictureSize.cy) ;
-			if (width > rect.Width())//缩放之后还是比给定的区域大
-			{
-				xbegin = 0 ;
-				width  =  rect.Width();
-			}
-			else 
-			{
-				xbegin = (rect.Width() - width) /2 ; 
-			}	
-			
-			::StretchBlt(dc.m_hDC, xbegin, ybegin, width, height,
+		{
+			::StretchBlt(dc.m_hDC, 0, 0, rect.Width(), rect.Height(),
 				m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
-	
-// 			::StretchBlt(dc.m_hDC, 0, 0, rect.Width(), rect.Height(),
-// 				m_hMemDC, 0, 0, m_PictureSize.cx, m_PictureSize.cy, SRCCOPY);
 	
 		}
 		
@@ -3921,12 +2529,6 @@ void CImageViewer::OnPaint()
 	dc.SelectObject(pen.m_hObject);
 	dc.MoveTo(rect.left,rect.bottom -1);//线自己占一个像素
 	dc.LineTo(rect.right,rect.bottom -1);
-
-	if(!sTitle.IsEmpty())
-	{
-		dc.DrawText(sTitle, sTitle.GetLength(), &rect, DT_CENTER |DT_VCENTER);
-	//	sTitle = "";
-	}
 
 }
 
@@ -3961,8 +2563,6 @@ int CImageViewer::FindType(const CString ext)
 	{
 		return 2;
 	}
-	return -1;
-
 }
 
 void CImageViewer::SetImageFilename(std::wstring const& filename)
@@ -3996,8 +2596,7 @@ BOOL CImageViewer::SetGifShow(LPCTSTR lpszResName)
 		m_cGifShow->Play();
 		return TRUE ;
 	}
-	return FALSE;
-
+	
 }
 void CImageViewer::SetImagePos(CRect &rct)
 {
@@ -4279,15 +2878,10 @@ BOOL CGIFShow::Play1(void)
 	//add by qi 2009_06_05
 	CRect rect;
 	m_pwnd->GetClientRect(&rect);
-
 	
 	Sleep(800);
 
 	hDC = m_hWndHDC;
-	//add by qi 0715
-	FillRect(hDC,&rect,(HBRUSH)RGB(255,255,255));
-	Sleep(50);
-
 	hMemDC = ::CreateCompatibleDC(hDC);
 	hMemDC1 = ::CreateCompatibleDC(hDC);
 	hPauseMemDC = ::CreateCompatibleDC(hDC);
@@ -4302,7 +2896,6 @@ BOOL CGIFShow::Play1(void)
 	{
 		DeleteObject(m_hRedrawBitmap);
 	}
-
 	m_hRedrawBitmap = ::CreateCompatibleBitmap(hDC,m_iGifWidth,m_iGifHeight);
 	hOldBitmap1 = (HBITMAP)SelectObject(hMemDC1,m_hRedrawBitmap);
 	hPauseBitmap = ::CreateCompatibleBitmap(hDC,m_iGifWidth,m_iGifHeight);
@@ -4313,10 +2906,7 @@ BOOL CGIFShow::Play1(void)
 	m_bLockBitmap = FALSE;
 	m_iDisposalMethod = DISPOSAL_NOT;
 	while(1 != m_EndRun)
-	{	
-		//add by qi 20100716
-		//FillRect(hDC,&rect,(HBRUSH)RGB(255,255,255));
-
+	{
 		systimer2=systimer1 = GetTickCount();
 		while(m_bLockBitmap)
 		{
@@ -4359,7 +2949,6 @@ BOOL CGIFShow::Play1(void)
 				SelectObject(hMemDC,hOldBitmap);
 				break;
 			}
-			
 			hOldBitmap = (HBITMAP)SelectObject(hMemDC,hBitmap);
 			if(m_bTransparentIndex)
 			{
@@ -4385,9 +2974,6 @@ BOOL CGIFShow::Play1(void)
 				DeleteObject(SelectObject(hdcObject,bmObjectOld));
 				DeleteDC(hdcBack);
 				DeleteDC(hdcObject);
-
-			//	::BitBlt(hMemDC1,m_iLeft,m_iTop,m_iWidth,m_iHeight,hMemDC,0,0,SRCCOPY);
-
 			}
 			else
 			{
@@ -4406,74 +2992,21 @@ BOOL CGIFShow::Play1(void)
 			}
 			else if (rect.Width() <= m_iGifWidth && rect.Height() > m_iGifHeight)
 			{
-				UINT xbegin,ybegin ;
-				UINT width,height  ;
-				
-				ybegin = (rect.Height() - m_iGifHeight)/2;
-				height = m_iGifHeight;
-				width  = rect.Width(); 
-				xbegin = 0;
-				
-				::StretchBlt(hDC, xbegin, ybegin, width, height,
-			 	hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);
-
-// 				int ystart =  (rect.Height()- m_iGifHeight)/2;
-// 				::StretchBlt(hDC, 0, ystart, rect.Width(), m_iGifHeight,
-// 					hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);	
+				int ystart =  (rect.Height()- m_iGifHeight)/2;
+				::StretchBlt(hDC, 0, ystart, rect.Width(), m_iGifHeight,
+					hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);	
 			}
 			else if (rect.Width() >m_iGifWidth && rect.Height() <= m_iGifHeight)
 			{
-				
-				UINT xbegin,ybegin ;
-				UINT width,height  ;
-				
-				if (m_iGifWidth > m_iGifHeight)
-				{
-					ybegin = 0;
-					height = rect.Height();
-					width  = (height*m_iGifWidth/m_iGifHeight) ; 
-					xbegin = (rect.Width() - width) /2 ; 
-				}
-				else 
-				{
-					width  = m_iGifWidth;
-					xbegin = (rect.Width() - width) /2 ;					
-					height = rect.Height();
-					ybegin = 0;
-					
-				}
-				
-				::StretchBlt(hDC, xbegin, ybegin, width, height,
-			 	hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);
-
-// 				int xstart =  (rect.Width()	- m_iGifWidth)/2;
-// 				::StretchBlt(hDC, xstart, 0, m_iGifWidth, rect.Height(),
-// 					hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);
+				int xstart =  (rect.Width()	- m_iGifWidth)/2;
+				::StretchBlt(hDC, xstart, 0, m_iGifWidth, rect.Height(),
+					hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);
 	
 			}
 			else if (rect.Width() <= m_iGifWidth && rect.Height() <= m_iGifHeight)
 			{
-				UINT xbegin,ybegin;
-				UINT width,height ;
-				
-				ybegin = 0;
-				height = rect.Height();
-				width  = (height*m_iGifWidth/m_iGifHeight) ;
-				if (width > rect.Width())//缩放之后还是比给定的区域大
-				{
-					xbegin = 0 ;
-					width  =  rect.Width();
-				}
-				else 
-				{
-					xbegin = (rect.Width() - width) /2 ; 
-				}	
-				
-				::StretchBlt(hDC, xbegin, ybegin, width, height,
-				hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);
-
-	//			::StretchBlt(hDC, 0, 0, rect.Width(), rect.Height(),
-	//				hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);
+				::StretchBlt(hDC, 0, 0, rect.Width(), rect.Height(),
+					hMemDC1, 0, 0, m_iGifWidth, m_iGifHeight, SRCCOPY);
 			}
 			// add over
 
@@ -4925,7 +3458,6 @@ CPicPathSet::CPicPathSet(CWnd* pParent /*=NULL*/)
 	: CDialog(CPicPathSet::IDD, pParent)
 {
 	m_uState = 0;
-	m_uSaveType = -1;
 }
 
 
@@ -4962,6 +3494,7 @@ BOOL CPicPathSet::OnInitDialog()
 
 	m_btnPicSet2.Create(L"我的彩信", WS_CHILD|WS_VISIBLE, CRect(20,PIC_BTN_HEIGHT+34+8,150,PIC_BTN_HEIGHT+34+8+34), this, IDC_BTN_PIC2);
 	m_btnPicSet2.SetColor(RGB(0, 0, 0), m_bkRGB);
+//	m_btnPicSet2.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
 
 	CButton *pButton[2];
 	pButton[0] = &m_btnPicSet1;
@@ -5023,27 +3556,10 @@ void CPicPathSet::OnbtnOk()
 	if (m_btnPicSet1.GetCheck_())
 	{
 		
-		if ( 1 == m_uState )//状态1 保存图片,音频，视频
-		{
-			CString path = L"";
-			if(-1 == m_uSaveType)
-				return;
-			if(0 == m_uSaveType)
-			{
-				CreateDirectoryW(L"FlashDrv/my_photo/", 0);
-				CString path = L"FlashDrv/my_photo/" + m_cFileName ;
-			}
-			else if(1 == m_uSaveType)
-			{
-				CreateDirectoryW(L"FlashDrv/my_music/", 0);
-				CString path = L"FlashDrv/my_music/" + m_cFileName ;
-			}
-			else if(2 == m_uSaveType)
-			{
-				CreateDirectoryW(L"FlashDrv/my_video/", 0);
-				path = L"FlashDrv/my_video/" + m_cFileName ;
-			}
-
+		if ( 1 == m_uState )//状态1 保存图片
+		{   
+			CreateDirectoryW(L"FlashDrv/my_photo/", 0);
+			CString path = L"FlashDrv/my_photo/" + m_cFileName ;
 			if ( 0 != CopyFile(m_cAllPath,path,FALSE))
 			{
 				sucess = 1 ;	
@@ -5052,6 +3568,14 @@ void CPicPathSet::OnbtnOk()
 			{
 				sucess = 0 ;	
 			}
+		}
+		else if (2 == m_uState )//插入图片
+		{
+			m_listCtral.SetState(1);//
+			m_listCtral.SetMwnd(m_pWnd);//传主窗口路径
+			m_listCtral.SetList();
+			m_listCtral.ShowWindow(TRUE);
+			//加载列表，
 		}
 
 	}
@@ -5070,39 +3594,25 @@ void CPicPathSet::OnbtnOk()
 				sucess = 0 ;	
 			}
 		}
+		else if (2 == m_uState)
+		{
+			m_listCtral.SetState(2);//
+			m_listCtral.SetMwnd(m_pWnd);//传主窗口路径
+			m_listCtral.SetList();
+			m_listCtral.ShowWindow(TRUE);
+		}
 	
 	}
 	
 	if (sucess && 1 == m_uState)
 	{
-		if(0 == m_uSaveType)
-		{
-			SetClue(L"保存图片成功!");
-		}
-		else if(1 == m_uSaveType)
-		{
-			SetClue(L"保存音频成功!");
-		}
-		else if(2 == m_uSaveType)
-		{
-			SetClue(L"保存视频成功!");
-		}
+		SetClue(L"保存图片成功!");
 		SetTimer(PIC_SAVE_TIMER,400,NULL);
+
 	}
 	else if (!sucess && 1 == m_uState)
 	{
-		if(0 == m_uSaveType)
-		{
-			SetClue(L"保存图片失败!");
-		}
-		else if(1 == m_uSaveType)
-		{
-			SetClue(L"保存音频失败!");
-		}
-		else if(2 == m_uSaveType)
-		{
-			SetClue(L"保存视频失败!");
-		}
+		SetClue(L"保存图片失败!");
 		SetTimer(PIC_SAVE_TIMER,1000,NULL);
 	}
 	
@@ -5123,26 +3633,8 @@ void CPicPathSet::SetCopyPath(CString &allpath,CString &filename)
 	CenterWindow();
 	m_cAllPath	=	allpath;
 	m_cFileName	=	filename;
-	if(-1 == m_uSaveType)
-		return;
-	if(0 == m_uSaveType)
-	{
-		m_btnPicSet1.SetWindowText(L"我的图片");
-		m_cImageName.SetWindowText(L"图片名:"+m_cFileName);
-		m_cImagePath.SetWindowText(L"请选择图片保存位置:");
-	}
-	else if(1 == m_uSaveType)
-	{
-		m_btnPicSet1.SetWindowText(L"我的音乐");
-		m_cImageName.SetWindowText(L"音频文件名:"+m_cFileName);
-		m_cImagePath.SetWindowText(L"请选择音频文件保存位置:");
-	}
-	else if(2 == m_uSaveType)
-	{
-		m_btnPicSet1.SetWindowText(L"我的视频");
-		m_cImageName.SetWindowText(L"视频文件名:"+m_cFileName);
-		m_cImagePath.SetWindowText(L"请选择视频文件保存位置:");
-	}
+	m_cImageName.SetWindowText(L"图片名:"+m_cFileName);
+	m_cImagePath.SetWindowText(L"请选择图片保存位置:");
 	
 	//恢复下位置
 	m_btnPicSet1.MoveWindow(20,PIC_BTN_HEIGHT,130,34);
@@ -5159,7 +3651,7 @@ void CPicPathSet::GetMainWnd(CWnd *mwnd)
 {
 	m_pWnd		= mwnd;
 	CString		str ;
-	((MmsShow*)m_pWnd)->GetImage(str);
+	((MmsShow*)m_pWnd)->GetName(str);
 
 }
 

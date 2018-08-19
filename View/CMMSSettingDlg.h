@@ -11,7 +11,6 @@
 // C3GSMSDlg dialog
 #include "../control/MJPGStatic.h"
 #include "../control/CEStatic.h"
-#include "../Data/MessageSet.h"
 #include "CMMSSettingDlg.h"
 
 class CMMSSettingDlg : public CDialog
@@ -39,21 +38,12 @@ public:
 
 public:
 	void SetUpBtn(int ID );
-	void SettingOK();
-	void SettingDefault();
-	void OnButtonOK();
-	void OnButtonCancel();
-	void ShowWindow_(int nCmdShow);
-	void InitData(boost::shared_ptr<Data::MessageSet> const& msgSet);
-private:
-	int m_setType; //设置类型，1-当前设置，0-默认设置
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(C3GSMSDlg)
 	virtual BOOL OnInitDialog();
 //	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

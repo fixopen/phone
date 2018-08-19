@@ -376,10 +376,10 @@ void CSoundDlg::OnButtonSound()
 		
 		if(m_pPlaySoundDlg->SetSound(m_uiType, m_lsList.GetItemData(index), 0, m_sListSearchFilter))
 		{
-			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 			{
-				m_pPasswordDlg->SettingType(CHECK_PLAYPASSWORD);
-				std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
+				m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
+				std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
 				m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 				m_pPasswordDlg->SetHWnd(this->m_hWnd);
 				m_pPasswordDlg->ShowWindow(SW_SHOW);	
@@ -440,15 +440,15 @@ void CSoundDlg::OnButtonSetTip()
 			else
 			{
 				//
-				//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(2);     //提示录音数据超出10秒
-				//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(2);     //提示录音数据超出10秒
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 			}
 		}
 		else
 		{
 			//
-			//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(3);     //提示提示语应该为本地录音
-			//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(3);     //提示提示语应该为本地录音
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 		}
 	}
 }
@@ -460,11 +460,11 @@ void CSoundDlg::OnButtonDelete()
 	if (pos != NULL)
 	{
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 		{
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 		}
-		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->adminPassword();
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 		std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_TIP);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
@@ -949,8 +949,8 @@ LRESULT CSoundDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		DeleteSelectedItem();
 		break;
 	case WM_SETTINGPASSWORD:
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->soundProtectPassword(std::string((char*)wParam, lParam));
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->Update();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->soundProtectPassword(std::string((char*)wParam, lParam));
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->Update();
 		break;
 	case WM_SCROLL_EDO:
 		ScrollItemsInList(wParam, lParam);
@@ -991,10 +991,10 @@ LRESULT CSoundDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if(m_pPlaySoundDlg->SetSound(0, result[result.size() - 1]->id(), 0, m_sListSearchFilter))
 				{
-					if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+					if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 					{
-						m_pPasswordDlg->SettingType(CHECK_PLAYPASSWORD);
-						std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
+						m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
+						std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
 						m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 						m_pPasswordDlg->SetHWnd(this->m_hWnd);
 						m_pPasswordDlg->ShowWindow(SW_SHOW);	

@@ -122,13 +122,23 @@ void CMainMenuDlg::OnMp3Btn()
 
 void CMainMenuDlg::SetVideo()
 {
-
+	/*
+	playerDlg_->SetParam( "/flashdrv/apple192.avi", mtImage, TRUE);
+	playerDlg_->SetImageList("/flashdrv/my_photo/");
+	BOOL flag = FALSE;
+	if(playerDlg_->IsWindowVisible())
+		flag = TRUE;
+	//playerDlg_->ReSetWindowsRect(CRect(13, 20, 228, 102));
+	playerDlg_->ReSetWindowsRect(CRect(0, 0, 0, 0));
+	if(!flag)
+		playerDlg_->ShowWindow(SW_HIDE);
+	*/
 }
 
 void CMainMenuDlg ::OnScreenSaveBtn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int type = (int)main->m_pSettingDlg->m_pSetting->screenSaverContent();
+	int type = (int)main->m_pSettingDlg->m_pTempSetting->screenSaverContent();
 	((CMainDlg *)(main->GetPanel(IDC_BUTTON_MAIN)))->m_mainScreenSaveDlg_->SetSaveScreenType(type, TRUE);	  //1 图片屏保   0  时间屏保
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)5, SW_SHOW);   //切换到互联网
 }
@@ -136,6 +146,7 @@ void CMainMenuDlg ::OnScreenSaveBtn()
 void CMainMenuDlg::OnCalculBtn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+//	((CMainDlg *)(main->GetPanel(IDC_BUTTON_MAIN)))->m_mainCalucaterDlg_->ClearData();
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)4, SW_SHOW);   //切换到计算器
 }
 

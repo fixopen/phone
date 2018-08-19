@@ -47,9 +47,6 @@ namespace Util {
 		ResponseHandler responseHandler_;
         Message message;
 		HINTERNET HTTPRequest;
-	//	HINTERNET HTTPOpen;
-	//	HINTERNET HTTPConnection;
-
         void SetResponseHandler(ResponseHandler responseHandler) {
             responseHandler_ = responseHandler;
         }
@@ -60,8 +57,6 @@ namespace Util {
 		BOOL bNewSocket;
 		DWORD Get_(std::wstring const& uri);
         DWORD Post_(std::wstring const& uri);
-
-		DWORD PostMms(std::wstring const uriV, UINT8 *pData, int nDatalen);//·¢ËÍ²ÊÐÅ
 
 		int  Recv(UINT8 *pBuf, int length);
 		void Close();

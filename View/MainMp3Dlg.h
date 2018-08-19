@@ -15,7 +15,8 @@
 #include "../resource.h"
 #include "PlayerDlg.h"
 
-#include "MidiPlayerControl.h"
+//#include "MidiPlayerControl.h"
+//#pragma comment(lib, "SDL.lib")
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainMp3Dlg dialog
@@ -40,15 +41,13 @@ public:
 	int  m_Volume;
 	BOOL m_isAllScreenPlay;
 	unsigned int m_pageSize;
-	unsigned int m_selectPageCount;//被选中文件总页数
-	unsigned int m_selectCurrentPage;//当前显示的页数
+	unsigned int m_selectPageCount;   //被选中文件总页数
+	unsigned int m_selectCurrentPage;   //当前显示的文件
 	std::vector<CString> m_MP3List;
 	std::vector<CString> m_ShowList;
 
 	//local 0初级阶段
-	bool SetMP3(CString filename);
-	bool PlayAudio(CString filename,int nVolue = 20);
-	void EliminateMidi();
+	void SetMP3(CString filename);
 	void OnExit_(BOOL isStopMusic);
 	void ChangeVolume(int w);
 	void OnFirst();
@@ -73,16 +72,14 @@ public:
 // Construction
 public:
 	CMainMp3Dlg(CWnd* pParent = NULL);   // standard constructor
-	
-	MediaPlayer::MidiPlayer *pTheMidiPlayer;
-	afx_msg void OnExit();  //wangzhenxing20100527
+
 // Dialog Data
 	//{{AFX_DATA(CMainMp3Dlg)
 	enum { IDD = IDD_DIALOG_CACULATER };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 private:
-	
+//	MediaPlayer::MidiPlayer *pTheMidiPlayer;
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -99,6 +96,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CMainMp3Dlg)
 	virtual BOOL OnInitDialog();
+	afx_msg void OnExit();
 	afx_msg void OnPlayer();
 	afx_msg void OnStop();
 	afx_msg void OnPre();

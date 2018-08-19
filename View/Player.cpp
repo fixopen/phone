@@ -7,7 +7,7 @@
 #include "../Util/stringOp.h"
 #include "../MultimediaPhoneDlg.h"
 #include "../MultimediaPhone.h"
-#include <math.h>
+
 #include "Player.h"
 
 #ifdef _DEBUG
@@ -15,8 +15,6 @@
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
-
-extern void ClearPlayerReg();
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -32,7 +30,6 @@ Player::Player(CWnd* owner, MediaType mt)
 	isPlayerRun = FALSE;
 	zoom_ = ZOOM_FIT_SCREEN;
 	rotate_ = ROTATE_0;
-	m_videoAllScreen = FALSE;
 }
 
 Player::~Player()
@@ -54,6 +51,7 @@ bool Player::InitPlayer()
 			{
 				if (plyInit(playerOwner_->m_hWnd, mt_) == 0)
 				{
+					//Dprintf("plyInit ok\n");
 					RETAILMSG(1, (TEXT("plyInit ok -----\r\n")));
 					::Sleep(500);
 					break;
@@ -67,10 +65,6 @@ bool Player::InitPlayer()
 			}
 
 			isPlayerRun = TRUE;
-			m_plyRect.left = 0;
-			m_plyRect.right = 0;
-			m_plyRect.top = 0;
-			m_plyRect.bottom = 0;
 			plySetRepeat(TRUE, mt_);
 			plySetAutoPreRotate(FALSE, mt_);
 			if(mt_ == mtImage)
@@ -81,8 +75,8 @@ bool Player::InitPlayer()
 			SetVolume(gVoiceVolume);
 			Sleep(10);
 				
-			extern void GMute_();
-			GMute_();
+			extern void GMute(BOOL isOn);
+			GMute(FALSE);
 
 			RETAILMSG(1, (TEXT("playinit ok-----\r\n")));
 			return true;
@@ -107,24 +101,16 @@ bool Player::ExitPlayer(BOOL flag)
 		{
 			HWND hWnd;
 			if(mt_ == mtVideo)
-			{	
-				extern void GMute(BOOL isOn);
- 				GMute(TRUE);
+			{
 				hWnd =::FindWindow(L"csplayer_win0", L"csplayer window0"); //
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetScreenSaveTimer();
-
 			}
 			else if(mt_ == mtAudio)
-			{	
-				extern void GMute(BOOL isOn);
-				GMute(TRUE);
 				hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1"); //
-			}
 			else if(mt_ == mtImage)
 			{
 				hWnd = ::FindWindow(L"csplayer_win2", L"csplayer window2"); //
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetScreenSaveTimer();
-
 			}
 			if(hWnd)
 				::ShowWindow(hWnd, SW_HIDE);
@@ -162,8 +148,8 @@ bool Player::ExitPlayer(BOOL flag)
 	
 		isPlayerRun = FALSE;
 		plyExit(mt_);
-// 		extern void GMute(BOOL isOn);
-// 		GMute(TRUE);
+		extern void GMute(BOOL isOn);
+		GMute(TRUE);
 
 		if(flag)
 		{
@@ -195,8 +181,7 @@ bool Player::ExitPlayer(BOOL flag)
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetScreenSaveTimer();
 		}
 	}
-	
-	ClearPlayerReg();
+
 	return true;
 	
 }
@@ -212,6 +197,8 @@ bool Player::GetVideoFileInfo(LPMEDIA_INFO info)
 {
 	int ret;
     ret =  plyGetMediaInfo(info, mt_);   //debug
+//	wprintf(info->szFileName);
+//	Dprintf("  timer = %d %d\n",  info->nDuration, info->nTick);
 	if(ret == 0)
 		return true;
 	return false;
@@ -220,9 +207,14 @@ bool Player::GetVideoFileInfo(LPMEDIA_INFO info)
 bool Player::PlayerFile(char *filename)
 {
 	isPlaying_ = TRUE;
-	//	if (isActiveMode_)
+//	if (isActiveMode_)
 	{
 		TCHAR wideFilename[256] = {0};
+		/*
+		size_t wideContentLength = MultiByteToWideChar(CP_ACP, 0, filename, strlen(filename), 0, 0);
+		mbstowcs(wideFilename, filename, wideContentLength);
+		*/
+	
 		CString s = Util::StringOp::ToCString(filename);
 
 		if(owner_)
@@ -238,24 +230,8 @@ bool Player::PlayerFile(char *filename)
 		if (plyOpen((LPTSTR)(LPCTSTR)s/*.GetBuffer(256)*/, mt_) == 0)
 		{
 			m_curFilename[0] = L'\0';
-			return true;
-		}
-		return false;
-	}
-
-	return false;
-}
-
-bool Player::PlayerFile(CString sfilename, CRect rt)
-{
-	isPlaying_ = TRUE;
-	//	if (isActiveMode_)
-	{
-		plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
-	
-		if (plyOpen((LPTSTR)(LPCTSTR)sfilename/*.GetBuffer(256)*/, mt_) == 0)
-		{
-			m_curFilename[0] = L'\0';
+			//	plySetZoom(ZOOM_FIT_SCREEN, mt_);
+			//Dprintf("plyOpen(filepath) ok\n");
 			return true;
 		}
 		return false;
@@ -276,9 +252,12 @@ bool Player::PlayerFile(CString filename)
 			plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
 		}
 
-		if (m_videoAllScreen)
+		if (plyOpen(/*filename.GetBuffer(256)*/(LPTSTR)(LPCTSTR)filename, mt_) == 0)
 		{
-
+			m_curFilename[0] = L'\0';
+		//	plySetZoom(ZOOM_FIT_SCREEN, mt_);
+			//Dprintf("plyOpen(filepath) ok\n");
+			return true;
 		}
 		return false;
 	}
@@ -343,6 +322,12 @@ int Player::Cur()
 
 bool Player::RotatePicture(CString filename)
 {
+	if (owner_)
+	{
+		CRect rt;
+		owner_->GetWindowRect(&rt);
+		plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+	}
 	if (plyOpen((LPTSTR)(LPCTSTR)filename, mt_) == 0)
 	{
 		if (rotate_ < 270)
@@ -353,30 +338,6 @@ bool Player::RotatePicture(CString filename)
 		{
 			rotate_ = 0;
 		}
-
-		if (owner_)
-		{
-			if((rotate_ == 90) || (rotate_ == 270))
-			{
-				float width_ = 0.0;
-				float left_ = 0.0;
-				float rectWidth = m_plyRect.Width();
-				float rectHeight = m_plyRect.Height();
-				int width = 0;
-				width_ = rectHeight*rectHeight/rectWidth;
-				width = ceil(width_);
-				CRect rt;
-				owner_->GetWindowRect(&rt);
-				left_ = (rt.Width() - width_)/2;
-				rt.left += ceil(left_);
-				plySetWndPos(rt.left, m_plyRect.top, width, m_plyRect.Height(), mt_);
-			}
-			else
-			{
-				plySetWndPos(m_plyRect.left, m_plyRect.top, m_plyRect.Width(), m_plyRect.Height(), mt_);
-			}
-		}
-
 		plySetRotate(rotate_, mt_);
 		return TRUE;
 	}
@@ -386,6 +347,12 @@ bool Player::RotatePicture(CString filename)
 
 bool Player::ZoomPlay(CString filename)
 {
+	if(owner_)
+	{
+		CRect rt;
+		owner_->GetWindowRect(&rt);
+		plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+	}
 	if (plyOpen((LPTSTR)(LPCTSTR)filename, mt_) == 0)
 	{
 		if (zoom_ < ZOOM_200)
@@ -401,6 +368,12 @@ bool Player::ZoomPlay(CString filename)
 
 bool Player::NarrowPlay(CString filename)
 {
+	if(owner_)
+	{
+		CRect rt;
+		owner_->GetWindowRect(&rt);
+		plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+	}
 	if (plyOpen((LPTSTR)(LPCTSTR)filename, mt_) == 0)
 	{
 		if (zoom_ > ZOOM_50)
@@ -501,7 +474,6 @@ bool Player::ResumePlayer()
 {
 	if(wcslen(m_curFilename) != 0)
 	{
-
 		if(!isPlayerRun)
 		{
 			InitPlayer();
@@ -527,6 +499,7 @@ bool Player::ResumePlayer()
 			{
 				RETAILMSG(1, (TEXT("plyOpen ok-----\r\n")));
 				m_curFilename[0] = L'\0',
+			//	plySetZoom(ZOOM_FIT_SCREEN, mt_);
 				RETAILMSG(1, (TEXT("PlayPos %d-----\r\n")), m_nPercent);
 				PlayPos(m_nPercent);
 				RETAILMSG(1, (TEXT("PlayPos ok-----\r\n")));
@@ -542,142 +515,109 @@ bool Player::SetAllScreenPlayer(BOOL flag)
 {
 	if(flag)
 	{
-		if(mt_ == mtImage)
+		if(plySetWndPos(0, 0, 800, 480, mt_) == 0)
 		{
-			plySetZoom(ZOOM_FIT_SCREEN, mt_);
+			if(mt_ == mtImage)
+			{
+			//	plySetZoom(ZOOM_FILL_SCREEN, mt_);
+				plySetZoom(ZOOM_FIT_SCREEN, mt_);
+				Cur();
+			}
+			else if(mt_ == mtVideo)
+			{
+				CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+				main->m_pMainDlg->SetTimer_(FALSE);
+			}
+// 			else
+// 				plySetZoom(ZOOM_FIT_SCREEN, mt_);
+
+			return true;
 		}
-		else if(mt_ == mtVideo)
-		{
-			CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-			main->m_pMainDlg->SetTimer_(FALSE);
-			m_videoAllScreen = TRUE;
-			plySetZoom(ZOOM_FIT_SCREEN, mt_);
-		}
-		Cur();
-		return true;
 	}
 	else
 	{
 		if(owner_)
 		{
-			if(mt_ == mtImage)
+			CRect rt;
+			owner_->GetWindowRect(&rt);
+		//	plySetZoom(ZOOM_FIT_SCREEN, mt_);
+			if(plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_) == 0)
 			{
-				Cur();
+				if(mt_ == mtImage)
+					Cur();
+				else if(mt_ == mtVideo)
+				{
+					CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+					main->m_pMainDlg->SetTimer_(TRUE);
+				}
+				return true;
 			}
-			else if(mt_ == mtVideo)
-			{
-				Cur();
-				m_videoAllScreen = FALSE;
-				CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-				main->m_pMainDlg->SetTimer_(TRUE);
-			}
-			return true;
 		}
 	}
 	return false;
 }
 
+//#include   <INITGUID.h>   
+//#include   <imaging.h> 
 void   Player::DrawImage_(LPCTSTR szFileImage) 
-{
+{ 
+	/*
+	CDC* hdc = owner_->GetDC();
+	CRect rt;
+	owner_->GetClientRect(rt);
+	int x = 0;
+	int y = 0;
+	int h = rt.Height();
+	int w = rt.Width();
+	
+	CRect rect;
+	//临时加上相框 20071217 by lxz
+	if(w >= 799 && h >= 479)
+		rect = CRect(0, 0, 800, 480);
+	else
+		rect = CRect(rt.left+x, rt.top+y, rt.left+x+w-1, rt.top+y+h-1);
+	DrawImage(szFileImage, hdc, rect);
+				
+	if(w < rt.Width())
+	{
+		CBrush brsh = RGB(0, 0, 0);
+		CRect rt1 = CRect(rt.left, rt.top, rt.left+x, rt.bottom);
+		CRect rt2 = CRect(rt.left+x+w-1, rt.top, rt.right, rt.bottom);
+		hdc->FillRect(&rt1, &brsh);
+		hdc->FillRect(&rt2, &brsh);
+	}
+	
+	owner_->ReleaseDC(hdc);
+	*/
 	InitPlayer();
 	isPlaying_ = TRUE;
 	{
 		TCHAR wideFilename[256] = {0};
 	
 		CString s = szFileImage;
-		float width = 0;
-		float height = 0;
 
 		if(owner_)
 		{
-			CxImage *xImage;
-			xImage = new CxImage();
-			if(xImage)
-			{
-				bool ret = false;
-				if(wcsstr(szFileImage,(L".png")) > 0)
-				{
-					ret = xImage->Load(szFileImage, CXIMAGE_FORMAT_PNG);
-				}
-				else if(wcsstr(szFileImage,(L".jpg")) > 0 || wcsstr(szFileImage,(L".JPG")) > 0)
-				{
-					ret = xImage->Load(szFileImage, CXIMAGE_FORMAT_JPG);
-				}
-				else if(wcsstr(szFileImage,(L".bmp")) > 0 || wcsstr(szFileImage,(L".BMP")) > 0)
-				{
-					ret = xImage->Load(szFileImage, CXIMAGE_FORMAT_BMP);
-				}
-
-				if(ret)
-				{
-					width = xImage->GetWidth();
-					height = xImage->GetHeight();
-					delete xImage;
-				}
-			}
 			CRect rt;
 			owner_->GetWindowRect(&rt);
-			
-			float rtWidth = rt.Width();
-			float rtHeight = rt.Height();
-			if(width < rtWidth && height < rtHeight)
-			{
-				m_plyRect.left = rt.left + ceil((rtWidth-width)/2);
-				m_plyRect.right = m_plyRect.left + width;
-				m_plyRect.top = rt.top + ceil((rtHeight-height)/2);
-				m_plyRect.bottom = m_plyRect.top + height;
-			}
-			else
-			{
-				if(width/height > rtWidth/rtHeight)
-				{
-					float height_ = 0.0;
-					float top_ = 0.0;
-					height_ = height*rtWidth/width;
-					height = ceil(height_);
-					top_ += (rtHeight - height_)/2;
-					rt.top += ceil(top_);
-					
-					m_plyRect.left = rt.left;
-					m_plyRect.right = rt.left + rt.Width();
-					m_plyRect.top = rt.top;
-					m_plyRect.bottom = rt.top + height;
-				}
-				else
-				{
-					float width_ = 0.0;
-					float left_ = 0.0;
-					width_ = width*rtHeight/height;
-					width = ceil(width_);
-					left_ = (rtWidth - width_)/2;
-					rt.left += ceil(left_);
-					
-					m_plyRect.left = rt.left;
-					m_plyRect.right = rt.left + width;
-					m_plyRect.top = rt.top;
-					m_plyRect.bottom = rt.top + rt.Height();
-				}
-			}
+			plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+
+// 			if(mt_ == mtImage)
+// 			{
+// 				HWND hWnd = ::FindWindow(L"csplayer_win2", L"csplayer window2"); 
+// 				Dprintf("mtImage Hwnd %x\r\n", hWnd);
+// 				if(hWnd)
+// 				{
+// 					::SetWindowPos(hWnd, HWND_BOTTOM, rt.left, rt.top, rt.Width(), rt.Height(), 0);
+// 					::ShowWindow(hWnd, SW_HIDE);
+// 				}
+// 			}
 		}
 		if (plyOpen((LPTSTR)(LPCTSTR)s, mt_) == 0)
 		{
 			m_curFilename[0] = L'\0';
-
- 			zoom_ = ZOOM_FIT_SCREEN;
+			zoom_ = ZOOM_FIT_SCREEN;
 			plySetZoom(zoom_, mt_);
- 
-			plySetRotate(0, mt_);
- 			plySetWndPos(m_plyRect.left, m_plyRect.top, m_plyRect.Width(), m_plyRect.Height(), mt_);
-			
-			CRect rt;
-			owner_->GetWindowRect(&rt);
-			//	HDC hdc = ::GetDC(owner_->m_hWnd);
-			HDC hdc = ::GetDC(NULL);
-			CBrush bBr = RGB(0, 0, 0); 
-			::FillRect(hdc, rt, (HBRUSH)bBr.m_hObject);
-			//::ReleaseDC(owner_->m_hWnd, hdc);
-			::ReleaseDC(NULL, hdc);
-			
 			return;
 		}
 		return;

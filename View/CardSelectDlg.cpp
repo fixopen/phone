@@ -22,7 +22,7 @@ static char THIS_FILE[] = __FILE__;
 
 CCardSelectDlg::CCardSelectDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CCardSelectDlg::IDD, pParent)
-	, ContactTotal(3000)
+	, ContactTotal(10000)
 	, ContactGroupTotal(8)
 	, PageSize(8)
 {

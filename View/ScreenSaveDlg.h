@@ -23,7 +23,6 @@ public:
 	CString 	m_password;
 
 	int type_;		//0 Ê±¼ä 1 Í¼Æ¬
-	BOOL m_isScreenPlay;
 	void SetSaveScreenType(int type, BOOL Redraw = FALSE);
 	void SetSaveScreenPhoto_();
 	void OnExit();
@@ -47,8 +46,7 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
-	public:
-		virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
 // Implementation
 protected:
 

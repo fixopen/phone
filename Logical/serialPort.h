@@ -24,9 +24,6 @@ namespace Util
 		bool OpenPort(unsigned int portNo = 1, unsigned int baud = 9600, unsigned int parity = NOPARITY, unsigned int databits = 8, unsigned int stopbits = 1);
 		bool WritePort(unsigned char const* const data, unsigned int length);
 		void ClosePort(void);
-		void Bind(HANDLE handle_);//add by qi 0716
-		HANDLE Handle();//add by qi 0716
-		void ClearWriteCom();
 	private:
 		RS232(RS232 const& rhs);
 		RS232& operator=(RS232& rhs);
@@ -48,16 +45,13 @@ namespace Util
 			int frameHeadPos_;
 			bool isFirstPacket_;
 		};
-	//	friend class ATCommand;
 
 	private:
 		OnSerialPortDataReceived onSerialPortDataReceived_;
+		boost::shared_ptr<ReadThread> readThread_;
 		unsigned char* buffer_;
 		unsigned int bufferLength_;
 		HANDLE handle_;
-	public:
-		boost::shared_ptr<ReadThread> readThread_;
-
 	};
 }
 

@@ -3,18 +3,15 @@
 #include "../multimediaphone.h"
 #include "../multimediaphoneDlg.h"
 #include "../resource.h"
-#include "waveHeader.h"
 
 #define HUNGON_VALUE	0x82		//0x82	 摘机
 #define HUNGOFF_VALUE	0x83		//0x83   挂机
 #define RING_VALUE		0x84		//0x84   振铃信号
-//#define WM_TEL_CALLIDEND            8023
+//#define WM_TEL_CALLIDEND                8023
 
 #define DEFUALT_SOUND_VALUME   -1500
 
 using namespace Telephone;
-
-extern VOID WriteMyLog_(char *ptr, int size);
 
 typedef enum
 {   
@@ -41,12 +38,9 @@ char *gDetectString  = "1*0#*0#*0#*0#1";
 char *gDetectString1 = "*#1579#";
 char *gSetUserIDString = "*#357#"; //"3*0#*0#*0#*0#3";
 static char gTelVersion1_[128];
-//int gBatteryLevel[] = {830, 805, 780, 760, 740, 720};
-int gBatteryLevel[] = {800, 785, 770, 755, 740};
-int gBatteryLevel_org[] = {800, 785, 770, 755, 740};
-int gBatteryOffset = 115;
-int gBatteryBase = 740;
-int g_BatteryLevel = 840;
+int gBatteryLevel[] = {830, 805, 780, 760, 740, 720};
+int gBatteryOffset = 110;
+int gBatteryBase = 720;
 int TelephoneWarp::DetectTestStatus(unsigned char c)
 {
 	int isBatteryStatus = 0;
@@ -64,45 +58,20 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 			main->phone_->m_chDetectCode[strlen(main->phone_->m_chDetectCode)] = c;
 	}
 	if(c == '\x0d')
-	{	
-		int n ;
+	{
 		main->phone_->m_bInputtingUserID = FALSE;
 		char *ptr;
 		static int batterySize = 0;
-	//	Dprintf("battrySize : %s\r\n",main->phone_->m_chDetectCode);
-		char log[100];
-		memset(log,0,100);
-		sprintf(log,"batterySize:%s",main->phone_->m_chDetectCode);
-		extern VOID WriteMyLog_(char *ptr, int size);
-		WriteMyLog_(log,strlen(log));
-
-		if ( strstr(main->phone_->m_chDetectCode, "SRC=1") > 0)  //有电源
-		{
-			main->phone_->m_BatteryStatus.isBattery_DC = TRUE;
-		}
-		else if ( strstr(main->phone_->m_chDetectCode, "SRC=0") > 0)
-		{
-			main->phone_->m_BatteryStatus.isBattery_DC = FALSE;
-		}
-
 		if((ptr = strstr(main->phone_->m_chDetectCode, "AT=")) > 0)
 		{
-			if ( strstr(main->phone_->m_chDetectCode, "SRC=1") > 0 && 
+//			if ((ptr = strstr(main->phone_->m_chDetectCode, "AT=000")) > 0 && 
+//				((ptr = strstr(main->phone_->m_chDetectCode, "CHG=0")) > 0))
+			if ( strstr(main->phone_->m_chDetectCode, "AT=000") > 0 && 
 			( strstr(main->phone_->m_chDetectCode, "CHG=0") > 0))
-			{	
-// 				bool bInvalidate = false; //add by qi 20100408
-// 				if (main->m_binitOver)
-// 				{
-// 					bInvalidate = true ;	
-// 				}
-
-				main->KillTimer(0x120);
-				main->m_MJPGList.SetUnitBitmap(11, L".\\adv\\mjpg\\k5\\common\\png\\无电池.bmp", L"",false);
-				main->m_isHaveBattery = FALSE;
-			}
-			else
 			{
-				main->m_isHaveBattery = TRUE;
+				main->KillTimer(0x120);
+				main->m_MJPGList.SetUnitBitmap(11, L"", L"",TRUE);
+				main->m_isHaveBattery = FALSE;
 			}
 			char *p = strstr(ptr+3, ";");
 			if(!p)
@@ -114,64 +83,38 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 				char txt[4] = {0};
 				memcpy(txt, ptr+3, p-ptr-3);
 				CString s = txt;
-				n = Util::StringOp::ToInt(txt, 10);
-				g_BatteryLevel = n;
-				if(g_BatteryLevel < gBatteryLevel[4])
-				{
-					main->PostMessage(WM_BATLOW, 0, 0);
-				}
-				extern VOID WriteLog(char *ptr);
-				WriteLog(txt);
+				int n = Util::StringOp::ToInt(txt, 10);
+
 				isBatteryStatus = 1;
 				if(strstr(ptr, "CHG=2"))
 				{
 					if(batterySize == 2)
 					{
-						for(int i = 0; i < 5; i++)
-						{
-							gBatteryLevel[i] = (int)((float)gBatteryLevel_org[i] / (840.0 / (float)n));
-						}
-						main->phone_->m_BatteryStatus.batteryProccess = 5;
 					}
 					else
 					{
 						batterySize = 2;
 						main->phone_->m_BatteryStatus.isCharge = 0;
 						isBatteryStatus = 2;
-
-						FILE *file = fopen("\\flashdrv\\res_dat\\config.txt", "w+b");
-						for(int i = 0; i < 5; i++)
+						int off = n - gBatteryBase;
+						int index = 1;
+						for(int i = 3; i >= 0; i--)
 						{
-							gBatteryLevel[i] = (int)((float)gBatteryLevel_org[i] / (840.0 / (float)n));
-							if(file != NULL)
-							{
-								char str[32] = {0};
-								sprintf(str, "BatteryLevel%d = %d\n", i+1, gBatteryLevel[i]);
-								fwrite(str, sizeof(char), strlen(str), file);
-							}
+							gBatteryLevel[i] = gBatteryBase+ (gBatteryOffset*25*index)/off;
+							index++;
 						}
-
-						fclose(file);
 						main->phone_->m_BatteryStatus.batteryProccess = 5;
-					}
-
-					if ( strstr(main->phone_->m_chDetectCode, "SRC=1") > 0)  //有电源
-					{
-						main->phone_->m_BatteryStatus.batteryType = BATTERY_DC;
-					}
-					else if ( strstr(main->phone_->m_chDetectCode, "SRC=0") > 0)
-					{
-						main->phone_->m_BatteryStatus.batteryType = BATTERY_1;
 					}
 					return isBatteryStatus;
 				}
-				else    //if(strstr(ptr, "CHG=1"))
+				if(strstr(ptr, "CHG=1"))
 				{
 					batterySize = 1;
-					for(int i = 0; i < 5; i++)
+					for(int i = 0; i < 6; i++)
 					{
 						if(n >= gBatteryLevel[i])
 						{
+							i++;
 							break;
 						}
 					}
@@ -179,7 +122,6 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 				}
 			}
 		}
-
 		if((ptr = strstr(main->phone_->m_chDetectCode, "CHG=")) > 0)
 		{
 			char *p = strstr(ptr+4, ";");
@@ -195,7 +137,7 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 				if(strstr(txt,"1"))
 				{
 					main->phone_->m_BatteryStatus.isCharge = 1;
-					//main->phone_->m_BatteryStatus.batteryType = BATTERY_DC;
+					main->phone_->m_BatteryStatus.batteryType = BATTERY_DC;
 				}
 				else if(strstr(txt,"0"))
 				{
@@ -203,7 +145,6 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 				}
 			}
 		}
-
 		if((ptr = strstr(main->phone_->m_chDetectCode, "SRC=")) > 0)
 		{
 			char *p = strstr(ptr+4, ";");
@@ -233,17 +174,13 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 				}
 			}
 		}
-		if((ptr = strstr(main->phone_->m_chDetectCode, "PWR=0")) > 0)//通知关机
-		{
-			isBatteryStatus = 4;
-		}
 	}
 	return isBatteryStatus;  //123
 }
 
 bool DecodeCallIDPackage(BYTE *buf, CALLID_INFO *pcallid)
 {
-	bool flag = false;
+	bool	flag = false;
 
 	if (*buf >= DTMF_CHANNEL_STRAT && *buf <= DTMF_CHANNEL_END)
 	{
@@ -548,25 +485,24 @@ void DecodeFSKComplexParam(BYTE *pparm, CALLID_INFO *pcallid)
 
 BOOL gIsHandSet = FALSE;
 void ParseTelephoneData(unsigned char const* const data, unsigned int const length)
-{	
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
+{
 	extern void GMute(BOOL isOn);
 	Sleep(10);
 	int i;
 	static BOOL isRingTelCode = FALSE;
 	static CALLID_INFO	CallID;
-	static UINT8   CallIDbuff[256];
+	static UINT8   CallIDbuff[128];
 	static int     CallIDLen = 0;
 
 	for (i=0; i<length; i++)
 		{		
 			unsigned char c = data[i];
 			if(c > 'z')
-				Dprintf("com1:%x\r\n", c);
+				Dprintf("com1:%x", c);
 			if(c == '\n' || c == '\r')
 				Dprintf("\r\n");
 			
+			CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 			int ret = main->phone_->DetectTestStatus(c);
 			if(ret == 1)
 			{
@@ -580,25 +516,17 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 			{
 				PostMessage(theApp.m_pMainWnd->m_hWnd, WM_CHANGE_DCBATTERY, 0, 0);
 			}
-			else if(ret == 4)  //DC --Battery
-			{
-				PostMessage(theApp.m_pMainWnd->m_hWnd, WM_POWER_OFF, 0, 0);
-			}
 		
 			switch(c)
 			{
 				case HUNGON_VALUE://切换到手柄到下面0xC8
-		//			if (!main->phone_->Hand())//手柄摘过机就不再进来
-					{
-
-		//				change by qi 20100831
-		//				Dprintf("手柄摘机\r\n");
-		//				main->phone_->Hand(Telephone::TelephoneWarp::HandOn);
-		//				main->phone_->Free(Telephone::TelephoneWarp::FreeOff);
-		//				PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 1, 2);//2代表硬件摘机
-					}
-					break;	
-					
+		//			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(TRUE);
+					Dprintf("手柄\r\n");
+					main->phone_->Hand(Telephone::TelephoneWarp::HandOn);
+					main->phone_->Free(Telephone::TelephoneWarp::FreeOff);						
+					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 1, 0);
+					break;
+				
 				case HUNGOFF_VALUE:
 //					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD)
 					{	
@@ -607,26 +535,17 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 							if (main->phone_->Free())//如果按过免提，切换到免提
 							{	
 								Dprintf("免提\r\n");
-								
 								GMute(FALSE);
 								main->phone_->Hand(Telephone::TelephoneWarp::HandOff);
-								//change by qi 0705
-								//if(main->m_nTELRigster >= TELRIGSTER_TD)
+								if(main->m_nTELRigster >= TELRIGSTER_TD)
 								Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
-								
-								// add 20100702
-								extern void GNotifyDial(BOOL isDial);
-								GNotifyDial(TRUE);
-
-								extern void GIsOpenMix(BOOL isOn);
-								GIsOpenMix(1);
 								
 							}
 							else//没按过免提直接挂断
 							{	
 								Dprintf("手柄挂机\r\n");
-//								if(main->m_nTELRigster >= TELRIGSTER_TD)
-//								Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
+								if(main->m_nTELRigster >= TELRIGSTER_TD)
+								Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
 								main->phone_->Hand(Telephone::TelephoneWarp::HandOff);
 								main->phone_->Free(Telephone::TelephoneWarp::FreeOff);
 								PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGOFF, 0, 0);
@@ -644,68 +563,41 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 					}	
 					break;			
 						
-// 				case 0xB0: case 0xB1: case 0xB2: case 0xB3: case 0xB4: case 0xB5: case 0xB6:
-// 				case 0xB7: case 0xB8: case 0xB9: case 0xBA: case 0xBB: case 0xBC:
-//  				PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_KEYCODE, g_tel_code[c-0xB0], 0);
-// 					break;
+				case 0xB0: case 0xB1: case 0xB2: case 0xB3: case 0xB4: case 0xB5: case 0xB6:
+				case 0xB7: case 0xB8: case 0xB9: case 0xBA: case 0xBB: case 0xBC:
+ 					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_KEYCODE, g_tel_code[c-0xB0], 0);
+					break;
 			
 				case 0xC8:   //Handset摘机
-					
-					//add bu qi 20100831
-					Dprintf("手柄摘机\r\n");
+					gIsHandSet = TRUE;
 					main->phone_->Hand(Telephone::TelephoneWarp::HandOn);
-					main->phone_->Free(Telephone::TelephoneWarp::FreeOff);
-					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 1, 2);//2代表硬件摘机
-					//
 
-					gIsHandSet = TRUE;					
-					//main->phone_->Hand(Telephone::TelephoneWarp::HandOn);
-					extern void GIsOpenMix(BOOL isOn);
-					GIsOpenMix(1);
-					
-					//change by qi 0705
-					//if(main->m_nTELRigster >= TELRIGSTER_TD )
+					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
 						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
 					break;
 
 				case 0xC9:	//Handfree 摘机
 					gIsHandSet = FALSE;
-					Dprintf("免提摘机\r\n");
 					main->phone_->Hand(Telephone::TelephoneWarp::HandOff);
 					main->phone_->Free(Telephone::TelephoneWarp::FreeOn);	
-					
-					//change by qi 0705
-					//if(main->m_nTELRigster >= TELRIGSTER_TD )										
+
+					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )										
 					Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
 					break;
 
-				case 0xCA://handSet->HandFree					
-					main->phone_->Hand(Telephone::TelephoneWarp::HandOff);
-					if (main->phone_->Free())//按过免提切换到免提
-					{	
-						//change by qi 0705
-						//if(main->m_nTELRigster >= TELRIGSTER_TD)
-							Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
-						GMute(FALSE);						
-						extern void GIsOpenMix(BOOL isOn);
-						GIsOpenMix(1);	
-					}
-					else //挂断 
-					{
-						GMute(TRUE);
-						PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGOFF, 0, 0);	
-					}
+				case 0xCA:
+					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
+						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
 					break;
 
-				case 0xCB://handFree->handSet
-					main->phone_->Hand(Telephone::TelephoneWarp::HandOn);
-					main->phone_->Free(Telephone::TelephoneWarp::FreeOff);
-					//change by qi 0705
-					//if(main->m_nTELRigster >= TELRIGSTER_TD )
-						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);					
-					GMute(TRUE);						
-					extern void GIsOpenMix(BOOL isOn);
-						GIsOpenMix(1);	
+				case 0xCB:
+					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
+					{	
+						main->phone_->Hand(Telephone::TelephoneWarp::HandOn);
+						main->phone_->Free(Telephone::TelephoneWarp::FreeOff);						
+						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
+
+					}
 					break;
 
 				case 1: case 2: case 3: case 4: case 5: case 6:	
@@ -716,25 +608,7 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 				case 0xBD:
 					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_REDIAL, 0, 0);
 					break;
-				case 0x88:
-					{
-						CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-						if (!main->m_bSearchNetOver)
-						{
-							return;
-						}
-						main->ReStoreBackLight();
-						HWND hwnd = main->GetIconCurrentWnd()->m_hWnd;
-						if(hwnd)
-						{
-							HWND hMjpg = ::GetDlgItem(hwnd, 10086);
-							if(hMjpg)
-							{
-								::SendMessage(hMjpg, WM_KEYDOWN, c, 0);	
-							}
-						}
-					}
-					break;
+	
 				default:
 					break;
 			}
@@ -744,33 +618,24 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 
 void ParseTelephoneData_(unsigned char const* const data, unsigned int const length)
 {	
-
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-// 	if (!(main->OpenAllPort()))
-// 	{
-// 		return ;
-// 	}
-
 	extern void GMute(BOOL isOn);
 
 	Sleep(10);
 	int i;
 	static BOOL isRingTelCode = FALSE;
 	static CALLID_INFO	CallID;
-	static UINT8   CallIDbuff[256];
+	static UINT8   CallIDbuff[128];
 	static int     CallIDLen = 0;
 	
 	for (i=0; i<length; i++)
 	{		
 		unsigned char c = data[i];
-		Dprintf("com3:%x\r\n", c);
+		Dprintf("com3:%x", c);
 		if(c == '\n' || c == '\r')
 			Dprintf("\r\n");
 		
-		char log[100];
-		sprintf(log,"com:%x",c);
-		WriteMyLog_(log,strlen(log));
-
+		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	
 		switch(c)
 		{
 		
@@ -778,7 +643,7 @@ void ParseTelephoneData_(unsigned char const* const data, unsigned int const len
 			break;
 
 		case HUNGON_VALUE://切换到手柄到下面0xC8
-			//	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(false);
+			//((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(false);
 			//	main->phone_->Hand(Telephone::TelephoneWarp::HandOn);
 			//	main->phone_->Free(Telephone::TelephoneWarp::FreeOff);
 			//	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 3, 0);
@@ -786,7 +651,6 @@ void ParseTelephoneData_(unsigned char const* const data, unsigned int const len
 			{
 				main->phone_->PSTNHangoff();
 			}
-			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_SEND_0X82_WIN, 0, 0);
 			break;
 
 		case HUNGOFF_VALUE:
@@ -809,29 +673,18 @@ void ParseTelephoneData_(unsigned char const* const data, unsigned int const len
 					main->phone_->Hand(Telephone::TelephoneWarp::HandOff);
 					main->phone_->Free(Telephone::TelephoneWarp::FreeOff);
 					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGOFF, 0, 0);
-
-					WriteMyLog_("Post_tel_hungoff",strlen("Post_tel_hungoff"));
+					
 				}
 				else//没按过免提，也没按过手柄 = 开机
 				{	
 					gIsHandSet = FALSE;   //lxz20100108
-					Dprintf("免提摘机\r\n");
-					main->SendOutEvnet(WM_TEL_HUNGON, 0);
-										
+					Dprintf("免提\r\n");
 					main->phone_->Free(Telephone::TelephoneWarp::FreeOn);
 					GMute(FALSE);//打开speeker
-					
-					//change by qi 0705
-					//if(main->m_nTELRigster >= TELRIGSTER_TD)
+			//		Telephone::TelephoneWarp::GetTelephoneWarp()->PSTNHangoff();
+					if(main->m_nTELRigster >= TELRIGSTER_TD)
 					Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
-					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 1, 0);
-
-					// add 20100114
-					extern void GNotifyDial(BOOL isDial);
-					GNotifyDial(TRUE);
-					
-					WriteMyLog_("Post_tel_HUNGON",strlen("Post_tel_HUNGON"));
-				
+					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 1, 0);					
 				}
 
 			}
@@ -842,12 +695,6 @@ void ParseTelephoneData_(unsigned char const* const data, unsigned int const len
 				keybd_event(VK_F9, 0, 0, 0);
 			}		
  			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_RING, 0, 3);
-			break;
-
-		case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37:
-		case 0x38: case 0x39: case 0x3A: case 0x3B: case 0x3C: case 0x3D: case 0x3E: case 0x3F:
-			isRingTelCode = TRUE;
-			CallIDbuff[CallIDLen++] = c;
 			break;
 
 		case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45: case 0x46: case 0x47:
@@ -876,41 +723,37 @@ void ParseTelephoneData_(unsigned char const* const data, unsigned int const len
 			break;
 
 		case 0xC8:   //Handset摘机
-			//gIsHandSet = TRUE;
+			gIsHandSet = TRUE;
 			if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
-			//	Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
+				Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
 			break;
 
 		case 0xC9:	//Handfree 摘机
-			//gIsHandSet = FALSE;
+			gIsHandSet = FALSE;
 			if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )					
-			//	Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
+				Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
 			break;
 			
 		case 0xCA:
 			if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
-			//	Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
+				Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
 			break;
 
 		case 0xCB:
 			if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
-			//	Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
+				Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
 			break;
 		
 		case 0xB0: case 0xB1: case 0xB2: case 0xB3: case 0xB4: case 0xB5: case 0xB6:
 		case 0xB7: case 0xB8: case 0xB9: case 0xBA: case 0xBB: case 0xBC:
 			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_KEYCODE, g_tel_code[c-0xB0], 0);
-			{
-				keybd_event(g_tel_code[c-0xB0],   0,   0,   0);  
-				keybd_event(g_tel_code[c-0xB0],   0,   KEYEVENTF_KEYUP,   0);
-			}
 			break;
 
 		case 4: case 5: case 6:	
 		case 7: case 8: case 9:
 			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_SPEEDDIAL, c, 0);
 			break;
-/*
+
 		case DT_UP_VALUE:
 			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, 'U', 0);
 			break;
@@ -930,7 +773,7 @@ void ParseTelephoneData_(unsigned char const* const data, unsigned int const len
 		case DT_OK_VALUE:
 			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN,'O', 0);
 			break;
-*/							
+							
 		case DT_VK_F1:case DT_VK_F2:case DT_VK_F3:case DT_VK_F4:
 			PostMessage(theApp.m_pMainWnd->m_hWnd,WM_VK_F,c-0x09, 0);
 			break;
@@ -952,37 +795,15 @@ void ParseTelephoneData_(unsigned char const* const data, unsigned int const len
 			break;
 
 		case FLASH_OFF:
-		//	PostMessage(theApp.m_pMainWnd->m_hWnd,WM_TEL_HUNGOFF,0, 0);
+			PostMessage(theApp.m_pMainWnd->m_hWnd,WM_TEL_HUNGOFF,0, 0);
 			break;
 
 		case 0xBD:
 			PostMessage(theApp.m_pMainWnd->m_hWnd, WM_REDIAL, 0, 0);
 			break;
-
-		case CANCEL_KEY:
-		case OK_KEY:
-		case LEFT_KEY:
-		case RIGHT_KEY:
-		case UP_KEY:
-		case DOWN_KEY:
-			{
-				CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-				main->ReStoreBackLight();
-				HWND hwnd = main->GetIconCurrentWnd()->m_hWnd;
-				if(hwnd)
-				{
-					HWND hMjpg = ::GetDlgItem(hwnd, 10086);
-					if(hMjpg)
-					{
-						::SendMessage(hMjpg, WM_KEYDOWN, c, 0);	
-					}
-				}
-			}
-			break;
-
+			
 		default:
 			break;
-
 		}
 	}
 }
@@ -996,13 +817,10 @@ TelephoneWarp::TelephoneWarp():Util::Observer()
 	m_nRecvOut = 0;
 	m_nFirstCall = 0 ;
 
-	m_bOpen1Port = false;
-	m_bOpen3Port = false ;
-
 	m_hKillThreadEvent = CreateEvent(NULL, TRUE, FALSE, NULL);   
 	m_hThreadKilledEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
 	InitializeCriticalSection(&m_csSend);   
-	InitializeCriticalSection(&m_csRecv);
+	InitializeCriticalSection(&m_csRecv);   
 
 	//ring tone
 	pGraph = NULL;   
@@ -1021,22 +839,20 @@ TelephoneWarp::TelephoneWarp():Util::Observer()
 	m_pMsgWnd = NULL;
 
 	m_BatteryStatus.batteryProccess = 100;
-	m_BatteryStatus.batteryType = BATTERY_INIT;
+	m_BatteryStatus.batteryType = BATTERY_1;
 	m_BatteryStatus.isCharge = 0;
-	m_BatteryStatus.isBattery_DC = FALSE;
 
 	m_pRS232 = new Util::RS232();
-	m_bOpen1Port = m_pRS232->OpenPort();
+	m_pRS232->OpenPort();
 	m_pRS232->SetReadFunc(ParseTelephoneData);
 
 	m_pRS232_ = new Util::RS232();
- 	m_bOpen3Port = m_pRS232_->OpenPort(3);
+ 	m_pRS232_->OpenPort(3);
  	m_pRS232_->SetReadFunc(ParseTelephoneData_);
 
 	Hand(0);
 	Free(0);
 	
-
 	//end ring tone
 	::InitializeCriticalSection(&m_ringSetion_);
 	InitRing();
@@ -1049,15 +865,12 @@ TelephoneWarp::~TelephoneWarp()
 	WaitForSingleObject(m_hThreadKilledEvent, INFINITE);    // 等待子线程关闭    
 
 	CloseHandle(m_hKillThreadEvent);   
-	CloseHandle(m_hThreadKilledEvent);  
-	
+	CloseHandle(m_hThreadKilledEvent);   
 }
-
 TelephoneWarp::TelephoneWarp(const TelephoneWarp& tel)
 {
 
 }
-
 TelephoneWarp* TelephoneWarp::GetTelephoneWarp()
 {
 	static TelephoneWarp* tw = 0;
@@ -1077,50 +890,50 @@ void TelephoneWarp::Bind(Util::ATCommandWarp* at)
 	// 启动子线程  
 	Util::ATCommand::Instance()->RegisterObserver(this);
 
+//	AfxBeginThread(TelephoneThread, this, THREAD_PRIORITY_NORMAL); 
+	
+
 }
 
 void TelephoneWarp::Update(std::string const& data)
 {		   
-//	ParseATD(data);
+	ParseATD(data);
+	ParseCLCC(data);
 	ParseCLIP(data);
 	ParseDACTI(data);
 	ParseCSQ(data);
 	ParseCCWA(data);
-	ParseDSCI(data);
-	ParseCLCC(data);//放在DSCI下面
-	ParseCIEV(data);
-
 }
 
 void TelephoneWarp::ParseATD(std::string const& data)
 {
 	if (data.find("NO DIALTONE") != std::string::npos)
 	{
-	//	NoDialTone();
+		NoDialTone();
 	}
 	else if (data.find("BUSY") != std::string::npos)
 	{
-	//	Busy();
+		Busy();
 	}
 	else if (data.find("NO ANSWER") != std::string::npos)
 	{
-//		NoAnswer();	
+		NoAnswer();	
 	}
 	else if (data.find("NO CARRIER") != std::string::npos)
 	{
-//		NoCarrier();	
+		NoCarrier();	
 	}
 	else if (data.find("CONNECT") != std::string::npos)
 	{
-//		Connect();
+		Connect();
 	}
 	else if (data.find("NW CONGESTION") != std::string::npos)
 	{
-//		Congestion();
+		Congestion();
 	}
 	else if (data.find("ERROR ODB") != std::string::npos)
 	{
-//		Odb();	
+		Odb();	
 	}
 
 }
@@ -1134,40 +947,26 @@ void TelephoneWarp::ParseCLCC(std::string const& data)
 	
 	std::string s = data ;
 	if ( s.find("+CLCC") != std::string::npos)
-	{				
-		int allLine = 0;
-		size_t t1 ;
-		while ((t1 = s.find("+CLCC")) != std::string::npos)
-		{	
-			s = s.substr(t1+7);
-			allLine++;
-		}
-		
-		if (allLine > 2)
-		{	
-			allLine = 2;
-		}
-		
-		::PostMessage(theApp.m_pMainWnd->m_hWnd,WM_ALL_PHONE_NUM,allLine,0);
+	{	
 
-		s = data ;
 		size_t t = s.find("+CLCC");
-		s = s.substr(t);
-
+		if (t != std::string::npos)
+		{
+			s = s.substr(t);
+		}
+		else
+		{
+			return ;
+		}
+		
 		while (s.find("+CLCC") != std::string::npos)
 		{	
 			int line  ;
 			CString c ;
-			size_t t = s.find("+CLCC");
-			s = s.substr(t+7);
+			s = s.substr(7);
 			
 			c = Util::StringOp::ToCString(s);
 			line = atoi(c);
-			
-			if ( 3 == line)//第三路不处理
-			{
-				break;
-			}
 			
 			s = s.substr(2);
 			if ( s.substr(0,3) == "0,0" || s.substr(0,3) == "1,0" )
@@ -1188,149 +987,13 @@ void TelephoneWarp::ParseCLCC(std::string const& data)
 			}
 			else if( s.substr(0,3) == "1,4")
 			{
-				Ring(line) ;//ring
+				Ring(line) ;//incoming
 			}
 			else if( s.substr(0,3) == "1,5")
 			{
 				Waiting(line) ;//waiting
 			}
 
-		}
-
-	}
-
-}
-
-void TelephoneWarp::ParseDSCI(std::string const& data)
-{
-	//先来判断哪路被挂断
-	if (data.find("^DSCI: ") != std::string::npos)
-	{	
-		/*
-			^DSCI: 1,1,6,0,0,"01082897270",161,,16,0,"",0
-		*/
-		
-		extern VOID WriteLog_(char *ptr, int size);
-		WriteLog_("Dsci:",strlen("Dsci:"));
-		WriteLog_((char*)data.c_str(),data.size());
-		
-		std::string s = data ;
-
-		while (s.find("^DSCI: ") != std::string::npos)
-		{   
-			//add by qi 0827
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-			if (main->m_pATCommandWarp1->GetOkStatus() != okSmsSend
-				&& main->m_pATCommandWarp1->GetOkStatus() != okChld)
-			{
-				main->m_pATCommandWarp1->SetOkStatus(okIdle);
-			}
-
-			CString c ;
-			int line;
-			int cause;
-			int callstatus;
-
-			size_t t = s.find("^DSCI: ");
-			s = s.substr(t+7);
-			c = Util::StringOp::ToCString(s);
-			line = atoi(c);
-			
-			//发现第三路打进来，不处理
-			if ( 3 == line)
-			{
-				break;
-			}
-
-			t = s.find(",");
-			if (t != std::string::npos)
-			{
-				s = s.substr(t+1);
-				t = s.find(",");
-				if ( t != std::string::npos)
-				{
-					s = s.substr(t+1);
-					c = Util::StringOp::ToCString(s);
-					callstatus = atoi(c);//状态
-					switch (callstatus)
-					{	
-						case 0://active
-							break;
-						case 1://hold
-							break;
-						case 2://Dialing
-							Dialing(line);
-							break;
-						case 3://altering
-							Alerting(line);
-							break;
-						case 4://Incoming
-							break;
-						case 5:
-						 break;
-					}
-					
-					int num = 0;
-					while ( num != 6 && ( (t = s.find(",")) != std::string::npos))
-					{
-						s = s.substr(t+1);
-						num++;
-						
-						std::string tel = s; //呼叫等待状态
-						if ( 3 == num )
-						{
-							tel = s.substr(1,s.find(",")-1-1);
-							if ( /*2 == line && */ 5 == callstatus || 4 == callstatus )
-							{
-								Incoming((char *)tel.c_str(),line);
-							}
-						}
-					}
-					
-					c = Util::StringOp::ToCString(s);
-					cause = atoi(c);
-					Dprintf("Cause: %d\r\n",cause);
-					switch (cause)
-					{
-					case 8 ://congestion
-						Odb(line);
-						break;
-						
-					case 1: //Unassigned(unallocated) number
-					case 31://Normal,unspecified
-					case 34://
-					case 44://Requested circuit/channel not available
-					case 16://no carrier
-					case 102://Recovery on timer expiry
-					case 111:
-						{
-							NoCarrier(line);
-
-							//add by qi 0827
-							//CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-							//if (main->m_pATCommandWarp1->GetOkStatus() != okSmsSend)
-							//{
-							//	main->m_pATCommandWarp1->SetOkStatus(okIdle);
-							//}
-						}
-						break;
-						
-					case 17://user busy
-						Busy(line);
-						break;
-						
-					case 19://User alerting, no answer
-						NoAnswer(line);
-						break;
-						
-					case 22:
-						Congestion(line);//call rejected
-						break;
-						
-					}
-					
-				}
-			}
 		}
 
 	}
@@ -1401,19 +1064,15 @@ void TelephoneWarp::ParseCCWA(std::string const& data)
 
 }
 
-int static signalOrg = -1;
-
 void TelephoneWarp::ParseDACTI(std::string const& data)
 {
-	unsigned int  netType = 0xF;
-	unsigned int static oldType = 3 ;
-
+	unsigned int netType = 0xF;
 	CString c ;
 	char *ans= (char *)(data.c_str());
 	if (strstr(ans, "^DACTI: ") != NULL)
 	{
-// 		if(strstr(ans, "OK\r\n") != NULL)   
-// 		{
+		if(strstr(ans, "OK\r\n") != NULL)   
+		{
 			char* p = strstr(ans, "^DACTI: ");//
 			if (p != NULL)
 			{
@@ -1433,13 +1092,11 @@ void TelephoneWarp::ParseDACTI(std::string const& data)
 					netType = atoi(c);
 				}
 			}
- 	//	}
+ 		}
 
-		if(netType != 0xF && oldType != netType )
-		{	
+		if(netType != 0xF)
+		{
 			PhoneNettype(netType);
-			oldType = netType;
-			signalOrg = 0;
 		}
 	}
 
@@ -1450,16 +1107,11 @@ void TelephoneWarp::ParseCSQ(std::string const& data)
 	CString c ;
 	if ( data.find("+CSQ: ") != std::string::npos)
 	{
-		//显示信号值
-		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-
+		UINT static signalOrg = 0;
 		int result = 0xFF;
 		char *ans= (char *)(data.c_str());
-	
-	//  change by qi 20100805
-	//	if(strstr(ans, "OK\r\n") != NULL)
-		if(strstr(ans, "\r\n") != NULL)   
+		
+		if(strstr(ans, "OK\r\n") != NULL)   
 		{
 			char* p = strstr(ans, "+CSQ: ");//+CSQ: 129,99
 			if (p != NULL)
@@ -1468,35 +1120,21 @@ void TelephoneWarp::ParseCSQ(std::string const& data)
 				std::string st = p;
 				c = Util::StringOp::ToCString(st);
 				result = atoi(c);
-				if (result == 99)//G网无网络
+				if (result == 99)
 				{
 					result = 0;
 				}
-				else if( result >= 100 && result < 199)
+				else
 				{
-				//	result = result - 100 - 116 + 113;
-					result = result - 100 ;
-				//	result = (result + 1) / 2;
+					result = result - 100 - 116 + 113;
+					result = (result + 1) / 2;
 					if (result < 8)
 					{
 						result = 1;
 					}
 					else
 					{
-						//	result = (result - 8) / 6 + 2;
-						if ( 27 <= result && result <= 31 )
-						{
-							result = 5;
-						}
-						else if ( result < 27 && result >= 23)
-						{
-							result = 4;
-						}
-						else
-						{
-							result = result / 6;
-
-						}
+						result = (result - 8) / 6 + 2;
 					}
 
 					if (result > 5)
@@ -1504,27 +1142,6 @@ void TelephoneWarp::ParseCSQ(std::string const& data)
 						result = 5;
 					}
 				}
-				else if ( 199 == result)
-				{
-					result = 0 ;
-				}
-				else if (result < 99)
-				{
-					if ( 27 <= result && result <= 31 )
-					{
-						result = 5;
-					}
-					else if ( result < 27 && result >= 23)
-					{
-						result = 4;
-					}
-					else 
-					{
-						result = result/6;
-					}
-					
-				}
-				
 			}
 		}
 		
@@ -1535,26 +1152,6 @@ void TelephoneWarp::ParseCSQ(std::string const& data)
 		}
 	}
 
-}
-
-void TelephoneWarp::ParseCIEV(std::string const& data)
-{	
-	if ( data.find("+CIEV: 2") != std::string::npos)
-	{	
-		CString c ;
-		std::string s = data ;
-		size_t t = s.find("+CIEV: 2");
-		if ( t != std::string::npos)
-		{
-			s = s.substr(t+1);
-			c = Util::StringOp::ToCString(s);
-		}	
-	//	SignalQuality(atoi(c));
-	}
-	else if (data.find("+CIEV: 8,1") != std::string::npos)
-	{
-		PostMessage(theApp.m_pMainWnd->m_hWnd,WM_SMS_FULL,0,0);	
-	}
 }
 
 // 将一条短消息放入发送队列    
@@ -1791,50 +1388,18 @@ void TelephoneWarp::PhoneNettype_(void)
 	m_pAT->PhoneNettype();
 }
 
-
 void TelephoneWarp::PhoneDialTone(BOOL isOn, char *tone)
 {
-	extern void GMute(BOOL isTrue);
-	if (Hand())//lxz20100609
-	{
-		GMute(TRUE);
-	}
-	else
-	{
-		GMute(FALSE);//
-	}
-
-	//add by qi 20100708
-	if (tone != NULL)
-	{
-		if (strlen(tone) > 100)
-		{	
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-			main->m_pWarningNoFlashDlg->SetTitle(L"号码太长");
-			main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-			return ;
-		}
-	}	
-
 	m_pAT->PhoneDialTone(isOn, tone);
 }
 //////////////////////////////////////////////////////////////////////////
 bool TelephoneWarp::Dial(char* number, BOOL isVideo)
 {
-//	TEL_NUM num;
-//	memset(&num, 0, sizeof(TEL_NUM));
-//	strcpy(num.NUM, number);
-//	num.TYPE = isVideo;
+	TEL_NUM num;
+	memset(&num, 0, sizeof(TEL_NUM));
+	strcpy(num.NUM, number);
+	num.TYPE = isVideo;
 	
-	//chnage by qi 
-	if (strlen(number) > 1000)
-	{	
-		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		main->m_pWarningNoFlashDlg->SetTitle(L"号码输入过长");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return false;
-	}
-
 	m_pAT->PhoneDial(number,isVideo);
 //	PutSendMessage(&num);
 	return true;
@@ -1871,11 +1436,6 @@ void TelephoneWarp::Volume(unsigned int level)
 	 m_pAT->PhoneVolume(level);
 }
 
-void TelephoneWarp::SendDialTone(char *code, int isON)
-{
-	m_pAT->SendDialTone(code, isON);
-}
-
 void TelephoneWarp::Mute(bool isMute)
 {
 	 m_pAT->PhoneMute(isMute);
@@ -1898,102 +1458,90 @@ std::string TelephoneWarp::GetNumber(void)
 //////////////////////////////////////////////////////////////////////////
 void TelephoneWarp::Incoming(char* num,int const line )
 {
-//	m_nFirstCall++;
+	m_nFirstCall++;
 	static CALLID_INFO CallID;
 	memset(&CallID, 0, sizeof(CALLID_INFO));
 	strcpy(CallID.number, num);
-	CallID.Line = line;
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_CALLIDEND, (WPARAM)&CallID, line);
-	
+	if (1 == m_nFirstCall)
+	{
+		PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_CALLIDEND, (WPARAM)&CallID, line);
+	}
+
 }
 
 void TelephoneWarp::Ring(int const line)//来电振铃
-{	
-	Dprintf("TelephoneWarp Ring : %d\r\n",line);
+{
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_RING, 0, line);
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMRING, line);
 }
 
-void TelephoneWarp::Busy(int const line)//对方忙
-{	
-	Dprintf("TelephoneWarp Busy : %d \r\n",line);
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMBUY, line);
+void TelephoneWarp::Busy(void)//对方忙
+{
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMBUY, 0);
 }
 
 void TelephoneWarp::Connected(int const line) //通话联通状态
 {
-//	Dprintf("TelephoneWarp Connected : %d \r\n",line);
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMCONNECTED, line);
 }
 
-void TelephoneWarp::Connect(int const line)//对方接听
+void TelephoneWarp::Connect(void)//对方接听
 {
-//	Dprintf("TelephoneWarp Connect : %d \r\n",line);
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMCONNECT, line);
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMCONNECT, 0);
 }
 
 void TelephoneWarp::Held(int const line)//保持状态
-{	
-	Dprintf("TelephoneWarp Held : %d \r\n",line);
+{
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMHELD, line);
 }
 void TelephoneWarp::Dialing(int const line)//正在拨打状态
 {
-	Dprintf("Dialing:%d\r\n",line);
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMDIALING, line);
 }
 void TelephoneWarp::Alerting(int const line)//对方振铃状态
 {
-	Dprintf("Altering: %d\r\n",line);
+	PhoneDialTone(0, NULL);
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMALERTING, line);
+
 }
 void TelephoneWarp::Waiting(int const line)
 {
-	Dprintf("Watting : %d\r\n",line);
-	
-	//add by qi 20100317 
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_RING, 0, line);
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMWAITING, line);
 }
 
-void TelephoneWarp::NoDialTone(int const line)
-{	
-	Dprintf("NoDialTone :%d\r\n",line);
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNODIALTONE, line);
-}
-void TelephoneWarp::NoAnswer(int const line)//无应答
+void TelephoneWarp::NoDialTone(void)
 {
-	Dprintf("NoAnswer :%d\r\n",line);
+	
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNODIALTONE, 0);
 
-//	PhoneDialTone(1, "hangup");
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNOANSWER, line);   //
 }
-void TelephoneWarp::NoCarrier(int const line)//连接不能被建立
-{	
-	Dprintf("NoCarrier :%d\r\n",line);
-//  change by qi 20100315
-//	PhoneDialTone(1, "hangup");
-//	Hangup_();
-
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNOCARRIER, line);
-}
-void TelephoneWarp::Congestion(int const line)//网络拥塞
-{	
-	Dprintf("Congestion :%d\r\n",line);
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMCONGESTION, line);
-}
-void TelephoneWarp::OppHangup(int const line)//对方挂机
+void TelephoneWarp::NoAnswer(void)//无应答
 {
-//	PhoneDialTone(1, "hangup");
+	PhoneDialTone(1, "hangup");
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNOANSWER, 0);
+}
+void TelephoneWarp::NoCarrier(void)//连接不能被建立
+{
+	PhoneDialTone(1, "hangup");
 //	nState = stHangupPhone;
-//	Hangup_();
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMOPPHUNGUP, line);
+	Hangup_();
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNOCARRIER, 0);
 }
-
-void TelephoneWarp::Odb(int const line)//呼叫限制
+void TelephoneWarp::Congestion(void)//网络拥塞
 {
-//	PhoneDialTone(1, "hangup");
-	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMODB, line);
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMCONGESTION, 0);
+}
+void TelephoneWarp::OppHangup(void)//对方挂机
+{
+	PhoneDialTone(1, "hangup");
+//	nState = stHangupPhone;
+	Hangup_();
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMOPPHUNGUP, 0);
+}
+void TelephoneWarp::Odb(void)//呼叫限制
+{
+	PhoneDialTone(1, "hangup");
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMODB, 0);
 }
 void TelephoneWarp::SignalQuality(int level)
 {
@@ -2015,6 +1563,7 @@ void TelephoneWarp::HungOff()
 {	
 	Hangup();
 	m_nFirstCall = 0 ;
+//	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGOFF, 0, 0);
 
 }
 //摘机
@@ -2026,15 +1575,7 @@ void TelephoneWarp::HungOn(BOOL isRing)
 }
 
 void TelephoneWarp::Hand(int hand )
-{	
-	if ( HandOn == hand)
-	{
-		Dprintf("HandOn\r\n");
-	}
-	else
-	{
-		Dprintf("HandOff\r\n");
-	}
+{
 	m_HandSet = (HandSet) hand;
 }
 
@@ -2045,14 +1586,6 @@ int TelephoneWarp::Hand()
 
 void TelephoneWarp::Free(int free )
 {
-	if ( FreeOn == free)
-	{
-		Dprintf("FreeOn\r\n");
-	}
-	else
-	{
-		Dprintf("FreeOff\r\n");
-	}
 	m_FreeSet =(FreeSet)free;
 }
 
@@ -2177,7 +1710,7 @@ void TelephoneWarp::RelaseRingSrc()
 
 void TelephoneWarp::StartRing(TCHAR *filename, int ncount)
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	
 	if(wcslen(filename) == 0)
 	{
 		memset(gRingFilename, 0, sizeof(TCHAR)*64);
@@ -2185,17 +1718,8 @@ void TelephoneWarp::StartRing(TCHAR *filename, int ncount)
 		return;
 	}
 	
-	Dprintf("StartRing\r\n");
 	extern void GMute(BOOL isOn);
-	if (main->phone_->Hand())//
-	{
-		GMute(TRUE);
-	}
-	else
-	{
-		GMute(FALSE);//
-	}
-	
+	GMute(FALSE);
 
 	::EnterCriticalSection(&m_ringSetion_);
 	nRingCount = ncount;
@@ -2214,8 +1738,7 @@ void TelephoneWarp::StartRing(TCHAR *filename, int ncount)
 		if(ipBasAudio)
 		{
 			Dprintf("g_RingSound = %x\n", g_RingSound);
-			
-			waveOutGetVolume(NULL,&m_DOldVoulme);
+
 			waveOutSetVolume(NULL, g_RingSound);
 			
 		//	ipBasAudio->put_Volume(g_RingSound); 
@@ -2225,14 +1748,13 @@ void TelephoneWarp::StartRing(TCHAR *filename, int ncount)
 
 }
 
-void TelephoneWarp::StopRing(bool releaseSrc,bool breset)
+void TelephoneWarp::StopRing(bool releaseSrc)
 {
 	/*
 	sndPlaySound(NULL, 0);
 	return;
 	*/
-	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+
 	::EnterCriticalSection(&m_ringSetion_);
 	if(m_bStartRing)
 	{
@@ -2249,18 +1771,8 @@ void TelephoneWarp::StopRing(bool releaseSrc,bool breset)
 		m_bStartRing = FALSE;
 	}
 	m_pMsgWnd = NULL;
-	Dprintf("Stop Ring\r\n");
-	
-	//add by qi
-	if (breset)
-	{
-		//waveOutSetVolume(NULL,m_DOldVoulme);
-		waveOutSetVolume(NULL,0xFFFFFFFF);
-	}
-
-	extern void GMute(BOOL isOn);	
+	extern void GMute(BOOL isOn);
 	GMute(TRUE);
-		
 	::LeaveCriticalSection(&m_ringSetion_);
 
 }
@@ -2342,49 +1854,21 @@ void TelephoneWarp::ResumeSoundValueRing()
 
 
 bool TelephoneWarp::SWitchPhone3G(BOOL is3G)
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (!(main->OpenAllPort()))
-	{
-		return false;
-	}
-	
-	if (is3G)
-	{
-		Dprintf("switch 3G\r\n");
-	}
-	else 
-	{
-		Dprintf("switch PSTN\r\n");
-	}
-
-	unsigned char data[] = {0xC2, 0xC1};//手柄给PSTN用 还是给3G用
+{
+	unsigned char data[] = {0xC2, 0xC1};
 	m_pRS232_->WritePort(&data[is3G], 1);
 	return true;
 }
 
 void TelephoneWarp::PSTNHangoff()
 {	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (!(main->OpenAllPort()))
-	{
-		return;
-	}
-	
 	Dprintf("PSTNHangoff \r\n");
 	unsigned char c = 0x8b;
 	m_pRS232_->WritePort(&c, 1);
-
 }
 
 void TelephoneWarp::PSTNHangoff_()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (!(main->OpenAllPort()))
-	{
-		return;
-	}
-	
+{
 	Dprintf("PSTNHangoff_ \r\n");
 	unsigned char c = 0x83;
 	m_pRS232_->WritePort(&c, 1);
@@ -2392,41 +1876,8 @@ void TelephoneWarp::PSTNHangoff_()
 }
 
 void TelephoneWarp::PSTNHangOn()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (!(main->OpenAllPort()))
-	{
-		return;
-	}
-	
+{
 	Dprintf("PSTNHangOn \r\n");
 	unsigned char c = 0x82;
 	m_pRS232_->WritePort(&c, 1);
-
-	//启动定时器，检查指令是否发送成功
-	::KillTimer(main->m_pTelephoneDlg->m_hWnd,CHECK_0X82_TIMER);
-	::SetTimer(main->m_pTelephoneDlg->m_hWnd,CHECK_0X82_TIMER,150,NULL);
-
-}
-
-void TelephoneWarp::PSTNRingMute(bool bmute )
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (!(main->OpenAllPort()))
-	{
-		return;
-	}
-
-	Dprintf("PSTNRingMute \r\n");
-	unsigned char c ;
-	if (bmute)
-	{
-		c = 0xD0;	
-	}
-	else
-	{
-		c = 0xD1;
-	}
-	m_pRS232_->WritePort(&c, 1);
-	
 }

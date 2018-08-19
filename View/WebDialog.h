@@ -45,7 +45,7 @@ public:
 
 	void ShowWindow_(BOOL bShow);
 
-	CCEComboBox12_ m_cmbURL;
+	CCEComboBox_ m_cmbURL;
 //	CCEBmpButton m_btn;
 	CCERectEdit	m_edit;
 //	CCEBmpButton m_btnClose;

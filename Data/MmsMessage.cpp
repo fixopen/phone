@@ -48,8 +48,6 @@ namespace Data {
             cmd += Util::StringOp::FromInt(validityPeriod);
             cmd += ", [timestamp] = '";
             cmd += timestamp.ToString_();
-			cmd += "', [localrecivetime] = '";
-			cmd += localReciveTime.ToString_();
             cmd += "', [state] = ";
             cmd += Util::StringOp::FromInt(state);
             cmd += ", [transactionId] = '";
@@ -60,23 +58,19 @@ namespace Data {
             cmd += Util::StringOp::FromInt(messageSize);
             cmd += ", [timeOfExpiry] = ";
             cmd += Util::StringOp::FromInt(timeOfExpiry);
-			cmd += ", [downloadCount] = ";
-			cmd += Util::StringOp::FromInt(downloadCount);
-			cmd += ", [repeatCount] = ";
-			cmd += Util::StringOp::FromInt(repeatCount);
             cmd += ", [url] = '";
             cmd += url;
             cmd += "' WHERE [id] = ";
             cmd += Util::StringOp::FromInt(id());
             ExecCommand(cmd);
 			extern VOID WriteLog(char *ptr);
-//			WriteLog((char *)cmd.c_str());
+			WriteLog((char *)cmd.c_str());
         }
 
         void MmsMessage::Insert() {
             std::string cmd = "INSERT INTO ";
             cmd += tableName();
-            cmd += " (smscAddressType, smscAddress, isSetReplyPath, hasHeaderInfo, requestReport, validityPeriodFormat, rejectCopy, type, reference, remoteAddressType, remoteAddress, uplevelProtocol, encoding, validityPeriod, timestamp, localrecivetime, state, transactionId, messageClass, messageSize, timeOfExpiry, downloadCount, repeatCount, url ) VALUES ( " ; 
+            cmd += " (smscAddressType, smscAddress, isSetReplyPath, hasHeaderInfo, requestReport, validityPeriodFormat, rejectCopy, type, reference, remoteAddressType, remoteAddress, uplevelProtocol, encoding, validityPeriod, timestamp, state, transactionId, messageClass, messageSize, timeOfExpiry, url ) VALUES ( " ; 
             cmd += Util::StringOp::FromInt(smsc.addressType.typeOfNumber);
             cmd += ", '";
             cmd += smsc.address;
@@ -106,9 +100,7 @@ namespace Data {
             cmd += Util::StringOp::FromInt(validityPeriod);
             cmd += ", '";
             cmd += timestamp.ToString_();
-            cmd += "', '";
-			cmd += localReciveTime.ToString_();
-			cmd += "', ";
+            cmd += "', ";
             cmd += Util::StringOp::FromInt(state);
             cmd += ", '";
             cmd += transactionId;
@@ -118,16 +110,12 @@ namespace Data {
             cmd += Util::StringOp::FromInt(messageSize);
             cmd += ", ";
             cmd += Util::StringOp::FromInt(timeOfExpiry);
-            cmd += ", ";
-			cmd += Util::StringOp::FromInt(downloadCount);
-			cmd += ", ";
-			cmd += Util::StringOp::FromInt(repeatCount);
             cmd += ", '";
             cmd += url;
             cmd += "' )";
             ExecCommand(cmd);
 			extern VOID WriteLog(char *ptr);
-//			WriteLog((char *)cmd.c_str());
+			WriteLog((char *)cmd.c_str());
             id(GetCurrentId());
         }
 
@@ -251,14 +239,11 @@ namespace Data {
             item->validityPeriod						=	atoi(argv[getIndexByName(argc,columnName,"validityPeriod")]);
             item->url = argv[getIndexByName(argc,columnName,"url")];
             item->timestamp = SMSCTimestamp(argv[getIndexByName(argc,columnName,"timestamp")]);
-			item->localReciveTime = SMSCTimestamp(argv[getIndexByName(argc,columnName,"localrecivetime")]);
             item->state = static_cast<State>(atoi(argv[getIndexByName(argc, columnName, "state")]));
 			item->transactionId = argv[getIndexByName(argc,columnName,"transactionId")];
             item->messageClass = atoi(argv[getIndexByName(argc, columnName, "messageClass")]);
             item->messageSize = atoi(argv[getIndexByName(argc, columnName, "messageSize")]);
             item->timeOfExpiry = atoi(argv[getIndexByName(argc, columnName, "timeOfExpiry")]);
-			item->downloadCount = atoi(argv[getIndexByName(argc, columnName, "downloadCount")]);
-			item->repeatCount = atoi(argv[getIndexByName(argc, columnName, "repeatCount")]);
         }
     }
 //}

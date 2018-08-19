@@ -261,8 +261,8 @@ namespace Data
 		cmd += speCode12_;
 		cmd += "', callRecall = ";
 		cmd += Util::StringOp::FromInt(callRecall_);
-		cmd += ", phonedialtimes = ";
-		cmd += Util::StringOp::FromInt(PhoneDialTimes_);
+		cmd += ", callLimit = ";
+		cmd += Util::StringOp::FromInt(callLimit_);
 		cmd += ", callWaiting = ";
 		cmd += Util::StringOp::FromInt(callWaiting_);
 		cmd += ", isPin = ";
@@ -289,34 +289,6 @@ namespace Data
 		cmd += gprsProxyIp2_;
 		cmd += "', gprsProxyPort2 = ";
 		cmd +=Util::StringOp::FromInt( gprsProxyPort2_);
-		cmd += ", gprsDialType3 = '";
-		cmd += gprsType3_;
-		cmd += "', gprsHttp3 ='";
-		cmd += gprsHttp3_;
-		cmd += "', gprsDialNumber3 ='";
-		cmd += gprsDialnumber3_;
-		cmd += "', gprsProxyIp3 ='";
-		cmd += gprsProxyIp3_;
-		cmd += "', gprsProxyPort3 = ";
-		cmd +=Util::StringOp::FromInt( gprsProxyPort3_);
-		cmd += ", gprsDialType4 = '";
-		cmd += gprsType4_;
-		cmd += "', gprsHttp4 ='";
-		cmd += gprsHttp4_;
-		cmd += "', gprsDialNumber4 ='";
-		cmd += gprsDialnumber4_;
-		cmd += "', gprsProxyIp4 ='";
-		cmd += gprsProxyIp4_;
-		cmd += "', gprsProxyPort4 = ";
-		cmd +=Util::StringOp::FromInt( gprsProxyPort4_);
-		cmd += ", netType = ";
-		cmd += Util::StringOp::FromInt(netType_);
-		cmd += ", mmsType = ";
-		cmd += Util::StringOp::FromInt(mmsType_);
-		cmd += ", isphonedialtimes = ";
-		cmd += Util::StringOp::FromInt(isPhoneDialTimes_);
-		cmd += ", isDeepSleep = ";
-		cmd += Util::StringOp::FromInt(isDeepSleep);
 		cmd += " WHERE id = ";
         cmd += Util::StringOp::FromInt(id());
 // 		FILE *file;
@@ -328,7 +300,7 @@ namespace Data
 // 			fclose(file);
 // 		}
 		extern VOID WriteLog(CHAR* str);
-//		WriteLog((char *)cmd.c_str());
+		WriteLog((char *)cmd.c_str());
 
         ExecCommand(cmd);
 	}
@@ -337,8 +309,7 @@ namespace Data
 	{
         std::string cmd = "INSERT INTO ";
         cmd += tableName();
-        cmd += " ( type, thisTelephoneNumber, outlinePrefix, isAutoAppendOutlinePrefix, ipPrefix, isAppendIpPrefix, isUseSpecRing, defaultRingFilename, isAutoReply, autoReplyRingCount, speedDialName1, speedDialValue1, speedDialName2, speedDialValue2, speedDialName3, speedDialValue3, speedDialName4, speedDialValue4, speedDialName5, speedDialValue5, speedDialName6, speedDialValue6, speedDialName7, speedDialValue7, speedDialName8, speedDialValue8, speedDialName9, speedDialValue9, speedDialName10, speedDialValue10, speedDialName11, speedDialValue11, speedDialName12, speedDialValue12, linkMode, dialUsername, dialPassword, ipMode, thisIPAddr, subnetMask, gateway, dns, isIndicationUser, isAlwaysSave, copyright, hardwareVersion, softwareVersion, maxContactUseSize, maxContactInfoUseSize, maxSoundUseSize, soundVolume, systemVolume, flashDrvRoot, storageCardRoot, usbDiskRoot, dataRootPath, picturePath, notePath, musicPath, soundPath, videoPath, removeableSemiFixPath, removeableDynamicPath, thisUserId, isFirewall, firewallType, blockAllTimeDuration, soundProtectPassword, isUseScreenSaver, screenSaverDuration, screenSaverContent, isUseScreenSaverPassword, screenSaverPassword, isAdmin, isPlayProtect, isMustRecord, isDeleteProtect, adminPassword, playRecordPassword, backlightDuration, defaultTipFilename, blackLinghtValue, isContrlBlackLight, controlBlackLightWaitTime, isNightControlBlackLight, nightControlBlackLightStartTime, nightControlBlackLightEndTime, isSmsRing, smsRingFilename, smsRingVolume, isSpecodeRing , specodeRingFilename , specodeRingVolume , speCode1 , speCode2 , speCode3 , speCode4 ,speCode5 , speCode6 , speCode7 , speCode8 ,speCode9 , speCode10 , speCode11 , speCode12 , callRecall , phonedialtimes , callWaiting , isPin , pinPassWord , ";
-        cmd += "gprsDialType1 , gprsHttp1 , gprsDialNumber1 , gprsProxyIp1 , gprsProxyPort1 , gprsDialType2 , gprsHttp2 , gprsDialNumber2 , gprsProxyIp2 , gprsProxyPort2, gprsDialType3 , gprsHttp3 , gprsDialNumber3 , gprsProxyIp3 , gprsProxyPort3, gprsDialType4 , gprsHttp4 , gprsDialNumber4 , gprsProxyIp4 , gprsProxyPort4, netType, mmsType,isphonedialtimes,isDeepSleep) VALUES ( ";
+        cmd += " ( type, thisTelephoneNumber, outlinePrefix, isAutoAppendOutlinePrefix, ipPrefix, isAppendIpPrefix, isUseSpecRing, defaultRingFilename, isAutoReply, autoReplyRingCount, speedDialName1, speedDialValue1, speedDialName2, speedDialValue2, speedDialName3, speedDialValue3, speedDialName4, speedDialValue4, speedDialName5, speedDialValue5, speedDialName6, speedDialValue6, speedDialName7, speedDialValue7, speedDialName8, speedDialValue8, speedDialName9, speedDialValue9, speedDialName10, speedDialValue10, speedDialName11, speedDialValue11, speedDialName12, speedDialValue12, linkMode, dialUsername, dialPassword, ipMode, thisIPAddr, subnetMask, gateway, dns, isIndicationUser, isAlwaysSave, copyright, hardwareVersion, softwareVersion, maxContactUseSize, maxContactInfoUseSize, maxSoundUseSize, soundVolume, systemVolume, flashDrvRoot, storageCardRoot, usbDiskRoot, dataRootPath, picturePath, notePath, musicPath, soundPath, videoPath, removeableSemiFixPath, removeableDynamicPath, thisUserId, isFirewall, firewallType, blockAllTimeDuration, soundProtectPassword, isUseScreenSaver, screenSaverDuration, screenSaverContent, isUseScreenSaverPassword, screenSaverPassword, isAdmin, isPlayProtect, isMustRecord, isDeleteProtect, adminPassword, playRecordPassword, backlightDuration, defaultTipFilename, blackLinghtValue, isContrlBlackLight, controlBlackLightWaitTime, isNightControlBlackLight, nightControlBlackLightStartTime, nightControlBlackLightEndTime, isSmsRing, smsRingFilename, smsRingVolume, isSpecodeRing , specodeRingFilename , specodeRingVolume , speCode1 , speCode2 , speCode3 , speCode4 ,speCode5 , speCode6 , speCode7 , speCode8 ,speCode9 , speCode10 , speCode11 , speCode12 , callRecall , callLimit , callWaiting , isPin , pinPassWord , gprsDialType1 , gprsHttp1 , gprsDialNumber1 , gprsProxyIp1 , gprsProxyPort1 , gprsDialType2 , gprsHttp2 , gprsDialNumber2 , gprsProxyIp2 , gprsProxyPort2) VALUES ( ";
         cmd += Util::StringOp::FromInt(type_);
         cmd += ", '";
         cmd += thisTelephoneNumber_.ToString();
@@ -535,7 +506,7 @@ namespace Data
 		cmd += "', '";
 		cmd += Util::StringOp::FromInt(callRecall_);
 		cmd += ", ";
-		cmd += Util::StringOp::FromInt(PhoneDialTimes_);
+		cmd += Util::StringOp::FromInt(callLimit_);
 		cmd += ", ";
 		cmd += Util::StringOp::FromInt(callWaiting_);
 		cmd += ", ";
@@ -562,34 +533,6 @@ namespace Data
 		cmd += gprsProxyIp2_;
 		cmd += "', ";
 		cmd += Util::StringOp::FromInt(gprsProxyPort2_);
-		cmd += ", '";
-		cmd += gprsType3_;
-		cmd += "', '";
-		cmd += gprsHttp3_;
-		cmd += "', '";
-		cmd += gprsDialnumber3_;
-		cmd += "', '";
-		cmd += gprsProxyIp3_;
-		cmd += "', ";
-		cmd += Util::StringOp::FromInt(gprsProxyPort3_);
-		cmd += ", '";
-		cmd += gprsType4_;
-		cmd += "', '";
-		cmd += gprsHttp4_;
-		cmd += "', '";
-		cmd += gprsDialnumber4_;
-		cmd += "', '";
-		cmd += gprsProxyIp4_;
-		cmd += "', ";
-		cmd += Util::StringOp::FromInt(gprsProxyPort4_);
-		cmd += ", ";
-		cmd += Util::StringOp::FromInt(netType_);
-		cmd += ", ";
-		cmd += Util::StringOp::FromInt(mmsType_);
-		cmd += ", ";
-		cmd += Util::StringOp::FromInt(isPhoneDialTimes_);
-		cmd += ", ";
-		cmd += Util::StringOp::FromInt(isDeepSleep);
 		cmd += ")";
 		
         ExecCommand(cmd);
@@ -716,7 +659,7 @@ namespace Data
 		item->speCode11_ = argv[Data::getIndexByName(argc, columnName, "speCode11")];
 		item->speCode12_ = argv[Data::getIndexByName(argc, columnName, "speCode12")];
 		item->callRecall_ = atoi(argv[Data::getIndexByName(argc, columnName, "callRecall")]);
-		item->PhoneDialTimes_ = atoi(argv[Data::getIndexByName(argc, columnName, "phonedialtimes")]);
+		item->callLimit_ = atoi(argv[Data::getIndexByName(argc, columnName, "callLimit")]);
 		item->callWaiting_ = atoi(argv[Data::getIndexByName(argc, columnName, "callWaiting")]);
 		item->isPin_ = atoi(argv[Data::getIndexByName(argc, columnName, "isPin")]);
 		item->pinPassword_ = argv[Data::getIndexByName(argc, columnName, "pinPassWord")];
@@ -730,24 +673,6 @@ namespace Data
 		item->gprsDialnumber2_ = argv[Data::getIndexByName(argc, columnName, "gprsDialNumber2")];
 		item->gprsProxyIp2_ = argv[Data::getIndexByName(argc, columnName, "gprsProxyIp2")];
 		item->gprsProxyPort2_ = atoi(argv[Data::getIndexByName(argc, columnName, "gprsProxyPort2")]);
-		//wangzhenxing20100505
-		item->gprsType3_ = argv[Data::getIndexByName(argc, columnName, "gprsDialType3")];
-		item->gprsHttp3_ = argv[Data::getIndexByName(argc, columnName, "gprsHttp3")];
-		item->gprsDialnumber3_ = argv[Data::getIndexByName(argc, columnName, "gprsDialNumber3")];
-		item->gprsProxyIp3_ = argv[Data::getIndexByName(argc, columnName, "gprsProxyIp3")];
-		item->gprsProxyPort3_ = atoi(argv[Data::getIndexByName(argc, columnName, "gprsProxyPort3")]);
-
-		item->gprsType4_ = argv[Data::getIndexByName(argc, columnName, "gprsDialType4")];
-		item->gprsHttp4_ = argv[Data::getIndexByName(argc, columnName, "gprsHttp4")];
-		item->gprsDialnumber4_ = argv[Data::getIndexByName(argc, columnName, "gprsDialNumber4")];
-		item->gprsProxyIp4_ = argv[Data::getIndexByName(argc, columnName, "gprsProxyIp4")];
-		item->gprsProxyPort4_ = atoi(argv[Data::getIndexByName(argc, columnName, "gprsProxyPort4")]);
-
-		item->netType_ = atoi(argv[Data::getIndexByName(argc, columnName, "netType")]);
-		item->mmsType_ = atoi(argv[Data::getIndexByName(argc, columnName, "mmsType")]);
-
-		//add by qi 
-		item->isPhoneDialTimes_ = atoi(argv[Data::getIndexByName(argc, columnName, "isphonedialtimes")]);
-		item->isDeepSleep = !!atoi(argv[Data::getIndexByName(argc, columnName, "isDeepSleep")]);
+		// nightControlBlackLightStartTime TEXT, nightControlBlackLightEndTime TEXT
 	}
 }

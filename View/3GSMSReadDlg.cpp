@@ -15,8 +15,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // C3GSMSDlg dialog
-extern void FindTP_DCS(const  char *pSrc);
-extern g_isUCS2;
+
 
 #define  ALL_SENDER  20
 
@@ -51,7 +50,7 @@ BOOL CSMSReadDlg::OnInitDialog()
 
 	m_contentEdit.Create(WS_CHILD|WS_VISIBLE|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(237, 92, 237+401, 92+292), this, 0xFFFF);
 	
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\短信详情.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 	
@@ -73,14 +72,7 @@ void CSMSReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	switch(w)
 	{
 	case  10://回复
-		if (m_pMessage->group == Data::Message::gSend)
-		{
-			Repeat();
-		} 
-		else if (m_pMessage->group == Data::Message::gReceive)
-		{
-			Replay();
-		}
+		Replay();
 		break;
 	
 	case  11://回拨
@@ -108,10 +100,10 @@ void CSMSReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 
 	case 1000:
-		
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 1, 0);			//恢复视频
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
 		ShowWindow(SW_HIDE);
 		main->PopbackIcon();
-		main->IsSendMessage(TRUE);
 		break;
 
 	default:
@@ -125,27 +117,13 @@ void CSMSReadDlg::SetSMSInfo(int id,SMSBOX_TYPE type)
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	CString recIcon = L"";//收件人图标
 	CString sendIcon = L".\\adv\\mjpg\\k5\\common\\短信\\发件人1.bmp";//发件人图标
-	CString repeatIcon[2] = { 
-		L".\\adv\\mjpg\\k5\\common\\短信\\repeat_fore.bmp",
-		L".\\adv\\mjpg\\k5\\common\\短信\\repeat_back.bmp",
-		};
-
-	CString replayIcon[2] = { 
-		L".\\adv\\mjpg\\k5\\common\\短信\\replay_fore.bmp",
-		L".\\adv\\mjpg\\k5\\common\\短信\\replay_back.bmp",
-		};
-
 	if ( SEND_TYPE == type)
 	{
 		m_MJPGList.SetUnitBitmap(30,recIcon,L"",true);
-		m_MJPGList.SetUnitBitmap(10,repeatIcon[0],repeatIcon[1],false);
-		m_MJPGList.SetUnitIsShow(11,false);
 	}
 	else if ( RECV_TYPE == type)
 	{
-		m_MJPGList.SetUnitBitmap(30,sendIcon,L"",true);	
-		m_MJPGList.SetUnitBitmap(10,replayIcon[0],replayIcon[1],false);
-		m_MJPGList.SetUnitIsShow(11,true);
+		m_MJPGList.SetUnitBitmap(30,sendIcon,L"",true);		
 	}
 	m_nBoxType = type ;
 
@@ -158,8 +136,6 @@ void CSMSReadDlg::SetSMSInfo(int id,SMSBOX_TYPE type)
 		if (!name.empty())
 		{
 			temp = Util::StringOp::ToCString(name);	
-			CString adr = Util::StringOp::ToCString(m_pMessage->remote.address);
-			temp += L"(" + adr + L")";	
 		}
 		else
 		{
@@ -170,29 +146,23 @@ void CSMSReadDlg::SetSMSInfo(int id,SMSBOX_TYPE type)
 		if ( SEND_TYPE == type || DRAFT_TYPE == type)
 		{	
 			std::string name ;
-			std::string number = Util::StringOp::FromCString(temp);
+			std::string number = Util::StringOp::FromCString(temp);;
 			main->m_pSMSListDlg->AnalyseSender(number,name);
 			
 			temp  = Util::StringOp::ToCString(name);
-			if (temp.Mid(temp.GetLength()-1) == L";")
+			if (temp.Mid(temp.GetLength()-1) = L";")
 			{
 				temp = temp.Mid(0,temp.GetLength()-1);
 			}
 			m_MJPGList.SetUnitText(31,temp,false);
 		}
 
-		temp = Util::StringOp::ToCString(m_pMessage->unicodeData);		
+		temp = Util::StringOp::ToCString(m_pMessage->unicodeData);
 		m_MJPGList.SetUnitText(32,temp,false);//主题
-		
-		m_contentEdit.SetWindowText(L"");
 		m_contentEdit.SetWindowText(temp);
-		m_contentEdit.Invalidate();
-		CalCulateContent(temp);
-
-	//	temp = Util::StringOp::ToCString(m_pMessage->timestamp.ToString_());
-		temp = Util::StringOp::ToCString(m_pMessage->timestamp.ToStringFormat_());
-		temp = temp.Mid(2);
-		m_MJPGList.SetUnitText(33,temp,false);//时间
+		
+		temp = Util::StringOp::ToCString(m_pMessage->timestamp.ToString_());
+		m_MJPGList.SetUnitText(33,temp,false);//主题
 
 		m_MJPGList.Invalidate();
 
@@ -203,12 +173,6 @@ void CSMSReadDlg::SetSMSInfo(int id,SMSBOX_TYPE type)
 		if (!(m_pMessage->state))
 		{
 			m_pMessage->state = Data::Message::sReaded;
-			if (!(m_pMessage->unicodeData.empty()))
-			{
-				CString data = Util::StringOp::ToCString(m_pMessage->unicodeData);
-				CSMSDlg::SingleQuotes(data);
-				m_pMessage->unicodeData = Util::StringOp::FromCString(data);
-			}
 			m_pMessage->Update();			
 			::SendMessage(main->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 		}
@@ -245,12 +209,10 @@ void CSMSReadDlg::Replay(void)
 			{
 				vtel.push_back(name);
 				vappend.push_back(Util::StringOp::ToCString(sender));
-				main->m_pMainDlg->m_p3GSMSDlg->Clear();
 				main->m_pMainDlg->m_p3GSMSDlg->SetSender(vtel);
 				main->m_pMainDlg->m_p3GSMSDlg->SetAppend(vappend);
 				main->m_pMainDlg->m_p3GSMSDlg->ShowWindow(true);
-				CWnd *p = main->m_pMainDlg->m_p3GSMSDlg;
-				main->AddIcon(Allicon[1],p,false);
+				
 			}
 
 		}			
@@ -269,8 +231,6 @@ void CSMSReadDlg::Transit()
 		data = m_pMessage->unicodeData;	
 		main->m_pMainDlg->m_p3GSMSDlg->SetSmsContent(data);
 		main->m_pMainDlg->m_p3GSMSDlg->ShowWindow(SW_SHOW);
-		CWnd *p = main->m_pMainDlg->m_p3GSMSDlg;
-		main->AddIcon(Allicon[1],p,false);
 	}
 	
 }
@@ -282,15 +242,7 @@ void CSMSReadDlg::DialBack()
 	{
 		std::string telnum ;
 		telnum = m_pMessage->remote.address;
-		
-		CString contact = Util::StringOp::ToCString(telnum);
-		CheckChatacter(contact);
-		if ( 0 == contact.Mid(0,2).Compare(L"86"))
-		{
-			contact = contact.Mid(2);	
-		}
-
-		main->m_pTelephoneDlg->Dialback(Util::StringOp::FromCString(contact));
+		main->m_pTelephoneDlg->Dialback(telnum);
 		main->m_pTelephoneDlg->ShowWindow(SW_SHOW);
 	}
 }
@@ -300,22 +252,10 @@ void CSMSReadDlg::SaveDraft()
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	if (m_pMessage)
 	{
-		boost::shared_ptr<Data::Message> pmessge = boost::shared_ptr<Data::Message>(new Data::Message) ;
-		*pmessge = *m_pMessage;
-
-		//add 20100919
-		std::string address = pmessge->remote.address;
-		if (!address.empty() && 
-			address.substr(address.size()-1,1).compare(";") != 0)
-		{
-			pmessge->remote.address = address + ";";
-		}
-		//
-
+		boost::shared_ptr<Data::Message> pmessge ;
+		pmessge = m_pMessage;
 		pmessge->group = Data::Message::gUnSend ;
-		bool bt = main->m_pMainDlg->m_p3GSMSDlg->SaveSmsData(pmessge,Data::Message::gUnSend);
-
-		//	bool bt = pmessge->Insert();
+		bool bt = pmessge->Insert();
 
 		CString title = L"保存成草稿成功!";
 		if (!bt)
@@ -328,64 +268,15 @@ void CSMSReadDlg::SaveDraft()
 
 }
 
-void CSMSReadDlg::Repeat()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (m_pMessage)
-	{	
-		boost::shared_ptr<Data::Message> pMessage = boost::shared_ptr<Data::Message>(new Data::Message);
-		
-		if (pMessage)
-		{
-			SYSTEMTIME tm;
-			GetLocalTime(&tm);
-			pMessage->timestamp.year = tm.wYear%100;
-			pMessage->timestamp.month = tm.wMonth;
-			pMessage->timestamp.day = tm.wDay;
-			pMessage->timestamp.hour = tm.wHour;
-			pMessage->timestamp.minite = tm.wMinute;
-			pMessage->timestamp.second = tm.wSecond;
-			pMessage->group = Data::Message::gSend;
-			pMessage->remote.address = m_pMessage->remote.address;
-			pMessage->unicodeData = m_pMessage->unicodeData;
-
-			if (main->m_pMessageSet->SmsSendSaveSim())//发送的内容保存到SIM
-			{
-				pMessage->reference = 1;
-				pMessage->uplevelProtocol = 200;
-			}
-			else 
-			{
-				pMessage->reference = 0;
-				pMessage->uplevelProtocol = 200;	
-			}
-			
-			//pMessage->Insert();
-			if(main->m_pMessageSet->SaveSendMessage())
-			{
-				main->m_pMainDlg->m_p3GSMSDlg->SaveSmsData(pMessage,Data::Message::gSend);
-			}
-			main->m_pSMSWarp->Send(pMessage->remote.address, pMessage->unicodeData);
-
-		}		
-	}
-}
-
 void CSMSReadDlg::NumberExtract()
 {	
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	std::vector<CString> vNumber ;
 	CString content ;
-	if (m_pMessage)
-	{	
-		CString name  = Util::StringOp::ToCString(m_pMessage->remote.address);	
-		CheckChatacter(name);
-		extern void ExtractNumber(CString content , std::vector<CString> &vnum);
-		ExtractNumber(name,vNumber);
-		//vNumber.push_back(name);//发件人的号码
-	}
+	content = m_MJPGList.GetUnitText(31);
+	vNumber.push_back(content);
 	
-	m_contentEdit.GetWindowText(content);//发件内容
+	m_contentEdit.GetWindowText(content);
 	void ExtractNumber(CString content , std::vector<CString> &vnum);
 	if (!content.IsEmpty())
 	{
@@ -398,82 +289,5 @@ void CSMSReadDlg::NumberExtract()
 		main->m_pSMSListDlg->m_pNumberExtractDlg->ShowNumber();
 		main->m_pSMSListDlg->m_pNumberExtractDlg->ShowWindow_(SW_SHOW);
 	}
-}
 
-void CSMSReadDlg::CheckChatacter(CString &ct)
-{
-	if (ct.Mid(ct.GetLength()-1) == L";")
-	{
-		ct = ct.Mid(0,ct.GetLength()-1);
-	}
-
-	if (ct.Mid(0,1) == L"+")
-	{
-		ct = ct.Mid(1);
-	}
-}
-
-void CSMSReadDlg::RefreshName(std::string name)
-{
-//	m_MJPGList.SetUnitText(31, Util::StringOp::ToCString(name), TRUE);
-//	m_MJPGList.Invalidate();
-}
-
-void CSMSReadDlg::CalCulateContent(CString content)
-{
-	int charNumber = 0;
-
-	if(content == L"")
-	{
-		charNumber = m_contentEdit.GetWindowTextLength();
-		m_contentEdit.GetWindowText(content);
-	}
-	else
-	{
-		charNumber = content.GetLength();
-	}
-
-	std::string str = Util::StringOp::FromCString(content);
-	FindTP_DCS(str.c_str());
-
-	int charMax = 160;
-	if(g_isUCS2)
-	{
-		charMax = 70;
-	}
-
-	CString number;
-	if(charNumber <= charMax)
-	{
-		number.Format(_T("%d/%d"),charNumber, charMax);
-		m_MJPGList.SetUnitText(16, number, TRUE);
-		m_MJPGList.SetUnitText(15, L"1", TRUE);
-	}
-	else
-	{
-		int msgNumber = 0;
-		if(g_isUCS2)
-		{
-			charMax = 67;
-		}
-		else
-		{
-			charMax = 152;
-		}
-		
-		if(0 == (charNumber%charMax))
-		{
-			msgNumber = charNumber/charMax;
-		}
-		else
-		{
-			msgNumber = charNumber/charMax + 1;
-		}
-
-		number.Format(_T("%d"), msgNumber);
-		m_MJPGList.SetUnitText(15, number, TRUE);
-		charNumber -= (msgNumber-1)*charMax;
-		number.Format(_T("%d/%d"), charNumber, charMax);
-		m_MJPGList.SetUnitText(16, number, TRUE);
-	}
 }

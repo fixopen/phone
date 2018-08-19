@@ -25,8 +25,6 @@ class C3GHomeJoyDlg : public CDialog
 {
 // Construction
 public:
-	int	m_callType;
-	double m_playFileSize;  //正在播放的文件的大小
 	CMJPGStatic		m_MJPGList;
 	C3GHomeJoyDlg(CWnd* pParent = NULL);   // standard constructor
 	CRecordSoundDlg* m_pRecordSoundDlg;
@@ -53,8 +51,7 @@ public:
 	void OnExit_();
 	void OnPlayer(int index = 0);
 	void PlaySound();
-	//void ShowWindow_(int nCmdShow);
-	void ShowWindow_(int nCmdShow,int bbtnShow = true);
+	void ShowWindow_(int nCmdShow);
 	void ShowRecord(std::string filter);
 	void OnButtonRecord();
 	void OnButtonSetTip();
@@ -62,7 +59,6 @@ public:
 	void Search(std::string filter);
 	void AddFileMp3();
 	void SetInitShow();
-	void InsertAudio2Mms();//插入音频文件到彩信
 
 // Dialog Data
 	//{{AFX_DATA(C3GHomeJoyDlg)
@@ -75,8 +71,6 @@ private:
 	std::vector<int> m_isFileSelect;
 	std::vector<boost::shared_ptr<Data::SoundSegment> > m_vCurrentResult;
 	
-	unsigned int m_selCount;
-	int			 m_playType;
 	unsigned int m_uiType;
 	unsigned int m_fileCount;
 	unsigned int m_currentPage;
@@ -93,7 +87,6 @@ private:
 	BOOL    m_isSelectAll;
 	BOOL    m_UnitStatus[5];
 	bool    m_bTelephoneInUse;
-	std::vector<CString> m_sPreDir;
 	
 	std::string m_sListSearchFilter;
 	std::string m_sListFilter;

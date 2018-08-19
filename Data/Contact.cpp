@@ -68,13 +68,6 @@ namespace Data
 // 			filter = "\"type\" = " + type;
         return DataAccess<Contact>::GetDatasByFilterAndPageInfo(filter, modifyFieldByDB_, offset, pageSize);
     }
-	
-	//add by qi 20100608
-	std::vector<boost::shared_ptr<Contact> > Contact::GetFromDatabaseByNameOffsetLength(std::string type, int const offset, int const pageSize)
-    {
-		std::string filter = type;
-        return DataAccess<Contact>::GetDatasByName(filter, modifyFieldByDB_, offset, pageSize);
-    }
 
     void Contact::Update() const
     {

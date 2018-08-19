@@ -94,10 +94,10 @@ bool CNetStatusDlg::ADSLInit()
 }
 
 static BOOL gDialRas = FALSE;
-bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, CWnd *pMsgWnd, DIALTYPE type, char *apnName) 
+bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, CWnd *pMsgWnd, DIALTYPE type) 
 {
 	if(gDialRas)
-	  ADSLHungUp();
+		ADSLHungUp();
 	
 	TCHAR telcode[24] = {0};
 	TCHAR atinit[64] = {0};
@@ -111,21 +111,11 @@ bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, C
 		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"CMWAP\",\"\",0,0<cr>");
 		wsprintf(atinit1 , L"AT+CGQREQ=1<cr>");	
 	}
-	else if(type == CMNET)
+	else
 	{
 	//	wsprintf(telcode , L"*99***1#");
 		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"CMNET\",\"\",0,0<cr>");
-		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,0,0,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");  //wangzhenxing20100804
-	}
- 	else if(type == CMUSER1)
-	{
-		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"%S\",\"\",0,0<cr>", apnName);
-		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,0,0,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");
-	}
-	else if(type == CMUSER2)
-	{
-		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"%S\",\"\",0,0<cr>", apnName);
-		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,0,0,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");
+		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,128,2048,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");	
 	}
 
 	TCHAR szTemp[256] = {0};
@@ -181,7 +171,7 @@ bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, C
 		&entry,		// buffer that contains entry information
 		sizeof(RASENTRY),// size, in bytes, of the lpRasEntry buffer
 		NULL,			// buffer that contains device-specific 
-		0);	
+									  0);	
 
 	gDialRas = TRUE;
 
@@ -526,8 +516,8 @@ void CNetStatusDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 3:
 		if(!m_bADSLISConnnect)
 		{
-			char *user = (char *)main->m_pSettingDlg->m_pSetting->dialUsername().c_str();
-			char *pwd =  (char *)main->m_pSettingDlg->m_pSetting->dialPassword().c_str();
+			char *user = (char *)main->m_pSettingDlg->m_pTempSetting->dialUsername().c_str();
+			char *pwd =  (char *)main->m_pSettingDlg->m_pTempSetting->dialPassword().c_str();
 		//	int ret = /*m_bADSLISConnnect =*/ ADSLDial(user, pwd, this, CMWAP);
 			KillTimer(1);
 			SetTimer(1, 1000, NULL);
@@ -541,7 +531,6 @@ void CNetStatusDlg::OnClickMJPG(WPARAM w, LPARAM l)
 // 			}
 		}
 		break;
-
 	case 2:
 		if(m_bADSLISConnnect)
 		{

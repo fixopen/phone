@@ -33,65 +33,6 @@ VOID WriteLog_(char *ptr, int size)
     }
 }
 
-VOID WriteMyLog_(char *ptr, int size)
-{
-	if (WRITE_LOG == 1)
-	{
-		FILE* fp = fopen("\\flashdrv\\mylog.txt", "a+");
-		if (fp != NULL) {
-			fwrite(ptr, sizeof(char), size, fp);
-			fwrite("\n", strlen("\n"), 1, fp);
-			fclose(fp);
-		}
-	}
-}
-
-VOID WriteMmsLog(char *ptr, int size)
-{
-	FILE* fp = fopen("\\flashdrv\\Mmslog.txt", "a+");
-    if (fp != NULL) {
-		fwrite(ptr, sizeof(char), size, fp);
-		fwrite("\n", strlen("\n"), 1, fp);
-		fclose(fp);
-    }
-}
-
-void ClearPlayerReg()
-{
-	HKEY   hkey = 0;
-	HKEY   hkey1 = 0;
-	HKEY   hkey2 = 0;
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\csplayer0",  0, 0, &hkey);
-	RegDeleteKey(hkey, L"PLAY");
-	RegFlushKey(HKEY_LOCAL_MACHINE);
-	RegCloseKey(hkey);
-	
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\csplayer1",  0, 0, &hkey1);
-	RegDeleteKey(hkey1, L"PLAY");
-	RegFlushKey(HKEY_LOCAL_MACHINE);
-	RegCloseKey(hkey1);
-	
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\csplayer2",  0, 0, &hkey2);
-	RegDeleteKey(hkey2, L"PLAY");
-	RegFlushKey(HKEY_LOCAL_MACHINE);
-	RegCloseKey(hkey2);
-	
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\Cyansoft",  0, 0, &hkey);
-	RegDeleteKey(hkey, L"CSplayer0");
-	RegFlushKey(HKEY_LOCAL_MACHINE);
-	RegCloseKey(hkey);
-	
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\Cyansoft",  0, 0, &hkey1);
-	RegDeleteKey(hkey1, L"CSplayer1");
-	RegFlushKey(HKEY_LOCAL_MACHINE);
-	RegCloseKey(hkey1);
-	
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\Cyansoft",  0, 0, &hkey2);
-	RegDeleteKey(hkey2, L"CSplayer2");
-	RegFlushKey(HKEY_LOCAL_MACHINE);
-	RegCloseKey(hkey2);
-}
-
 /*
 g_hHook   =   SetWindowsHookEx(WH_MOUSE,   MouseProc,   _Module.m_hInst,   GetCurrentThreadId());//安装HOOK   
 LRESULT CALLBACK MouseProc(   int   nCode,WPARAM   wParam,LPARAM   lParam)   
@@ -150,9 +91,6 @@ BOOL CMultimediaPhoneApp::InitInstance()
 // 	//	AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
 // 		return FALSE;
 // 	}
-	
-	//add by qi 0716 标准错误重定向
-	_wfreopen(L"stdErr.out", L"w", stderr);
 
 	WSADATA wsa;
 	//加载winsock动态链接库
@@ -187,11 +125,42 @@ BOOL CMultimediaPhoneApp::InitInstance()
 	SYSTEMTIME tm;
 	GetLocalTime(&tm);
 	sprintf(restartTimer, "start:%04d-%02d-%02d %02d:%02d:%02d\r\n", tm.wYear, tm.wMonth, tm.wDay, tm.wHour, tm.wMinute, tm.wSecond);
-	WriteMyLog_(restartTimer,strlen(restartTimer));
+	WriteLog(restartTimer);
 #endif
+
+	HKEY   hkey = 0;
+	HKEY   hkey1 = 0;
+	HKEY   hkey2 = 0;
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\csplayer0",  0, 0, &hkey);
+	RegDeleteKey(hkey, L"PLAY");
+	RegFlushKey(HKEY_LOCAL_MACHINE);
+	RegCloseKey(hkey);
 	
-	ClearPlayerReg();
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\csplayer1",  0, 0, &hkey1);
+	RegDeleteKey(hkey1, L"PLAY");
+	RegFlushKey(HKEY_LOCAL_MACHINE);
+	RegCloseKey(hkey1);
 	
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\csplayer2",  0, 0, &hkey2);
+	RegDeleteKey(hkey2, L"PLAY");
+	RegFlushKey(HKEY_LOCAL_MACHINE);
+	RegCloseKey(hkey2);
+	
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\Cyansoft",  0, 0, &hkey);
+	RegDeleteKey(hkey, L"CSplayer0");
+	RegFlushKey(HKEY_LOCAL_MACHINE);
+	RegCloseKey(hkey);
+	
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\Cyansoft",  0, 0, &hkey1);
+	RegDeleteKey(hkey1, L"CSplayer1");
+	RegFlushKey(HKEY_LOCAL_MACHINE);
+	RegCloseKey(hkey1);
+	
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,   L"SOFTWARE\\Cyansoft",  0, 0, &hkey2);
+	RegDeleteKey(hkey2, L"CSplayer2");
+	RegFlushKey(HKEY_LOCAL_MACHINE);
+	RegCloseKey(hkey2);
+
 	//copy new tcpmp
 	CopyFile(L"/flashdrv/tcpmp/common.dll", L"/windows/common.dll", FALSE);
 	CopyFile(L"/flashdrv/tcpmp/mplayer.exe", L"/windows/mplayer.exe", FALSE);
@@ -237,16 +206,7 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 	static int oldx = 0;
 	static int oldy = 0;
 	BOOL ret;
-	
-	// 每过5秒钟清理一次图片缓存。 
-	static DWORD lastTimeCheckMem = 0;
-	DWORD now = GetTickCount();
-	if (now - lastTimeCheckMem > 5000)
-	{
-	//	CImgCache::PerpareCache(0);
-		lastTimeCheckMem = now;
-	}
-	//
+
 	
 	static int gCount_penDwon = 0;
 	static int gCount_penUp = 0;
@@ -260,12 +220,18 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 		//	Dprintf("pen Error \n");
 			gCount_penUp = gCount_penDwon = 0;
 		}
-
+// 		if((gCount_penDwon - gCount_penUp) >= 2)
+// 		{
+// 			Dprintf("Miss up\n");
+// 		}
+// 		if(gCount_penDwon != (gCount_penUp+1))
+// 		{
+// 			gCount_penUp = gCount_penDwon; 
+// 			return TRUE;
+// 		}
+// 
+// 		Dprintf("Pen up %d\n", gCount_penUp++);
 		::SendMessage(m_pMainWnd->m_hWnd, WM_GEN_EVENT, 0, 0);
-
-		extern BOOL IsShowSreenSaveInput();
-		if(	IsShowSreenSaveInput())
-			return TRUE;
 
 		((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->n_bklightcount = 60;
 		if(((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_pMainDlg->m_mainVideoDlg_->IsWindowVisible())
@@ -294,9 +260,7 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 			{
 			//	Dprintf("WM_GEN_EVENT \r\n");
 				if(!((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->ReStoreBackLight())
-				{
 					::SendMessage(m_pMainWnd->m_hWnd, WM_GEN_EVENT, 1, 0);
-				}
 				else
 				{
 					return TRUE;
@@ -312,15 +276,6 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 		((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->CancelBalckLightSaveTimer();
 	//	Dprintf("Pen down %d (%d, %d)\n", gCount_penDwon++, pMsg->pt.x, pMsg->pt.y);
 		if(((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_nBackLightStatus == 0)  //为黑
-		{
-			return TRUE;
-		}
-		else
-		{
-			((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->KillTimer(0x121);
-		}
-		extern BOOL IsShowSreenSaveInput();
-		if(	IsShowSreenSaveInput())
 			return TRUE;
 		ret = CWinApp::PreTranslateMessage(pMsg);
 	}
@@ -335,15 +290,10 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 			((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->AddAudio(false);
 
 		}
-		CWinApp::PreTranslateMessage(pMsg);
 
 	}
-	else if (pMsg->message == WM_CHAR)
-	{	
+	else
 		ret = CWinApp::PreTranslateMessage(pMsg);
-	}
-	else 
-	ret = CWinApp::PreTranslateMessage(pMsg);
 	return ret;
 	
 // 	static int nU = 0;

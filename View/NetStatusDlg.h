@@ -9,7 +9,7 @@
 #include "../Control/CEDialog.h"
 #include "../control/MJPGStatic.h"
 
-enum DIALTYPE{CMWAP, CMNET,CMUSER1, CMUSER2};
+enum DIALTYPE{CMWAP, CMNET};
 /////////////////////////////////////////////////////////////////////////////
 // CNetStatusDlg dialog
 class CNetStatusDlg : public CCEDialog
@@ -17,8 +17,7 @@ class CNetStatusDlg : public CCEDialog
 public:
 	static bool ADSLInit();
 	//type = 0 cmwap 1 cmnet
-//	static bool ADSLDial(char *dialnumber, char *username, char *password, CWnd *pMsgWnd, DIALTYPE type);
-	static bool ADSLDial(char *dialnumber, char *username, char *password, CWnd *pMsgWnd, DIALTYPE type, char *apnName);
+	static bool ADSLDial(char *dialnumber, char *username, char *password, CWnd *pMsgWnd, DIALTYPE type);
 	static bool ADSLHungUp();
 	static int CheckADSLStatus(int &nStatusCode);
 

@@ -9,8 +9,6 @@
 #include "../Data/SkinStyle.h"
 #include "MainDlg.h"
 #include "../data/otadata.h"
-#include "../Util/SMSWarp.h"
-#include "../Util/HTTPTransport.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,13 +34,10 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/)
 
 	m_nSMSCount = 0;
 	m_nMMSCount = 0;
-	m_nLunarderCount = 0;
 	m_nUnSMS = 0;
 	m_nSMSLeaveCount = 0;
 	m_nRssCount = 0;
 	//}}AFX_DATA_INIT
-
-	m_isStopMusic = FALSE;
 }
 
 CMainDlg::~CMainDlg()
@@ -176,7 +171,7 @@ BOOL CMainDlg::OnInitDialog()
 //	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
 	// add by qi 2009_09_14
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\3g_桌面.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 
@@ -202,7 +197,6 @@ BOOL CMainDlg::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
-
 void CMainDlg::doReadWeather()			//天气预报
 {
 	int type = 0;
@@ -226,28 +220,38 @@ void CMainDlg::doReadSMS()
 	CSMSDlg *pWnd_ = m_p3GSMSDlg;
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
 	
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);    //暂停视频   重复发送了暂停信息
+
 	if(m_nMMSCount > 0)
-	{
-		StopVideo(FALSE, 0, 0);  //暂停视频
-		main->m_pSMSListDlg->m_pMmsReadDlg->SetMMSInfo(mmsFileresult[0]->id(),RECV_TYPE);
-		main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
-		main->m_pSMSListDlg->RefreshList(MMS_TYPE);
-	
-		CWnd *p = main->m_pSMSListDlg->m_pMmsReadDlg;
-		main->AddIcon(Allicon[1],p,false);
-		main->AddDesktopBtn();
+	{	
+		//  change by qi 2009_11_16
 		
+		main->m_pSMSListDlg->m_pMmsReadDlg->SetMMSInfo(mmsFileresult[0]->id(),RECV_TYPE);
+//		mmsFileresult[0]->isRead = TRUE;
+//		mmsFileresult[0]->Update();
+		if (!main->m_pSMSListDlg->m_pMmsReadDlg->IsWindowVisible())
+		{
+			main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
+			main->AddIcon(Allicon[1]);
+		}
+
+
 	}
 	else if(m_nSMSCount > 0)
 	{
-		StopVideo(FALSE, 0, 0);  //暂停视频
-		main->m_pSMSListDlg->m_pSmsReadDlg->SetSMSInfo(smsFileresult[0]->id(),RECV_TYPE);		
-		main->m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
-		main->m_pSMSListDlg->RefreshList(SMS_TYPE);
-
-		CWnd *p = main->m_pSMSListDlg->m_pSmsReadDlg;
-		main->AddIcon(Allicon[1],p,false);
-		main->AddDesktopBtn();
+		main->m_pSMSListDlg->m_pSmsReadDlg->SetSMSInfo(smsFileresult[0]->id(),RECV_TYPE);
+	//	smsFileresult[0]->state = Data::Message::sReaded;
+	//	smsFileresult[0]->Update();
+		if (!main->m_pSMSListDlg->m_pSmsReadDlg->IsWindowVisible())
+		{
+			main->m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
+			main->AddIcon(Allicon[1]);
+		}
+	}
+	else
+	{
+//		pWnd_->m_pSMSListDlg->initType(RECV_TYPE, SMS_TYPE);
+//		pWnd_->m_pSMSListDlg->ShowWindow(SW_SHOW);
 	}
 }
 
@@ -261,7 +265,10 @@ void CMainDlg::SetUpInfo(BOOL isDraw)
 	//add by qi 2009_09_15
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 
-	std::string filter ;
+	std::string filter = "isRead = 0";
+	rssFileresult = Data::MultimediaDownload::GetFromDatabase(filter, Data::dNull, 0, 1); 
+	m_nRssCount = rssFileresult.size();
+
 	filter = "[group] = " + Util::StringOp::FromInt(Data::Message::gReceive);
 	filter += " AND state = ";
 	filter += Util::StringOp::FromInt(Data::Message::sNoRead);
@@ -277,103 +284,129 @@ void CMainDlg::SetUpInfo(BOOL isDraw)
 
 	static int nFresh = 0;
 
+	CString sRss = ".\\adv\\mjpg\\k5\\common\\png\\我的订阅.bmp";
 	CString sTel = ".\\adv\\mjpg\\k5\\common\\png\\电话图标.bmp";
 	CString sTel1 = ".\\adv\\mjpg\\k5\\common\\png\\电话图标1.bmp";
-	if (main->m_bUnconditonSet)
-	{	
-		sTel  = L".\\adv\\mjpg\\k5\\common\\电话\\转移状态的按钮.bmp"; //
-		sTel1 = L".\\adv\\mjpg\\k5\\common\\电话\\转移状态的按钮.bmp"; //
-	}
 
 	CString sSms = ".\\adv\\mjpg\\k5\\common\\png\\收件箱图标.bmp";
 	CString sSms1 = ".\\adv\\mjpg\\k5\\common\\png\\收件箱图标1.bmp";
 
-	CString sfirewall = ".\\adv\\mjpg\\k5\\common\\png\\防火墙图标.bmp";
-	CString sfirewall1 = ".\\adv\\mjpg\\k5\\common\\png\\防火墙图标1.bmp";
-	
-	CString slunarder = ".\\adv\\mjpg\\k5\\common\\png\\日程提醒图标.bmp";
-	CString slunarder1 = ".\\adv\\mjpg\\k5\\common\\png\\日程提醒图标1.bmp";
-
-	
 	if(nFresh++ % 2)
 	{
+		if(m_nRssCount > 0)
+			sRss = "";
 		if(m_nSMSCount > 0 || m_nMMSCount > 0)
 			sSms1 = "";
 		if(m_nUnTel)
 			sTel1 = "";
-		if (main->m_pSettingDlg->m_pSetting->isFirewall())
-		{
-			sfirewall1 = "";
-		}
-
-		if(m_bIsAlarm)
-		{
-			slunarder1 = "" ;
-		}
 	}
 	
 	static CString gsTel = "";
 	static CString gsSMS = "";
 	static CString gsFireWall = "";
-	static CString gslunarder = "";
-
+	
 	if(gsTel != sTel1)
 	{	
+		//add by qi 2009_09_16
 		main->m_MJPGList.SetUnitBitmap(4,sTel1,"",isDraw);
-		main->m_MJPGList.SetUnitIsDisable(4,false);
 		gsTel = sTel1;
 	}
 
 	if(gsSMS != sSms1)
 	{			
+		//add by qi 2009_09_16
 		main->m_MJPGList.SetUnitBitmap(5, sSms1, "", isDraw);
-		main->m_MJPGList.SetUnitIsDisable(5,false);
 		gsSMS = sSms1;
 	}
-	
-	if (gsFireWall != sfirewall1 )
-	{
-		main->m_MJPGList.SetUnitBitmap(6, sfirewall1, "", isDraw);
-		main->m_MJPGList.SetUnitIsDisable(6,false);
-		gsFireWall = sfirewall1;
-	}
-	
-	if (gslunarder != slunarder1 )
-	{
-		main->m_MJPGList.SetUnitBitmap(7, slunarder1, "", isDraw);
-		main->m_MJPGList.SetUnitIsDisable(7,false);
-		gslunarder = slunarder1;
-	}
 
-	if ( 0 == m_nMMSCount && 0 == m_nSMSCount)//没有信息，状态为白色
-	{
-		main->m_MJPGList.SetUnitBitmap(5, sSms,L"", isDraw);
-		main->m_MJPGList.SetUnitIsDisable(5,true);
-	}
-
-	if ( 0 == m_nUnTel)//没有电话
-	{	
-		main->m_MJPGList.SetUnitBitmap(4,sTel,L"",isDraw);
-		main->m_MJPGList.SetUnitIsDisable(4,true);
-
-	}
-	
-	if (!main->m_pSettingDlg->m_pSetting->isFirewall())//没设置防火墙
-	{
-		main->m_MJPGList.SetUnitBitmap(6,sfirewall,L"",isDraw);	
-		main->m_MJPGList.SetUnitIsDisable(6,true);
-	}
-
-	if (!m_bIsAlarm)//闹铃
-	{
-		main->m_MJPGList.SetUnitBitmap(7,slunarder,L"",isDraw);	
-		main->m_MJPGList.SetUnitIsDisable(7,true);
-	}
-	
 }
 
 void CMainDlg::SetWeather()
 {
+	SYSTEMTIME curtime;
+	GetLocalTime(&curtime);
+	CTime time = CTime(curtime.wYear, curtime.wMonth, curtime.wDay, 0, 0, 0);
+
+	std::vector<boost::shared_ptr<Data::RegisterReply> > registReplyresult = Data::RegisterReply::GetFromDatabase(""); 
+	std::string area = "南京";
+	if(registReplyresult.size() > 0)
+	{
+		area = registReplyresult[0]->areaCode.c_str();
+	}
+
+	std::string filter = "area = '";
+	filter += area;
+	filter += "' AND datetime = '";
+	filter += Util::StringOp::FromTimestamp(time);
+	filter += "'";
+	std::vector<boost::shared_ptr<Data::Weather> > weaherResult = Data::Weather::GetFromDatabase(filter); 
+	CString s = area.c_str();
+	CString s1 = "今天\r\n";
+	if(weaherResult.size() > 0)
+	{
+		std::string fil = "code = " +  Util::StringOp::FromInt(weaherResult[0]->weatherInfos.code);
+		std::vector<boost::shared_ptr<Data::WeatherPicture> > pWeatherPicture = Data::WeatherPicture::GetFromDatabase(fil);
+		if(pWeatherPicture.size() > 0)
+		{
+			m_MJPGList.SetUnitBitmap(200, (char *)pWeatherPicture[0]->filename.c_str(), "", TRUE);
+		}
+		s += weaherResult[0]->weatherInfos.wind.c_str();
+		s += "\r\n";
+		s += weaherResult[0]->weatherInfos.description.c_str();
+		s += "\r\n";
+		s += weaherResult[0]->weatherInfos.temperature.c_str();
+
+		s1 += weaherResult[0]->weatherInfos.temperature.c_str();
+		s1 += "\r\n";
+		s1 += weaherResult[0]->weatherInfos.description.c_str();
+	}
+	else
+	{
+		s += "\r\n天气\r\n无定制";
+		s1 += "天气\r\n无定制";
+	}
+	m_MJPGList.SetUnitText(201, s, TRUE);
+	m_MJPGList.SetUnitText(202, s1, TRUE);
+
+	time += CTimeSpan(1, 0, 0, 0);
+	filter = "area = '";
+	filter += area;
+	filter += "' AND datetime = '";
+	filter += Util::StringOp::FromTimestamp(time);
+	filter += "'";
+	s1 = "明天\r\n";
+	weaherResult = Data::Weather::GetFromDatabase(filter); 
+	if(weaherResult.size() > 0)
+	{
+		s1 += weaherResult[0]->weatherInfos.temperature.c_str();
+		s1 += "\r\n";
+		s1 += weaherResult[0]->weatherInfos.description.c_str();
+	}
+	else
+	{
+		s1 += "天气\r\n无定制";
+	}
+	m_MJPGList.SetUnitText(203, s1, TRUE);
+
+	time += CTimeSpan(1, 0, 0, 0);
+	filter = "area = '";
+	filter += area;
+	filter += "' AND datetime = '";
+	filter += Util::StringOp::FromTimestamp(time);
+	filter += "'";
+	s1 = "后天\r\n";
+    weaherResult = Data::Weather::GetFromDatabase(filter); 
+	if(weaherResult.size() > 0)
+	{
+		s1 += weaherResult[0]->weatherInfos.temperature.c_str();
+		s1 += "\r\n";
+		s1 += weaherResult[0]->weatherInfos.description.c_str();
+	}
+	else
+	{
+		s1 += "天气\r\n无定制";
+	}
+	m_MJPGList.SetUnitText(204, s1, TRUE);
 
 }
 
@@ -383,14 +416,13 @@ BOOL CMainDlg::ShowTodayAlarm()
 	GetLocalTime(&curtime);
 	CTime time = CTime(curtime.wYear, curtime.wMonth, curtime.wDay, 0, 0, 0);
 	
-	//std::string filter = "startTime BETWEEN '";
-	std::string filter = "startTime <= '";
+	std::string filter = "startTime BETWEEN '";
 	char buff[32];
 	memset(buff, 0, 32);
-	//sprintf(buff, "%04d%02d%02d000000", time.GetYear(), time.GetMonth(),time.GetDay());//, dateFrom.GetHour(), dateFrom.GetMinute(), dateFrom.GetSecond());
-	//filter += buff;
-	//filter += "' AND '";
-	//memset(buff, 0, 32);
+	sprintf(buff, "%04d%02d%02d000000", time.GetYear(), time.GetMonth(),time.GetDay());//, dateFrom.GetHour(), dateFrom.GetMinute(), dateFrom.GetSecond());
+	filter += buff;
+	filter += "' AND '";
+	memset(buff, 0, 32);
 	sprintf(buff, "%04d%02d%02d235959", time.GetYear(), time.GetMonth(),time.GetDay());//, dateTo.GetHour(), dateTo.GetMinute(), dateTo.GetSecond());
 	filter += buff;
 	filter += "'";
@@ -408,14 +440,14 @@ BOOL CMainDlg::ShowTodayAlarm()
 				std::string content = m_result[i]->what();
 				std::string ring = "/flashdrv/my_ring/"; 
 				ring += m_result[i]->ring();
-				CString content_ = "";
+				CString content_ = "内容: ";
 				content_ += content.c_str();
 				CTime tm = m_result[i]->startTime();
 				CString sTime;
-				sTime.Format(_T("%04d-%02d-%02d %02d:%02d:%02d"), tm.GetYear(), tm.GetMonth(), tm.GetDay(), tm.GetHour(), tm.GetMinute(), tm.GetSecond());
+				sTime.Format(_T("时间: %04d-%02d-%02d %02d:%02d:%02d"), tm.GetYear(), tm.GetMonth(), tm.GetDay(), tm.GetHour(), tm.GetMinute(), tm.GetSecond());
 				m_result[i]->tipsType(Data::ttRead);
 				m_result[i]->Update();
-				((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_AlarmShowDlg->SetTxt(m_result[i]->id(), sTime, content_, "", FALSE);
+				((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_AlarmShowDlg->SetTxt(m_result[i]->id(), sTime, "标题: ", content_, "", FALSE);
 				((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_AlarmShowDlg->ShowWindow_(SW_SHOW);
 				return TRUE;
 			}
@@ -433,14 +465,13 @@ BOOL CMainDlg::FindTodayAlarm()
 	GetLocalTime(&curtime);
 	CTime time(curtime.wYear, curtime.wMonth, curtime.wDay, 0, 0, 0);
 	
-	//std::string filter = "startTime BETWEEN '";
-	std::string filter = "startTime <= '";
+	std::string filter = "startTime BETWEEN '";
 	char buff[32];
 	memset(buff, 0, 32);
-	//sprintf(buff, "%04d%02d%02d000000", time.GetYear(), time.GetMonth(),time.GetDay());//, dateFrom.GetHour(), dateFrom.GetMinute(), dateFrom.GetSecond());
-	//filter += buff;
-	//filter += "' AND '";
-	//memset(buff, 0, 32);
+	sprintf(buff, "%04d%02d%02d000000", time.GetYear(), time.GetMonth(),time.GetDay());//, dateFrom.GetHour(), dateFrom.GetMinute(), dateFrom.GetSecond());
+	filter += buff;
+	filter += "' AND '";
+	memset(buff, 0, 32);
 	sprintf(buff, "%04d%02d%02d235959", time.GetYear(), time.GetMonth(),time.GetDay());//, dateTo.GetHour(), dateTo.GetMinute(), dateTo.GetSecond());
 	filter += buff;
 	filter += "'";
@@ -483,8 +514,6 @@ void CMainDlg::SetStatusAll(BOOL flag)
 
 void CMainDlg::HideAllWindow()
 {
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-
 	m_pWebDialog->ShowWindow(SW_HIDE);	
 	m_mainmenuDlg_->ShowWindow(SW_HIDE);	
 
@@ -497,7 +526,7 @@ void CMainDlg::HideAllWindow()
 	m_mainCalucaterDlg_->ShowWindow(SW_HIDE);	
 	m_firewalDlg_->ShowWindow(SW_HIDE);	
 
-	m_mainLunarderDlg_->HideWindow();
+	m_mainLunarderDlg_->ShowWindow(SW_HIDE);	
 		
 	m_p3GHomePicDlg->ShowWindow(SW_HIDE);	
 	m_p3GHomeJoyDlg->ShowWindow(SW_HIDE);
@@ -603,7 +632,7 @@ int CMainDlg::SetPhotoList()
 		//以下是循环使用FindNextFile函数来查找文件
 		while (FindNextFile(hFind, &FindFileData) != 0) 
 		{
-			//Dprintf ("Next file name is %s\n", FindFileData.cFileName);
+			//			Dprintf ("Next file name is %s\n", FindFileData.cFileName);
 			i = wcstombs( filename, FindFileData.cFileName, /*wcslen(FindFileData.cFileName)*/128);
 			filename[i] = '\0';
 			if(strstr(filename, ".bmp")||strstr(filename, ".BMP") || strstr(filename, ".jpg")||strstr(filename, ".JPG"))
@@ -625,7 +654,7 @@ int CMainDlg::SetPhotoList()
 		} 
 		else 
 		{
-			//Dprintf ("FindNextFile error. Error is %u\n", dwError);
+			//			Dprintf ("FindNextFile error. Error is %u\n", dwError);
 			return 0;
 		}
 	}
@@ -654,16 +683,16 @@ void CMainDlg::OnTimer(UINT nIDEvent)
 	
 	if(nIDEvent == 1)
 	{
-	//	SetDateTime(TRUE);
-	//	SetUpInfo(TRUE);
+		SetDateTime(TRUE);
+		SetUpInfo(TRUE);
 	}
 	else if(nIDEvent == 2)//右边的广告区
 	{
 
 	}
+
 	
 	CDialog::OnTimer(nIDEvent);
-
 }
 
 void CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
@@ -674,6 +703,7 @@ void CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 		{
 			if(w != 0xFFFFFFFF)
 				((CWnd *)w)->ShowWindow(SW_HIDE);
+			m_mainmenuDlg_->SetVideo();
 			if((CWnd *)w != (CWnd *)m_mainScreenSaveDlg_ || (m_currentWnd == m_mainmenuDlg_ && IsWindowVisible()))
 			{
 				if((CWnd *)w == (CWnd *)m_mainScreenSaveDlg_)
@@ -711,11 +741,15 @@ void CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 			if((CWnd *)w != (CWnd *)m_mainScreenSaveDlg_ && (w != 6))    //屏保不用刷新，下边的状态条
 				SetStatusAll(FALSE);
 		}
-
 	}
 	else if(l == SW_SHOW)
 	{
-
+		/*
+		if(m_currentWnd == m_mainVideoDlg_)
+			m_mainVideoDlg_->OnExit_();
+		else if(m_currentWnd != m_mainScreenSaveDlg_ )
+			m_currentWnd->ShowWindow(SW_HIDE);
+		*/
 		m_mainmenuDlg_->ShowWindow_(SW_HIDE);
 		if(w == 0)	//显示桌面影院
 		{
@@ -758,7 +792,6 @@ void CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 			//	m_pWebDialog->ShowWindow(SW_SHOW);
 			//	m_mainScreenSaveDlg_->ShowWindow(SW_SHOW);
 			//	StartWeb();
-
 		}
 		else if(w == 6) //显示屏保
 		{
@@ -821,78 +854,74 @@ void CMainDlg::SetTimer_(BOOL flag)
 		KillTimer(1);
 		KillTimer(2);
 	}
-
 }
 void CMainDlg::OnPlayVideo(WPARAM w, LPARAM l)
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	
-	if(w == 0  )//暂停视频
 	{
-		//视频暂停
-		if(main->playervideo_->isPlaying_)
-			m_mainVideoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
-		if(main->playerimage_->isPlaying_)
-			m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
-		if(m_isStopMusic)
+
+		if(w == 0  )//暂停视频
 		{
-			if(m_mainMp3Dlg_->m_IsPlay == 1)
-			{
-				m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 0);
-			}
-			if(main->m_pSMSListDlg->m_pMmsReadDlg->m_isReadMid)
-			{
-				main->m_pMMSDlg->StopAudio();
-			}
-		}
-	}
-	else if(w ==  1)//播放视频
-	{
-		{
-			if(main->playeraudio_->isPlaying_ || m_mainMp3Dlg_->m_isMidiMusic)
-			{
-				m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
-			}
-			if(m_mainVideoDlg_->IsWindowVisible())
-			{
-				m_mainVideoDlg_->SendMessage(WM_OUTEVENT, 0, 1);						
-			}
+			//视频暂停
+			if(main->playervideo_->isPlaying_)
+				m_mainVideoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+			if(main->playerimage_->isPlaying_)
+				m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
 			if(m_mainPhotoDlg_->IsWindowVisible())
+				m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+		}
+		else if(w ==  1)//播放视频
+		{
 			{
-				m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);						
+				if(m_mainMp3Dlg_->IsWindowVisible())
+				{
+					//main->playeraudio_->InitPlayer();
+				}
+				else if(m_mainVideoDlg_->IsWindowVisible())
+				{
+					m_mainVideoDlg_->SendMessage(WM_OUTEVENT, 0, 1);						
+				}
+				else if(m_mainPhotoDlg_->IsWindowVisible())
+				{
+					m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);						
+				}
 			}
 		}
-	}
-	else if(w == 2)	//全屏播放
-	{
-		if(main->playervideo_->isPlaying_)
+		else if(w == 2)	//全屏播放
 		{
-			main->playervideo_->SetAllScreenPlayer(TRUE);
+			if(main->playervideo_->isPlaying_)
+			{
+				main->playervideo_->SetAllScreenPlayer(TRUE);
+			}
+			if(main->playerimage_->isPlaying_)
+				main->playerimage_->SetAllScreenPlayer(TRUE);
 		}
-		if(main->playerimage_->isPlaying_)
-			main->playerimage_->SetAllScreenPlayer(TRUE);
-	}
-	else if(w == 3)	//退出全屏
-	{
-		if(m_mainScreenSaveDlg_->playerDlg_->player_->owner_ == m_mainScreenSaveDlg_->playerDlg_ && m_mainScreenSaveDlg_->playerDlg_->player_->isPlaying_)
-			m_mainScreenSaveDlg_->SendMessage(WM_OUTEVENT, 0, 0);
-		if(main->playervideo_->isPlaying_ && m_mainVideoDlg_->playerDlg_->player_->owner_)
+		else if(w == 3)	//退出全屏
 		{
-			m_mainVideoDlg_->SetAllScreenPlayer(FALSE);
+			if(m_mainScreenSaveDlg_->playerDlg_->player_->owner_ == m_mainScreenSaveDlg_->playerDlg_ && m_mainScreenSaveDlg_->playerDlg_->player_->isPlaying_)
+				m_mainScreenSaveDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+			if(main->playervideo_->isPlaying_)
+			{
+				main->playervideo_->SetAllScreenPlayer(FALSE);
+			}
+			if(m_mainPhotoDlg_->playerDlg_->player_->owner_ == m_mainPhotoDlg_->playerDlg_  && main->playerimage_->isPlaying_)
+				m_mainPhotoDlg_->SetAllScreenPlayer(FALSE);
 		}
-		if(m_mainPhotoDlg_->playerDlg_->player_->owner_ == m_mainPhotoDlg_->playerDlg_  && main->playerimage_->isPlaying_)
-			m_mainPhotoDlg_->SetAllScreenPlayer(FALSE);
+		else if(w == 4 ) //文件开始播放
+		{
+			//有问题
+			/*
+			if(m_mainVideoDlg_->IsWindowVisible() )//|| m_mainVideoDlg_->IsWindowVisible())	//视频
+			{
+				m_mainVideoDlg_->StartOpenNewFile();
+			}
+			else if(m_mainMp3Dlg_->IsWindowVisible())
+			{
+				m_mainMp3Dlg_->StartOpenNewFile();
+			}
+			*/
+		}
 	}
-	else if(w == 4 ) //文件开始播放
-	{
-
-	}
-}
-
-void CMainDlg::StopVideo(BOOL isStopMusic, WPARAM w, LPARAM l)
-{
-	m_isStopMusic = isStopMusic;
-	OnPlayVideo(w, l);
 }
 
 void CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
@@ -924,12 +953,42 @@ void CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
 
 void CMainDlg::OnShowNoteStatic()
 {
-
+	/*
+	SYSTEMTIME curtime;
+	GetLocalTime(&curtime);
+	CString s;
+	if(!m_mainLunarderDlg_->m_lunarder.IsHaveNote(curtime.wYear, curtime.wMonth, curtime.wDay, s))
+	{
+		s = Data::LanguageResource::Get(Data::RI_MAIN_NONOTE).c_str(); 
+	}
+	m_TodayNoteStatic.SetWindowText(s);
+	*/
 }
 
 void CMainDlg::OnShowCallWallStatic()
 {
-
+	/*
+	CString s;
+	int type = m_firewalDlg_->GetFirewallType();
+	if(type == -1)
+	{
+		s = Data::LanguageResource::Get(Data::RI_MAIN_PROTECTEDWALL_CLOSE_STC).c_str();
+	}
+	else
+	{
+		char txt[128];
+		const char *strtemp[] = {\
+		Data::LanguageResource::Get(Data::RI_FIREWALL_BLACKLIST).c_str(),\
+		Data::LanguageResource::Get(Data::RI_FIREWALL_CONTACT).c_str(),\
+		Data::LanguageResource::Get(Data::RI_FIREWALL_VIP).c_str(),\
+		Data::LanguageResource::Get(Data::RI_FIREWALL_ALL).c_str()\
+		};
+		//sprintf(txt, "%s(%s)", Data::LanguageResource::Get(Data::RI_MAIN_PROTECTEDWALL_OPEN_STC).c_str(), strtemp[type]);
+		sprintf(txt, "%s", strtemp[type]);
+		s = txt;
+	}
+	m_CallWallStatic.SetWindowText(s);
+	*/
 }
 
 void CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
@@ -1000,7 +1059,6 @@ void CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
 LRESULT CMainDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	switch (message)
 	{
 	case WM_TELNOTIFY:
@@ -1010,16 +1068,6 @@ LRESULT CMainDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_FIRENOTIFY:
 		OnShowCallWallStatic();
-		break;
-	case CHECK_SUPPERPASSWORD:
-		if(1 == wParam) //正确输入管理员密码
-		{
-			main->m_pSettingDlg->m_bLogin = TRUE;
-			main->m_pSettingDlg->ShowWindow_(SW_SHOW);
-			main->AddDesktopBtn();
-			CWnd *p = main->m_pSettingDlg;
-			main->AddIcon(Allicon[9],p,false);//添加图标
-		}
 		break;
 	}
 
@@ -1092,53 +1140,48 @@ void CMainDlg::SetMainMenu()
 	}
 	else if(m_currentWnd == m_mainCalucaterDlg_)
 		m_mainCalucaterDlg_->OnExit_();
-
-
+//	else if(m_currentWnd == m_pWebDialog)
+//	{
+//		m_pWebDialog->OnButtonClose();
+//	}
+	else if(m_MJPGList.IsWindowVisible())
+	{
+		//	CString s = ".\\adv\\mjpg\\k1\\中文\\桌面.xml";
+		//	m_MJPGList.SetCurrentLinkFile(s);
+		//	SetDateTime(FALSE);
+		//	Invalidate();
+		//m_MJPGList.DrawMJPGPage_HDC(s);
+	}
 }
 
 void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	CWnd *p ;
-	CString icon = L"";
-
-	SetRectLine(w);
-
+	CString icon;
 	switch (w)
 	{
 	case 1:	//电话
-			if(main->m_phoneLine[main->m_nline].pFSM->getCurrentState() > CMultimediaPhoneDlg::p3gsKey ||
-				main->m_phoneLine[2].pFSM->getCurrentState() != CMultimediaPhoneDlg::pstnsHangOff)
+		//	if(main->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff)
+			if(main->m_phoneLine[0].pFSM->getCurrentState() != CMultimediaPhoneDlg::p3gsHangOff)
 			{
 				main->m_pTelephoneDlg->ShowWindow_(TRUE);
-				main->m_MJPGList.SetUnitIsShow(15,false,true);
-				main->m_MJPGList.Invalidate();
-			
 				icon = Allicon[0];
-				p = main->m_pTelephoneDlg;				
-				
 			}
 			else
 			{	
-							
-				//add 20100419 
-				if (!(main->OpenAllPort()))
-				{
-					Dprintf("NoOpenPort\r\n");
-					return ;
-				}
-				StopVideo(TRUE, 0, 0);
-				::Sleep(50);
-				//add 20100114
-				extern void GNotifyDial(BOOL isDial);
-				GNotifyDial(1);
-								
+		
+		//		extern void GNotifyDial(BOOL isDial);
+		//		GNotifyDial(1);
+
+				void GIsOpenMix(BOOL isOn);
+				GIsOpenMix(1);
+				
 				main->phone_->Free(Telephone::TelephoneWarp::FreeOn);
 
 				extern void GMute(BOOL isOn);
 				GMute(FALSE);//打开speeker
 				
-			//	if(main->m_nTELRigster >= TELRIGSTER_TD)
+				if(main->m_nTELRigster >= TELRIGSTER_TD)
 				Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
 
 				main->m_pTelphoneDialDlg->m_bSoftware = true ;
@@ -1149,96 +1192,62 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 			break;
 
 	case 2:	//信息
-	
-			p = m_p3GSMSDlg;
-			icon = Allicon[1];
-			m_p3GSMSDlg->Clear();
 			m_p3GSMSDlg->ShowWindow_(SW_SHOW);
+			icon = Allicon[1];
 			break;
 
 	case 3:	//通讯录
-	
-			p = main->m_pContactDlg;
-			icon = Allicon[2];			
 			main->m_pContactDlg->ShowRightBtn(true);
 			main->m_pContactDlg->ShowWindow_();
+			icon = Allicon[2];
 			break;
 
 	case 4:	//通话记录
-		
-			p = main->m_pContactInfoDlg;
-			icon = Allicon[3];
-			
 			main->m_pContactInfoDlg->ShowRightBtn(true);
 			main->m_pContactInfoDlg->ShowWindow_();
+			icon = Allicon[3];
 			break;
 
 	case 5:	//音乐
-			{
-				HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
-				if(IsWindow(hWnd) || m_mainMp3Dlg_->m_isMidiMusic)
-				{
-					m_mainMp3Dlg_->ShowArrayInList(m_mainMp3Dlg_->m_ShowList);
-					m_mainmenuDlg_->OnMp3Btn();
-					m_mainMp3Dlg_->playerDlg_->ShowWindow(SW_SHOW);
-					p = m_mainMp3Dlg_->playerDlg_;
-				}
-				else
-				{
-					m_p3GHomeJoyDlg->ShowWindow_(SW_SHOW);
-					p = m_p3GHomeJoyDlg;
-				}
-				icon = Allicon[4];
-				break;
-			}
+			m_p3GHomeJoyDlg->ShowWindow_(SW_SHOW);
+			icon = Allicon[4];
+			break;
 
 	case 6:	//家庭影院								
-			m_p3GHomeMovieDlg->ShowWindow_(SW_SHOW);
-			p = m_p3GHomeMovieDlg;
+			m_p3GHomeMovieDlg->ShowWindow_(SW_SHOW);			
 			icon = Allicon[5];
 			break;
 
 	case 7:	//家庭相册
 			m_p3GHomePicDlg->ShowWindow_(SW_SHOW);
-			p = m_p3GHomePicDlg;
 			icon = Allicon[6];
 			break;
 
-	case 8:	//日程提醒
-			m_mainLunarderDlg_->ShowWindow_(SW_SHOW);
-			p = m_mainLunarderDlg_;
+	case 8:	//计算器
+			m_mainmenuDlg_->OnCalculBtn();	//发消息
 			icon = Allicon[7];
 			break;
 
-	case 9:	//其他功能
-			m_mainmenuDlg_->OnCalculBtn();	//发消息
-			p = m_mainCalucaterDlg_;
+	case 9:	//日程提醒
+			//	m_mainmenuDlg_->OnLunarderBtn();
+			m_mainLunarderDlg_->ShowWindow_(SW_SHOW);
 			icon = Allicon[8];
 			break;
 
 	case 10: //设置
-		{
-			BOOL flag1 = main->m_pSettingDlg->m_pSetting->isAdmin();
-			if(flag1 && !main->m_pSettingDlg->m_bLogin)
-			{
-				main->m_pPasswordDlg->SettingType(CHECK_SUPPERPASSWORD);
-				std::string strTemp = main->m_pSettingDlg->m_pSetting->adminPassword();
-				main->m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
-				main->m_pPasswordDlg->SetHWnd(this->m_hWnd);
-				main->m_pPasswordDlg->ShowWindow_(SW_SHOW);
-			}
-			else
-			{
-				main->m_pSettingDlg->ShowWindow_(SW_SHOW);
-				p = main->m_pSettingDlg;
-				icon = Allicon[9];
-			}
-		}	
-		break;
+			main->m_pSettingDlg->ShowWindow_(SW_SHOW);
+			icon = Allicon[9];		
+			break;
 
 	case 11: 
 			{
 				m_mainmenuDlg_->OnCalculBtn();
+			}
+			break;
+
+	case 12:
+			{
+			main->m_pSettingDlg->ShowWindow(SW_SHOW);
 			}
 			break;
 
@@ -1249,7 +1258,7 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 	if (!icon.IsEmpty())
 	{
 		main->AddDesktopBtn();
-		main->AddIcon(icon,p,false);//添加图标	
+		main->AddIcon(icon,false);//添加图标	
 	}
 
 	m_MJPGList.m_nIndexSelectUnit = -1;
@@ -1363,21 +1372,5 @@ void  CMainDlg::StartWeb()
 	}
 	CloseHandle(processInfo.hThread);
 	CloseHandle(processInfo.hProcess);
-	*/
-}
-
-void CMainDlg::SetRectLine(int unitNo)
-{
-	/*
-	m_MJPGList.m_SetUnitNo = unitNo;
-	HWND hwnd = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->GetIconCurrentWnd()->m_hWnd;
-	if(hwnd)
-	{
-		HWND hMjpg = ::GetDlgItem(hwnd, 10086);
-		if(hMjpg)
-		{
-			::SendMessage(hMjpg, WM_KEYDOWN, 168, 2);	
-		}
-	}
 	*/
 }

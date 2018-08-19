@@ -66,13 +66,16 @@ void CPlayerDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		if(nChar == 'U')			//page up
 		{
-			//StopTimer();
-			//KillTimer(0x1003);
-			//SetTimer(0x1003, 60*1000, NULL);
+			StopTimer();
+			KillTimer(0x1003);
+			SetTimer(0x10003, 60*1000, NULL);
 			player_->Up();	
 		}
 		else if(nChar == 'D')		//page down
 		{
+			StopTimer();
+			KillTimer(0x1003);
+			SetTimer(0x1003, 60*1000, NULL);
 			player_->Down();
 		}
 	}
@@ -86,23 +89,15 @@ void CPlayerDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	HWND hWnd;
 	CDialog::OnLButtonDown(nFlags, point);
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if(!main->m_pMainDlg->m_mainScreenSaveDlg_->m_isScreenPlay)
+	if(player_->mt_ == mtImage)
 	{
-		if(player_->mt_ == mtImage)
-		{
-			ReSetWindowsRect(CRect(110, 88, 552, 385));
-			player_->SetAllScreenPlayer(FALSE);
-		}
-		if (player_->mt_ == mtVideo)
-		{
-			CRect rt = CRect(36, 109, 474, 377);
-			MoveWindow(&rt);
-			player_->SetAllScreenPlayer(FALSE);
-		}
+		ReSetWindowsRect(CRect(110, 88, 552, 385));
+		player_->SetAllScreenPlayer(FALSE);
 	}
-	else
+	if (player_->mt_ == mtVideo)
 	{
-		main->m_pMainDlg->m_mainScreenSaveDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+		ReSetWindowsRect(CRect(36, 109, 474, 377));
+		player_->SetAllScreenPlayer(FALSE);
 	}
 }
 
@@ -356,15 +351,19 @@ std::vector<CString> CPlayerDlg::SetImageList_(char *DIR)
 
 void CPlayerDlg::OnPaint() 
 {
+//	CPaintDC dc(this); // device context for painting
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+	if(player_->mt_ == mtImage)
+	{
+		player_->PlayerImage();
+	}
+
 	CDialog::OnPaint();
-	CRect rt;
-	GetWindowRect(&rt);
-	HDC hdc = ::GetDC(m_hWnd);
-	CBrush bBr = RGB(0, 0, 0); 
-	rt = CRect(0, 0, rt.Width(), rt.Height());
-	::FillRect(hdc, rt, (HBRUSH)bBr.m_hObject);
-	::ReleaseDC(m_hWnd, hdc);
-	// TODO: Add your message handler code here
+
+
+ // TODO: Add your message handler code here
+	
+	// Do not call CDialog::OnPaint() for painting messages
 }
 
 void CPlayerDlg::OnTimer(UINT nIDEvent) 
@@ -381,11 +380,11 @@ void CPlayerDlg::OnTimer(UINT nIDEvent)
 			main->m_pMainDlg->m_mainPhotoDlg_->SetCurrentFile();
 		}
 	}
-//	else if(nIDEvent == 0x1003 && IsWindowVisible())
-//	{
-//		KillTimer(0x1003);
-//		SetResumeTimer();
-//	}
+	else if(nIDEvent == 0x1003 && IsWindowVisible())
+	{
+		KillTimer(0x1003);
+		SetResumeTimer();
+	}
 	
 	CDialog::OnTimer(nIDEvent);
 }

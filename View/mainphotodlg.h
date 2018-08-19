@@ -35,7 +35,6 @@ public:
 	unsigned int m_selectFileCount;   //被选中文件总数
 	unsigned int m_selectCurrentFile;   //当前显示的文件
 	std::vector<CString> m_PhotoList;
-	std::vector<CString> m_ScreenPhotoList;
 	std::vector<boost::shared_ptr<Data::MultimediaDownload> > m_pMediaFileresult;// = Data::MenuManager::GetFromDatabase(""); 
 
 	int m_nCountPhoto;
@@ -59,8 +58,7 @@ public:
 // Construction
 public:
 	CMainPhotoDlg(CWnd* pParent = NULL);   // standard constructor
-	
-	afx_msg void OnExit();
+
 // Dialog Data
 	//{{AFX_DATA(CMainPhotoDlg)
 	enum { IDD = IDD_DIALOG_CACULATER };
@@ -81,6 +79,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CMainPhotoDlg)
 	virtual BOOL OnInitDialog();
+	afx_msg void OnExit();
 	afx_msg void OnPre();
 	afx_msg void OnBack();
 	afx_msg void OnPlayerAll();

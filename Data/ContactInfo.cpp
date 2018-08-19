@@ -26,11 +26,6 @@ namespace Data
     //{
     //    contact_ = contact;
     //}
-	
-	boost::shared_ptr<ContactInfo> ContactInfo::GetDataById(int id)
-	{
-		return DataAccess<ContactInfo>::GetDataById(id, modifyFieldByDB_);
-	}
 
 	boost::shared_ptr<Contact> const ContactInfo::GetContact(void)
 	{

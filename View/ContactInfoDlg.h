@@ -82,6 +82,7 @@ private:
 	std::string m_sListFilter;
 	std::string m_sListSearchFilter;
 	std::vector<boost::shared_ptr<Data::ContactInfo> > m_vCurrentResult;
+	std::string GetName(std::string number);
  	void DeleteSelectedItem(void);
 
 public:
@@ -108,15 +109,13 @@ private:
 	bool							m_bSearch;//是否查找
 	int								m_nType;//
 	std::string						m_sAddtion;//查询条件
-	int								m_operateType;
-
+	
 public:
 	void SetUpBtn(int ID);//设置上面一排按钮的状态
 	void PageSwitch(Action action);//下翻一页
 	void ClearCurrentPage();//清空当前页
 	void ClickedOneItem(int unitID,int item);//这行被点击之后，重新设置这行的信息
 	void SeeOneItem(int item);
-	void DeleteAll();
 	void DeleteItems();
 	void SetPageFont();//设置界面的字体和颜色
 	void SelectAll();//全部勾选
@@ -124,27 +123,23 @@ public:
 	void Add(CString ch);
 
 	void SetUpPages();//设置上面的页数
-	void SetPageTurnBtn(int type = 0);//设置翻页按钮的状态
 	void SetUnitStatus();//设置unit的状态
 	int  GetVectorPages();//得到容器的页数
 	void ShowTypeInfo();//显示每组的信息
-	void ShowTypeCount();//展示这种类型信息的中条数
 	void ResetTypeInfo();//重新界面信息
 	void SetContactInfoFilter(int index);//设置查询条件
 	void FromContactInfoDataBase();//从联系人里获得数据
 	
 	bool OnBtnSMS();//短消息
-	std::string GetType(int groupId = -1);//通过号码获得组名
+	std::string GetType(std::string number);//通过号码获得组名
+	bool HaveClicked();
 	void ShowWindow_();
 	void ShowRightBtn(bool bshow);
 	void SetType(int type);//设置类型
 	void OnBtnOK();//确定
-	void Detail();//详情
-	bool Warning();//警告
-	void InsertNum2Phone();//把一个通话号码传至电话
-	void Num2Name(boost::shared_ptr<Data::ContactInfo > pcontactInfo,std::vector<CString> &vname,std::vector<CString> &vnumber);//有名字就显示名字，没名字显示号码
 	void GetNumName(std::vector<CString> &vname,std::vector<CString> &vnumber);//得到名字和号码
-	std::string GetName(std::string number, int &groupId);
+
+
 
 };
 

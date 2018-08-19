@@ -42,8 +42,8 @@ CString static Allicon[10]={
 		L".\\adv\\mjpg\\k5\\common\\音乐\\音乐图标.bmp",
 		L".\\adv\\mjpg\\k5\\common\\影院\\影院图标.bmp",
 		L".\\adv\\mjpg\\k5\\common\\相册\\相册图标.bmp",
+		L".\\adv\\mjpg\\k5\\common\\计算器\\计算器图标.bmp",
 		L".\\adv\\mjpg\\k5\\common\\日程提醒\\日程提醒图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\计算器\\其他功能图标.bmp",
 		L".\\adv\\mjpg\\k5\\common\\设置\\设置图标.bmp",
 };
 
@@ -55,7 +55,6 @@ public:
 	int  m_nMMSCount;
 	int  m_nSMSLeaveCount;
 	int  m_nRssCount;
-	int	 m_nLunarderCount;
 	void SetUpInfo(BOOL isDraw = FALSE);
 	void SetWeather();
 	std::vector<boost::shared_ptr<Data::MultimediaDownload> > rssFileresult;
@@ -92,8 +91,6 @@ public:
 	int SetPhotoList();
 	void SetTimer_(BOOL flag);
 
-	void SetRectLine(int unitNo);
-
 public:
 	void SetCtrlEnable(BOOL flag);
 	//获取未接电话个数
@@ -114,7 +111,7 @@ public:
 	CMainDlg(CWnd* pParent = NULL);   // standard constructor
 public:
 	virtual ~CMainDlg();
-
+	
 	int     m_nUnSMS;
 	int		m_nUnTel;					//未接电话数
 	int     m_nLeaveSound;				//录音留言数
@@ -126,9 +123,6 @@ public:
 	void	HideAllWindow();
 
 	void SetDateTime(BOOL isDraw);
-	BOOL m_isStopMusic;
-	void StopVideo(BOOL isStopMusic, WPARAM w, LPARAM l);
-
 // Dialog Data
 	//{{AFX_DATA(CMainDlg)
 	enum { IDD = IDD_DIALOG_MAIN };
@@ -156,6 +150,7 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
 
 	//}}AFX_VIRTUAL
 

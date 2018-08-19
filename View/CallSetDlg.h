@@ -32,8 +32,6 @@ public:
 	CCERectEdit m_edtTransferNumber;
 	CCERectEdit m_edtPinNumber1;
 	CCERectEdit m_edtPinNumber2;
-
-	CCEComboBox12_ m_cmbPlmn;
 	
 	int m_uiType;
 	void SetCallSetParam();
@@ -41,30 +39,6 @@ public:
 	
 	CMJPGStatic		m_MJPGList;
 	CCallSetDlg(CWnd* pParent = NULL);   // standard constructor
-
-private:
-	int m_nCallType;
-	UINT m_nSetResult;//设置的结果
-	enum Action{
-		start,
-		cancel,
-		check,
-	};
-	Action m_nAction;
-
-
-public:
-	CCEComboBox12_ m_cmbCallTransferTimes;
-	
-	struct oper{
-		std::string op;
-		int act;
-		int sta;
-	};
-	void Start();
-	void CallCancel();
-	void CheckStatus();
-	void ParseOperater(std::string d,oper &op);
 
 // Dialog Data
 	//{{AFX_DATA(CCallSetDlg)
@@ -85,8 +59,6 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CCallSetDlg)
 	virtual BOOL OnInitDialog();
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-
 	//}}AFX_MSG
 	afx_msg void OnButtonFastDialsOk();
 	afx_msg void OnButtonFastDialsCancel();

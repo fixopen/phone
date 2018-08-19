@@ -73,14 +73,13 @@ public:
 	
 	afx_msg void OnButtonUp();
 	afx_msg void OnButtonDown();
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CDateCtrl)
 		// NOTE - the ClassWizard will add and remove member functions here.
 	//}}AFX_MSG
 	 afx_msg BOOL OnEraseBkgnd( CDC* pDC );
-	 //afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	 afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	 afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	 afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	 afx_msg void OnSize(UINT nType, int cx, int cy);

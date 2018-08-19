@@ -53,12 +53,29 @@ private:
 	char *pbuffer[3];
 	TCHAR filename[20][128];
 	int  m_nIndex;
+//	CCEStatic m_sticTitle;
+// 	CCEStatic m_sticPageNumber;
+// 	CCEStatic m_sticPage;
+//	CCEStatic m_sticOperation;
+// 	CCEButtonST m_btnOk;
+// 	CCEButtonST m_btnPrev;
+// 	CCEButtonST m_btnNext;
+// 	CCEButtonST m_btnClear;
+	
+/*	CCEBmpButton m_btnOk;
+	CCEBmpButton m_btnPrev;
+	CCEBmpButton m_btnNext;
+	CCEBmpButton m_btnClear;
+	CCEBmpButton m_btnClose;
+*/
 
 	CCEWriteStatic	m_WriteStatic;
 	CMJPGStatic		m_MJPGList;
-public:
+	
+	//CCEStatic m_sticPanel;
+ 	//CCEFrameStatic m_sticBackground;
+	
 	void SetPageIndex();
-	void ShowWindow_(int nCmdShow);
 };
 
 //{{AFX_INSERT_LOCATION}}

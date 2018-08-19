@@ -145,7 +145,7 @@ class CCEMoveTxtStatic : public CStatic
 public:
 	int m_nCount, m_nW;
 	COLORREF m_backColor;
-	CFont	m_font;
+	CFont	*m_font;
 	CDC   memDC; 
 	CBitmap   bmp;   
 	BOOL Create(LPCTSTR sTxt, COLORREF backcl, int style, CRect &rect, CWnd *pParentWnd, int nCtrlID= 0xFFFF);

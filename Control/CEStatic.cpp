@@ -242,7 +242,6 @@ void CCEStatic::OnDraw(CRect rt_, CString s)
 		}
 		::DrawText(dc, s, s.GetLength(), &rt, DT_WORDBREAK | m_nAlign);
 	}
-
 	if(m_bIsUnderLine)
 	{		
 		CPen pen (PS_SOLID, 1, m_txtRGB);
@@ -829,8 +828,8 @@ BOOL CCEMoveTxtStatic::Create(LPCTSTR sTxt, COLORREF backcl, int style, CRect &r
 {
 	m_backColor = backcl;
 	BOOL ret = CStatic::Create(sTxt, style, rect, pParentWnd);
-	SetTimer(TIMER_TIMESTATIC, 110, NULL);
-	CFont *pFont = GetFont();
+	SetTimer(TIMER_TIMESTATIC, 100, NULL);
+	m_font = GetFont();
 	CRect   rc;   
 	GetClientRect(rc);   
 	CString   strText;   
@@ -838,7 +837,7 @@ BOOL CCEMoveTxtStatic::Create(LPCTSTR sTxt, COLORREF backcl, int style, CRect &r
 	CDC *pdc = GetDC();
 	memDC.CreateCompatibleDC(pdc); 
 
-	memDC.SelectObject(pFont);
+	memDC.SelectObject(m_font);
 	CSize   size   =   pdc->GetTextExtent(strText);
 	int w = rc.Width()*2+size.cx;
 	m_nW = rc.Width()+size.cx;;
@@ -849,7 +848,6 @@ BOOL CCEMoveTxtStatic::Create(LPCTSTR sTxt, COLORREF backcl, int style, CRect &r
 	memDC.DrawText(strText, CRect(0, 0, w-1, h-1), DT_CENTER|DT_VCENTER);
 	ReleaseDC(pdc);
 	return ret;
-
 }
 
 void CCEMoveTxtStatic::OnPaint()     
@@ -864,8 +862,8 @@ void CCEMoveTxtStatic::OnPaint()
 
 void CCEMoveTxtStatic::SetTxt(LPCTSTR sTxt, int height, COLORREF rgb)
 {
-	m_font.DeleteObject();
-	m_font.CreateFont(
+	m_font = new CFont();
+	m_font->CreateFont(
 		height,              // nHeight
 		0,                         // nWidth
 		0,                         // nEscapement
@@ -893,7 +891,7 @@ void CCEMoveTxtStatic::SetTxt(LPCTSTR sTxt, int height, COLORREF rgb)
 	CDC *pdc = GetDC();
 	memDC.CreateCompatibleDC(pdc); 
 	memDC.SetTextColor(rgb);
-	memDC.SelectObject(&m_font);  
+	memDC.SelectObject(m_font);  
 	CSize   size   =   pdc->GetTextExtent(strText);
 	int w = rc.Width()*2+size.cx;
 	m_nW = rc.Width()+size.cx;
@@ -902,7 +900,6 @@ void CCEMoveTxtStatic::SetTxt(LPCTSTR sTxt, int height, COLORREF rgb)
 	memDC.SelectObject(&bmp);   
 	memDC.FillSolidRect(CRect(0, 0, w, h),   m_backColor);   
 	memDC.DrawText(strText, CRect(0, 0, w-1, h-1), DT_CENTER|DT_VCENTER);
-	//memDC.DrawText(strText, CRect(0, 0, w-1, h-1), DT_RIGHT|DT_VCENTER);
 	ReleaseDC(pdc);
 }
 
@@ -925,7 +922,6 @@ CCEWriteStatic::CCEWriteStatic()
 
 CCEWriteStatic::~CCEWriteStatic()
 {
-
 }
 
 
@@ -1112,12 +1108,6 @@ void CCEWriteStatic::OnLButtonDown(UINT nFlags, CPoint point)
 	*/
 
 	m_OldPoint = point;
-
-	extern VOID WriteMyLog_(char *ptr, int size);
-	char log[100];
-	sprintf(log,"LButtonD_x:%d,y:%d",m_OldPoint.x,m_OldPoint.y);
-	WriteMyLog_(log,strlen(log));
-
 	CStatic::OnLButtonDown(nFlags, point);
 }
 
@@ -1247,7 +1237,7 @@ if(WRITE_TYPE == 1)
 			POINT pt[128];
 			POINT ptM;
 			UINT i, uPoints = 0;
-			CPoint ptt = CPoint(0xFFFF,0xFFFF);
+			CPoint ptt;
 
 			::GetMouseMovePoints (pt, 128, &uPoints);
 			
@@ -1266,7 +1256,6 @@ if(WRITE_TYPE == 1)
 				
 					if(m_OldPoint.x != ptt.x || m_OldPoint.y != ptt.y)
 					{
-						
 						MoveToEx(m_MemDC->m_hDC, m_OldPoint.x, m_OldPoint.y, NULL);
 						LineTo(m_MemDC->m_hDC, ptt.x, ptt.y);
 						

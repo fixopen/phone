@@ -14,7 +14,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern HANDLE g_hEvent;
 /////////////////////////////////////////////////////////////////////////////
 // C3GSMSListDlg dialog
 
@@ -29,7 +28,7 @@ CDraftDlg::CDraftDlg(CWnd* pParent /*=NULL*/)
 	m_iTurnOverPages = 0 ;
 	m_bSelectAll = false ;
 	m_nPageSize = PAGE_COUNT;
-	m_strHomeRecordeTelCode = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->speCode3_.c_str();
+	m_strHomeRecordeTelCode = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->speCode3_.c_str();
 }
 
 
@@ -71,7 +70,7 @@ BOOL CDraftDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\草稿箱.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 	
@@ -92,36 +91,30 @@ void CDraftDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	{
 	case 0://写消息	
 		main->m_pMainDlg->m_p3GSMSDlg->ShowWindow(SW_SHOW);
-		main->AddIcon(Allicon[1],main->m_pMainDlg->m_p3GSMSDlg,false);
-		main->PopIcon(this);
+		ShowWindow(SW_HIDE);
 		break;
 
 	case 1://写彩信息			
-		main->m_pMMSDlg->ShowWindow_(SW_SHOW);
-		main->AddIcon(Allicon[1],main->m_pMMSDlg,false);
-		main->PopIcon(this);
+		main->m_pMMSDlg->ShowWindow(SW_SHOW);
+		ShowWindow(SW_HIDE);
 		break ;
 
 	case 2://收件箱	
 		main->m_pSMSListDlg->ShowWindow_(RECV_TYPE,SMS_TYPE);
-		main->PopIcon(this);
+		ShowWindow(SW_HIDE);
 		break;
 
 	case 3://发件箱	
 		main->m_pSMSListDlg->ShowWindow_(SEND_TYPE,SMS_TYPE);
-		main->PopIcon(this);
+		ShowWindow(SW_HIDE);
 		break;
 
 	case 4://草稿箱
-		break;
 
+		break;
 	case 5://设置
-		if (main->m_bSearchNetWin)
-		{
-			main->AddIcon(Allicon[1],main->m_pSmsSettingDlg,false);
-			main->PopIcon(this);
-		}
-		main->m_pSmsSettingDlg->ShowWindow_(SW_SHOW);
+		main->m_pSmsSettingDlg->ShowWindow(SW_SHOW);
+		ShowWindow(SW_HIDE);
 		break;
 	
 	case 10://删除
@@ -130,6 +123,7 @@ void CDraftDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		
 	case 11://编辑
 		Edit();
+		main->AddIcon(Allicon[1]);
 		break;
 
 	case 12://转发
@@ -138,6 +132,7 @@ void CDraftDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 	case 13://详情
 		Details();
+		main->AddIcon(Allicon[1]);
 		break;
 
 	case 14://重发
@@ -176,9 +171,8 @@ void CDraftDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 81:
 	case 82:
 	case 83:
-		//ReadOneItem(w/10-3);
-		Edit(w/10-3);
-//		main->AddIcon(Allicon[1]);
+		ReadOneItem(w/10-3);
+		main->AddIcon(Allicon[1]);
 		break;
 
 	case 100://短消息
@@ -188,11 +182,7 @@ void CDraftDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 101://彩信息
 		ShowSMS(MMS_TYPE);
 		break;
-
-	case 102:
-		main->m_pSMSListDlg->SetCapacity(m_nSMSType);
-		break;
-
+	
 	case 110://页数显示
 		break;
 
@@ -204,7 +194,7 @@ void CDraftDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		PageSwitch(down_page);
 		break;
 
-	case 130://全选
+	case 140://全选
 		SelectAll();
 		break;
 
@@ -325,7 +315,7 @@ void CDraftDlg::ShowArrayInList()
 			main->m_pSMSListDlg->AnalyseSender(number,name);
 			
 			temp = Util::StringOp::ToCString(name);
-			if (temp.Mid(temp.GetLength()-1) == L";")
+			if (temp.Mid(temp.GetLength()-1) = L";")
 			{
 				temp = temp.Mid(0,temp.GetLength()-1);
 			}
@@ -355,7 +345,7 @@ void CDraftDlg::ShowArrayInList()
 			main->m_pSMSListDlg->AnalyseSender(number,name);
 			
 			temp = Util::StringOp::ToCString(name);
-			if (temp.Mid(temp.GetLength()-1) == L";")
+			if (temp.Mid(temp.GetLength()-1) = L";")
 			{
 				temp = temp.Mid(0,temp.GetLength()-1);
 			}
@@ -381,14 +371,7 @@ LRESULT CDraftDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_DELETESELITEM:
 		{
-			if (m_bSelectAll)
-			{
-				DeleteALL();
-			}
-			else
-			{
-				DeleteItems();
-			}
+			DeleteItems();
 		}
 		break;
 	case WM_SCROLL_EDO:
@@ -433,7 +416,8 @@ void CDraftDlg::ClearCurrentPage()
 		items = items+10;
 	}	
 	
-//	m_MJPGList.SetUnitIsDownStatus(130,false);
+	m_MJPGList.SetUnitIsShow(130,false,false);
+
 	m_MJPGList.Invalidate();
 
 }
@@ -446,34 +430,21 @@ void CDraftDlg::SelectAll()
 		m_bSelectAll = true ;
 		for (int i = 0 ; i < GetCurrentItems(); i++)
 		{					   			
-			m_MJPGList.SetUnitIsDownStatus(unitID,true);									
+			m_MJPGList.SetUnitIsDownStatus(130,true);
+			m_MJPGList.SetUnitIsDownStatus(unitID,true);		
+								
 			unitID +=10;
 		}
-		m_MJPGList.SetUnitIsDownStatus(130,true);
 	}
 	else
 	{	
-		//add by qi 0727
-		if (m_MJPGList.GetUnitIsDownStatus(130))//如果是按下状态
-		{
-			m_bSelectAll = false ;
-			for (int i = 0 ; i < GetCurrentItems(); i++)
-			{											
-				m_MJPGList.SetUnitIsDownStatus(unitID,false);					
-				unitID +=10;
-			}
+		m_bSelectAll = false ;
+		for (int i = 0 ; i < GetCurrentItems(); i++)
+		{											
 			m_MJPGList.SetUnitIsDownStatus(130,false);
-
-		}
-		else//不是按下状态还是全选
-		{	
-			m_bSelectAll = true ;
-			for (int i = 0 ; i < GetCurrentItems() ; i++)
-			{					   			
-				m_MJPGList.SetUnitIsDownStatus(unitID,true);									
-				unitID +=10;
-			}
-			m_MJPGList.SetUnitIsDownStatus(130,true);
+			m_MJPGList.SetUnitIsDownStatus(unitID,false);		
+			
+			unitID +=10;
 		}
 	}
 	
@@ -494,129 +465,6 @@ void CDraftDlg::SelectAll()
 	
 }
 
-void CDraftDlg::DeleteALL()
-{
-	int icount ;
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if ( MMS_TYPE == m_nSMSType)
-	{	
-		icount = Data::MMSData::GetDataCount(m_sListFilter);
-		int num = 0 ;
-		int ndelnum = 0; 
-		int nalldelnum = 0;
-		int nleft = 0 ;
-		while (num < icount)
-		{	
-			ndelnum = 0;
-			std::vector<boost::shared_ptr<Data::MMSData> > result;
-			result = Data::MMSData::GetFromDatabaseByTypeOffsetLength(m_sListFilter, 
-				nleft+1, m_nPageSize);
-			
-			for (int i = 0 ; i < result.size();i++)
-			{	
-				bool bdel = false;
-				if ((i+num) >= m_vClick.size())
-				{
-					bdel = true;
-				}
-				else
-				{
-					if ( 1 == m_vClick[i+num])
-					{
-						bdel = true;
-					}
-					else//没有被选中的
-					{
-						nleft++;
-					}
-				}
-
-				if(bdel)
-				{
-					CString s = result[i]->SavePath.c_str();				
-					CString filename = L"";
-					CString path = L"";
-					
-					extern int FindFileEx(CString s, CString &sPath, CString &sFilename);
-					FindFileEx(s, path, filename);
-					extern void DeleteDirectory(CString SrcDir, BOOL isShow = TRUE);
-					DeleteDirectory(path);
-					
-					result[i]->Remove();
-					ndelnum++;
-
-				}
-
-			}
-			
-			num += result.size();
-			if (ndelnum)
-			{
-				nalldelnum += ndelnum; 
-				main->m_pDeleteTipDlg->SetProcessPos(nalldelnum);
-			}
-			
-		}
-		
-	}
-	else 
-	{
-		icount = Data::Message::GetDataCount(m_sListFilter);
-		
-		int num = 0 ;
-		int ndelnum = 0; 
-		int nalldelnum = 0;
-		int nleft = 0 ;
-		while (num < icount)
-		{	
-			ndelnum = 0;
-			std::vector<boost::shared_ptr<Data::Message> > result;
-			result = Data::Message::GetFromDatabaseByTypeOffsetLength(m_sListFilter, 
-				nleft+1, m_nPageSize);
-			for (int i = 0 ; i < result.size();i++)
-			{	
-				bool bdel = false;
-				if ((i+num) >= m_vClick.size())
-				{
-					bdel = true;
-				}
-				else
-				{
-					if ( 1 == m_vClick[i+num])
-					{
-						bdel = true;
-					}
-					else//没有被选中的
-					{
-						nleft++;
-					}
-				}
-
-				if (bdel)
-				{
-					result[i]->Remove();
-					ndelnum++;
-				}
-			}	
-			
-			num += result.size();
-			if (ndelnum)
-			{
-				nalldelnum += ndelnum; 
-				main->m_pDeleteTipDlg->SetProcessPos(nalldelnum);
-			}
-			
-		}
-		
-	}
-	
-	m_iCurrentPage = 1 ;
-	Clear();
-	ClearCurrentPage();
-	FromDataBase();
-	ShowArrayInList();
-	SetPageTurnBtn();
-}
 
 void CDraftDlg::DeleteItems()
 {	
@@ -624,7 +472,7 @@ void CDraftDlg::DeleteItems()
 	//删除打勾的行，目前只删除当前的行
 	for (int i = 0 ; i < m_vClick.size() ;i++)
 	{	
-		if ( 1 == m_vClick[i])
+		if ( 1 == m_vClick[(m_iCurrentPage-1)*m_nPageSize+i])
 		{	
 			if ( SMS_TYPE == m_nSMSType)
 			{	
@@ -720,28 +568,9 @@ void CDraftDlg::DeleteItems()
 	{
 		m_iCurrentPage = 1;
 	}
-	SetPageTurnBtn(1);
-
+	
 	ClearCurrentPage();
-
-	//比较容器里的页数 和 当前所在的页
-	int nCount = m_iCurrentPage;
-	int pages ;
-	pages = m_vClick.size()/m_nPageSize ;
-	if (pages >= m_iCurrentPage)//剩余的数据大于当前的页，直接找当前页的数据
-	{
-		FromDataBase();
-	}
-	else
-	{
-		m_iCurrentPage = pages ;//
-		for (;pages < nCount;pages++)//循环往容器里添数据
-		{	
-			m_iCurrentPage++;//
-			FromDataBase();
-		}
-	}
-
+	FromDataBase();
 	ShowArrayInList();
 	
 } 
@@ -768,9 +597,7 @@ void CDraftDlg::PageSwitch(Action action)
 			return ;
 		}
 	 }
-	 
-	 SetPageTurnBtn(1);
-
+	
 	 ClearCurrentPage();
 	 FromDataBase();
 	 ShowArrayInList();
@@ -778,7 +605,7 @@ void CDraftDlg::PageSwitch(Action action)
 
 int CDraftDlg::GetCurrentItems()
 {	
-	int icurrent = 0 ;//当前页的行数
+	int icurrent ;//当前页的行数
 			
 	if (SMS_TYPE == m_nSMSType)
 	{
@@ -814,8 +641,7 @@ void CDraftDlg::Clear()
 	{
 		m_vID.clear();
 	}
-	
-	m_MJPGList.SetUnitIsDownStatus(130,false);
+
 	m_bSelectAll = false ;
 }
 
@@ -826,39 +652,11 @@ void CDraftDlg::ClickedOneItem(int unitID,int item)
 	{		
 		m_MJPGList.SetUnitIsDownStatus(unitID,true);		
 		m_vClick[(m_iCurrentPage-1)*m_nPageSize+item] = 1;
-
-		//add by qi 0727
-		int count = 0 ;
-		if (m_bSelectAll)//判断是不是全选
-		{
-			for (int i = 0 ; i < m_vClick.size() ;i++)
-			{
-				if (1 == m_vClick[i])
-				{	
-					count++;
-				}	
-			}
-			
-			if (count == m_vClick.size() && count != 0)//全选了
-			{
-				m_MJPGList.SetUnitIsDownStatus(130,true);
-				m_MJPGList.SetUnitIsShow(130,true,true);
-			}
-		}
-
 	}
 	else
 	{		
 		m_MJPGList.SetUnitIsDownStatus(unitID,false);
 		m_vClick[(m_iCurrentPage-1)*m_nPageSize+item] = 0;
-
-		//add by qi 0727
-		if (m_bSelectAll)
-		{
-			m_MJPGList.SetUnitIsDownStatus(130,false);
-			m_MJPGList.SetUnitIsShow(130,true,true);	
-		}
-
 	}
 
 	m_MJPGList.SetUnitIsShow(unitID,true,true);
@@ -877,7 +675,7 @@ void CDraftDlg::ReadOneItem(int item)
 	else
 	{
 		main->m_pSMSListDlg->m_pMmsReadDlg->SetMMSInfo(m_vMMSDataCurrentResult[item]->id(),m_nBoxType);
-		main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
+		main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);	
 	}
 
 }
@@ -892,7 +690,6 @@ void CDraftDlg::ShowSMS(SMSMMS_TYPE smsType)
 		ClearCurrentPage();
 		FromDataBase();
 		ShowArrayInList();
-		SetPageTurnBtn();
 	}
 }
 void CDraftDlg::SetUnitStatus()
@@ -925,25 +722,19 @@ void CDraftDlg::SetUnitStatus()
 
 void CDraftDlg::ShowWindow_(SMSBOX_TYPE type,SMSMMS_TYPE smsType)
 {	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
 	m_nBoxType = type ;
 	m_nSMSType = smsType;
 	m_iCurrentPage = 1 ;
 	
 	Clear();
 	ClearCurrentPage();
-	ShowWindow(SW_SHOW);
 	FromDataBase();
 	ShowArrayInList();
-	SetPageTurnBtn();
-
-	main->AddIcon(Allicon[1],this,false);
+	ShowWindow(SW_SHOW);
 }
 
 void CDraftDlg::ShowDeleteDlg()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	bool enble = false ;
 	int  count = 0 ;
 	
@@ -956,59 +747,15 @@ void CDraftDlg::ShowDeleteDlg()
 		}	
 	}
 	
-	if (m_bSelectAll)
-	{
-		enble = true ;
-	}
-
 	if (enble)
 	{	
-		CString title = L"";
-		if (m_bSelectAll)
-		{	
-			int allcount;
-			if (MMS_TYPE == m_nSMSType)
-			{
-				allcount = Data::MMSData::GetDataCount(m_sListFilter);	
-			}
-
-			if (SMS_TYPE == m_nSMSType)
-			{
-				allcount = Data::Message::GetDataCount(m_sListFilter);	
-			}
-			
-			if (count == m_vClick.size() && count != 0)//全部
-			{	
-				count = allcount;
-				title = L"是否删除全部信息?";
-			}
-			else if( count != m_vClick.size())//
-			{
-				count = allcount - (m_vClick.size() - count);
-				if ( 0 == count)
-				{
-					return ;
-				}	
-				title.Format(L"%d", count);
-				title = L"是否删除已选中的" + title + L"条信息?";
-			}
-
-		}
-		else
-		{
-			title.Format(L"%d", count);
-			title = L"是否删除已选中的" + title + L"条信息?";
-		}
-		main->m_pDeleteTipDlg->SetTitle(title,0);
-		main->m_pDeleteTipDlg->SetProcessMax(count);
-		main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-		main->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
+		CString title = "确认删除已选的内容吗?";
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(title,0);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
 	}
-	else
-	{
-		main->m_pWarningNoFlashDlg->SetTitle(L"请选择信息");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-	}
+
 }
 
 void CDraftDlg::SetUpPages()
@@ -1036,8 +783,7 @@ int CDraftDlg::GetVectorPages()
 void CDraftDlg::Edit()
 {
 	//只能选择一个
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
-	CWnd *p ;
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;	
 	int index ;
 	if ( GetFirstClickID(index) )//只有收件的时候才能回复
 	{	
@@ -1045,70 +791,24 @@ void CDraftDlg::Edit()
 		std::string mmstitle;
 		if (SMS_TYPE == m_nSMSType)
 		{
-			boost::shared_ptr<Data::Message> pmessge ;
+			 boost::shared_ptr<Data::Message> pmessge ;
 			pmessge = Data::Message::GetDataById( m_vID[index]);
 			if ( pmessge )
 			{
 				main->m_pMainDlg->m_p3GSMSDlg->SetMessge(pmessge);
 				main->m_pMainDlg->m_p3GSMSDlg->ShowWindow(SW_SHOW);
-				Sleep(100);
-				main->m_pMainDlg->m_p3GSMSDlg->OnCharNumberChange();
-				p = main->m_pMainDlg->m_p3GSMSDlg;
 			}
 		}
 		else
 		{	
 			boost::shared_ptr<Data::MMSData> pmmsdata ;
-			pmmsdata = Data::MMSData::GetDataById( m_vID[index]);
+			pmmsdata = Data::MMSData::GetDataById(m_vID[index]);
 			if (pmmsdata)
 			{
-				main->m_pMMSDlg->SetMmsContent(pmmsdata,true);
-				main->m_pMMSDlg->ClearParPage();
+				main->m_pMMSDlg->SetMmsContent(pmmsdata);
 				main->m_pMMSDlg->ShowWindow(SW_SHOW);
-				Sleep(100);
-				main->m_pMMSDlg->m_MmsShow.AllFileSize();
-				p = main->m_pMMSDlg;
 			}
-		}
-		main->AddIcon(Allicon[1],p,false);
-	}
-
-}
-
-void CDraftDlg::Edit(int item)
-{	
-	//只能选择一个
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
-	std::string data ;
-	std::string mmstitle;
-	if (SMS_TYPE == m_nSMSType)
-	{
-		boost::shared_ptr<Data::Message> pmessge ;
-		pmessge = Data::Message::GetDataById( m_vID[(m_iCurrentPage-1)*m_nPageSize+item]);
-		if ( pmessge )
-		{
-			main->m_pMainDlg->m_p3GSMSDlg->Clear();
-			main->m_pMainDlg->m_p3GSMSDlg->SetMessge(pmessge);
-			main->m_pMainDlg->m_p3GSMSDlg->ShowWindow(SW_SHOW);
-			Sleep(100);
-			main->m_pMainDlg->m_p3GSMSDlg->OnCharNumberChange();
-			main->AddIcon(Allicon[1],main->m_pMainDlg->m_p3GSMSDlg,false);
-		}
-	}
-	else
-	{	
-		boost::shared_ptr<Data::MMSData> pmmsdata ;
-		pmmsdata = Data::MMSData::GetDataById( m_vID[(m_iCurrentPage-1)*m_nPageSize+item]);
-		if (pmmsdata)
-		{	
-			main->m_pMMSDlg->Clear();
-			main->m_pMMSDlg->SetMmsContent(pmmsdata,true);
-			main->m_pMMSDlg->ClearParPage();
-			main->m_pMMSDlg->ShowWindow(SW_SHOW);
-			Sleep(100);
-			main->m_pMMSDlg->m_MmsShow.AllFileSize();
-			main->AddIcon(Allicon[1],main->m_pMMSDlg,false);
-		}
+		}						
 	}
 
 }
@@ -1116,7 +816,6 @@ void CDraftDlg::Edit(int item)
 void CDraftDlg::Transit()
 {
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
-	CWnd *p;
 	int index ;
 	if ( GetFirstClickID(index) )//只有收件的时候才能回复
 	{	
@@ -1131,9 +830,6 @@ void CDraftDlg::Transit()
 				std::string data = pmessge->unicodeData;	
 				main->m_pMainDlg->m_p3GSMSDlg->SetSmsContent(data);
 				main->m_pMainDlg->m_p3GSMSDlg->ShowWindow(SW_SHOW);
-				Sleep(100);
-				main->m_pMainDlg->m_p3GSMSDlg->OnCharNumberChange();
-				p = main->m_pMainDlg->m_p3GSMSDlg;
 			}
 		}
 		else
@@ -1143,43 +839,29 @@ void CDraftDlg::Transit()
 			if (pmmsdata)
 			{
 				main->m_pMMSDlg->SetMmsContent(pmmsdata,true);
-				main->m_pMMSDlg->ClearParPage();
 				main->m_pMMSDlg->ShowWindow(SW_SHOW);
-				Sleep(100);
-				main->m_pMMSDlg->m_MmsShow.AllFileSize();
-				p = main->m_pMMSDlg;
-
 			}
-		}		
-		main->AddIcon(Allicon[1],p,false);
+		}						
 	}
 
 }
 void CDraftDlg::Details()
 {	
 	CMultimediaPhoneDlg * main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	CWnd *p ;
 	int index ;
 	if (GetFirstClickID(index,true))
 	{
 		if (MMS_TYPE == m_nSMSType)
 		{	
-			boost::shared_ptr<Data::MMSData > pMmsData = Data::MMSData::GetDataById(m_vID[index]);
-			main->m_pSMSListDlg->m_pSmsDetailDlg->ShowMmsDetail(pMmsData);
-			main->m_pSMSListDlg->m_pSmsDetailDlg->ShowWindow_(SW_SHOW);
-			p = main->m_pSMSListDlg->m_pMmsReadDlg;
+			main->m_pSMSListDlg->m_pMmsReadDlg->SetMMSInfo(m_vID[index],m_nBoxType);
+			main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
 		}
 		else
 		{
-			boost::shared_ptr<Data::Message > pMessage = Data::Message::GetDataById(m_vID[index]);
-			main->m_pSMSListDlg->m_pSmsDetailDlg->ShowSmsDetail(pMessage);
-			main->m_pSMSListDlg->m_pSmsDetailDlg->ShowWindow_(SW_SHOW);
-			p = main->m_pSMSListDlg->m_pSmsReadDlg;
+			main->m_pSMSListDlg->m_pSmsReadDlg->SetSMSInfo(m_vID[index],m_nBoxType);
+			main->m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
 
 		}
-
-		main->AddIcon(Allicon[1],p,false);
-
 	}	
 }
 
@@ -1191,31 +873,25 @@ void CDraftDlg::Repeat()//重发
 	{
 		if (MMS_TYPE == m_nSMSType)
 		{
-			//判断磁盘空间
-			if (main->IsDiskFull())
-			{
-				return;
-			}
-
 			boost::shared_ptr<Data::MMSData> pmmsdata ;
 			pmmsdata = Data::MMSData::GetDataById(m_vID[index]);
 			
 			SYSTEMTIME tm;
 			GetLocalTime(&tm);
 			CTime ct = CTime(tm);
-			CTimeSpan sp = ct - CTime(1970, 1, 1, 0, 0, 0);
+			CTimeSpan sp = ct - CTime(1970, 1, 1, 8, 0, 0);
 		
 			char datetime[24];
 			sprintf(datetime, "%04d%02d%02d%02d%02d%02d", tm.wYear, tm.wMonth, tm.wDay, tm.wHour, tm.wMinute, tm.wSecond);
 						
+			pmmsdata = boost::shared_ptr<Data::MMSData> (new Data::MMSData);
 			pmmsdata->type = Data::MMSData::tpReadySend;
 			pmmsdata->isRead = false; //表示发送失败
 			pmmsdata->TransactionId = datetime;
-			pmmsdata->DateAndTime = sp.GetTotalSeconds(); //Date-value = Long-integer	In seconds from 1970-01-01, 00:00:00 GMT.
-
+			pmmsdata->DateAndTime = sp.GetSeconds(); //Date-value = Long-integer	In seconds from 1970-01-01, 00:00:00 GMT.
+			pmmsdata->isRead = TRUE;
 			pmmsdata->Insert();
-			main->m_isDialTimeout = 0;
-			SetEvent(g_hEvent);
+
 		}
 		else
 		{	
@@ -1231,21 +907,8 @@ void CDraftDlg::Repeat()//重发
 			pmessge->timestamp.minite = tm.wMinute;
 			pmessge->timestamp.second = tm.wSecond;
 			pmessge->group = Data::Message::gSend;
-
-			if(main->m_pMessageSet->SaveSendMessage())
-			{	
-				main->m_pMainDlg->m_p3GSMSDlg->SaveSmsData(pmessge,Data::Message::gSend);
-			//	pmessge->Insert();
-			}
+			pmessge->Insert();
 			
-			if (pmessge->remote.address.empty())
-			{
-				CString tille = L"没有号码不能重发!";
-				main->m_pWarningNoFlashDlg->SetTitle(tille);
-				main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-				return ;
-			}
-
 			main->m_pSMSWarp->Send(pmessge->remote.address, pmessge->unicodeData);							
 			
 		}
@@ -1264,17 +927,6 @@ void CDraftDlg::SetPagefont()
 		}		
 	}
 	m_MJPGList.SetUnitColor(110,font_white,true);
-}
-
-void CDraftDlg::FreshList()
-{
-	m_iCurrentPage = 1 ;
-	
-	Clear();
-	ClearCurrentPage();
-	FromDataBase();
-	ShowArrayInList();
-	SetPageTurnBtn();
 }
 
 bool CDraftDlg::GetFirstClickID(int &index,bool bcurrent )
@@ -1305,50 +957,5 @@ bool CDraftDlg::GetFirstClickID(int &index,bool bcurrent )
 			
 		}
 	}
-
-	if (!enble)
-	{
-		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		main->m_pWarningNoFlashDlg->SetTitle(L"请选择信息");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-	}
 	return enble ;
-}
-
-void CDraftDlg::SetPageTurnBtn(int type )
-{
-	if ( 0 == type)
-	{	
-		int ncount = 0  ; 
-		if(m_nSMSType == SMS_TYPE)
-			ncount = Data::Message::GetDataCount(m_sListFilter);
-		else
-			ncount = Data::MMSData::GetDataCount(m_sListFilter);
-		
-		if (ncount <= m_nPageSize)//小于一页
-		{
-			m_MJPGList.SetUnitIsDisable(120,true);
-			m_MJPGList.SetUnitIsDisable(121,true);
-		}
-		else //大于一页
-		{
-			m_MJPGList.SetUnitIsDisable(120,true);
-			m_MJPGList.SetUnitIsDisable(121,false);
-		}
-	}
-	else if( 1 == type)
-	{
-		//判断翻页按钮是否有效
-		m_MJPGList.SetUnitIsDisable(120,false);
-		m_MJPGList.SetUnitIsDisable(121,false);
-		if (m_iCurrentPage == 1)
-		{
-			m_MJPGList.SetUnitIsDisable(120,true);
-		}
-		
-		if (m_iCurrentPage == m_iTotalPages)
-		{
-			m_MJPGList.SetUnitIsDisable(121,true);
-		}
-	}
 }

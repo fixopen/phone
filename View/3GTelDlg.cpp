@@ -95,9 +95,9 @@ void C3GTelDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	//	pMainDlg->m_pSoundDlg->ShowWindow(SW_SHOW);
 		break;
 	case 4:
-		pMainDlg->m_pMainDlg->m_firewalDlg_->SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(),
-			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType(),
-			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration().GetTotalSeconds());
+		pMainDlg->m_pMainDlg->m_firewalDlg_->SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall(),
+			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->firewallType(),
+			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->blockAllTimeDuration().GetTotalSeconds());
 		pMainDlg->m_pMainDlg->m_firewalDlg_->ShowWindow(SW_SHOW);
 	//	pMainDlg->m_pSettingDlg->ShowWindow(SW_SHOW);
 		break;

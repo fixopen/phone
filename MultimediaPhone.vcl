@@ -6,13 +6,13 @@
 --------------------Configuration: MultimediaPhone - Win32 (WCE MIPSII) Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1A5.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP114.tmp" with contents
 [
 /nologo /W3 /GX /Zi /Od /D "DEBUG" /D "MIPS" /D "_MIPS_" /D "R4000" /D "MIPSII" /D UNDER_CE=500 /D _WIN32_WCE=500 /D "WCE_PLATFORM_ingenicWeb" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /FR"MIPSIIDbg/" /Fp"MIPSIIDbg/MultimediaPhone.pch" /YX /Fo"MIPSIIDbg/" /Fd"MIPSIIDbg/" /QMmips2 /QMFPE /MC /c 
-"F:\3Gwork\3g_dt_\Control\Cache.cpp"
+"F:\3Gwork\3g_dt_sync\3g_dt\MultimediaPhoneDlg.cpp"
 ]
-Creating command line "clmips.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1A5.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1A6.tmp" with contents
+Creating command line "clmips.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP114.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP115.tmp" with contents
 [
 lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib jpeg.lib lib\\png.lib lib\\zlib.lib commctrl.lib Coredll.lib lib\\lamelib.lib lib\\mpglib.lib lib\\libshine.lib lib\\speex.lib lib\\chshw.lib lib\\midi_control.lib lib\\midi_dialog.lib lib\\midiplayerwrapper.lib lib\\SDL.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /incremental:yes /pdb:"MIPSIIDbg/MultimediaPhone.pdb" /debug /out:"MIPSIIDbg/MultimediaPhone.exe" /libpath:"E:\My Documents\My Projects\MultimediaPhone\lib" /subsystem:windowsce,5.00 /MACHINE:MIPS 
 .\MIPSIIDbg\MultimediaPhone.obj
@@ -26,7 +26,6 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\LanguageResource.obj
 .\MIPSIIDbg\log.obj
 .\MIPSIIDbg\Message.obj
-.\MIPSIIDbg\MessageSet.obj
 .\MIPSIIDbg\MMSData.obj
 .\MIPSIIDbg\MmsMessage.obj
 .\MIPSIIDbg\OTAData.obj
@@ -66,10 +65,7 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\contactsearchdlg.obj
 .\MIPSIIDbg\copyfileDlg.obj
 .\MIPSIIDbg\CSelectNumberDlg.obj
-.\MIPSIIDbg\CSmsDetaiLDlg.obj
 .\MIPSIIDbg\CSMSSettingDlg.obj
-.\MIPSIIDbg\CTelePhoneOptionDlg.obj
-.\MIPSIIDbg\CUPLMNDlg.obj
 .\MIPSIIDbg\deletetipdlg.obj
 .\MIPSIIDbg\fastdialsdlg.obj
 .\MIPSIIDbg\firewalldlg.obj
@@ -83,16 +79,13 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\MainVideoDlg.obj
 .\MIPSIIDbg\MMSDlg.obj
 .\MIPSIIDbg\NetStatusDlg.obj
-.\MIPSIIDbg\NewApnTypeDlg.obj
 .\MIPSIIDbg\NotebookDlg.obj
 .\MIPSIIDbg\notedlg.obj
 .\MIPSIIDbg\passworddlg.obj
-.\MIPSIIDbg\PinInputDlg.obj
 .\MIPSIIDbg\PinSetDlg.obj
 .\MIPSIIDbg\Player.obj
 .\MIPSIIDbg\PlayerDlg.obj
 .\MIPSIIDbg\playsounddlg.obj
-.\MIPSIIDbg\PstnNumberdlg.obj
 .\MIPSIIDbg\RecordSoundDlg.obj
 .\MIPSIIDbg\RenameDlg.obj
 .\MIPSIIDbg\RingSetDlg.obj
@@ -104,12 +97,9 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\SoundDlg.obj
 .\MIPSIIDbg\soundsearchdlg.obj
 .\MIPSIIDbg\SpecCodeDlg.obj
-.\MIPSIIDbg\STKDlg.obj
-.\MIPSIIDbg\StorageStatusDlg.obj
 .\MIPSIIDbg\TelephoneDialDlg.obj
 .\MIPSIIDbg\telephonedlg.obj
 .\MIPSIIDbg\TelephoneRingDlg.obj
-.\MIPSIIDbg\TestATDlg.obj
 .\MIPSIIDbg\TestDlg.obj
 .\MIPSIIDbg\TipDlg.obj
 .\MIPSIIDbg\WarningNoFlashDlg.obj
@@ -133,9 +123,7 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\serialPort.obj
 .\MIPSIIDbg\Stock.obj
 .\MIPSIIDbg\Telephone.obj
-.\MIPSIIDbg\Cache.obj
 .\MIPSIIDbg\CeBtnST.obj
-.\MIPSIIDbg\CEComboBox12_.obj
 .\MIPSIIDbg\CEComboBox_.obj
 .\MIPSIIDbg\CEDateTimeCtrl.obj
 .\MIPSIIDbg\CEDialog.obj
@@ -163,227 +151,128 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\cximagelib\png.lib
 .\cximagelib\zlib.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1A6.tmp"
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP115.tmp"
 <h3>Output Window</h3>
 Compiling...
-Cache.cpp
+MultimediaPhoneDlg.cpp
 Linking...
    Creating library MIPSIIDbg/MultimediaPhone.lib and object MIPSIIDbg/MultimediaPhone.exp
-jpeg.lib(jcapimin.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcapistd.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jccoefct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jccolor.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcdctmgr.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jchuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcinit.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcmainct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcmarker.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcmaster.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcomapi.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcparam.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcphuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcprepct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jcsample.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdapimin.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdapistd.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdcoefct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdcolor.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jddctmgr.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdhuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdinput.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdmainct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdmarker.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdmaster.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdmerge.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdphuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdpostct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jdsample.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jerror.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jfdctflt.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jfdctfst.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jfdctint.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jidctflt.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jidctfst.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jidctint.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jidctred.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jmemansi.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jmemmgr.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jquant1.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jquant2.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-jpeg.lib(jutils.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
-midi_control.lib(audio_convert.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(SDL_sound.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(common.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(instrum.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(instrum_dls.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(mix.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(output.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(playmidi.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(readmidi.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(resample.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(tables.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midi_control.lib(timidity.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-midiplayerwrapper.lib(MidiPlayerControl.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
+Reg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Observer.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Fsm_.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+xmlParser.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+SoftKey.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+InputDlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+DIBSectionCE.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+DateCtrl.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CEScrollBar_.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CERadioButton.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CEProcessBar.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CELunarder.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CEListCtrl.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CELineEdit.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CEDialog.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CEDateTimeCtrl.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CEComboBox_.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CeBtnST.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Stock.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+serialPort.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+LunarderDate.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+unzip.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+timer.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+thread.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+stringOp.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+socket.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+socket.ce.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+OggCodec.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+NewSocket.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+MMSWarp.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+HTTPTransport.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+fsm.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Base64.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+SpecCodeDlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+soundsearchdlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+RenameDlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+PinSetDlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+notedlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+fastdialsdlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+deletetipdlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+CSelectNumberDlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+contactsearchdlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+ContactInfoSearchDlg.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+User.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+TelephoneNumber.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+SoundSegment.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+SkinStyle.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Setting.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+SchedulerData.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Picture.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+OtaMessage.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+OTAData.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+MmsMessage.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+MMSData.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Message.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+log.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+LanguageResource.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+ContactInfo.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+ContactGroup.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+ContactData.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+Contact.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+StdAfx.obj : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcapimin.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcapistd.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jccoefct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jccolor.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcdctmgr.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jchuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcinit.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcmainct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcmarker.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcmaster.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcomapi.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcparam.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcphuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcprepct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jcsample.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdapimin.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdapistd.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdcoefct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdcolor.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jddctmgr.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdhuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdinput.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdmainct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdmarker.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdmaster.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdmerge.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdphuff.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdpostct.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jdsample.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jerror.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jfdctflt.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jfdctfst.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jfdctint.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jidctflt.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jidctfst.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jidctint.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jidctred.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jmemansi.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jmemmgr.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jquant1.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jquant2.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
+jpeg.lib(jutils.obj) : warning LNK4204: 'F:\3Gwork\3g_dt_sync\3g_dt\MIPSIIDbg\vc60.pdb' is missing debugging information for referencing module; linking object as if no debug info
 corelibc.lib(wwinmain.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 corelibc.lib(onexit.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 corelibc.lib(crt0dat.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 corelibc.lib(crt0init.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 Strmiids.lib(strmguid.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 Strmiids.lib(strmif_i.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1AC.tmp" with contents
-[
-/nologo /o"MIPSIIDbg/MultimediaPhone.bsc" 
-.\MIPSIIDbg\MultimediaPhone.sbr
-.\MIPSIIDbg\MultimediaPhoneDlg.sbr
-.\MIPSIIDbg\Pblmember.sbr
-.\MIPSIIDbg\StdAfx.sbr
-.\MIPSIIDbg\Contact.sbr
-.\MIPSIIDbg\ContactData.sbr
-.\MIPSIIDbg\ContactGroup.sbr
-.\MIPSIIDbg\ContactInfo.sbr
-.\MIPSIIDbg\LanguageResource.sbr
-.\MIPSIIDbg\log.sbr
-.\MIPSIIDbg\Message.sbr
-.\MIPSIIDbg\MessageSet.sbr
-.\MIPSIIDbg\MMSData.sbr
-.\MIPSIIDbg\MmsMessage.sbr
-.\MIPSIIDbg\OTAData.sbr
-.\MIPSIIDbg\OtaMessage.sbr
-.\MIPSIIDbg\Picture.sbr
-.\MIPSIIDbg\SchedulerData.sbr
-.\MIPSIIDbg\Setting.sbr
-.\MIPSIIDbg\SkinStyle.sbr
-.\MIPSIIDbg\SoundSegment.sbr
-.\MIPSIIDbg\TelephoneNumber.sbr
-.\MIPSIIDbg\User.sbr
-.\MIPSIIDbg\10ContactInfoDlg.sbr
-.\MIPSIIDbg\10PhrasesDlg.sbr
-.\MIPSIIDbg\3GDetailDlg.sbr
-.\MIPSIIDbg\3GDetailReadDlg.sbr
-.\MIPSIIDbg\3GHomeJoyDlg.sbr
-.\MIPSIIDbg\3GHomeMovieDlg.sbr
-.\MIPSIIDbg\3GHomePicDlg.sbr
-.\MIPSIIDbg\3GMMSReadDlg.sbr
-.\MIPSIIDbg\3GSMSDetailDlg.sbr
-.\MIPSIIDbg\3GSMSDlg.sbr
-.\MIPSIIDbg\3GSMSListDlg.sbr
-.\MIPSIIDbg\3GSMSReadDlg.sbr
-.\MIPSIIDbg\3GSysToolTelDlg.sbr
-.\MIPSIIDbg\3GVideoPhone.sbr
-.\MIPSIIDbg\AlarmShowDlg.sbr
-.\MIPSIIDbg\CalculaterDlg.sbr
-.\MIPSIIDbg\CallSetDlg.sbr
-.\MIPSIIDbg\CardSelectDlg.sbr
-.\MIPSIIDbg\CMMSSettingDlg.sbr
-.\MIPSIIDbg\CNumberExtractDlg.sbr
-.\MIPSIIDbg\ContactDlg.sbr
-.\MIPSIIDbg\contactgroupdlg.sbr
-.\MIPSIIDbg\ContactInfoDlg.sbr
-.\MIPSIIDbg\ContactInfoSearchDlg.sbr
-.\MIPSIIDbg\ContactNewDlg.sbr
-.\MIPSIIDbg\contactsearchdlg.sbr
-.\MIPSIIDbg\copyfileDlg.sbr
-.\MIPSIIDbg\CSelectNumberDlg.sbr
-.\MIPSIIDbg\CSmsDetaiLDlg.sbr
-.\MIPSIIDbg\CSMSSettingDlg.sbr
-.\MIPSIIDbg\CTelePhoneOptionDlg.sbr
-.\MIPSIIDbg\CUPLMNDlg.sbr
-.\MIPSIIDbg\deletetipdlg.sbr
-.\MIPSIIDbg\fastdialsdlg.sbr
-.\MIPSIIDbg\firewalldlg.sbr
-.\MIPSIIDbg\HuangliDlg.sbr
-.\MIPSIIDbg\InformationDlg.sbr
-.\MIPSIIDbg\LunarderDlg.sbr
-.\MIPSIIDbg\MainDlg.sbr
-.\MIPSIIDbg\MainMenuDlg.sbr
-.\MIPSIIDbg\MainMp3Dlg.sbr
-.\MIPSIIDbg\MainPhotoDlg.sbr
-.\MIPSIIDbg\MainVideoDlg.sbr
-.\MIPSIIDbg\MMSDlg.sbr
-.\MIPSIIDbg\NetStatusDlg.sbr
-.\MIPSIIDbg\NewApnTypeDlg.sbr
-.\MIPSIIDbg\NotebookDlg.sbr
-.\MIPSIIDbg\notedlg.sbr
-.\MIPSIIDbg\passworddlg.sbr
-.\MIPSIIDbg\PinInputDlg.sbr
-.\MIPSIIDbg\PinSetDlg.sbr
-.\MIPSIIDbg\Player.sbr
-.\MIPSIIDbg\PlayerDlg.sbr
-.\MIPSIIDbg\playsounddlg.sbr
-.\MIPSIIDbg\PstnNumberdlg.sbr
-.\MIPSIIDbg\RecordSoundDlg.sbr
-.\MIPSIIDbg\RenameDlg.sbr
-.\MIPSIIDbg\RingSetDlg.sbr
-.\MIPSIIDbg\screensavedlg.sbr
-.\MIPSIIDbg\SettingDlg.sbr
-.\MIPSIIDbg\ShiftFile.sbr
-.\MIPSIIDbg\SIMImportDlg.sbr
-.\MIPSIIDbg\SMSDraftDlg.sbr
-.\MIPSIIDbg\SoundDlg.sbr
-.\MIPSIIDbg\soundsearchdlg.sbr
-.\MIPSIIDbg\SpecCodeDlg.sbr
-.\MIPSIIDbg\STKDlg.sbr
-.\MIPSIIDbg\StorageStatusDlg.sbr
-.\MIPSIIDbg\TelephoneDialDlg.sbr
-.\MIPSIIDbg\telephonedlg.sbr
-.\MIPSIIDbg\TelephoneRingDlg.sbr
-.\MIPSIIDbg\TestATDlg.sbr
-.\MIPSIIDbg\TestDlg.sbr
-.\MIPSIIDbg\TipDlg.sbr
-.\MIPSIIDbg\WarningNoFlashDlg.sbr
-.\MIPSIIDbg\WebDialog.sbr
-.\MIPSIIDbg\ATCommandWarp.sbr
-.\MIPSIIDbg\Base64.sbr
-.\MIPSIIDbg\ComWarp.sbr
-.\MIPSIIDbg\fsm.sbr
-.\MIPSIIDbg\HTTPTransport.sbr
-.\MIPSIIDbg\MMSWarp.sbr
-.\MIPSIIDbg\NewSocket.sbr
-.\MIPSIIDbg\OggCodec.sbr
-.\MIPSIIDbg\SMSWarp.sbr
-.\MIPSIIDbg\socket.ce.sbr
-.\MIPSIIDbg\socket.sbr
-.\MIPSIIDbg\stringOp.sbr
-.\MIPSIIDbg\thread.sbr
-.\MIPSIIDbg\timer.sbr
-.\MIPSIIDbg\unzip.sbr
-.\MIPSIIDbg\LunarderDate.sbr
-.\MIPSIIDbg\serialPort.sbr
-.\MIPSIIDbg\Stock.sbr
-.\MIPSIIDbg\Telephone.sbr
-.\MIPSIIDbg\Cache.sbr
-.\MIPSIIDbg\CeBtnST.sbr
-.\MIPSIIDbg\CEComboBox12_.sbr
-.\MIPSIIDbg\CEComboBox_.sbr
-.\MIPSIIDbg\CEDateTimeCtrl.sbr
-.\MIPSIIDbg\CEDialog.sbr
-.\MIPSIIDbg\CELineEdit.sbr
-.\MIPSIIDbg\CEListCtrl.sbr
-.\MIPSIIDbg\CELunarder.sbr
-.\MIPSIIDbg\CEProcessBar.sbr
-.\MIPSIIDbg\CERadioButton.sbr
-.\MIPSIIDbg\CEScrollBar_.sbr
-.\MIPSIIDbg\CEStatic.sbr
-.\MIPSIIDbg\DateCtrl.sbr
-.\MIPSIIDbg\DIBSectionCE.sbr
-.\MIPSIIDbg\InputDlg.sbr
-.\MIPSIIDbg\MJPGStatic.sbr
-.\MIPSIIDbg\MmsShow.sbr
-.\MIPSIIDbg\SoftKey.sbr
-.\MIPSIIDbg\xmlParser.sbr
-.\MIPSIIDbg\ATCommandWarp_.sbr
-.\MIPSIIDbg\Fsm_.sbr
-.\MIPSIIDbg\Observer.sbr
-.\MIPSIIDbg\Reg.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1AC.tmp"
-Creating browse info file...
-<h3>Output Window</h3>
 
 
 
 
 <h3>Results</h3>
-MultimediaPhone.exe - 0 error(s), 61 warning(s)
+MultimediaPhone.exe - 0 error(s), 110 warning(s)
 </pre>
 </body>
 </html>

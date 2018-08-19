@@ -13,30 +13,6 @@
 #include "./util/unzip.h"
 #include "./Util/MMSWarp.h"
 
-extern int g_SignalSize;
-extern std::string g_messageID;
-extern std::string g_recipientAddress;
-extern std::string g_senderAddress;
-
-extern BOOL g_isAutoPlay;
-extern BOOL g_bReplay;
-
-BOOL FindVideoDlg(BOOL flag)
-{
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	BOOL isFind = FALSE;
-	if(main->m_pMainDlg->m_mainVideoDlg_->m_IsPlay == 1 || g_isAutoPlay)  //影院 相册
-	{
-		isFind = TRUE;
-		if(flag)
-		{
-			main->m_pMainDlg->StopVideo(FALSE, 0, 0);
-			g_bReplay = TRUE;
-		}
-	}
-
-	return isFind;
-}
 
 //检测路径是否存在
 BOOL DetectDIR(TCHAR *sDir)
@@ -272,9 +248,9 @@ int CopyDirFilesEx(LPCTSTR strSrc, LPCTSTR strDes, UINT nNums)
 	return nRes;
 }
 
-double GetFileSize(TCHAR *sFile)
+float GetFileSize(TCHAR *sFile)
 {
-	double dwSize = 0;
+	float dwSize = 0;
 	if(DetectFile(sFile))
 	{
 		CFile cfile;
@@ -286,7 +262,7 @@ double GetFileSize(TCHAR *sFile)
 	return dwSize;
 }
 
-double GetDirSize(TCHAR *sDir, double &fSize)
+float GetDirSize(TCHAR *sDir, float &fSize)
 {
 	WIN32_FIND_DATA  fileInfo;   
 	HANDLE           hFind;   
@@ -310,8 +286,7 @@ double GetDirSize(TCHAR *sDir, double &fSize)
 			}
 			else
 			{
-				//fSize += fileInfo.nFileSizeHigh * (MAXDWORD+1) + fileInfo.nFileSizeLow;
-				fSize += GetFileSize(pathName);
+				fSize += fileInfo.nFileSizeHigh * (MAXDWORD+1) + fileInfo.nFileSizeLow;
 			}
 			
 			if (!FindNextFile(hFind, &fileInfo))
@@ -340,6 +315,8 @@ BOOL DeleteFiles(TCHAR* sDir)
 
 	int nFileCount = CountFolderSize(sDir);
 	int nFileIndex = 0;
+	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->IsWindowVisible())
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->m_procbarSound.SetParam(0, 0, nFileCount, 1);
 
 	CString s = sDir;
 	s = s.Left(s.GetLength() - 1);
@@ -355,6 +332,8 @@ BOOL DeleteFiles(TCHAR* sDir)
 			{
 				CFile::Remove(s + fd.cFileName);
 				nFileIndex++;
+				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->IsWindowVisible())
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->m_procbarSound.SetPos(nFileIndex);
 			}
 			catch (CFileException* pEx)
 			{
@@ -370,6 +349,8 @@ BOOL DeleteFiles(TCHAR* sDir)
 				{
 					CFile::Remove(s + fd.cFileName);
 					nFileIndex++;
+					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->IsWindowVisible())
+						((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->m_procbarSound.SetPos(nFileIndex);
 				}
 				catch (CFileException* pEx)
 				{
@@ -387,7 +368,13 @@ BOOL DeleteFiles(TCHAR* sDir)
 
 DWORD CountFolderSize(CString strPath)
 {
-	g_bAdjustPanel = TRUE;
+//	g_bAdjustPanel = TRUE;
+	
+	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->IsWindowVisible())
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->m_procbarSound.SetParam(0, 0, 4, 1);
+	
+	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->IsWindowVisible())
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetParam(0, 0, 4, 1);
 
 	if(strPath.Find(L"*", 0) == -1)
 		strPath += _T("\\*.*");
@@ -407,6 +394,8 @@ DWORD CountFolderSize(CString strPath)
 			if(!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
 			{
 				dwSize++;
+				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->IsWindowVisible())
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->m_procbarSound.SetPos(dwSize%5);
 				
 				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->IsWindowVisible())
 					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetPos(dwSize%5);
@@ -428,10 +417,12 @@ DWORD CountFolderSize(CString strPath)
 		} while (!finished);
 		FindClose(hFind);
 	}
+	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->IsWindowVisible())
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pWarningNoFlashDlg->m_procbarSound.SetPos(0);
 				
-	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->IsWindowVisible())
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetPos(0);
-	g_bAdjustPanel = FALSE;
+				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->IsWindowVisible())
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetPos(0);
+//	g_bAdjustPanel = FALSE;
 	return dwSize;
 }
 
@@ -446,6 +437,142 @@ CString GetFileName(CString pathname)
 }
 
 #include <Afxinet.h>
+/* *****************************************************************************
+
+ * Description : BASE64 encoding and decoding
+
+ * Date             : 06-08-21 21:00 
+
+ * Author          :  aishen944
+
+ * Copryright   :  
+
+********************************************************************************/
+// #include <string.h>
+// #include <stdlib.h>
+// 
+// #define BASE64_PAD64 '='
+// 
+// char base64_alphabet[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+//                           'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+//                           'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a',
+//                           'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+//                           'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+//                           't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
+//                           '2', '3', '4', '5', '6', '7', '8', '9', '+',
+//                           '/'};
+// 
+// char base64_suffix_map[256] = {
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255,  62, 255, 255, 255,  63,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61, 255, 255,
+//      255, 255, 255, 255, 255,  0,   1,    2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,
+//      15,   16,  17,  18,  19,  20,  21,  22,  23,  24,  25, 255, 255, 255, 255, 255, 255,  26,  27,  28,
+//      29,   30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48,
+//      49,   50,  51, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+//      255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
+// 
+// static char cmove_bits(unsigned char src, unsigned lnum, unsigned rnum) {
+//    src <<= lnum;
+//    src >>= rnum;
+//    return src;
+// }
+// 
+// char* base64_encode(const char *data) {
+//    char *ret, *retpos;
+//    int n, m, padnum = 0, retsize, dlen = strlen(data);
+// 
+//    if(dlen == 0) return NULL;
+// 
+//    /* Account the result buffer size and alloc the memory for it. */
+//    if((dlen % 3) != 0)
+//     padnum = 3 - dlen % 3;
+//    retsize = (dlen + padnum) + ((dlen + padnum) * 1/3) + 1;
+//    if((ret = (char *)malloc(retsize)) == NULL) 
+//       return NULL;
+//    retpos = ret;
+// 
+//    /* Starting to convert the originality characters to BASE64 chracaters. 
+//       Converting process keep to 4->6 principle. */
+//    for(m = 0; m < (dlen + padnum); m += 3) {
+//       /* When data is not suffice 24 bits then pad 0 and the empty place pad '='. */
+//       *(retpos) = base64_alphabet[cmove_bits(*data, 0, 2)];
+//       if(m == dlen + padnum - 3 && padnum != 0) {  /* Whether the last bits-group suffice 24 bits. */
+//           if(padnum == 1) {   /* 16bit need pad one '='. */
+//               *(retpos + 1) = base64_alphabet[cmove_bits(*data, 6, 2) + cmove_bits(*(data + 1), 0, 4)];
+//               *(retpos + 2) = base64_alphabet[cmove_bits(*(data + 1), 4, 2)];
+//               *(retpos + 3) = BASE64_PAD64;
+//           } else if(padnum == 2) { /* 8bit need pad two'='. */
+//               *(retpos + 1) = base64_alphabet[cmove_bits(*data, 6, 2)];
+//               *(retpos + 2) = BASE64_PAD64;
+//               *(retpos + 3) = BASE64_PAD64;
+//           }
+//       } else {  /* 24bit normal. */
+//          *(retpos + 1) = base64_alphabet[cmove_bits(*data, 6, 2) + cmove_bits(*(data + 1), 0, 4)];
+//          *(retpos + 2) = base64_alphabet[cmove_bits(*(data + 1), 4, 2) + cmove_bits(*(data + 2), 0, 6)];
+//          *(retpos + 3) = base64_alphabet[*(data + 2) & 0x3f];
+//       }
+// 
+//       retpos += 4;
+//       data += 3;
+//    }
+// 
+//    ret[retsize - 1] =0;
+// 
+//    return ret;
+// }
+// 
+// char* base64_decode(const char *bdata) {
+//    char *ret = NULL, *retpos;
+//    int n, m, padnum = 0, retsize, bdlen = strlen(bdata);
+// 
+//    if(bdlen == 0) return NULL;
+//    if(bdlen % 4 != 0) return NULL;
+// 
+//    /* Whether the data have invalid base-64 characters? */
+//    for(m = 0; m < bdlen; ++m) {
+//       if(bdata[m] != BASE64_PAD64 && base64_suffix_map[bdata[m]] == 255)
+//          goto LEND;
+//    }
+// 
+//    /* Account the output size. */
+//    if(bdata[bdlen - 1] ==  '=')  padnum = 1;
+//    if(bdata[bdlen - 1] == '=' && bdata[bdlen - 2] ==  '=') padnum = 2;
+//    retsize = (bdlen - 4) - (bdlen - 4) / 4 + (3 - padnum) + 1;
+//    ret = (char *)malloc(retsize);
+//    if(ret == NULL) 
+//          return NULL;
+//    retpos = ret; 
+// 
+//    /* Begging to decode. */
+//    for(m = 0; m < bdlen; m += 4) {
+//       *retpos = cmove_bits(base64_suffix_map[*bdata], 2, 0) + cmove_bits(base64_suffix_map[*(bdata + 1)], 0, 4);
+//       if(m == bdlen - 4 && padnum != 0) {  /* Only deal with last four bits. */
+//          if(padnum == 1)   /* Have one pad characters, only two availability characters. */
+//             *(retpos + 1) = cmove_bits(base64_suffix_map[*(bdata + 1)], 4, 0) + cmove_bits(base64_suffix_map[*(bdata + 2)], 0, 2);
+//          /*
+//          Have two pad characters, only two availability characters.
+//          if(padnum == 2) { 
+//          }
+//          */
+//          retpos += 3 - padnum;
+//       } else {
+//          *(retpos + 1) = cmove_bits(base64_suffix_map[*(bdata + 1)], 4, 0) + cmove_bits(base64_suffix_map[*(bdata + 2)], 0, 2);
+//          *(retpos + 2) = cmove_bits(base64_suffix_map[*(bdata + 2)], 6, 0) + base64_suffix_map[*(bdata + 3)];
+//          retpos += 3;
+//       }
+//       bdata += 4;
+//    }
+// 
+//    ret[retsize - 1] = 0;
+// 
+//    LEND: return ret;
+// }
 
 //int ype   0 文件下载   1 天气预报 2 菜单维护  3 xxxx 4 注册回应
 int dowith_Parse(char *ptr, int type)
@@ -718,9 +845,6 @@ BOOL FindHttpEnd(char *pBuf, int &status, int pLen, int &nOffLen)
 					zLength = length1 + ptr - pBuf + 4;
 					status = 1;
 					nOffLen = ptr - pBuf + 4;
-
-					if(pLen >= zLength)
-						return TRUE;
 				}
 			}
 		}
@@ -736,35 +860,94 @@ BOOL FindHttpEnd(char *pBuf, int &status, int pLen, int &nOffLen)
 //release dialed   20090619
 int HttpProcesse(void *pParam)
 {
-	extern VOID WriteMyLog_(char *ptr, int size);
-	WriteMyLog_("HttpProcesse",strlen("HttpProcesse"));
-
 	Dprintf("HttpProcesse:\r\n");
 	int ret = -1;
 	HttpParam *pHttpParam = (HttpParam *)pParam;
 	CString strSentence;
-	std::wstring strFileName = Util::StringOp::ToCString(pHttpParam->url);
- // CString strFileName = pHttpParam->url;
+    CString strFileName = pHttpParam->url;
 	
-	char log[100] = {0};
-	sprintf(log,"url:%s",pHttpParam->url);
-	WriteMyLog_(log,strlen(log));
-
-//	Dprintf(pHttpParam->url);
-//	Dprintf("\r\n");
+	Dprintf(pHttpParam->url);
+	Dprintf("\r\n");
 
 	CString strFormData = "";    // 需要提交的数据
-    CString strHeaders = _T("Content-Type: application/x-www-form-urlencoded"); //请求头
+    CString strHeaders = _T("Content-Type: application/x-www-form-urlencoded"); // 请求头
 
 	Util::HTTPTransport Transport;
 	Dprintf("HttpProcesse:0\r\n");
-	WriteMyLog_("HttpProcesse:0",strlen("HttpProcesse:0"));
-
 	Transport.SetAPN((Util::DIAL_APN)pHttpParam->apn_type, pHttpParam->apn_proxy);
 	Dprintf("HttpProcesse:1\r\n");
-	WriteMyLog_("HttpProcesse:1",strlen("HttpProcesse:1"));
+    char *regist[] = 
+	{
+	"<?xml version=\"1.0\" encoding=\"GBK\" ?>\r\n\
+		<JTXX>\r\n\
+		<Header>\r\n\
+		<OperCode>REGISTER</OperCode>\r\n\
+		<Version>1.0.0</Version>\r\n\
+		<TimeStamp>",
+		"</TimeStamp>\r\n\
+		</Header>\r\n\
+		<Body>\r\n\
+		<TerminalVersion>1.0.0</TerminalVersion>\r\n\
+		<IMEI>",
+		"</IMEI>\r\n\
+		<TerminalId>",
+		"</TerminalId>\r\n\
+		</Body>\r\n\
+		</JTXX>\r\n"
+	};
+    if(pHttpParam->type == 1)    //post
+	{
+		
+		Dprintf("HttpProcesse:2\r\n");
+		SYSTEMTIME curtime;
+		GetLocalTime(&curtime);
+		char datetime[32];
+		sprintf(datetime, "%04d%02d%02d%02d%02d%02d", curtime.wYear, curtime.wMonth, curtime.wDay, curtime.wHour, curtime.wMinute, curtime.wSecond);
+		Dprintf("HttpProcesse:3\r\n");
+		
+		char sData[1024] = {0};
+		memset(sData, 0, 1024);
 
-	if(pHttpParam->type == 2 || pHttpParam->type == 11 || pHttpParam->type == 12)    //发送彩信
+		strcpy(sData, regist[0]);
+		strcat(sData, datetime);
+		strcat(sData, regist[1]);
+		if(pHttpParam->cIMEI)
+		strcat(sData, pHttpParam->cIMEI);
+		strcat(sData, regist[2]);
+		if(pHttpParam->cTerminalId)
+		strcat(sData, pHttpParam->cTerminalId);
+		strcat(sData, regist[3]);
+		Dprintf("HttpProcesse:4\r\n");
+
+		Transport.message.headers.insert(std::make_pair(std::wstring(L"Content-Type"), std::wstring(L"application/x-www-form-urlencoded")));
+		
+		TCHAR sLen[32];
+		wsprintf(sLen, L"%d", strlen(sData));
+		std::wstring sLen_ = sLen;
+		Transport.message.headers.insert(std::make_pair(std::wstring(L"CONTENT-LENGTH"), sLen_));
+
+		Transport.message.body = sData;
+		Dprintf("HttpProcesse5: %d\r\n", strlen(sData));
+		Transport.SetPost(sData, strlen(sData));
+		Dprintf("HttpProcesse:6\r\n");
+		DWORD r_ = Transport.Post_((LPCTSTR)strFileName);
+		Dprintf("Post1 error %d\r\n", r_);
+		if(r_ == 0 )
+		{
+			int size = 0;
+			BYTE pBuf[1024*2+1] = {0};
+			int nCount = 1;
+			while(nCount != 0)
+			{
+				nCount = Transport.Recv(pBuf+size, 256);
+				size += nCount;
+			} 
+			Dprintf((char *)pBuf);
+			ret = dowith_Parse((char *)pBuf, 4);
+		}
+	}
+	
+	else if(pHttpParam->type == 2 || pHttpParam->type == 11)    //发送彩信
 	{
 		
 		if(pHttpParam->type == 2)
@@ -774,246 +957,425 @@ int HttpProcesse(void *pParam)
 			Transport.message.headers.insert(std::make_pair(std::wstring(L"Accept"), std::wstring(L"application/vnd.wap.mms-message,text/plain,*/*")));
 			Transport.message.headers.insert(std::make_pair(std::wstring(L"User-Agent"), std::wstring(L"CeHttp")));
 		}
-
+	
 		TCHAR sLen[32];
 		wsprintf(sLen, L"%d", pHttpParam->dataLentg);
 		std::wstring sLen_ = sLen;
 		Transport.message.headers.insert(std::make_pair(std::wstring(L"CONTENT-LENGTH"), sLen_));
 		Transport.message.body = std::string(pHttpParam->pData, pHttpParam->dataLentg);
 		Transport.SetPost(pHttpParam->pData, pHttpParam->dataLentg);
-		
+		extern VOID WriteLog_(char *ptr, int size);
+		WriteLog_(pHttpParam->pData, pHttpParam->dataLentg);
 		Dprintf("Post start:\r\n");
-		WriteMyLog_("Post start",strlen("Post start"));
-
-	//	DWORD r_ = Transport.Post((LPCTSTR)strFileName);
-		//DWORD r_ = Transport.Post(strFileName);
-		DWORD r_ = Transport.PostMms(strFileName, (UINT8*)pHttpParam->pData, pHttpParam->dataLentg);
-		
+		DWORD r_ = Transport.Post((LPCTSTR)strFileName);
 		Dprintf("Post mms error %d\r\n", r_);
-
-		sprintf(log,"Post mms error: %d",r_);
-		WriteMyLog_(log,strlen(log));
-
 		if(r_ == 0 )
-		{	
-			int status = 0;
-			int nOffLength = 0;
-			DWORD start = GetTickCount();
-
+		{
 			int size = 0;
-			BYTE pBuf[1024*4+1] = {0};
+			BYTE pBuf[1024*2+1] = {0};
 			int nCount = 1;
 			while(nCount != 0)
 			{
-// 				nCount = Transport.Recv(pBuf+size, 128);
-// 				size += nCount;
-				Dprintf("Recive\r\n");
-				nCount = Transport.Recv(pBuf+size, 128);
-				Dprintf("Recive_End\r\n");
+				nCount = Transport.Recv(pBuf+size, 256);
 				size += nCount;
-
-			/*	if( (nCount < 128 && nCount != 0))
-				{
-					Dprintf("nCount: %d",nCount);
-					break;
-				}
-				*/
-				
-// 				DWORD end = GetTickCount() - start;
-// 				if(end >= 300000)
-// 				{
-// 					sprintf(log, "Get MMS Error The SignalSize is %d\r\n", g_SignalSize);
-// 					WriteMyLog_(log, strlen(log));
-// 					
-// 					Dprintf("Get TimeOUT");
-// 					size = 0;
-// 					break;
-// 				}
-								
-				if(FindHttpEnd((char *)pBuf, status, size, nOffLength))
-				{
-					Dprintf("Get Over\r\n");
-					break;
-				}
-				else if(size > (1024*4-128 + 1))
-				{	
-					Dprintf("Get Out\r\n");
-					break;
-				}
-				Sleep(10);
-
 			} 
 			Dprintf((char *)pBuf);
-			
-			memset(log,0,100);
-			sprintf(log,"size:%d",size);
-			WriteMyLog_(log,strlen(log));
 
-			WriteMyLog_("Recv Data:",strlen("Recv Data:"));
-			WriteMyLog_((char*)pBuf,strlen((char*)pBuf));
-
+			//extern VOID WriteLog_(char *ptr, int size);
+			//WriteLog_((char *)pBuf, size);
 			if(pHttpParam->type == 2)
 				ret = MMS::MMSWarp::GetMMSWarp()->DecodeSubmitResponse(pBuf, size);
-			else if(pHttpParam->type == 12)
-				ret = MMS::MMSWarp::GetMMSWarp()->DecodeReadOriginatorRequest(pBuf, size);
 			else
 				ret = 0;
-
-			char retLog[30] = {0};
-			sprintf(retLog,"ret_:%d",ret);
-			WriteMyLog_(retLog,strlen(retLog));
 		}
 				
 	}
+
 	else	//get
 	{
 		Dprintf("Get start:\r\n");
-		WriteMyLog_("Get start:",strlen("Get start:"));
+// 	
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"Accept-Language"), std::wstring(L"utf-8")));
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"Accept"), std::wstring(L"text/plain,*/*")));
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"User-Agent"), std::wstring(L"CeHttp")));
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"Connection"), std::wstring(L"Keep-Alive")));
 				
-	//	DWORD r_ = Transport.Get_((LPCTSTR)strFileName);
-		DWORD r_ = Transport.Get_(strFileName);
+		DWORD r_ = Transport.Get_((LPCTSTR)strFileName);
 		Dprintf("Get error %d\r\n", r_);
-		sprintf(log,"Get error: %d",r_);
-		WriteMyLog_(log,strlen(log));
-
 		if(r_ == 0 )
 		{
-			Dprintf("Get Start\r\n");
-			BYTE  *pBuf = new BYTE[1024*1024];
-			memset(pBuf, 0, 1024*1024);
+			BYTE  *pBuf = new BYTE[1024*1024*2];
+			memset(pBuf, 0, 1024*1024*2);
 			int size = 0;
 			int nCount = 1;
 
 			int status = 0;
 			int nOffLength = 0;
-			DWORD start = GetTickCount();
+		
 			while(nCount != 0)
-			{	
-				Dprintf("Get Recv\r\n");
-				Sleep(10);
-				nCount = Transport.Recv(pBuf+size, 512*1024);
+			{
+				nCount = Transport.Recv(pBuf+size, 128);
 				size += nCount;
-
-			/*	if( nCount < 128 && nCount != 0)
-				{
-					Dprintf("nCount: %d",nCount);
-					break;
-				}
-				*/
-								
-				DWORD end = GetTickCount() - start;
-				if(end >= 300000)
-				{
-					sprintf(log, "Get MMS Error The SignalSize is %d\r\n", g_SignalSize);
-					WriteMyLog_(log, strlen(log));
-
-					Dprintf("Get TimeOUT");
-					memset(pBuf, 0, 1024*1024);
-					size = 0;
-					break;
-				}
 				
-
 				if(FindHttpEnd((char *)pBuf, status, size, nOffLength))
-				{
-					Dprintf("Get Over\r\n");
 					break;
-				}
-				else if(size > (1024*1204-1024))
-				{	
-					Dprintf("Get Out\r\n");
+				
+				else if(size > (1024*1204*2-256))
 					break;
-				}
-
 			} 
-			Dprintf("Get FindHttpEnd \r\n");
-
+			
+	//		Dprintf((char *)pBuf);
 			if(pHttpParam->dwType < 10)
 				ret = dowith_Parse((char *)(pBuf+nOffLength), pHttpParam->dwType);
-			else if(pHttpParam->dwType == 10) //彩信
+			else if(pHttpParam->dwType == 10)			//彩信
 			{
-				CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+				extern VOID WriteLog_(char *ptr, int size);
+				WriteLog_((char *)pBuf, size);
 
-				CFile file;
-				static int filecount = 10;
-				WCHAR text[30];
-				swprintf(text,L"FlashDrv/%d.txt",filecount++);
-				if(file.Open(text, CFile::modeCreate|CFile::modeWrite))
-				{
-					file.Write(pBuf, size);
-					file.Close();
-				}
-
-				size_t pos = 0;
-				char *data = (char*)pBuf;
-				char *subStr = NULL;
-				bool flag = false;
-				std::string str;
-				subStr = strstr(data, "\r\n");
-				if(subStr != NULL)
-				{
-					pos = subStr - data;
-				}
-				if(pos > 0)
-				{ 
-					//找到\r\n后将Http头第一行赋给subStr,只查找Http头的第一行
-					str += std::string(data, pos);
-					subStr = (char*)str.c_str();
-					if(strstr(subStr, "200") != NULL && strstr(subStr, "OK") != NULL)
-					{
-						flag = true;
-						str = "";
-						str += std::string(data, size);
-						pos = str.find("\r\n\r\n", 0);
-						pos += 4;
-					}
-					else
-					{
-						flag = false;
-					}
-				}
-				
-				data = NULL;
-				subStr = NULL;
-				
-				if(flag)
-				{
-					int maxSize = main->m_pMMSDlg->GetMMSMaxSize();
-					
-					if((size - pos)/1024 > maxSize) //彩信大于设置的最大值则不接收
-					{
-						FindVideoDlg(TRUE);
-						main->m_pWarningNoFlashDlg->SetTitle(L"彩信息过大！无法接收！");
-						main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-						ret = -1;
-					}
-					else
-					{
-						Data::MMSData* pMMsData = MMS::MMSWarp::GetMMSWarp()->DecodeMessage(pBuf+pos, size);
-						Dprintf("DecodeMessage Over\r\n");
-						//pMMsData->Insert();
-						main->m_pMMSDlg->SaveMmsData(pMMsData);
-						ret = pMMsData->id();
-
-						::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
-						delete pMMsData;
-						pMMsData = NULL;
-					}
-				}
-				else
-				{
-					main->m_pWarningNoFlashDlg->SetTitle(L"彩信接收过程错误!");
-					main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-				}
+				Data::MMSData* pMMsData = MMS::MMSWarp::GetMMSWarp()->DecodeMessage(pBuf, size);
+				pMMsData->Insert();
+				ret = pMMsData->id();
+				::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
+				delete pMMsData;
 			}
 			delete []pBuf;
-			pBuf = NULL;
 		}
 	}
     Transport.Close();
 	delete pHttpParam;
 	return ret;
+
 }
+
+/*
+int HttpProcesse(void *pParam)
+{
+	int ret = -1;
+	HttpParam *pHttpParam = (HttpParam *)pParam;
+	CString strSentence;
+    CString strFileName = pHttpParam->url;
+
+	CString strFormData = "";    // 需要提交的数据
+    CString strHeaders = _T("Content-Type: application/x-www-form-urlencoded"); // 请求头
+	
+	INTERNET_PROXY_INFO Proxy;
+	Proxy.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
+	CString strProxyServer;
+	strProxyServer.Format(_T("%s:%d"), "10.0.0.172", 80);
+	Proxy.lpszProxy = strProxyServer;
+	Proxy.lpszProxyBypass = NULL;
+
+    CInternetSession sess;
+    CHttpFile* fileGet;
+    try
+    {
+        fileGet=(CHttpFile*)sess.OpenURL(strFileName, 0, INTERNET_FLAG_TRANSFER_BINARY);
+	}
+    catch(CInternetException* e)
+    {
+		if (e->m_dwError == 12002)
+		{
+			fileGet = NULL; 
+			e-> Delete();
+			Sleep(1000); 
+		}
+		else
+		{
+			fileGet = 0;
+			throw;
+		}
+    }    
+	
+    if(fileGet)
+    {
+        DWORD dwStatus;
+        DWORD dwBuffLen = sizeof(dwStatus);
+        BOOL bSuccess = fileGet->QueryInfo(HTTP_QUERY_STATUS_CODE|HTTP_QUERY_FLAG_NUMBER, &dwStatus, &dwBuffLen);
+		
+		char *regist[] = 
+		{
+		"<?xml version=\"1.0\" encoding=\"GBK\" ?>\r\n\
+			<JTXX>\r\n\
+			<Header>\r\n\
+			<OperCode>REGISTER</OperCode>\r\n\
+			<Version>1.0.0</Version>\r\n\
+			<TimeStamp>",
+			"</TimeStamp>\r\n\
+			</Header>\r\n\
+			<Body>\r\n\
+			<TerminalVersion>1.0.0</TerminalVersion>\r\n\
+			<IMEI>",
+			"</IMEI>\r\n\
+			<TerminalId>",
+			"</TerminalId>\r\n\
+			</Body>\r\n\
+			</JTXX>\r\n"
+		};
+        if( bSuccess && dwStatus>= 200 && dwStatus<300 ) 
+        { 
+			if(pHttpParam->type == 1)    //post
+			{
+				SYSTEMTIME curtime;
+				GetLocalTime(&curtime);
+				char datetime[32];
+				sprintf(datetime, "%04d%02d%02d%02d%02d%02d", curtime.wYear, curtime.wMonth, curtime.wDay, curtime.wHour, curtime.wMinute, curtime.wSecond);
+				char sData[1024] = {0};
+				strcpy(sData, regist[0]);
+				strcat(sData, datetime);
+				strcat(sData, regist[1]);
+				if(pHttpParam->cIMEI)
+					strcat(sData, pHttpParam->cIMEI);
+				strcat(sData, regist[2]);
+				if(pHttpParam->cTerminalId)
+					strcat(sData, pHttpParam->cTerminalId);
+				strcat(sData, regist[3]);
+
+				CString strSentence, strGetSentence = "";
+				DWORD dwStatus;
+				DWORD dwBuffLen = sizeof(dwStatus);
+				BOOL bSuccess = fileGet->QueryInfo(HTTP_QUERY_STATUS_CODE|HTTP_QUERY_FLAG_NUMBER, &dwStatus, &dwBuffLen);
+				if( bSuccess && dwStatus>= 200 &&dwStatus<300 )
+				{ 
+					BOOL result = fileGet->SendRequest(strHeaders, (LPVOID)(LPCTSTR)sData, strlen(sData));
+					char pBuf[1024*2+1] = {0};
+					//从缓冲区循环读取文数据
+					int bytesread = fileGet->Read((BYTE *)pBuf,1024*2);
+					if(bytesread > 0)
+					{
+						ret = dowith_Parse(pBuf, 4);
+					}
+					
+					Dprintf(pBuf); // 显示返回网页内容
+					Dprintf("\r\n");
+				}
+				else 
+				{
+					strSentence.Format(L"POST出错，错误码：%d", dwStatus);
+					Dprintf(strSentence);
+				}
+			}
+			else	//get
+			{
+				CStdioFile fileWrite; 
+				
+				
+			//	if(fileWrite.Open(sLocaleFileName, CFile::modeWrite|CFile::modeCreate))
+				{ 
+					BYTE  *pBuf = new BYTE[1024*1024];
+					memset(pBuf, 0, 1024*1024);
+					//从缓冲区循环读取文数据
+					int ncount = 0;
+					while (int bytesread = fileGet->Read(pBuf+ncount,256))
+					{
+						//指针移到文件结尾
+				//		fileWrite.SeekToEnd();
+						//将读取的缓冲区数据写入本地文件
+				//		fileWrite.Write(pBuf+ncount, bytesread);
+						ncount += bytesread;
+						if(ncount >= (1024*1024-256))
+							break;
+					}
+				//	fileWrite.Close();
+					Dprintf(L"下载完毕\r\n");
+					if(pHttpParam->dwType < 10)
+						ret = dowith_Parse((char *)pBuf, pHttpParam->dwType);
+					else if(pHttpParam->dwType == 10)
+					{
+						extern VOID WriteLog(char *ptr);
+						WriteLog((char *)pBuf);
+					}
+
+					delete []pBuf;
+				}
+// 				else
+// 				{
+// 					Dprintf("本地文件"+sLocaleFileName+"打开出错."); 
+// 				}
+			}
+        }
+        else 
+        {
+            strSentence.Format(L"打开网页文件出错，错误码：%d", dwStatus);
+            Dprintf(strSentence);
+        }
+        fileGet->Close();
+        delete fileGet;
+    }
+    else
+        Dprintf(L"不能找到网页文件！");
+	
+	sess.Close();
+	delete pHttpParam;
+	return ret;
+}
+*/
+
+/*
+int HttpProcesse(void *pParam)
+{
+	int ret = -1;
+	HttpParam *pHttpParam = (HttpParam *)pParam;
+	CString strSentence;
+    CString strFileName = pHttpParam->url;
+
+	CString strFormData = "";    // 需要提交的数据
+    CString strHeaders = _T("Content-Type: application/x-www-form-urlencoded"); // 请求头
+	
+	INTERNET_PROXY_INFO Proxy;
+	Proxy.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
+	CString strProxyServer;
+	strProxyServer.Format(_T("%s:%d"), "10.0.0.172", 80);
+	Proxy.lpszProxy = strProxyServer;
+	Proxy.lpszProxyBypass = NULL;
+
+    CInternetSession sess;
+	sess.SetOption (INTERNET_OPTION_CONNECT_TIMEOUT, 30 * 1000) ;
+	sess.SetOption (INTERNET_OPTION_CONNECT_BACKOFF, 1000) ;
+    sess.SetOption (INTERNET_OPTION_CONNECT_RETRIES, 3) ;
+
+	DWORD dwSerType;
+	CString szServer;
+	CString szObject;
+	unsigned short nPort;
+	AfxParseURL(strFileName, dwSerType, szServer, szObject, nPort); 
+	
+	CHttpConnection *pConnec = sess.GetHttpConnection(szServer,nPort,NULL,NULL); 
+
+
+    CHttpFile* fileGet;
+	
+    if(pConnec)
+    {
+        DWORD dwStatus;
+        DWORD dwBuffLen = sizeof(dwStatus);
+		if(pHttpParam->type == 1)    //post
+			fileGet = pConnec->OpenRequest(CHttpConnection::HTTP_VERB_POST, L""); 
+		else
+			fileGet = pConnec->OpenRequest(CHttpConnection::HTTP_VERB_GET, szObject); 
+		if(!fileGet)
+			return ret;
+		
+        BOOL bSuccess = fileGet->QueryInfo(HTTP_QUERY_STATUS_CODE|HTTP_QUERY_FLAG_NUMBER, &dwStatus, &dwBuffLen);
+		
+		char *regist[] = 
+		{
+		"<?xml version=\"1.0\" encoding=\"GBK\" ?>\r\n\
+			<JTXX>\r\n\
+			<Header>\r\n\
+			<OperCode>REGISTER</OperCode>\r\n\
+			<Version>1.0.0</Version>\r\n\
+			<TimeStamp>",
+			"</TimeStamp>\r\n\
+			</Header>\r\n\
+			<Body>\r\n\
+			<TerminalVersion>1.0.0</TerminalVersion>\r\n\
+			<IMEI>",
+			"</IMEI>\r\n\
+			<TerminalId>",
+			"</TerminalId>\r\n\
+			</Body>\r\n\
+			</JTXX>\r\n"
+		};
+        if( bSuccess ) 
+        { 
+			if(pHttpParam->type == 1)    //post
+			{
+				SYSTEMTIME curtime;
+				GetLocalTime(&curtime);
+				char datetime[32];
+				sprintf(datetime, "%04d%02d%02d%02d%02d%02d", curtime.wYear, curtime.wMonth, curtime.wDay, curtime.wHour, curtime.wMinute, curtime.wSecond);
+				char sData[1024] = {0};
+				strcpy(sData, regist[0]);
+				strcat(sData, datetime);
+				strcat(sData, regist[1]);
+				if(pHttpParam->cIMEI)
+					strcat(sData, pHttpParam->cIMEI);
+				strcat(sData, regist[2]);
+				if(pHttpParam->cTerminalId)
+					strcat(sData, pHttpParam->cTerminalId);
+				strcat(sData, regist[3]);
+
+				CString strSentence, strGetSentence = "";
+				DWORD dwStatus;
+				DWORD dwBuffLen = sizeof(dwStatus);
+				BOOL bSuccess = fileGet->QueryInfo(HTTP_QUERY_STATUS_CODE|HTTP_QUERY_FLAG_NUMBER, &dwStatus, &dwBuffLen);
+				if( bSuccess && dwStatus>= 200 &&dwStatus<300 )
+				{ 
+					BOOL result = fileGet->SendRequest(strHeaders, (LPVOID)(LPCTSTR)sData, strlen(sData));
+					char pBuf[1024*2+1] = {0};
+					//从缓冲区循环读取文数据
+					int bytesread = fileGet->Read((BYTE *)pBuf,1024*2);
+					if(bytesread > 0)
+					{
+						ret = dowith_Parse(pBuf, 4);
+					}
+					
+					Dprintf(pBuf); // 显示返回网页内容
+					Dprintf("\r\n");
+				}
+				else 
+				{
+					strSentence.Format(L"POST出错，错误码：%d", dwStatus);
+					Dprintf(strSentence);
+				}
+			}
+			else	//get
+			{
+				CStdioFile fileWrite; 
+				int t_ = fileGet->SendRequest(); 
+				
+				
+
+			//	if(fileWrite.Open(sLocaleFileName, CFile::modeWrite|CFile::modeCreate))
+				{ 
+					BYTE  *pBuf = new BYTE[1024*1024];
+					memset(pBuf, 0, 1024*1024);
+					//从缓冲区循环读取文数据
+					int ncount = 0;
+					while (int bytesread = fileGet->Read(pBuf+ncount,256))
+					{
+						//指针移到文件结尾
+				//		fileWrite.SeekToEnd();
+						//将读取的缓冲区数据写入本地文件
+				//		fileWrite.Write(pBuf+ncount, bytesread);
+						ncount += bytesread;
+						if(ncount >= (1024*1024-256))
+							break;
+					}
+				//	fileWrite.Close();
+					Dprintf(L"下载完毕\r\n");
+					if(pHttpParam->dwType < 10)
+						ret = dowith_Parse((char *)pBuf, pHttpParam->dwType);
+					else if(pHttpParam->dwType == 10)
+					{
+						extern VOID WriteLog(char *ptr);
+						WriteLog((char *)pBuf);
+					}
+
+					delete []pBuf;
+				}
+// 				else
+// 				{
+// 					Dprintf("本地文件"+sLocaleFileName+"打开出错."); 
+// 				}
+			}
+        }
+        else 
+        {
+            strSentence.Format(L"打开网页文件出错，错误码：%d", dwStatus);
+            Dprintf(strSentence);
+        }
+        fileGet->Close();
+        delete fileGet;
+    }
+    else
+        Dprintf(L"不能找到网页文件！");
+	
+	sess.Close();
+	delete pHttpParam;
+	return ret;
+}
+*/
 
 HttpParam    gHttpParam;
 //int type 
@@ -1040,7 +1402,50 @@ void StartHttp(char *url, int type = 0, int dwtype = 0, char *lfilename = NULL, 
 }
 
 void GeHttptFile(TCHAR   *url)   
-{
+{   
+	/*
+	CString   szContent;   
+	TCHAR   strProxyList[MAX_PATH],   strUsername[64],   strPassword[64];   
+	//in   this   case   "proxya"   is   the   proxy   server   name,   "8080"   is   its   port   
+	wcscpy(strProxyList,   L"10.0.0.172:80");   
+	wcscpy(strUsername,   L"");   
+	wcscpy(strPassword,   L"");   
+	DWORD   dwServiceType   =   AFX_INET_SERVICE_HTTP;   
+	CString   szServer,   szObject;   
+	INTERNET_PORT   nPort;   
+	AfxParseURL(url,   dwServiceType,   szServer,   szObject,   nPort);   
+	CInternetSession   mysession;   
+	CHttpConnection*   pConnection;   
+	CHttpFile*   pHttpFile;   
+	pConnection   =   mysession.GetHttpConnection(szServer,   
+		INTERNET_FLAG_KEEP_CONNECTION,   
+		INTERNET_INVALID_PORT_NUMBER,   
+		NULL,   NULL);   
+	pHttpFile   =   pConnection->OpenRequest(L"GET",   szObject,   
+		NULL,   0,   NULL,   NULL,   
+		INTERNET_FLAG_KEEP_CONNECTION);   
+	//here   for   proxy   
+	INTERNET_PROXY_INFO   proxyinfo;   
+	proxyinfo.dwAccessType   =   INTERNET_OPEN_TYPE_PROXY;   
+	proxyinfo.lpszProxy   =   strProxyList;   
+	proxyinfo.lpszProxyBypass   =   NULL;   
+	mysession.SetOption(INTERNET_OPTION_PROXY,   (LPVOID)&proxyinfo,   sizeof(INTERNET_PROXY_INFO));   
+	pHttpFile->SetOption(INTERNET_OPTION_PROXY_USERNAME,   strUsername,   wcslen(strUsername)+1);   
+	pHttpFile->SetOption(INTERNET_OPTION_PROXY_PASSWORD,   strPassword,   wcslen(strPassword)+1);   
+    
+	pHttpFile->SendRequest(NULL);   
+	DWORD   nFileSize   =   pHttpFile->GetLength();   
+	TCHAR *rbuf   =   szContent.GetBuffer(nFileSize);   
+	UINT   uBytesRead   =   pHttpFile->Read(rbuf,   nFileSize);   
+	szContent.ReleaseBuffer();   
+	pHttpFile->Close();   
+	delete   pHttpFile;   
+	pConnection->Close();   
+	delete   pConnection;   
+	mysession.Close();   
+	return   szContent;   
+	*/
+
 	CString szuser = "";
     CString szpass = "";
 
@@ -1192,50 +1597,56 @@ void GeHttptFile(TCHAR   *url)
         comm.Close();        
 }
 
-// add by qi 获得一个目录下的文件大小
-ULONGLONG GetDirAllFileSize(CString path)
-{	
-	CString allPath = path + L"*" ;
-	CFile File;
-	ULONGLONG filesize = 0;
-	WIN32_FIND_DATA fd;
-	HANDLE hfind;
-	hfind	  =	 FindFirstFile(allPath,&fd);
-	if(hfind !=	 INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			if(fd.dwFileAttributes !=FILE_ATTRIBUTE_DIRECTORY)
-			{ 
-				//如果是文件
-				CString strfl = path+fd.cFileName ;
-				if (File.Open(strfl,CFile::modeRead,NULL))
-				{
-					filesize += File.GetLength();
-					File.Close();
-				}	
-			}
-	
-		}
-		while(FindNextFile(hfind,&fd));
-	}
-	return filesize ;
-}
-
-//获得 Flashdrv磁盘目录下的剩余空间 和 总空间
-void GetDiskStatus(ULONGLONG &free,ULONGLONG &total,ULONGLONG &uleft)
+/*
+BOOL httpdownload(char *url, int type, char *lfilename)
 {
-	ULARGE_INTEGER freeBytes;
-	ULARGE_INTEGER totalBytes;
-	ULARGE_INTEGER totalFreeBytes;
-	GetDiskFreeSpaceEx(_T("\\Flashdrv"), &freeBytes, &totalBytes, &totalFreeBytes);
-	free  = totalFreeBytes.QuadPart;
-	total = totalBytes.QuadPart;
+	BOOL ret = FALSE;
+	CInternetSession *m_pInetSession=new CInternetSession(NULL, 1, INTERNET_OPEN_TYPE_PRECONFIG,	NULL, NULL, 0);
+	//设置参数
 	
-	//可用空间
-	uleft = 0;
-	if (free > 50*1024*1024)
+	m_pInetSession->SetOption(INTERNET_OPTION_CONNECT_TIMEOUT,1000);
+	m_pInetSession->SetOption(INTERNET_OPTION_CONNECT_BACKOFF,1000);
+	m_pInetSession->SetOption(INTERNET_OPTION_CONNECT_RETRIES,1);
+	
+	CString sURL = url;
+	//打开URL文件，返回CStdioFile
+	CStdioFile *pSFile = m_pInetSession->OpenURL(sURL);
+	if(pSFile)
 	{
-		uleft = free - 50*1024*1024;
+		//缓冲区
+		BYTE pBuf[1024] = {NULL};
+		CFile pCFile = NULL;
+		
+		//创建本地文件
+		char *local_dir[] = {"/Flashdrv/my_adv/", "/Flashdrv/my_web/", "/Flashdrv/my_monitor/"};
+		
+		CString sFileName = GetFileName(sURL);
+		CString sLocaleFileName = local_dir[type];
+		sLocaleFileName += sFileName;
+		
+		int i = wcstombs( lfilename, sLocaleFileName.GetBuffer(128), 128);
+		lfilename[i] = '\0';
+		
+		pCFile.Open(sLocaleFileName, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary);
+		if(pCFile != -1)
+		{
+			//从缓冲区循环读取文数据
+			while (int bytesread = pSFile->Read(pBuf,1024))
+			{
+				//指针移到文件结尾
+				pCFile.SeekToEnd();
+				//将读取的缓冲区数据写入本地文件
+				pCFile.Write(pBuf,bytesread);
+			}
+			ret = TRUE;
+		}
+		
+		//关闭本地文件
+		pCFile.Close();
+		//关闭CStdioFile
+		pSFile->Close();
 	}
-} 
+	delete m_pInetSession;
+	return ret;
+}
+*/

@@ -62,19 +62,17 @@ typedef struct
 	BYTE day;  // 0 - 31
 	BYTE hour;  // 0 - 23
 	BYTE minute;  // 0 - 59
-	BYTE Line;//
 	BYTE numberstatus; // CALLID_OK / CALLID_NONE / CALLID_FORBID / CALLID_CANNOT_GET
 	char number[CALLID_NUM_LEN];  // string ending with '\0'
 	BYTE namestatus; // CALLID_OK / CALLID_NONE / CALLID_FORBID / CALLID_CANNOT_GET
 	char name[CALLID_NAME_LEN];  // string ending with '\0'
 } CALLID_INFO;
 
-enum BATTERY{BATTERY_1, BATTERY_DC,BATTERY_INIT};
+enum BATTERY{BATTERY_1, BATTERY_DC};
 typedef struct
 {
 	BATTERY batteryType;          //0 电池  1  直流电  
 	BOOL    isCharge;			  //1 充电 
-	BOOL    isBattery_DC;		  //	
 	int		batteryProccess;
 	int		typeChange;           //0 电池到电源  1 电源到电池
 }BATTERYSTATUS;
@@ -148,9 +146,6 @@ namespace Telephone
 	private:	
 		HandSet		m_HandSet;
 		FreeSet		m_FreeSet;
-	public:
-		bool		m_bOpen3Port;
-		bool		m_bOpen1Port;
 
 	public:
 		int		Hand(void);
@@ -163,10 +158,7 @@ namespace Telephone
 		void    ParseCCWA(std::string const& data);//
 		void    ParseDACTI(std::string const& data);
 		void    ParseCSQ(std::string const& data);
-		void	ParseCIEV(std::string const& data);
-		void    ParseDSCI(std::string const& data);
-
-
+		
 		BATTERYSTATUS  m_BatteryStatus;
 		Util::RS232* m_pRS232;
 
@@ -186,7 +178,7 @@ namespace Telephone
 
 		 typedef struct
 		 {
-			 char NUM[64];
+			 char NUM[16];
 			 int TYPE;
 		 }TEL_NUM;
 
@@ -236,15 +228,14 @@ namespace Telephone
 		void Waiting(int const line);
 		void Ring(int const line);
 		
-		void NoDialTone(int const line);
-		void Busy(int const line);
-		void NoAnswer(int const line);
-		void NoCarrier(int const line);
-		void Connect(int const line);
-		void Congestion(int const line);
-		void OppHangup(int const line);
-		void Odb(int const line);
-
+		void NoDialTone(void);
+		void Busy(void);
+		void NoAnswer(void);
+		void NoCarrier(void);
+		void Connect(void);
+		void Congestion(void);
+		void OppHangup(void);
+		void Odb(void);
 		void SignalQuality(int level);
 		void PhoneNettype(int type);
 		
@@ -261,7 +252,6 @@ namespace Telephone
 		void HandFree(bool isHandFree);
 		std::string GetNumber(void);
 		void PhoneDialTone(BOOL isOn, char *tone);
-		void SendDialTone(char *code, int isON);
 			
 		//拨打电话
 		void DialNumber(char* telcode, int dial_tyle = 0);   //int dial_type 0 免提， 1 摘机
@@ -280,8 +270,7 @@ namespace Telephone
 		void PSTNHangoff();
 		void PSTNHangoff_();
 		void PSTNHangOn();
-		void PSTNRingMute(bool bmute = true);
-		
+
 		//ring tone
 	public:
 		IGraphBuilder   *pGraph ;   
@@ -312,7 +301,6 @@ namespace Telephone
 		void SetMsgWnd(CWnd *pWnd){m_pMsgWnd = pWnd;}
 
 		int			m_nFirstCall;
-		DWORD		m_DOldVoulme;
 		
 		//ring tone 调用说明：
 		//在振铃界面中，来电调用:StartRing(TCHAR *filename); 
@@ -324,7 +312,7 @@ namespace Telephone
 		void InitRingSrc();
 		void RelaseRingSrc();
 		void StartRing(TCHAR *filename, int ncount = 0xFF);
-		void StopRing(bool releasesrc = true,bool breset = true);
+		void StopRing(bool releasesrc = true);
 		void PauseRing();
 		void ResumeRing();
 		void ReduceSoundRing(int offset);
