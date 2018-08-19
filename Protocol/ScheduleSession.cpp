@@ -38,14 +38,9 @@ void ScheduleSession::selfProcess_(ResponseMessage const& response) const {
 	std::string pack = findContent_(response.Body, "pack", o);
     while (pack != "") {
         size_t offset = 0;
-		//@@
-        //std::string date = findContent_(pack, "date", offset);
-        //std::string time = findContent_(pack, "time", offset);
-        //std::string creator = findContent_(pack, "creator", offset);
-        std::string date = findContent_(pack, "Date", offset);
-        std::string time = findContent_(pack, "Time", offset);
-        std::string creator = findContent_(pack, "Creator", offset);
-		//@@
+        std::string date = findContent_(pack, "date", offset);
+        std::string time = findContent_(pack, "time", offset);
+        std::string creator = findContent_(pack, "creator", offset);
         std::string content = findContent_(pack, "content", offset);
 		Data::Scheduler s;
 		s.startTime(Util::StringOp::ToTimestamp(date + time));

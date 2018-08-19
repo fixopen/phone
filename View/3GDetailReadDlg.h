@@ -17,9 +17,6 @@
 #include "../Data/LanguageResource.h"
 #include "../Data/OTAData.h"
 #include "../control/MmsShow.h"
-#include "../Control/CERadioButton.h"
-#include "../Data/Pack.h"
-#include "../Data/Service.h"
 
 class C3GDetailReadDlg : public CDialog
 {
@@ -38,12 +35,6 @@ public:
 	std::vector<boost::shared_ptr<Data::Weather> > m_pWeatherdateresult;
 	std::vector<boost::shared_ptr<Data::Weather> > m_pWeatherresult;
 	std::vector<boost::shared_ptr<Data::WeatherPicture> > m_pWeatherPicture;
-
-	//家庭业务相关
-	std::vector<boost::shared_ptr<Data::Pack> > m_pYWPacket;
-	std::vector<boost::shared_ptr<Data::Service> > m_pYWService;
-//	CCERadioButton m_rdo[4];
-
 
 	void inittitle(char *titleTxt, char *titleIconFilename);
 	void ShowDetailRead(int i, int flag);

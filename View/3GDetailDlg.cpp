@@ -92,21 +92,14 @@ void C3GDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
-	case 2:
-		m_p3GDetailReadDlg->initmenu(2, "", 0);
-		m_p3GDetailReadDlg->ShowWindow(SW_SHOW);
-		break;
-	case 8:
-		m_p3GDetailReadDlg->initmenu(8, "", 0);
-		m_p3GDetailReadDlg->ShowWindow(SW_SHOW);
-		break;
-
 	case 1:
+	case 2:
 	case 3:
 	case 4:
 	case 5:
 	case 6:
 	case 7:
+	case 8:
 	case 9:
 		clickmenu(m_nMenuIndex+w-1);
 		break;

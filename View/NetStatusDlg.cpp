@@ -108,7 +108,7 @@ bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, C
 	if(type == CMWAP)
 	{
 	//	wsprintf(telcode , L"*98*1#");	
-		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"labwap3\",\"\",0,0<cr>");
+		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"CMWAP\",\"\",0,0<cr>");
 		wsprintf(atinit1 , L"AT+CGQREQ=1<cr>");	
 	}
 	else
@@ -326,7 +326,7 @@ CNetStatusDlg::CNetStatusDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	m_nADSLTimeCount = 0;
 	m_bADSLISConnnect = FALSE;
-	ADSLInit();
+	//ADSLInit();
 }
 
 

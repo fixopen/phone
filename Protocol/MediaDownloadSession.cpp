@@ -46,5 +46,5 @@ std::string const MediaDownloadSession::resourceName_() const {
 }
 
 std::string const MediaDownloadSession::additionParameter_() const {
-    return "&taskid=" + taskId_ + "&msgid=" + msgId_ + "&cid=" + cid_; // + "&cname=" + cname_;
+    return "&taskid=12345&msgid=123&cid=1&cname=xyz";
 }

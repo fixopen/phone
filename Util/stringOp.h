@@ -60,10 +60,6 @@ namespace Util
         static std::string const Merge(std::vector<std::string> const& value, std::string const& delimeter);
         static std::wstring const Trim(std::wstring const& value, std::wstring const& spaceChars = L" ");
         static std::string const Trim(std::string const& value, std::string const& spaceChars = " ");
-    public: //base16 <=> binary
-        static std::string const ToBase16(std::string const& binary);
-        static std::string const ToBinary(std::string const& base16);
-        static std::string const Base16ToArray(std::string const& v);
 	};
 }
 

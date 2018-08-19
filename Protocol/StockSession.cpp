@@ -8,8 +8,8 @@
     {
     }
 
-    void StockSession::SetParameter(std::string const& stockCode) {
-        stockCode_ = stockCode;
+    void StockSession::SetParameter(std::string const& newUrl) {
+        newUrl_ = newUrl;
     }
 
     void StockSession::selfProcess_(ResponseMessage const& response) const {
@@ -51,11 +51,11 @@
     }
 
     std::string const StockSession::resourceName_() const {
-        return "ZF3G/tic/stockinfo";
+        return "ZF3G/tic/parameter";
     }
 
     std::string const StockSession::additionParameter_() const {
-        return "&stockcode=" + stockCode_;
+        return "stockcode=XXX";
     }
 
     std::string const StockSession::alterServer_() const {

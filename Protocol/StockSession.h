@@ -7,14 +7,13 @@ class StockSession : public Session {
 public:
     StockSession(void);
     ~StockSession(void);
-    void SetParameter(std::string const& stockCode);
+    void SetParameter(std::string const& newUrl);
 private:
     void selfProcess_(ResponseMessage const& response) const;
     std::string const resourceName_() const;
     virtual std::string const additionParameter_() const;
     virtual std::string const alterServer_() const;
 private:
-	std::string stockCode_;
     std::string newUrl_;
 };
 

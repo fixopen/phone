@@ -9,10 +9,6 @@ WeatherSession::~WeatherSession(void)
 {
 }
 
-void WeatherSession::SetParameter(std::string const& taskId) {
-	taskId_ = taskId;
-}
-
 void WeatherSession::selfProcess_(ResponseMessage const& response) const {
 	/*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -80,5 +76,5 @@ std::string const WeatherSession::resourceName_() const {
 }
 
 std::string const WeatherSession::additionParameter_() const {
-    return "&taskid=" + taskId_;
+    return "&taskid=20090531";
 }

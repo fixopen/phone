@@ -2,8 +2,6 @@
 #include "InitializeSession.h"
 #include "Communicator.h"
 //#include "../Util/XMLParser.h"
-#include "../Data/Service.h"
-#include "../Data/Pack.h"
 
 InitializeSession::InitializeSession(void) {
 }
@@ -106,43 +104,14 @@ void InitializeSession::selfProcess_(ResponseMessage const& response) const {
 	</services>
 </initialresponse>
     */
+	//size_t offset = 0;
+    //std::string tagName = "service";
+    //size_t startPos = response.Body.find("<" + tagName + ">", offset) + tagName.length() + 2;
+    //size_t stopPos = response.Body.find("</" + tagName + ">", startPos);
+	//offset = stopPos + tagName.length() + 3;
+    //std::string service = response.Body.substr(startPos, stopPos - startPos);
 	size_t offset = 0;
-	std::string serviceStr = findContent_(response.Body, "service", offset);
-	while (serviceStr != "") {
-		size_t off = 0;
-		std::string name = findContent_(serviceStr, "servicename", off);
-		off = 0;
-		std::string code = findContent_(serviceStr, "servicecode", off);
-		off = 0;
-		std::string welcomeInfo = findContent_(serviceStr, "welcomeinfo", off);
-		Data::Service service;
-		service.name(name);
-		service.code(code);
-		service.welcomeInfo(welcomeInfo);
-		service.Insert();
-		off = 0;
-		std::string packStr = findContent_(serviceStr, "pack", off);
-		while (packStr != "") {
-			size_t o = 0;
-			std::string type = findContent_(packStr, "feetype", o);
-			o = 0;
-			std::string no = findContent_(packStr, "serviceid", o);
-			o = 0;
-			std::string rate = findContent_(packStr, "servicerate", o);
-			o = 0;
-			std::string orderStr = findContent_(packStr, "order", o);
-			bool isOrder = !!Util::StringOp::ToInt(orderStr, 10);
-			Data::Pack pack;
-			pack.serviceId(service.id());
-			pack.type(type);
-			pack.no(no);
-			pack.rate(rate);
-			pack.isOrder(isOrder);
-			pack.Insert();
-			packStr = findContent_(serviceStr, "pack", off);
-		}
-		serviceStr = findContent_(response.Body, "service", offset);
-	}
+	std::string service = findContent_(response.Body, "service", offset);
 }
 
 std::string const InitializeSession::resourceName_() const {

@@ -31,7 +31,6 @@ static char THIS_FILE[] = __FILE__;
 
 #include "Protocol/Communicator.h"
 #include "Protocol/Session.h"
-#include "Protocol/KeySession.h"
 #include "Protocol/RegisterSession.h"
 #include "Protocol/InitializeSession.h"
 #include "Protocol/BizManagerSession.h"
@@ -50,8 +49,6 @@ static char THIS_FILE[] = __FILE__;
 #include "Protocol/MediaDownloadSession.h"
 #include "Protocol/MMInfoSession.h"
 #include "Protocol/TaskReportSession.h"
-#include "Protocol/StockSession.h"
-#include "Protocol/DeviceParametersSession.h"
 
 //#define WM_PLAYVIDEO	8002
 #define  BMP_WIDTH			 800
@@ -1264,8 +1261,7 @@ void  CMultimediaPhoneDlg::SetAPN(int apn)
 	if(apn == 0)			//CMWAP
 	{
 		strcpy(m_nAPN.dialnumber, m_pSettingDlg->m_pSetting->gprsDialnumber1_.c_str());
-		//sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pSetting->gprsProxyIp1_.c_str(), m_pSettingDlg->m_pSetting->gprsProxyPort1_);
-		sprintf(m_nAPN.proxy, "%s:%d", "192.168.230.8", "9028"); //218.206.176.171
+		sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pSetting->gprsProxyIp1_.c_str(), m_pSettingDlg->m_pSetting->gprsProxyPort1_);
 		strcpy(m_nAPN.http, m_pSettingDlg->m_pSetting->gprsHttp1_.c_str());
 	}
 	else
@@ -1333,8 +1329,7 @@ void TdDoWithProc()
 	*/
 
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	//pMainDlg->SetAPN((int)CMNET);
-	pMainDlg->SetAPN((int)CMWAP);
+	pMainDlg->SetAPN((int)CMNET);
 	while(1)
 	{
 	//	break;
@@ -1367,9 +1362,6 @@ void TdDoWithProc()
 		{
 			//Dprintf("doRegisterTel :\r\n");
 			//pMainDlg->doRegisterTel();    //LXZ 20090618k
-			KeySession* key = new KeySession();
-			key->Process();
-			delete key;
 			RegisterSession* reg = new RegisterSession();
 			reg->Process();
 			delete reg;
@@ -1382,39 +1374,18 @@ void TdDoWithProc()
 			body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<subscriberequest>\n  <subscribeid>0000001</subscribeid>\n  <msisdn>13912345678</msisdn>\n  <serviceid>001002</serviceid>\n  <servicetype>五元包月套餐</servicetype>\n  <useraction>1</useraction>\n</subscriberequest>";
 			biz->Process(body);
 			delete biz;
-			MemberManagerSession* member = new MemberManagerSession();
-			//member->SetParameter("");
-			member->Process();
-			delete member;
-			FriendManagerSession* friendList = new FriendManagerSession();
-			//friendList->SetParameter("");
-			friendList->Process();
-			delete friendList;
-			BillSession* bill = new BillSession();
-			bill->SetBillTime("200912");
-			bill->SetBillType("3");
-			bill->Process();
-			delete bill;
-			TimeSession* time = new TimeSession();
-			time->Process();
-			delete time;
 			*/
 			TaskSession* task = new TaskSession();
 			task->Process();
 			delete task;
-
-			/*
-			DeviceParametersSession* parameters = new DeviceParametersSession();
-			parameters->Process();
-			delete parameters;
-			StockSession* stock = new StockSession();
-			stock->SetParameter("000001");
-			stock->Process();
-			delete stock;
-			*/
-
 			isFirstReg = FALSE;
 			/*
+			MemberManagerSession* member = new MemberManagerSession();
+			member->Process();
+			delete member;
+			FriendManagerSession* friendList = new FriendManagerSession();
+			friendList->Process();
+			delete friendList;
 			GroupManagerSession* group = new GroupManagerSession();
 			group->SetType(GroupManagerSession::tInfo);
 			group->Process();
@@ -1427,12 +1398,24 @@ void TdDoWithProc()
 			ApplicationSession* app = new ApplicationSession();
 			app->Process();
 			delete app;
+			ScheduleSession* schedule = new ScheduleSession();
+			schedule->Process();
+			delete schedule;
+			BillSession* bill = new BillSession();
+			bill->Process();
+			delete bill;
+			WeatherSession* weather = new WeatherSession();
+			weather->Process();
+			delete weather;
 			ContentSession* content = new ContentSession();
 			content->SetType(ContentSession::tNormal);
 			content->Process();
 			content->SetType(ContentSession::tDel);
 			content->Process();
 			delete content;
+			TimeSession* time = new TimeSession();
+			time->Process();
+			delete time;
 			SoftwareUpdaterSession* soft = new SoftwareUpdaterSession();
 			soft->Process();
 			delete soft;
