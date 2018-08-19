@@ -17,52 +17,52 @@
 
 class C10ContactInfoDlg : public CDialog
 {
-    // Construction
+// Construction
 public:
-    C10ContactInfoDlg(CWnd* pParent = NULL);   // standard constructor
-    int       type;
+	C10ContactInfoDlg(CWnd* pParent = NULL);   // standard constructor
+	int       type;
 
-    // Dialog Data
-    //{{AFX_DATA(CDeleteTipDlg)
-    enum { IDD = IDD_DIALOG_DELETETIP };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CDeleteTipDlg)
+	enum { IDD = IDD_DIALOG_DELETETIP };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CDeleteTipDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CDeleteTipDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
 
-    // Implementation
-protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(CDeleteTipDlg)
-    virtual BOOL OnInitDialog();
-    afx_msg void OnTimer(UINT nIDEvent);
-    //}}AFX_MSG
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CDeleteTipDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT nIDEvent);
+	//}}AFX_MSG
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	DECLARE_MESSAGE_MAP()
 private:
 
-    CMJPGStatic		m_MJPGList;
-    CWnd*			m_pwnd;
-    int				m_iCount;
-    int				m_iUnitNo;
-    std::vector<boost::shared_ptr<Data::ContactInfo> > m_vCurrentResult;
+	CMJPGStatic		m_MJPGList;
+	CWnd*			m_pwnd;
+	int				m_iCount;
+	int				m_iUnitNo;
+	std::vector<boost::shared_ptr<Data::ContactInfo> > m_vCurrentResult;
 
 public:
-    void SetMainWnd(CWnd* pwnd);
-    void FromContactInfoDataBase(void);
-    void ShowContactInfo(void);
-    void ClickOneItem(int item);
-    void Show10ContactInfo();
-    void ClearPage();
-    void OnBtnOK();
-    void SetPageFont();
+	void SetMainWnd(CWnd* pwnd);
+	void FromContactInfoDataBase(void);
+	void ShowContactInfo(void);
+	void ClickOneItem(int item);
+	void Show10ContactInfo();
+	void ClearPage();
+	void OnBtnOK();
+	void SetPageFont();
 
 };
 

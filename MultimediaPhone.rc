@@ -256,7 +256,7 @@ FONT 10, "System"
 BEGIN
 END
 
-IDD_DIALOG_FASTDIALS DIALOG DISCARDABLE  0, 0, 460, 240
+IDD_DIALOG_FASTDIALS DIALOG DISCARDABLE  0, 0, 485, 357
 STYLE WS_POPUP
 FONT 10, "System"
 BEGIN
@@ -305,7 +305,7 @@ BEGIN
 END
 
 IDD_DIALOG_CACULATER DIALOG DISCARDABLE  0, 0, 343, 240
-STYLE WS_POPUP | WS_BORDER
+STYLE WS_POPUP
 FONT 10, "System"
 BEGIN
 END
@@ -401,7 +401,31 @@ FONT 10, "System"
 BEGIN
 END
 
-IDD_DLG_MOVIE DIALOG DISCARDABLE  0, 0, 460, 240
+IDD_DIALOG_TESTAT DIALOG DISCARDABLE  0, 0, 460, 280
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 187, 94
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,130,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,24,50,14
+END
+
+IDD_DIALOG2 DIALOG DISCARDABLE  0, 0, 187, 94
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,130,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,24,50,14
+END
+
+IDD_DLG_MOVIE1 DIALOG DISCARDABLE  0, 0, 460, 240
 STYLE WS_POPUP
 FONT 10, "System"
 BEGIN
@@ -543,6 +567,8 @@ IDB_BITMAP_COMBOX1_FORE BITMAP  DISCARDABLE     "res\\下拉1_fore.bmp"
 IDB_BITMAP_COMBOX1_BACK BITMAP  DISCARDABLE     "res\\下拉1_back.bmp"
 IDB_BITMAP_COMBOX_FORE  BITMAP  DISCARDABLE     "res\\下拉_fore.bmp"
 IDB_BITMAP_COMBOX_BACK  BITMAP  DISCARDABLE     "res\\下拉_back.bmp"
+IDB_BITMAP_CONTACTNEW   BITMAP  DISCARDABLE     "res\\联系人下拉_fore.bmp"
+IDB_BITMAP_CONTACTNEW1  BITMAP  DISCARDABLE     "res\\联系人下拉_back.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -633,6 +659,12 @@ BEGIN
     BEGIN
         RIGHTMARGIN, 136
         BOTTOMMARGIN, 115
+    END
+
+    IDD_DIALOG_FASTDIALS, DIALOG
+    BEGIN
+        RIGHTMARGIN, 476
+        BOTTOMMARGIN, 348
     END
 
     IDD_DIALOG_TELEPHONE, DIALOG
@@ -795,7 +827,23 @@ BEGIN
         BOTTOMMARGIN, 233
     END
 
-    IDD_DLG_MOVIE, DIALOG
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+
+    IDD_DIALOG2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+
+    IDD_DLG_MOVIE1, DIALOG
     BEGIN
         BOTTOMMARGIN, 155
     END
@@ -900,7 +948,7 @@ LANGUAGE 9, 1
 #endif //_WIN32
 #include "res\MultimediaPhone.rc2"  // non-Microsoft eMbedded Visual C++ edited resources
 #include "afxres.rc"         // Standard components
-//@@#include "wceres.rc"         // WCE-specific components
+#include "wceres.rc"         // WCE-specific components
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

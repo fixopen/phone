@@ -11,14 +11,14 @@
 // //////////////////////////////////////////////////////////////////////////
 
 // Properties:
-//  NO  Abstract class (does not have any objects)
-//  NO  Derived from CWnd
-//  NO  Is a CWnd.                     
-//  NO  Two stage creation (constructor & Create())
-//  NO  Has a message map
-//  NO  Needs a resource (template)
-//  YES Persistent objects (saveable on disk)      
-//  YES Uses exceptions
+//	NO	Abstract class (does not have any objects)
+//	NO	Derived from CWnd
+//	NO	Is a CWnd.                     
+//	NO	Two stage creation (constructor & Create())
+//	NO	Has a message map
+//	NO 	Needs a resource (template)
+//	YES	Persistent objects (saveable on disk)      
+//	YES	Uses exceptions
 
 // //////////////////////////////////////////////////////////////////////////
 
@@ -51,37 +51,27 @@
 /////////////////////////////////////////////////////////////////////////////
 // BITMAPINFO wrapper
 
-struct DIBINFO : public BITMAPINFO {
-    RGBQUAD arColors[255];    // Color table info - adds an extra 255 entries to palette
+struct DIBINFO : public BITMAPINFO
+{
+	RGBQUAD	 arColors[255];    // Color table info - adds an extra 255 entries to palette
 
-    operator LPBITMAPINFO() {
-        return (LPBITMAPINFO) this;
-    }
-    operator LPBITMAPINFOHEADER() {
-        return &bmiHeader;
-    }
-    RGBQUAD* ColorTable() {
-        return bmiColors;
-    }
+	operator LPBITMAPINFO()          { return (LPBITMAPINFO) this; }
+	operator LPBITMAPINFOHEADER()    { return &bmiHeader;          }
+	RGBQUAD* ColorTable()            { return bmiColors;           }
 };
 
 /////////////////////////////////////////////////////////////////////////////
 // LOGPALETTE wrapper
 
 #ifndef DIBSECTION_NO_PALETTE
-struct PALETTEINFO : public LOGPALETTE {
+struct PALETTEINFO : public LOGPALETTE
+{
     PALETTEENTRY arPalEntries[255];               // Palette entries
 
-    PALETTEINFO() {
-        palVersion = (WORD)0x300;
-    }
+    PALETTEINFO() { palVersion = (WORD) 0x300; }
 
-    operator LPLOGPALETTE() {
-        return (LPLOGPALETTE) this;
-    }
-    operator LPPALETTEENTRY() {
-        return (LPPALETTEENTRY)(palPalEntry);
-    }
+    operator LPLOGPALETTE()   { return (LPLOGPALETTE) this;            }
+    operator LPPALETTEENTRY() { return (LPPALETTEENTRY) (palPalEntry); }
 };
 #endif // DIBSECTION_NO_PALETTE
 
@@ -89,61 +79,38 @@ struct PALETTEINFO : public LOGPALETTE {
 /////////////////////////////////////////////////////////////////////////////
 // CDIBSectionCE object
 
-class CDIBSectionCE : public CObject {
-    // Construction
+class CDIBSectionCE : public CObject
+{
+// Construction
 public:
-    CDIBSectionCE();
-    virtual ~CDIBSectionCE();
+	CDIBSectionCE();
+	virtual ~CDIBSectionCE();
     void DeleteObject();
 
-    // static helpers
+// static helpers
 public:
     static int BytesPerLine(int nWidth, int nBitsPerPixel);
     static int NumColorEntries(int nBitsPerPixel);
 
     static RGBQUAD ms_StdColours[];
 #ifndef DIBSECTION_NO_PALETTE
-    static BOOL UsesPalette(CDC* pDC) {
-        return (pDC->GetDeviceCaps(RASTERCAPS) & RC_PALETTE);
-    }
+    static BOOL UsesPalette(CDC* pDC) { return (pDC->GetDeviceCaps(RASTERCAPS) & RC_PALETTE); }
     static BOOL CreateHalftonePalette(CPalette& palette, int nNumColours);
 #endif // DIBSECTION_NO_PALETTE
 
-    // Attributes
+// Attributes
 public:
-    HBITMAP GetSafeHandle() const {
-        return (this) ? m_hBitmap : NULL;
-    }
-    CSize GetSize() const {
-        return CSize(GetWidth(), GetHeight());
-    }
-    int GetHeight() const {
-        return m_DIBinfo.bmiHeader.biHeight;
-    } 
-    int GetWidth() const {
-        return m_DIBinfo.bmiHeader.biWidth;
-    }
-    int GetPlanes() const {
-        return m_DIBinfo.bmiHeader.biPlanes;
-    }
-    int GetBitCount() const {
-        return m_DIBinfo.bmiHeader.biBitCount;
-    }
-    LPVOID GetDIBits() {
-        return m_ppvBits;
-    }
-    LPBITMAPINFO GetBitmapInfo() {
-        return  (BITMAPINFO *)m_DIBinfo;
-    }
-    DWORD GetImageSize() const {
-        return m_DIBinfo.bmiHeader.biSizeImage;
-    }
-    LPBITMAPINFOHEADER GetBitmapInfoHeader() {
-        return (BITMAPINFOHEADER *)m_DIBinfo;
-    }
-    LPRGBQUAD GetColorTable() {
-        return m_DIBinfo.ColorTable();
-    }
+    HBITMAP      GetSafeHandle() const       { return (this)? m_hBitmap : NULL;        }
+    CSize        GetSize() const             { return CSize(GetWidth(), GetHeight());  }
+    int          GetHeight() const           { return m_DIBinfo.bmiHeader.biHeight;    } 
+    int          GetWidth() const            { return m_DIBinfo.bmiHeader.biWidth;     }
+    int          GetPlanes() const           { return m_DIBinfo.bmiHeader.biPlanes;    }
+    int          GetBitCount() const         { return m_DIBinfo.bmiHeader.biBitCount;  }
+    LPVOID       GetDIBits()                 { return m_ppvBits;                       }
+    LPBITMAPINFO GetBitmapInfo()             { return  (BITMAPINFO*) m_DIBinfo;        }
+    DWORD        GetImageSize() const        { return m_DIBinfo.bmiHeader.biSizeImage; }
+    LPBITMAPINFOHEADER GetBitmapInfoHeader() { return (BITMAPINFOHEADER*) m_DIBinfo;   }
+    LPRGBQUAD    GetColorTable()             { return m_DIBinfo.ColorTable();          }
 
     BOOL SetBitmap(UINT nIDResource);
     BOOL SetBitmap(LPCTSTR lpszResourceName);
@@ -151,14 +118,12 @@ public:
     BOOL SetBitmap(LPBITMAPINFO lpBitmapInfo, LPVOID lpBits);   
 
 #ifndef DIBSECTION_NO_PALETTE
-    CPalette* GetPalette() {
-        return &m_Palette;
-    }
+    CPalette *GetPalette()  { return &m_Palette; }
     BOOL SetPalette(CPalette* pPalette);
     BOOL SetLogPalette(LOGPALETTE* pLogPalette);
 #endif // DIBSECTION_NO_PALETTE
 
-    // Operations
+// Operations
 public:
     BOOL Load(LPCTSTR lpszFileName);
     BOOL Save(LPCTSTR lpszFileName);
@@ -169,41 +134,41 @@ public:
     CDC* GetMemoryDC(CDC* pDC = NULL, BOOL bSelectPalette = TRUE);
     BOOL ReleaseMemoryDC(BOOL bForceRelease = FALSE);
 
-    // Overrideables
+// Overrideables
 
-    // Implementation
+// Implementation
 public:
-#ifdef _DEBUGx
-    virtual void AssertValid() const;
-    virtual void Dump(CDumpContext& dc) const;
+#ifdef _DEBUG
+	virtual void AssertValid() const;
+	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-    // Implementation
+// Implementation
 protected:
     void _ShowLastError();
 #ifndef DIBSECTION_NO_PALETTE
     BOOL CreatePalette();
-    BOOL FillDIBColorTable(UINT nNumColours, RGBQUAD* pRGB);
+    BOOL FillDIBColorTable(UINT nNumColours, RGBQUAD *pRGB);
 #endif // DIBSECTION_NO_PALETTE
     UINT GetColorTableEntries(HDC hdc, HBITMAP hBitmap);
 
 protected:
     HBITMAP m_hBitmap;          // Handle to DIBSECTION
     DIBINFO m_DIBinfo;          // Bitmap header & color table info
-    VOID* m_ppvBits;          // Pointer to bitmap bits
-    UINT m_iColorDataType;   // color data type (palette or RGB values)
-    UINT m_iColorTableSize;  // Size of color table
+    VOID   *m_ppvBits;          // Pointer to bitmap bits
+    UINT    m_iColorDataType;   // color data type (palette or RGB values)
+    UINT    m_iColorTableSize;  // Size of color table
 
-    CDC m_MemDC;           // Memory DC for drawing on bitmap
-    BOOL m_bReuseMemDC;     // Reeuse the memory DC? (Quicker, but maybe unsafe)
+    CDC      m_MemDC;           // Memory DC for drawing on bitmap
+    BOOL     m_bReuseMemDC;     // Reeuse the memory DC? (Quicker, but maybe unsafe)
 
 #ifndef DIBSECTION_NO_PALETTE
     CPalette m_Palette;         // Color palette
-    CPalette* m_pOldPalette;
+    CPalette *m_pOldPalette;
 #endif // DIBSECTION_NO_PALETTE
 
 private:
-    HBITMAP m_hOldBitmap;      // Storage for previous bitmap in Memory DC
+    HBITMAP  m_hOldBitmap;      // Storage for previous bitmap in Memory DC
 };
 
 /////////////////////////////////////////////////////////////////////////////

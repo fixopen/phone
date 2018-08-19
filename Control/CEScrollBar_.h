@@ -9,83 +9,80 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CCEScrollBar_ window
-#define SCROLL_ARROW_WIDTH      34      //  66          // 17
-#define SCROLL_ARROW_HEIGHT     34      //  43
-#define SCROLL_THICK_WIDTH      34      //  66
-#define SCROLL_THICK_HEIGHT     34      //  63
+#define SCROLL_ARROW_WIDTH		34		//	66			// 17
+#define SCROLL_ARROW_HEIGHT		34		//	43
+#define SCROLL_THICK_WIDTH		34		//	66
+#define SCROLL_THICK_HEIGHT		34		//	63
 
 //#define SCROLLBAR_DISABLERGB2  RGB(192, 192, 192)
-//#define SCROLLBAR_FRAMERGB       RGB(76,165,229)
+//#define SCROLLBAR_FRAMERGB	   RGB(76,165,229)
 
 //#define SCROLLBAR_RGB  RGB(0xFF, 0xFF, 0)
 
-class CCEScrollBar_ : public CStatic {
+class CCEScrollBar_ : public CStatic
+{
 public:
-    int m_nStyle;     //0 yellow 滚动条     1  gray 滚动条
-    BOOL m_bIsActive; //0 Disable           1  Enable
-    int m_nMin;
-    int m_nMax;
-    int m_nStep;
-    int m_nPos;
-    int m_nPage;
-    int m_BitmapUpID;
-    int m_BitmapDownID;
-    int m_BitmapThickID;
-    CRect m_RectUpArrow;
-    CRect m_RectDownArrow;
-    CRect m_RectThick;
-    CRect m_RectUp;
-    CRect m_RectDown;
+	int m_nStyle;     //0 yellow 滚动条     1  gray 滚动条
+	BOOL m_bIsActive; //0 Disable			1  Enable
+	int m_nMin;
+	int m_nMax;
+	int m_nStep;
+	int m_nPos;
+	int m_nPage;
+	int m_BitmapUpID;
+	int m_BitmapDownID;
+	int m_BitmapThickID;
+	CRect m_RectUpArrow;
+	CRect m_RectDownArrow;
+	CRect m_RectThick;
+	CRect m_RectUp;
+	CRect m_RectDown;
+	
+	int	m_nPressed;			//0 无 1 up 2 down 3 up page 4 down page;
+	CWnd	*m_Owner;
 
-    int m_nPressed;         //0 无 1 up 2 down 3 up page 4 down page;
-    CWnd* m_Owner;
-
-    void SetParam(int style, int nMin, int nMax, int nPage, CWnd* pListCtrl);
-    void SetRangle(int nMin, int nMax, int nPage);
-    void SetPos(int nPos, BOOL redraw = TRUE);
-    int GetPos() {
-        return m_nPos;
-    }
-    int GetMax() {
-        return m_nMax;
-    }
-    void DoLineDown();
-    void DoLineUp();
-    void DoPageDown();
-    void DoPageUp();
+	void SetParam(int style, int nMin, int nMax, int nPage, CWnd *pListCtrl);
+	void SetRangle(int nMin, int nMax, int nPage);
+	void SetPos(int nPos, BOOL redraw = TRUE);
+	int  GetPos(){return m_nPos;}
+	int  GetMax(){return m_nMax;}
+	void DoLineDown();
+	void DoLineUp();
+	void DoPageDown();
+	void DoPageUp();
 
 
-    // Construction
+// Construction
 public:
-    CCEScrollBar_();
+	CCEScrollBar_();
 
-    // Attributes
+// Attributes
 public:
 
-    // Operations
+// Operations
 public:
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CCEScrollBar_)
-    //}}AFX_VIRTUAL
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCEScrollBar_)
+	//}}AFX_VIRTUAL
 
-    // Implementation
+// Implementation
 public:
-    virtual ~CCEScrollBar_();
+	virtual ~CCEScrollBar_();
 
-    // Generated message map functions
+	// Generated message map functions
 protected:
-    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-    //{{AFX_MSG(CCEScrollBar_)
-    afx_msg void OnPaint();
-    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-    afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
-    //}}AFX_MSG
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	//{{AFX_MSG(CCEScrollBar_)
+	afx_msg void OnPaint();
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	//}}AFX_MSG
 
-    DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -21,48 +21,77 @@
 /////////////////////////////////////////////////////////////////////////////
 // CCallSetDlg dialog
 
-class CCallSetDlg : public CCEDialog {
-    // Construction
+class CCallSetDlg : public CCEDialog
+{
+// Construction
 public:
-    PhoneCallTRans m_calltrans;
-    PhoneCallWaiting m_callwaiting;
-    PhoneCallLimit m_calllimit;
+	PhoneCallTRans m_calltrans;
+	PhoneCallWaiting  m_callwaiting;
+	PhoneCallLimit m_calllimit;
 
-    CCERectEdit m_edtTransferNumber;
-    CCERectEdit m_edtPinNumber1;
-    CCERectEdit m_edtPinNumber2;
+	CCERectEdit m_edtTransferNumber;
+	CCERectEdit m_edtPinNumber1;
+	CCERectEdit m_edtPinNumber2;
 
-    int m_uiType;
-    void SetCallSetParam();
-    void ShowItemsControl();
+	CCEComboBox12_ m_cmbPlmn;
+	
+	int m_uiType;
+	void SetCallSetParam();
+	void ShowItemsControl();
+	
+	CMJPGStatic		m_MJPGList;
+	CCallSetDlg(CWnd* pParent = NULL);   // standard constructor
 
-    CMJPGStatic m_MJPGList;
-    CCallSetDlg(CWnd* pParent = NULL);   // standard constructor
+private:
+	int m_nCallType;
+	UINT m_nSetResult;//设置的结果
+	enum Action{
+		start,
+		cancel,
+		check,
+	};
+	Action m_nAction;
 
-    // Dialog Data
-    //{{AFX_DATA(CCallSetDlg)
-    enum { IDD = IDD_DIALOG_FASTDIALS };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CCallSetDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
+public:
+	CCEComboBox12_ m_cmbCallTransferTimes;
+	
+	struct oper{
+		std::string op;
+		int act;
+		int sta;
+	};
+	void Start();
+	void CallCancel();
+	void CheckStatus();
+	void ParseOperater(std::string d,oper &op);
 
-    // Implementation
+// Dialog Data
+	//{{AFX_DATA(CCallSetDlg)
+	enum { IDD = IDD_DIALOG_FASTDIALS };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
+
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCallSetDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
 
-    // Generated message map functions
-    //{{AFX_MSG(CCallSetDlg)
-    virtual BOOL OnInitDialog();
-    //}}AFX_MSG
-    afx_msg void OnButtonFastDialsOk();
-    afx_msg void OnButtonFastDialsCancel();
-    afx_msg LRESULT  OnClickMJPG(WPARAM w, LPARAM l);
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CCallSetDlg)
+	virtual BOOL OnInitDialog();
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
+	//}}AFX_MSG
+	afx_msg void OnButtonFastDialsOk();
+	afx_msg void OnButtonFastDialsCancel();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

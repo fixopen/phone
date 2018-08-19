@@ -11,129 +11,124 @@
 /////////////////////////////////////////////////////////////////////////////
 // CCEDialog dialog
 
-class CCEDialog : public CDialog {
-    // Construction
+class CCEDialog : public CDialog
+{
+// Construction
 public:
-    HWND m_Ownerhandle;
-    //  HDC hMemDC;
-    BOOL m_bMemDCCrate;
-    BOOL m_bIsFreshMemDC;
-    void SetFreshMemDC() {
-        m_bIsFreshMemDC = TRUE;
-    }
-    void SetOwner(HWND h) {
-        m_Ownerhandle = h;
-    }
+	HWND	m_Ownerhandle;
+//	HDC hMemDC;
+	BOOL m_bMemDCCrate;
+	BOOL m_bIsFreshMemDC;
+	void SetFreshMemDC(){m_bIsFreshMemDC = TRUE;}
+	void SetOwner(HWND h){m_Ownerhandle = h;}
 
-    void ShowWindow_(int nCmdShow);
+	void ShowWindow_(int nCmdShow);
 
 public:
+	
+	CCEDialog(UINT nIDTemplate, CWnd* pParent = NULL);   // standard constructor
 
-    CCEDialog(UINT nIDTemplate, CWnd* pParent = NULL);   // standard constructor
-
-    // Dialog Data
-    //{{AFX_DATA(CCEDialog)
-    enum { IDD = 0};
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CCEDialog)
+	enum { IDD = 0};
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 private:
+	
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCEDialog)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CCEDialog)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
-
-    // Implementation
+// Implementation
 protected:
 
-    // Generated message map functions
-    //{{AFX_MSG(CCEDialog)
-    afx_msg void OnPaint();
-    afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
-    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CCEDialog)
+	afx_msg void OnPaint();
+	afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 
-class CCEAllFrameDialog : public CDialog {
-    // Construction
+class CCEAllFrameDialog : public CDialog
+{
+	// Construction
 public:
-    int m_nStyle;
-    //  TextStruct  *m_pTxtStruct;
-    int m_ntxtCount;
-    CRect m_InRect;
-    void SetInRect(CRect rect) {
-        m_InRect = rect;
-    }
-    void SetStyle(int nStyle) {
-        m_nStyle = nStyle;
-    }
-    CCEAllFrameDialog(UINT nIDTemplate, CWnd* pParent = NULL);   // standard constructor
-
-    // Dialog Data
-    //{{AFX_DATA(CCEDialog)
-    enum { IDD = 0};
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
-
-
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CCEDialog)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
-
-    // Implementation
+	int		m_nStyle;
+//	TextStruct	*m_pTxtStruct;
+	int         m_ntxtCount;
+	CRect		m_InRect;
+	void SetInRect(CRect rect){m_InRect = rect;}
+	void SetStyle(int nStyle){m_nStyle = nStyle;}
+	CCEAllFrameDialog(UINT nIDTemplate, CWnd* pParent = NULL);   // standard constructor
+	
+	// Dialog Data
+	//{{AFX_DATA(CCEDialog)
+	enum { IDD = 0};
+	// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
+	
+	
+	// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCEDialog)
 protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(CCEDialog)
-    afx_msg void OnPaint();
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+	
+	// Implementation
+protected:
+	
+	// Generated message map functions
+	//{{AFX_MSG(CCEDialog)
+	afx_msg void OnPaint();
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 
 
-class C3GTitleDialog : public CDialog {
-    // Construction
+class C3GTitleDialog : public CDialog
+{
+	// Construction
 public:
-    CMJPGStatic m_3GTitleMJPG;  
+	CMJPGStatic m_3GTitleMJPG;	
 public:
-
-    C3GTitleDialog(UINT nIDTemplate, CWnd* pParent = NULL);   // standard constructor
-
-    // Dialog Data
-    //{{AFX_DATA(CCEDialog)
-    enum { IDD = 0};
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
-
+	
+	C3GTitleDialog(UINT nIDTemplate, CWnd* pParent = NULL);   // standard constructor
+	
+	// Dialog Data
+	//{{AFX_DATA(CCEDialog)
+	enum { IDD = 0};
+	// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
+	
 private:
-    CString m_sDate;
-
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CCEDialog)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
-
-    // Implementation
+	CString m_sDate;
+	
+	// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCEDialog)
 protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(C3GTitleDialog)
-    virtual BOOL OnInitDialog();
-    afx_msg void OnTimer(UINT nIDEvent);
-    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+	
+	// Implementation
+protected:
+	
+	// Generated message map functions
+	//{{AFX_MSG(C3GTitleDialog)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

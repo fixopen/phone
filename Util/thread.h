@@ -5,9 +5,11 @@
 
 namespace Util
 {
-    class Thread {
+    class Thread
+    {
     public:
-        enum Status {
+        enum Status
+        {
             tsNull,
             tsCreated,
             tsRunning,
@@ -28,8 +30,9 @@ namespace Util
         void id(int const id);
         HANDLE const handle(void) const;
         void handle(HANDLE const handle);
+
+		 HANDLE handle_;
     private:
-        HANDLE handle_;
         int id_;
         enum Status state_;
     };

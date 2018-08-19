@@ -13,54 +13,77 @@
 #include "../Data/MMSData.h"
 #include "../Control/MmsShow.h"
 
-class CMMSReadDlg : public CDialog {
-    // Construction
+class CMMSReadDlg : public CDialog
+{
+// Construction
 public:
-    //  C3GSMSListDlg   *m_pSMSListDlg;
+//	C3GSMSListDlg   *m_pSMSListDlg;
 
-    CMJPGStatic m_MJPGList;
-    CMMSReadDlg(CWnd* pParent = NULL);   // standard constructor
+	CMJPGStatic		m_MJPGList;
+	
+	CMJPGStatic		m_MJPGList2;
 
-    // Dialog Data
-    //{{AFX_DATA(C3GSMSDlg)
-    enum { IDD = IDD_DIALOG_MMS };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+	CMMSReadDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(C3GSMSDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    virtual BOOL PreTranslateMessage(MSG* pMsg);
-    //}}AFX_VIRTUAL
+// Dialog Data
+	//{{AFX_DATA(C3GSMSDlg)
+	enum { IDD = IDD_DIALOG_MMS };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
+
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(C3GSMSDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+	//}}AFX_VIRTUAL
 
 private:
-
-    boost::shared_ptr<Data::MMSData> m_pMMSData ;
-    CCELineEdit m_contentEdit;//写短信的内容
-    SMSBOX_TYPE m_nBoxType ;
-    MmsShow m_MmsShow  ;//彩信显示的控件
+	
+	CCELineEdit				m_contentEdit;//写短信的内容
+	SMSBOX_TYPE				m_nBoxType ;
+	bool					m_bAutoPlay;
 
 public:
-    void SetMMSInfo(int id, SMSBOX_TYPE type);//
-    void PageDown();
-    void PageUp();
-    void Replay(void);
-    void Transit(void);
-    void DialBack();//回拨
-    void SaveDraft(void);//存成草稿
-    void NumberExtract();//号码提取 
-    void MMSPreview(std::wstring path, std::wstring title);//彩信预览
+	void SetMMSInfo(int id,SMSBOX_TYPE type);//
+	void PageDown();
+	void PageUp();
+	void Replay(void);
+	void Repeat();//从发
+	void Transit(void);
+	void DialBack();//回拨
+	void SaveDraft(void);//存成草稿
+	void SavePicture(void);//保存图片
+	void SaveAudio(void);//保存音频
+	void PlayBtn();//播放模式
+	void NumberExtract();//号码提取 
+	void MMSDetails(int id,SMSBOX_TYPE type);
+	void MMSPreview(std::wstring path,std::wstring title);//彩信预览
+	void MMSPageUp();	
+	void MMSPageDown();
+	void SetReadPage();
 
+	void RefreshName(std::string name);  //wangzhenxing20100604
+	
+	MmsShow	m_MmsShow  ;//彩信显示的控件
+	boost::shared_ptr<Data::MMSData >  m_pMMSData ;  //wangzhenxing20100610
+
+	BOOL m_isReadMid;
+	unsigned int m_pageCount;
+	unsigned int m_currentPage;
 protected:
-    // Generated message map functions
-    //{{AFX_MSG(C3GSMSDlg)
-    virtual BOOL OnInitDialog();
-    //  afx_msg void OnTimer(UINT nIDEvent);
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(C3GSMSDlg)
+	virtual BOOL OnInitDialog();
+//	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

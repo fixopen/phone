@@ -7,62 +7,77 @@
 
 namespace Data
 {
-    CRITICAL_SECTION sqliteSetion_;
+	CRITICAL_SECTION sqliteSetion_;
 
     std::string DataAccess<Contact>::tableName_ = "contact";
     sqlite3* DataAccess<Contact>::db_ = Data::GetDB();
     int DataAccess<Contact>::rowCount_ = 0;
-    int DataAccess<Contact>::offset_ = 0;
-    Indication DataAccess<Contact>::indication_ = 0;
+	int DataAccess<Contact>::offset_ = 0;
+	Indication DataAccess<Contact>::indication_ = 0;
 
-    boost::shared_ptr<ContactGroup> Contact::group() {
-        if (!groupFinded_) {
+    boost::shared_ptr<ContactGroup> Contact::group()
+    {
+        if (!groupFinded_)
+        {
             std::vector<boost::shared_ptr<ContactGroup> > t = ContactGroup::GetFromDatabase("id = " + Util::StringOp::FromInt(groupId_));
             //assert(t.size() == 1);
-            if (t.size() != 0) {
-                group_ = t[0];
-            }
+			if (t.size() != 0)
+				group_ = t[0];
             groupFinded_ = true;
         }
         return group_;
     }
 
-    std::vector<boost::shared_ptr<ContactInfo> > Contact::histories() {
-        if (!historiesFinded_) {
+    std::vector<boost::shared_ptr<ContactInfo> > Contact::histories()
+    {
+        if (!historiesFinded_)
+        {
             histories_ = ContactInfo::GetFromDatabase("contactId = " + Util::StringOp::FromInt(id()));
             historiesFinded_ = true;
         }
         return histories_;
     }
 
-    Contact::Contact()
-    : DataAccess<Contact>()
-    , groupFinded_(false)
-    , groupId_(0)
-    , type_(ctNormal)
-    , historiesFinded_(false) {
-        id(0);
+	Contact::Contact()
+		: DataAccess<Contact>()
+		, groupFinded_(false)
+		, groupId_(0)
+		, type_(ctNormal)
+		, historiesFinded_(false)
+    {
+		id(0);
     }
 
-    Contact::~Contact() {
+    Contact::~Contact()
+    {
         //do nothing
     }
 
-    std::vector<boost::shared_ptr<Contact> > Contact::GetFromDatabase(std::string filter, Direction const dir, int const id, int const pageSize) {
-        int contactLength = sizeof(Contact);
-        int boostPointerLength = sizeof(boost::shared_ptr<Contact>);
-        int vectorLength = sizeof(std::vector<boost::shared_ptr<Contact> >);
+    std::vector<boost::shared_ptr<Contact> > Contact::GetFromDatabase(std::string filter, Direction const dir, int const id, int const pageSize)
+    {
+		int contactLength = sizeof(Contact);
+		int boostPointerLength = sizeof(boost::shared_ptr<Contact>);
+		int vectorLength = sizeof(std::vector<boost::shared_ptr<Contact> >);
         return DataAccess<Contact>::GetDatasByFilter(filter, modifyFieldByDB_, dir, id, pageSize);
     }
 
-    std::vector<boost::shared_ptr<Contact> > Contact::GetFromDatabaseByTypeOffsetLength(std::string type, int const offset, int const pageSize) {
-        std::string filter = type;
-        //      if (type != "")
-        //          filter = "\"type\" = " + type;
+	std::vector<boost::shared_ptr<Contact> > Contact::GetFromDatabaseByTypeOffsetLength(std::string type, int const offset, int const pageSize)
+    {
+		std::string filter = type;
+// 		if (type != "")
+// 			filter = "\"type\" = " + type;
         return DataAccess<Contact>::GetDatasByFilterAndPageInfo(filter, modifyFieldByDB_, offset, pageSize);
     }
+	
+	//add by qi 20100608
+	std::vector<boost::shared_ptr<Contact> > Contact::GetFromDatabaseByNameOffsetLength(std::string type, int const offset, int const pageSize)
+    {
+		std::string filter = type;
+        return DataAccess<Contact>::GetDatasByName(filter, modifyFieldByDB_, offset, pageSize);
+    }
 
-    void Contact::Update() const {
+    void Contact::Update() const
+    {
         std::string cmd = "UPDATE ";
         cmd += tableName();
         cmd += " SET [groupId] = ";
@@ -81,18 +96,18 @@ namespace Data
         cmd += worksTelephone_[0].number();
         cmd += "', [worksTelephone2] = '";
         cmd += worksTelephone_[1].number();
-        //         cmd += "', [internalTelephone] = '";
-        //         cmd += ""; //internalTelephone_.number();
-        //         cmd += "', [fax] = '";
-        //         cmd += ""; //fax_.number();
-        //         cmd += "', [familyTelephone] = '";
-        //         cmd += ""; //familyTelephone_.number();
-        //         cmd += "', [msn] = '";
-        //         cmd += ""; //msn_;
-        //         cmd += "', [qq] = '";
-        //         cmd += ""; //qq_;
-        //         cmd += "', [skype] = '";
-        //         cmd += ""; //skype_;
+//         cmd += "', [internalTelephone] = '";
+//         cmd += ""; //internalTelephone_.number();
+//         cmd += "', [fax] = '";
+//         cmd += ""; //fax_.number();
+//         cmd += "', [familyTelephone] = '";
+//         cmd += ""; //familyTelephone_.number();
+//         cmd += "', [msn] = '";
+//         cmd += ""; //msn_;
+//         cmd += "', [qq] = '";
+//         cmd += ""; //qq_;
+//         cmd += "', [skype] = '";
+//         cmd += ""; //skype_;
         cmd += "', [email] = '";
         cmd += email_;
         cmd += "', [homesite] = '";
@@ -107,10 +122,10 @@ namespace Data
         cmd += companyAddress_;
         cmd += "', [companyPostCode] = '";
         cmd += companyPostCode_;
-        //         cmd += "', [familyAddress] = '";
-        //         cmd += ""; //familyAddress_;
-        //         cmd += "', [postCode] = '";
-        //         cmd += ""; //postCode_;
+//         cmd += "', [familyAddress] = '";
+//         cmd += ""; //familyAddress_;
+//         cmd += "', [postCode] = '";
+//         cmd += ""; //postCode_;
         cmd += "', [memo] = '";
         cmd += memo_;
         cmd += "' WHERE id = ";
@@ -118,10 +133,11 @@ namespace Data
         ExecCommand(cmd);
     }
 
-    void Contact::Insert() {
+    void Contact::Insert()
+    {
         std::string cmd = "INSERT INTO ";
         cmd += tableName();
-        //        cmd += " ( groupId, name, alias, type, mobilesTelephone, mobilesTelephone2, worksTelephone, worksTelephone2, internalTelephone, fax, familyTelephone, msn, qq, skype, email, homesite, company, department, duty, companyAddress, companyPostCode, familyAddress, postCode, memo ) VALUES ( ";
+//        cmd += " ( groupId, name, alias, type, mobilesTelephone, mobilesTelephone2, worksTelephone, worksTelephone2, internalTelephone, fax, familyTelephone, msn, qq, skype, email, homesite, company, department, duty, companyAddress, companyPostCode, familyAddress, postCode, memo ) VALUES ( ";
         cmd += " ( groupId, name, alias, type, mobilesTelephone, mobilesTelephone2, worksTelephone, worksTelephone2, email, homesite, company, department, duty, companyAddress, companyPostCode, memo ) VALUES ( ";
         cmd += Util::StringOp::FromInt(groupId_);
         cmd += ", '";
@@ -139,18 +155,18 @@ namespace Data
         cmd += "', '";
         cmd += worksTelephone_[1].number();
         cmd += "', '";
-        //         cmd += ""; //internalTelephone_.number();
-        //         cmd += "', '";
-        //         cmd += ""; //fax_.ToString();
-        //         cmd += "', '";
-        //         cmd += ""; //familyTelephone_.number();
-        //         cmd += "', '";
-        //         cmd += ""; //msn_;
-        //         cmd += "', '";
-        //         cmd += ""; //qq_;
-        //         cmd += "', '";
-        //         cmd += ""; //skype_;
-        //         cmd += "', '";
+//         cmd += ""; //internalTelephone_.number();
+//         cmd += "', '";
+//         cmd += ""; //fax_.ToString();
+//         cmd += "', '";
+//         cmd += ""; //familyTelephone_.number();
+//         cmd += "', '";
+//         cmd += ""; //msn_;
+//         cmd += "', '";
+//         cmd += ""; //qq_;
+//         cmd += "', '";
+//         cmd += ""; //skype_;
+//         cmd += "', '";
         cmd += email_;
         cmd += "', '";
         cmd += homesite_;
@@ -164,27 +180,30 @@ namespace Data
         cmd += companyAddress_;
         cmd += "', '";
         cmd += companyPostCode_;
-        //         cmd += "', '";
-        //         cmd += ""; //familyAddress_;
-        //         cmd += "', '";
-        //         cmd += ""; //postCode_;
+//         cmd += "', '";
+//         cmd += ""; //familyAddress_;
+//         cmd += "', '";
+//         cmd += ""; //postCode_;
         cmd += "', '";
         cmd += memo_;
         cmd += "' )";
-        //  Dprintf("%s\r\n", cmd.c_str());
+	//	Dprintf("%s\r\n", cmd.c_str());
         ExecCommand(cmd);
         id(GetCurrentId());
     }
 
-    void Contact::Remove() const {
+    void Contact::Remove() const
+    {
         Contact::Remove("id = " + Util::StringOp::FromInt(id()));
     }
 
-    void Contact::Remove(std::string filter) {
+    void Contact::Remove(std::string filter)
+    {
         DataAccess<Contact>::RemoveDatasByFilter(filter);
     }
 
-    void Contact::modifyFieldByDB_(int argc, char** argv, char** columnName, boost::shared_ptr<Contact> item) {
+    void Contact::modifyFieldByDB_(int argc, char** argv, char** columnName, boost::shared_ptr<Contact> item)
+    {
         item->id(atoi(argv[Data::getIndexByName(argc, columnName, "id")]));
         item->groupId_ = atoi(argv[Data::getIndexByName(argc, columnName, "groupId")]);
         item->name_ = argv[Data::getIndexByName(argc, columnName, "name")];

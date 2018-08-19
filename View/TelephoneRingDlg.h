@@ -14,48 +14,57 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTelephoneDialDlg dialog
 
-class CTelephoneRingDlg : public CCEDialog
+class CTelephoneRingDlg : public CDialog//CCEDialog
 {
-    // Construction
+// Construction
 public:
-    CTelephoneRingDlg(CWnd* pParent = NULL);   // standard constructor
+	CTelephoneRingDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CTelephoneDialDlg)
-    enum { IDD = IDD_DIALOG_TELEPHONE };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CTelephoneDialDlg)
+	enum { IDD = IDD_DIALOG_TELEPHONE };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CTelephoneDialDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CTelephoneDialDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
 
-protected:
+	// Generated message map functions
+	//{{AFX_MSG(CTelephoneDialDlg)
+		// NOTE: the ClassWizard will add member functions here
+	//}}AFX_MSG
+	virtual BOOL OnInitDialog();
 
-    // Generated message map functions
-    //{{AFX_MSG(CTelephoneDialDlg)
-    // NOTE: the ClassWizard will add member functions here
-    //}}AFX_MSG
-    virtual BOOL OnInitDialog();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnTimer(UINT nIDEvent);
 
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    afx_msg void OnTimer(UINT nIDEvent);
-
-    DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 
 private:
-    std::string		m_sTelephoneNumber;
+	std::string		m_sTelephoneNumber;
 
 public:
-    CMJPGStatic		m_MJPGList;
+	CMJPGStatic		m_MJPGList;
 
-    void	HangOff_();
-    void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number);
-    void	HandleOn();  
+	void	HangOff_();
+	void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number, int unitNo = 100);
+	void	HandleOn();
+	void	Switch();
+	void	HideContact(int uintNo,bool bshow = true );
+	void    InitData();
+	void	ClearData(int unitNo);
+	void	RightReject();//ÓÒÂ·¾Ü½Ó
+	void	RightUnitShow(bool bshow);
+
+	void    ShowWindow_(int nCmdShow);
+
 };
 
 //{{AFX_INSERT_LOCATION}}

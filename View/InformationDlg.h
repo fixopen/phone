@@ -15,54 +15,54 @@
 
 class CInformationDlg : public CDialog
 {
-    // Construction
+// Construction
 public:
-    CInformationDlg(CWnd* pParent = NULL);   // standard constructor
+	CInformationDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CInformationDlg)
-    enum { IDD = IDD_DIALOG_INFORMATION };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CInformationDlg)
+	enum { IDD = IDD_DIALOG_INFORMATION };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CInformationDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CInformationDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
 
-    // Implementation
-protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(CInformationDlg)
-    virtual BOOL OnInitDialog();
-    virtual BOOL PreTranslateMessage(MSG* pMsg);
-    afx_msg void OnPaint();
-    afx_msg void OnTimer(UINT nId);
-    //}}AFX_MSG
-    afx_msg void OnButtonNoteClose();
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CInformationDlg)
+	virtual BOOL OnInitDialog();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnPaint();
+	afx_msg void OnTimer(UINT nId);
+	//}}AFX_MSG
+	afx_msg void OnButtonNoteClose();
+	DECLARE_MESSAGE_MAP()
 private:
 
-    CCEBmpButton m_btnClose;
+	CCEBmpButton m_btnClose;
 
-    CCEStatic m_sticOperation;
-    CCEStatic m_sticPanel;
-    CCEStatic m_sticBack;
-    CCEFrameStatic m_sticBackground;
+	CCEStatic m_sticOperation;
+	CCEStatic m_sticPanel;
+	CCEStatic m_sticBack;
+ 	CCEFrameStatic m_sticBackground;
 
-    //stocks
-    PROCESS_INFORMATION   m_stocksprocessinfo; 
-    BOOL				  m_bStockIsRun;
+	//stocks
+	PROCESS_INFORMATION   m_stocksprocessinfo; 
+	BOOL				  m_bStockIsRun;
 
-    void stopstocks();
-    void runstocks();
+	void stopstocks();
+	void runstocks();
 
 public:
-    void ShowWindow_(int nCmdShow);
+	void ShowWindow_(int nCmdShow);
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -11,45 +11,46 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTestDlg dialog
 
-class CTestDlg : public CDialog {
-    // Construction
+class CTestDlg : public CDialog
+{
+// Construction
 public:
-    CTestDlg(CWnd* pParent = NULL);   // standard constructor
+	CTestDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CTestDlg)
-    enum { IDD = IDD_DIALOG_TEST };
-    // NOTE: the ClassWizard will add data members here
-    CListBox m_listBox;
-    CListBox m_listBoxMem;
-    //}}AFX_DATA
-    BOOL m_bFlagCall;
-    BOOL m_bFlagTestDb;
-    BOOL m_bExit;  //是否退出
+// Dialog Data
+	//{{AFX_DATA(CTestDlg)
+	enum { IDD = IDD_DIALOG_TEST };
+		// NOTE: the ClassWizard will add data members here
+	CListBox m_listBox;
+	CListBox m_listBoxMem;
+	//}}AFX_DATA
+	BOOL m_bFlagCall;
+	BOOL m_bFlagTestDb;
+	BOOL m_bExit;  //是否退出
 
-    static DWORD WINAPI ThreadCallProc(LPVOID lParam);
-    static DWORD WINAPI ThreadTestDbProc(LPVOID lParam);
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CTestDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
+	static DWORD WINAPI ThreadCallProc(LPVOID lParam);
+	static DWORD WINAPI ThreadTestDbProc(LPVOID lParam);
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CTestDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
 
-    // Implementation
+// Implementation
 protected:
 
-    // Generated message map functions
-    //{{AFX_MSG(CTestDlg)
-    afx_msg void OnBtnTestCall();
-    afx_msg void OnBtnTestDb();
-    afx_msg void OnBtnTestExit();
-    afx_msg LRESULT OnTelData(WPARAM w, LPARAM l);
-    afx_msg LRESULT OnExit(WPARAM w, LPARAM l);
-    //}}AFX_MSG
-    virtual BOOL OnInitDialog();
-    afx_msg void OnTimer(UINT nIDEvent);
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CTestDlg)
+	afx_msg void OnBtnTestCall();
+	afx_msg void OnBtnTestDb();
+	afx_msg void OnBtnTestExit();
+	afx_msg void OnTelData(WPARAM w, LPARAM l);
+	afx_msg void OnExit(WPARAM w, LPARAM l);
+	//}}AFX_MSG
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT nIDEvent);
+	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

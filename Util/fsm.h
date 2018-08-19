@@ -7,7 +7,8 @@
 
 namespace Util
 {
-    class FSM {
+    class FSM
+    {
     public:
         typedef void (*EventHandle)(void* param);
         void registerRule(int const startState, int const event, int const stopState, EventHandle const action = 0);

@@ -9,192 +9,233 @@
 #include "../Control/CEStatic.h"
 #include "../Control/CeBtnST.h"
 #include "../Control/CEDialog.h"
-//#include "NoteDlg.h"
 #include "../Data/ContactInfo.h"
 #include "../Data/SoundSegment.h"
 #include "../inc/SABTD.h"
 #include "../Util/OggCodec.h"
+#include "CTelePhoneOptionDlg.h"
 
 #include "../control/MJPGStatic.h"
-//#include "../Data/SimAddr.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
 // CTelephoneDlg dialog
 
-class CTelephoneDlg : public CCEDialog
+class CTelephoneDlg : public CDialog //CCEDialog
 {
-    // Construction
+// Construction
 public:
-    BOOL m_bFirstConnect;
-    CMJPGStatic		m_MJPGList;
-    CString m_strTelStatus;
-    int     m_nTelStatus;
-    BOOL    m_bTelUsing;
-    void DialSpeedCode(int index);
+	BOOL m_bFirstConnect;
+	CMJPGStatic		m_MJPGList;
+	CString m_strTelStatus;
+	int     m_nTelStatus;
+	BOOL    m_bTelUsing;
+	void DialSpeedCode(int index);
 
-    CTelephoneDlg(CWnd* pParent = NULL);   // standard constructor
-    BOOL m_bRecording;
-    UINT m_uiIgnoreRingCount;
-    UINT m_uTelSecondOff;
+	CTelephoneDlg(CWnd* pParent = NULL);   // standard constructor
+	BOOL m_bRecording;
+//	UINT m_uiIgnoreRingCount;
 
-    // Dialog Data
-    //{{AFX_DATA(CTelephoneDlg)
-    enum { IDD = IDD_DIALOG_TELEPHONE };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CTelephoneDlg)
+	enum { IDD = IDD_DIALOG_TELEPHONE };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
-    afx_msg void OnButtonTelephoneRecord();
+	afx_msg void OnButtonTelephoneRecord();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 
-    void ShowWindow_(int cmdshow);
+	void ShowWindow_(int cmdshow);
+	afx_msg void OnButtonTelephoneHide();
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CTelephoneDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CTelephoneDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
 
-    // Implementation
-protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(CTelephoneDlg)
-    virtual BOOL OnInitDialog();
-    afx_msg void OnTimer(UINT nIDEvent);
-    afx_msg LRESULT OnMM_WIM_OPEN(UINT wParam,LONG lParam);
-    afx_msg LRESULT OnMM_WIM_DATA(UINT wParam,LONG lParam);
-    afx_msg LRESULT OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
-    afx_msg LRESULT OnMM_WOM_OPEN(UINT wParam,LONG lParam);
-    afx_msg LRESULT OnMM_WOM_DONE(UINT wParam,LONG lParam);
-    afx_msg LRESULT OnMM_WOM_CLOSE(UINT wParam,LONG lParam);
-    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-    //}}AFX_MSG
-    afx_msg void OnButtonTelephoneHide();
-    afx_msg void OnButtonTelephoneNote();
-    //	afx_msg void OnButtonTelephoneRecord();
-    afx_msg void OnButtonTelephoneHandle();
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    afx_msg LRESULT OnTelStatus(WPARAM w, LPARAM l);
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CTelephoneDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnMM_WIM_OPEN(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_DATA(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WOM_OPEN(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WOM_DONE(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WOM_CLOSE(UINT wParam,LONG lParam);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	//}}AFX_MSG
+	afx_msg void OnButtonTelephoneNote();
+	afx_msg void OnButtonTelephoneHandle();
+	afx_msg void OnTelStatus(WPARAM w, LPARAM l);
+	DECLARE_MESSAGE_MAP()
 
 private:
 
-    std::string path;
-    char m_chDialNumber[64];
+	std::string path;
+	char m_chDialNumber[64];
+	
+	CCEFramePartStatic m_sticBackground;
 
-    CCEStatic m_sticTitle;
-    CCEStatic m_sticNameNo;
-    CCEStatic m_sticCompany;
-    CCEStatic m_sticDepartment;
-    CCEStatic m_sticDuty;
-    CCEStatic m_sticRecordCaption;
-    CCEStatic m_sticRecord;
-    CCEStatic m_sticDurationCaption;
-    CCEStatic m_sticDuration;
+	boost::shared_ptr<Data::SoundSegment> m_spSoundSegment;
+	boost::shared_ptr<Data::ContactInfo> m_spPstnContactInfo;
+	std::vector<boost::shared_ptr<Data::SoundSegment> >m_vSoundSegment;
+	CString m_strRecord;
+	CString m_strStopRecord;
+	CString m_strHangOff;
+	CString m_strHangOn;
+//	UINT m_uiTelephoneSecond;
+	UINT m_uiRecordTimer;
+	UINT m_uiRecordSecond;
+//	UINT m_uiRingCount;
+	UINT m_uiTipTimer;
+	UINT m_uiInNoCount;
+	UINT m_uiRecordCound;
+//	BOOL m_bHasCallID;
+//	BOOL m_bFirwall;
+	UINT m_uiRemainRecordSecond;
+	std::string m_sTelephoneNumber;
+	std::string m_sTipFilename;
+//	std::string m_sRingFilename;
+	std::string m_sDialNumber;
+	std::string m_sOutLine;
+	std::string m_sTel;
+	std::string m_sCity;
+//	BOOL m_bRing;
+//	BOOL m_bRingPlayed;
 
-    // 	CCEBmpButton m_btnHide;
-    // 	CCEBmpButton m_btnNote;
-    // 	CCEBmpButton m_btnRecord;
-    // 	CCEBmpButton m_btnHandle;
-    // 	CCEBmpButton m_btnRecordTip;
-    CCEFramePartStatic m_sticBackground;
-
-    //	CNoteDlg* m_pNoteDlg;
-    //	boost::shared_ptr<Data::SimAddr> m_spSimAddr;
-
-
-    boost::shared_ptr<Data::ContactInfo> m_spContactInfo;
-    boost::shared_ptr<Data::SoundSegment> m_spSoundSegment;
-    std::vector<boost::shared_ptr<Data::SoundSegment> >m_vSoundSegment;
-    CString m_strRecord;
-    CString m_strStopRecord;
-    CString m_strHangOff;
-    CString m_strHangOn;
-    UINT m_uiTelephoneTimer;
-    UINT m_uiTelephoneSecond;
-    UINT m_uiRecordTimer;
-    UINT m_uiRecordSecond;
-    UINT m_uiRingCount;
-    UINT m_uiTipTimer;
-    UINT m_uiInNoCount;
-    UINT m_uiRecordCound;
-    //	BOOL m_bAutoRecord;
-    BOOL m_bHasCallID;
-    BOOL m_bFirwall;
-    UINT m_uiRemainRecordSecond;
-    std::string m_sTelephoneNumber;
-    std::string m_sTipFilename;
-    std::string m_sRingFilename;
-    std::string m_sDialNumber;
-    std::string m_sOutLine;
-    BOOL m_bRing;
-    BOOL m_bRingPlayed;
 private:
-    volatile BOOL m_bEnding;
-    BOOL m_bPlaying;
-    DWORD m_dwDataLength;
-    HWAVEIN m_hWaveIn;
-    HWAVEOUT m_hWaveOut;
-    PBYTE m_pOutBuffer;
+	UINT m_uiPstnRingCount;
+	UINT m_uiIPstngnoreRingCount;
+	UINT m_uiPstnTelephoneTimer ;
+	UINT m_uPstnTelSecondOff;
+	UINT m_uiPstnTelephoneSecond;
 
-    PBYTE m_pBuffer[WAVE_BUFFER_COUNT];
-    PWAVEHDR m_pWaveHdr[WAVE_BUFFER_COUNT];
+	BOOL m_bPstnFirwall ;
+	BOOL m_bPstnHasCallID ;
+	BOOL m_bPstnRingPlayed;
+	BOOL m_bPstnRing;
 
-    // 	PBYTE m_pBuffer1;
-    // 	PBYTE m_pBuffer2;
-    // 	PWAVEHDR m_pWaveHdr1;
-    // 	PWAVEHDR m_pWaveHdr2;
 
-    CFile m_fWav;	
-    WAVEFORMATEX m_waveform;
-    std::string m_sRecordFileName;
-    std::string m_sPlayFileName;
-    bool RecStart(void);
-    bool RecStop(void);
-    void SaveWavHead(void);
-    bool PlayStart(void);
-    bool PlayStop(void);
+	std::string m_sPstnRingFilename;
+	std::string m_sPstnTel;
+	std::string m_sPstnCity;
 
-    BOOL m_bPlayingLeaveWord;
-    bool InitData(void);
-    std::string GetSoundPath(void);
 
-    Util::Audio::OggCodec* m_pOggCodec;
+	
+private:
+	volatile BOOL m_bEnding;
+	BOOL m_bPlaying;
+ 	DWORD m_dwDataLength;
+	HWAVEIN m_hWaveIn;
+	HWAVEOUT m_hWaveOut;
+	PBYTE m_pOutBuffer;
+	
+	PBYTE m_pBuffer[WAVE_BUFFER_COUNT];
+	PWAVEHDR m_pWaveHdr[WAVE_BUFFER_COUNT];
+	
+	CFile m_fWav;	
+	WAVEFORMATEX m_waveform;
+	std::string m_sRecordFileName;
+	std::string m_sPlayFileName;
+	bool RecStart(void);
+	bool RecStop(void);
+	void SaveWavHead(void);
+	bool PlayStart(void);
+	bool PlayStop(void);
+
+	BOOL m_bPlayingLeaveWord;
+	bool InitData(void);
+	std::string GetSoundPath(void);
+
+	OggCodec* m_pOggCodec;
+	int  m_nLevel ;
+	int  m_nSelectLine;//选择的线路
+	bool m_bClickSubDial;
+	bool m_bSoftWareOff;
+
+	CTelePhoneOptionDlg *m_pTelePhoneOptionDlg;
 
 public:
-    void HandleOn(void);
-    void HandleOff(void);
 
-    void HangOff_(void* param);
-    void HangOn_(void* param);
-    void Key_(void* param);
-    void SubKey_(void* param);
-    void Connect_(void* param);
-    void Ring_(void* param);
-    void CallID_(void* param);
-    std::vector<boost::shared_ptr<Data::Contact> > FindCallContact(std::string number);
-    void ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number);
-    void DialContact(Data::TelephoneNumber telephoneNumber, int contactId = 0);
+	boost::shared_ptr<Data::ContactInfo> m_spContactInfo[2];
 
-    void Mute(void);
-    void Redial(void);
-    void HangOnInRecord(void);
-    void HangOnToRecord(void);
+	void HandleOn(void);
+	void HandleOff(void);
+	
+	void HangOff_(void* param);
+	void HangOn_(void* param);
+	void Key_(void* param);
+	void SubKey_(void* param);
+	void Connect_(void* param);
+	void Ring_(void* param);
+	void CallID_(void* param);
+	std::vector<boost::shared_ptr<Data::Contact> > FindCallContact(std::string number);
+	void ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number,int uintNo = 100);
+	void DialContact(Data::TelephoneNumber telephoneNumber, int contactId = 0);
 
-    UINT GetUnconnectCount(void);
-    //	void ClearUnconnectCount(void);
-    UINT GetRecordCount(void); 
-    //	void ClearRecordCount(void);
+	void Mute(void);
+	void Redial(void);
+	void HangOnInRecord(void);
+	void HangOnToRecord(void);
 
-    BOOL GetIsRecordStatus(){return m_bRecording;}
+	UINT GetUnconnectCount(void);
+	UINT GetRecordCount(void); 
 
-    //add by qi 2009_11_04
-    void FromTelDial(boost::shared_ptr<Data::ContactInfo> pContactInfo,std::string tel);//把电话拨打界面的信息传过来
-    void SetVolume(unsigned int volume);
-    void VolumeSwitch();
-    void Dialback(std::string telnum);
+	BOOL GetIsRecordStatus(){return m_bRecording;}
+
+	//add by qi 2009_11_04
+	void pstnRing_(void* param);
+	void pstnCallID_(void* param);
+	void PstnContect_(void* param);
+	void PstnHangOff_(void* param);
+
+	void G3HangOff();//单独挂断3G
+	void G3HangOff(int const line);//挂断一路
+	void G3AllHangOff();//所有路全部挂断
+	void HandleOff(int const line);//处理某一路
+	void CommonDataInit();//所有公共的数据清空
+	void Hold2Dial();//保持一路去拨号
+	void LineDurTimer(int nline);//电话的时长
+	void LineStatusTimer(int nline);//电话线路的状态
+	void ShowLineStatus(int nline);//展示线路状态
+
+	void FromTelDial(std::string tel);//把电话拨打界面的信息传过来
+	void SetVolume(unsigned int volume);
+	void VolumeSwitch();
+	void HandleAudio(bool bt);
+	void SetAudioLevel();
+	void PhoneSwitch();//线路切换
+	void Dialback(std::string telnum);
+	void SelectNum(int id);//选择线路
+	void ShowMainInfo();//展示主窗口信息
+	void Option();//选项
+	void SetFirstItem(CString info,bool bfresh);//设置最上一行的信息
+
+	void SwitchPstnTo3G();//从pstn转换到3G1
+
+	void SwitchAnother3G();//切换到另一路3G
+	void ShowPstnInfo();//把PSTN的信息显示在主界面上
+	void Show3gInfo(int const line);//展示3g的信息
+	void ActivePstn();//把隐藏的pstn这路激活
+	void SetContactInfoOK(int const index);//设置通话记录信息
+
+
+
+	afx_msg void OnCallWaitting(WPARAM w, LPARAM l);
+
+public:
+		BOOL m_bPstnReject;
+		BOOL m_bSend0x82Win;
+		BOOL m_bPstnFirstRing;//来判断哪路振铃先进来
+		UINT  m_nAllPhoneNum;//电话的总路数
+
 };
 
 //{{AFX_INSERT_LOCATION}}

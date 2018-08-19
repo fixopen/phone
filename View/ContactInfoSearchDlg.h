@@ -19,57 +19,57 @@
 
 class CContactInfoSearchDlg : public CCEDialog
 {
-    // Construction
+// Construction
 public:
-    CContactInfoSearchDlg(CWnd* pParent = NULL);   // standard constructor
+	CContactInfoSearchDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CContactInfoSearchDlg)
-    enum { IDD = IDD_DIALOG_CONTACTINFOSEARCH };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CContactInfoSearchDlg)
+	enum { IDD = IDD_DIALOG_CONTACTINFOSEARCH };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CContactInfoSearchDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CContactInfoSearchDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
 
-    // Implementation
-protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(CContactInfoSearchDlg)
-    virtual BOOL OnInitDialog();
-    //}}AFX_MSG
-    afx_msg void OnButtonSearchcinfoCancel();
-    afx_msg void OnButtonSearchcinfoSearch();
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CContactInfoSearchDlg)
+	virtual BOOL OnInitDialog();
+	//}}AFX_MSG
+	afx_msg void OnButtonSearchcinfoCancel();
+	afx_msg void OnButtonSearchcinfoSearch();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	DECLARE_MESSAGE_MAP()
 private:
-    CMJPGStatic		m_MJPGList;
-    CFont m_Font;
-    /*
-    CCEStatic m_sticTitle;
+	CMJPGStatic		m_MJPGList;
+	CFont m_Font;
+/*
+	CCEStatic m_sticTitle;
 
-    CCEStatic m_sticTip;
-    CCEStatic m_sticTimeRange;
-    CCEStatic m_sticFrom;
-    CCEStatic m_sticTo;
-    CCEStatic m_sticName;
-    CCEStatic m_sticNumber;
-    */
-    CCERectEdit m_edtName;
-    CCERectEdit m_edtNumber;
-    CDateCtrl m_dtFrom;
-    CDateCtrl m_dtTo;
+	CCEStatic m_sticTip;
+	CCEStatic m_sticTimeRange;
+	CCEStatic m_sticFrom;
+	CCEStatic m_sticTo;
+	CCEStatic m_sticName;
+	CCEStatic m_sticNumber;
+	*/
+	CCERectEdit m_edtName;
+	CCERectEdit m_edtNumber;
+	CDateCtrl m_dtFrom;
+	CDateCtrl m_dtTo;
 
-    // 	CCEBmpButton m_btnSearch;
-    // 	CCEBmpButton m_btnCancel;
+// 	CCEBmpButton m_btnSearch;
+// 	CCEBmpButton m_btnCancel;
 
-    //	CCEFramePartStatic m_sticBackground;
+//	CCEFramePartStatic m_sticBackground;
 };
 
 //{{AFX_INSERT_LOCATION}}

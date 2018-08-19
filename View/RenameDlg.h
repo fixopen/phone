@@ -14,43 +14,44 @@
 /////////////////////////////////////////////////////////////////////////////
 // CRenameDlg dialog
 
-class CRenameDlg : public CCEDialog {
+class CRenameDlg : public CCEDialog
+{
 public:
-    CCERectEdit m_edtName;
-    CCERectEdit m_edtNewName;
-    CMJPGStatic m_MJPGList;
-    CWnd* m_pOwner;
-    CString m_oldName;
-    int m_index;
-    void SetWndParam(CWnd* pWnd, int nIndex, CString sName);
+	CCERectEdit     m_edtName;
+	CCERectEdit     m_edtNewName;
+	CMJPGStatic		m_MJPGList;
+	CWnd			*m_pOwner;
+	CString         m_oldName;
+	int             m_index;
+	void            SetWndParam(CWnd *pWnd, int nIndex, CString sName);
 
-    // Construction
+// Construction
 public:
-    CRenameDlg(CWnd* pParent = NULL);   // standard constructor
+	CRenameDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CRenameDlg)
-    enum { IDD = IDD_DIALOG_RENAME };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CRenameDlg)
+	enum { IDD = IDD_DIALOG_RENAME };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CRenameDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CRenameDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
 
-    // Implementation
+// Implementation
 protected:
 
-    // Generated message map functions
-    //{{AFX_MSG(CRenameDlg)
-    virtual BOOL OnInitDialog();
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CRenameDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

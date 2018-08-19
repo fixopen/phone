@@ -14,55 +14,68 @@
 
 namespace Data
 {
-    class Contact;
-    class ContactGroup : public DataAccess<ContactGroup> {
+	class Contact;
+    class ContactGroup : public DataAccess<ContactGroup>
+    {
     public:
-        std::string const name(void) const {
+        std::string const name(void) const
+        {
             return name_;
         }
-        void name(std::string const n) {
+        void name(std::string const n)
+        {
             name_ = n;
         }
-        std::string const alias(void) const {
+        std::string const alias(void) const
+        {
             return alias_;
         }
-        void alias(std::string const alias) {
+        void alias(std::string const alias)
+        {
             alias_ = alias;
         }
 
-        std::string ringName(void) const {
-            return ringName_;
-        }
+		std::string ringName(void) const
+		{
+			return ringName_;
+		}
+		
+		void ringName(std::string const ringName)
+		{
+			ringName_ = ringName;
+		}
 
-        void ringName(std::string const ringName) {
-            ringName_ = ringName;
-        }
-
-        std::string tipName(void) const {
-            return tipName_;
-        }
-
-        void tipName(std::string const tipName) {
-            tipName_ = tipName;
-        }
+		std::string tipName(void) const
+		{
+			return tipName_;
+		}
+		
+		void tipName(std::string const tipName)
+		{
+			tipName_ = tipName;
+		}
 
 
         boost::shared_ptr<SoundSegment> ring(void);
         void ring(boost::shared_ptr<SoundSegment> ring);
-        bool const useDefaultRing(void) const {
+        bool const useDefaultRing(void) const
+        {
             return useDefaultRing_;
         }
-        void useDefaultRing(bool const useDefaultRing) {
+        void useDefaultRing(bool const useDefaultRing)
+        {
             useDefaultRing_ = useDefaultRing;
         }
-        boost::shared_ptr<SoundSegment> tips();
-        void tips(boost::shared_ptr<SoundSegment> tips);
-        int const tipsId() const {
-            return tipsId_;
-        }
-        void tipsId(int const tipsId) {
-            tipsId_ = tipsId;
-        }
+		boost::shared_ptr<SoundSegment> tips();
+		void tips(boost::shared_ptr<SoundSegment> tips);
+		int const tipsId() const
+		{
+			return tipsId_;
+		}
+		void tipsId(int const tipsId)
+		{
+			tipsId_ = tipsId;
+		}
 
         std::vector<boost::shared_ptr<Contact> > const contacts(void);
     private:
@@ -77,8 +90,8 @@ namespace Data
         //boost::shared_ptr<SoundSegment> smRing_;
         int smRingId_;
 
-        std::string ringName_;
-        std::string tipName_;
+		std::string ringName_;
+		std::string tipName_;
 
         bool useDefaultTips_;
         bool tipsFinded_;

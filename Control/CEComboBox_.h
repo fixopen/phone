@@ -8,110 +8,87 @@
 //
 #include "CEStatic.h"
 #include "CeBtnST.h"
+#include "CEComboBox12_.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CCEComboBox_ window
-#define IDC_COMBO_BTN       0xFFFD
-#define IDC_COMBO_COMBO     0xFFFC
-class CCEComboBox_ : public CStatic {
+#define IDC_COMBO_BTN		0xFFFD
+#define IDC_COMBO_COMBO		0xFFFC
+class CCEComboBox_ : public CStatic
+{
 public:
-    COLORREF m_backRGB;
-    CCEStatic m_Static;
-    CCEBmpButton m_Btn;
-    CComboBox m_Combo;
-    int m_nCtrlID;
-    CFont m_font;
-    int m_nFontHeight;
-    BOOL CreateEx(int style, CRect& rect, CWnd* pParentWnd, int nCtrlID, int fontSize, int btnWidth, int btnHeight, int bitmapType = 0);
-    BOOL Create(int style, CRect& rect, CWnd* pParentWnd, int nCtrlID = 0xFFFF);
+	COLORREF    m_backRGB;
+	CCEStatic	m_Static;
+	CCEBmpButton m_Btn;
+	CComboBox	m_Combo;
+	int			m_nCtrlID;
+	CFont		m_font;
+	int			m_nFontHeight;
+	BOOL CreateEx(int style, CRect &rect, CWnd *pParentWnd, int nCtrlID, int fontSize, int btnWidth, int btnHeight, int bitmapType = 0);
+	BOOL Create(int style, CRect &rect, CWnd *pParentWnd, int nCtrlID= 0xFFFF);
 
-    int GetCount() {
-        return m_Combo.GetCount();
-    }
-    int GetCurSel() {
-        return m_Combo.GetCurSel();
-    }
-    int SetCurSel(int nSelect) {
-        int ret = m_Combo.SetCurSel(nSelect);
-        CString s;
-        m_Combo.GetWindowText(s);
-        m_Static.SetWindowText(s);
-        return ret;
-    }
+	int GetCount() {return m_Combo.GetCount();}
+	int GetCurSel() {return m_Combo.GetCurSel();}
+	int SetCurSel(int nSelect){
+		int ret= m_Combo.SetCurSel(nSelect);
+		CString s;
+		m_Combo.GetWindowText(s);
+		m_Static.SetWindowText(s);
+		return ret;
+	}
 
-    // manipulating listbox items
-    int FindString(int nStartAfter, LPCTSTR lpszString) {
-        return m_Combo.FindString(nStartAfter, lpszString);
-    }
-    int SelectString(int nStartAfter, LPCTSTR lpszString) {
-        int ret = m_Combo.SelectString(nStartAfter, lpszString);
-        CString s;
-        m_Combo.GetWindowText(s);
-        m_Static.SetWindowText(s);
-        return ret;
-    }
-    int GetLBText(int nIndex, LPTSTR lpszText) {
-        return m_Combo.GetLBText(nIndex, lpszText);
-    }
-    void GetLBText(int nIndex, CString& rString) {
-        m_Combo.GetLBText(nIndex, rString);
-    };
-    int AddString(LPCTSTR lpszString) {
-        return m_Combo.AddString(lpszString);
-    }
-    int DeleteString(UINT nIndex) {
-        return m_Combo.DeleteString(nIndex);
-    }
-    int InsertString(int nIndex, LPCTSTR lpszString) {
-        return m_Combo.InsertString(nIndex, lpszString);
-    }
-    DWORD GetItemData(int nIndex) {
-        return m_Combo.GetItemData(nIndex);
-    }
-    int SetItemData(int nIndex, DWORD dwItemData) {
-        return m_Combo.SetItemData(nIndex, dwItemData);
-    }
-    void SetWindowText_(CString s);
-    void ResetContent() {
-        m_Combo.ResetContent();
-    }
-    void GetWindowText(CString& string);
-    int GetLBTextLen(int nIndex) {
-        return m_Combo.GetLBTextLen(nIndex);
-    }
-    void SetDroppedWidth(UINT nWidth) {
-        m_Combo.SetDroppedWidth(nWidth);
-    }
-    void ShowDropDown(BOOL bShowIt = TRUE) {
-        m_Combo.ShowDropDown(bShowIt);
-    }
-    // Construction
+	// manipulating listbox items
+	int FindString(int nStartAfter, LPCTSTR lpszString) {return m_Combo.FindString(nStartAfter, lpszString);}
+	int SelectString(int nStartAfter, LPCTSTR lpszString){
+		int ret = m_Combo.SelectString(nStartAfter, lpszString);
+		CString s;
+		m_Combo.GetWindowText(s);
+		m_Static.SetWindowText(s);
+		return ret;
+	}
+	int GetLBText(int nIndex, LPTSTR lpszText){return m_Combo.GetLBText(nIndex, lpszText); }
+	void GetLBText(int nIndex, CString& rString) {m_Combo.GetLBText(nIndex, rString); };
+	int AddString(LPCTSTR lpszString){return m_Combo.AddString(lpszString);}
+	int DeleteString(UINT nIndex){return m_Combo.DeleteString(nIndex);}
+	int InsertString(int nIndex, LPCTSTR lpszString){return m_Combo.InsertString(nIndex, lpszString);}
+	DWORD GetItemData(int nIndex) {return m_Combo.GetItemData(nIndex);}
+	int SetItemData(int nIndex, DWORD dwItemData){return m_Combo.SetItemData(nIndex, dwItemData);}
+	void SetWindowText_(CString s);
+	void ResetContent(){m_Combo.ResetContent();}
+	void GetWindowText(CString &string);
+	int GetLBTextLen(int nIndex){return m_Combo.GetLBTextLen(nIndex);}
+	void SetDroppedWidth(UINT nWidth){m_Combo.SetDroppedWidth(nWidth);}
+	void ShowDropDown(BOOL bShowIt = TRUE){m_Combo.ShowDropDown(bShowIt);}
+
+
+// Construction
 public:
-    CCEComboBox_();
+	CCEComboBox_();
 
-    // Attributes
+// Attributes
 public:
 
-    // Operations
+// Operations
 public:
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CCEComboBox_)
-    //}}AFX_VIRTUAL
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCEComboBox_)
+	//}}AFX_VIRTUAL
 
-    // Implementation
+// Implementation
 public:
-    virtual ~CCEComboBox_();
+	virtual ~CCEComboBox_();
 
-    // Generated message map functions
+	// Generated message map functions
 protected:
-    //{{AFX_MSG(CCEComboBox_)
-    afx_msg void OnPaint();
-    afx_msg void OnButton1();
-    afx_msg void OnSelchangeCombo1();
-    //}}AFX_MSG
+	//{{AFX_MSG(CCEComboBox_)
+	afx_msg void OnPaint();
+	afx_msg void OnButton1();
+	afx_msg void OnSelchangeCombo1();
+	//}}AFX_MSG
 
-    DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

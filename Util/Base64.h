@@ -3,8 +3,7 @@
 
 #include <string>
 
-namespace Util
-{
+namespace Util {
     class Base64 {
     public:
         union Convert {
@@ -15,10 +14,10 @@ namespace Util
                 unsigned first : 6;
             } sixBits;
             char octetBits[4];
-            unsigned int whole;
+			unsigned int whole;
         };
-        static std::string const Encode(std::string const & content);
-        static std::string const Decode(std::string const & content);
+        static std::string const Encode(std::string const& content);
+        static std::string const Decode(std::string const& content);
         static char* ConvertTable/*[64]*/;
     private:
         static int const revConvert_(char const c);

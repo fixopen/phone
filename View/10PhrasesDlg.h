@@ -16,49 +16,49 @@
 
 class C10PhrasesDlg : public CCEDialog
 {
-    // Construction
+// Construction
 public:
-    C10PhrasesDlg(CWnd* pParent = NULL);   // standard constructor
-    int       type;
+	C10PhrasesDlg(CWnd* pParent = NULL);   // standard constructor
+	int       type;
 
-    // Dialog Data
-    //{{AFX_DATA(CDeleteTipDlg)
-    enum { IDD = IDD_DIALOG_DELETETIP };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CDeleteTipDlg)
+	enum { IDD = IDD_DIALOG_DELETETIP };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CDeleteTipDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CDeleteTipDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
 
-    // Implementation
-protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(CDeleteTipDlg)
-    virtual BOOL OnInitDialog();
-    afx_msg void OnTimer(UINT nIDEvent);
-    //}}AFX_MSG
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CDeleteTipDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT nIDEvent);
+	//}}AFX_MSG
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	DECLARE_MESSAGE_MAP()
 private:
 
-    CMJPGStatic		m_MJPGList;
-    CWnd*			m_pwnd;
-    int				m_iCount;
-    int				m_iUnitNo;
+	CMJPGStatic		m_MJPGList;
+	CWnd*			m_pwnd;
+	int				m_iCount;
+	int				m_iUnitNo;
 
 public:
-    void SetMainWnd(CWnd* pwnd);
-    void ClickOneItem(int item);
-    void AddPhrases();
-    void InsertPhrases2SMS();
-    void OnBtnOK();
-    void InitialData();
+	void SetMainWnd(CWnd* pwnd);
+	void ClickOneItem(int item);
+	void AddPhrases();
+	void InsertPhrases2SMS();
+	void OnBtnOK();
+	void InitialData();
 
 };
 

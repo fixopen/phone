@@ -16,58 +16,58 @@
 
 class CNumberExtractDlg : public CCEDialog
 {
-    // Construction
+// Construction
 public:
-    CNumberExtractDlg(CWnd* pParent = NULL);   // standard constructor
-    int       type;
+	CNumberExtractDlg(CWnd* pParent = NULL);   // standard constructor
+	int       type;
 
-    // Dialog Data
-    //{{AFX_DATA(CDeleteTipDlg)
-    enum { IDD = IDD_DIALOG_DELETETIP };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CDeleteTipDlg)
+	enum { IDD = IDD_DIALOG_DELETETIP };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CDeleteTipDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CDeleteTipDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
 
-    // Implementation
-protected:
-
-    // Generated message map functions
-    //{{AFX_MSG(CDeleteTipDlg)
-    virtual BOOL OnInitDialog();
-    afx_msg void OnTimer(UINT nIDEvent);
-    //}}AFX_MSG
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CDeleteTipDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT nIDEvent);
+	//}}AFX_MSG
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	DECLARE_MESSAGE_MAP()
 private:
-    const size_t m_nPagesize;
-    size_t						m_iCurrentPage;
-    size_t						m_iTotalPage;
-    int						m_nItem;
-    int						m_ncontact;
-    CMJPGStatic				m_MJPGList;
-    CWnd*					m_pwnd;
-    std::vector<CString>    m_vNumber;
+    const int				m_nPagesize;
+	int						m_iCurrentPage;
+	int						m_iTotalPage;
+	int						m_nItem;
+	int						m_ncontact;
+	CMJPGStatic				m_MJPGList;
+	CWnd*					m_pwnd;
+	std::vector<CString>    m_vNumber;
 public:
-    void SetMainWnd(CWnd* pwnd);
-    void ClickNumber(int item);
-    void SelectContact(int item);
-    void PageUp();
-    void PageDown();
-    void SetNumber(std::vector<CString> vNumber);
-    void ShowNumber();
-    int	 GetItems();
-    void OnBtnOk();
+	void SetMainWnd(CWnd* pwnd);
+	void ClickNumber(int item);
+	void SelectContact(int item);
+	void PageUp();
+	void PageDown();
+	void SetNumber(std::vector<CString> vNumber);
+	void ShowNumber();
+	int	 GetItems();
+	void OnBtnOk();
 
-    void NewContact();
-    void OldContact();
-
+	void NewContact();
+	void OldContact();
+	
 };
 
 //{{AFX_INSERT_LOCATION}}

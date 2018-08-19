@@ -57,6 +57,7 @@ struct UNIT{
 	int 				m_nIsScroll;		//控件是否属于滚动 分组中    0 不滚动  1  page1  2 page2
 	CWnd				*m_pUnitWnd;		//记录 edit radio check commbox Wnd
 	BOOL				m_bIsDisable;		//是否设置点击不响应.
+	BOOL				m_bDirty;
 };
 
 enum PLAYCONFIGITEMTYPE{type_ADVItem, type_SoundItem, type_KeyItem, type_MainFile, type_HungonFile};
@@ -101,7 +102,7 @@ namespace Structure
 		std::vector<ADVItem*> ADVItems;
 		~AdvPlayList()
 		{
-			for (size_t i = 0; i < ADVItems.size(); ++i)
+			for (int i = 0; i < ADVItems.size(); ++i)
 				delete ADVItems[i];
 		}
 	private:
@@ -118,11 +119,11 @@ namespace Structure
 		std::vector<KEYFILEItem*> Keyitems;
 		~PLAYConfigList()
 		{
-			for (size_t i = 0; i < ADVItems.size(); ++i)
+			for (int i = 0; i < ADVItems.size(); ++i)
 				delete ADVItems[i];
-			for (size_t i = 0; i < Sounditems.size(); ++i)
+			for (i = 0; i < Sounditems.size(); ++i)
 				delete Sounditems[i];
-			for (size_t i = 0; i < Keyitems.size(); ++i)
+			for (i = 0; i < Keyitems.size(); ++i)
 				delete Keyitems[i];
 		}
 	private:
@@ -146,9 +147,9 @@ namespace Structure
 		std::vector<MJPGItem*> items;
 		~MJPGList()
 		{
-			for (size_t i = 0; i < items.size(); ++i)
+			for (int i = 0; i < items.size(); ++i)
 			{
-				if (items[i]->unitparam.m_pUnitWnd)
+				if(items[i]->unitparam.m_pUnitWnd)
 					delete items[i]->unitparam.m_pUnitWnd;
 				delete items[i];
 			}

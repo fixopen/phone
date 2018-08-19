@@ -31,112 +31,100 @@
 
 class CCardSelectDlg : public CDialog
 {
-    // Construction
+// Construction
 public:
-    CCardSelectDlg(CWnd* pParent = NULL);   // standard constructor
+	CCardSelectDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CContactDlg)
-    enum { IDD = IDD_DIALOG_TELEPHONE };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CContactDlg)
+	enum { IDD = IDD_DIALOG_TELEPHONE };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CContactDlg)
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CContactDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	//}}AFX_VIRTUAL
+
+// Implementation
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-    //}}AFX_VIRTUAL
 
-    // Implementation
-protected:
+	// Generated message map functions
+	//{{AFX_MSG(CContactDlg)
+	virtual BOOL OnInitDialog();
+	//}}AFX_MSG
+	afx_msg void OnClickListType(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnClickListList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnButtonContactNew();
+	afx_msg void OnButtonContactNewtype();
+	afx_msg void OnButtonContactEdittype();
+	afx_msg void OnButtonContactSearch();
+	afx_msg void OnButtonContactClose();
+	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnBtnSelectAll();
+	afx_msg void OnBtnCancelAll();
+	afx_msg void OnBtnOk();
+	afx_msg void OnBtnCancel();
 
-    // Generated message map functions
-    //{{AFX_MSG(CContactDlg)
-    virtual BOOL OnInitDialog();
-    //}}AFX_MSG
-    afx_msg void OnClickListType(NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnClickListList(NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnButtonContactNew();
-    afx_msg void OnButtonContactNewtype();
-    afx_msg void OnButtonContactEdittype();
-    afx_msg void OnButtonContactSearch();
-    afx_msg void OnButtonContactClose();
-    afx_msg LRESULT  OnListCltrlClick(WPARAM w, LPARAM l);
-    afx_msg void OnTimer(UINT nIDEvent);
-    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-    afx_msg void OnBtnSelectAll();
-    afx_msg void OnBtnCancelAll();
-    afx_msg void OnBtnOk();
-    afx_msg void OnBtnCancel();
-
-    DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 private:
-    CMJPGStatic		m_MJPGList;
-    /*
-    CCEStatic	m_sticTypeTitle;
-    CCEStatic	m_sticName;
-    CCEStatic	m_sticCompany;
-    CCEStatic	m_sticDepartment;
-    CCEStatic	m_sticDuty;
-    CCEStatic	m_sticOperation;
-    CCEStatic	m_sticSepLine1;
-    CCEStatic	m_sticSepLine2;
-    */	CCEStatic   m_sticPinYin;
-    /*	CCEStatic   m_sticPanel;
-    CCEFrameStatic m_sticBackground;
-    */
-    CCEListCtrl	m_lsType;
-    CCEListCtrl	m_lsList;
-    CSoftKey    m_skSoftKey;
-    CImageList* m_pImageList;
+	CMJPGStatic		m_MJPGList;
 
-    std::vector<Util::ATCommandWarp::SIM_FORMAT> m_vContact;//联系人容器
-    BOOL m_bSelectAll ;//选中所有的
-    CCEButtonST m_btnSelectAll ;//全选
-    CCEButtonST	m_btnCancelAll ;//取消全选
-    CCEButtonST m_btnOK ;//确定
-    CCEButtonST m_btnCancel ; //取消
+	CCEStatic   m_sticPinYin;
+	CCEListCtrl	m_lsType;
+	CCEListCtrl	m_lsList;
+	CSoftKey    m_skSoftKey;
+	CImageList* m_pImageList;
 
-    /*
-    CCEBmpButton m_btnNewContact;
-    CCEBmpButton m_btnNewType;
-    CCEBmpButton m_btnEditType;
-    CCEBmpButton m_btnSearch;
-    CCEBmpButton m_btnClose;
-    */	
+	std::vector<Util::ATCommandWarp::SIM_FORMAT> m_vContact;//联系人容器
+	BOOL m_bSelectAll ;//选中所有的
+	CCEButtonST m_btnSelectAll ;//全选
+	CCEButtonST	m_btnCancelAll ;//取消全选
+	CCEButtonST m_btnOK ;//确定
+	CCEButtonST m_btnCancel ; //取消
 
-    void SetButtonDefaultColor(CCEButtonST* button);
-    void SetButtonSelectedColor(CCEButtonST* button);
+/*
+	CCEBmpButton m_btnNewContact;
+	CCEBmpButton m_btnNewType;
+	CCEBmpButton m_btnEditType;
+	CCEBmpButton m_btnSearch;
+	CCEBmpButton m_btnClose;
+*/	
+
+	void SetButtonDefaultColor(CCEButtonST* button);
+	void SetButtonSelectedColor(CCEButtonST* button);
 public:
-    //	CSIMImportDlg     *m_pSimImportDlg;
-    int GetContactTotal() { return ContactTotal; };
+//	CSIMImportDlg     *m_pSimImportDlg;
+	int GetContactTotal() { return ContactTotal; };
 public:
-    const size_t ContactTotal;
-    const size_t ContactGroupTotal;
-    const int PageSize;
+	const int ContactTotal;
+	const int ContactGroupTotal;
+	const int PageSize;
 private:
-    std::string m_sListFilter;
-    std::string m_sListSearchFilter;
-    std::vector<boost::shared_ptr<Data::Contact> > m_vCurrentResult;
-    void ShowArrayInList(std::vector<boost::shared_ptr<Data::Contact> > array);
-    std::string GetPYIndex(void);
+	std::string m_sListFilter;
+	std::string m_sListSearchFilter;
+	std::vector<boost::shared_ptr<Data::Contact> > m_vCurrentResult;
+	void ShowArrayInList(std::vector<boost::shared_ptr<Data::Contact> > array);
+	std::string GetPYIndex(void);
 
-    CContactSearchDlg* m_pContactSearchDlg;
-    void ScrollItemsInList(int step, int nPos);
+	CContactSearchDlg* m_pContactSearchDlg;
+	void ScrollItemsInList(int step, int nPos);
 
 public:
-    void ShowItemsInList(void);
-    void ShowTypeItems(void);
-    int  GetTypeListSelected(void);
-    void SetTypeListSelected(int index);
-    void Search(std::string filter);
+	void ShowItemsInList(void);
+	void ShowTypeItems(void);
+	int  GetTypeListSelected(void);
+	void Search(std::string filter);
 
-    // add by qi 2009_08_05
-    void GetSendContact(std::vector<Util::ATCommandWarp::SIM_FORMAT> &vetor);
-    void ShowCard();
+	// add by qi 2009_08_05
+	void GetSendContact(std::vector<Util::ATCommandWarp::SIM_FORMAT> &vetor);
+	void ShowCard();
 };
 
 //{{AFX_INSERT_LOCATION}}

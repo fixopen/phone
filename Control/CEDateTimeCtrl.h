@@ -9,56 +9,57 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CCEDateTimeCtrl window
-#define DATETIME_DATESTLE   DTS_SHORTDATEFORMAT
-#define DATETIME_TIMESTLE   DTS_TIMEFORMAT
+#define DATETIME_DATESTLE	DTS_SHORTDATEFORMAT
+#define DATETIME_TIMESTLE	DTS_TIMEFORMAT
 
-class CCEDateTimeCtrl : public CStatic {
-    // Construction
+class CCEDateTimeCtrl : public CStatic
+{
+// Construction
 public:
-    CFont m_font;
-    CTime m_time;
-    CTime m_time1, m_time2;
+	CFont m_font;
+	CTime m_time;
+	CTime m_time1, m_time2;
 
-    CRect m_rect1, m_rect2, m_rect3, m_rect4, m_rect5;
-    CButton m_button1, m_button2;
-    int m_nClick;
+	CRect  m_rect1, m_rect2, m_rect3, m_rect4, m_rect5;
+	CButton  m_button1, m_button2;
+	int      m_nClick;
 
-    int m_style;         
-    BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
-    BOOL SetRange(const CTime* pMinRange, const CTime* pMaxRange);
+	int        m_style;		 
+	BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID);
+	BOOL SetRange(const CTime* pMinRange, const CTime* pMaxRange);
 
-    // Operations
-    BOOL SetTime(const CTime* pTimeNew);
-    DWORD GetTime(CTime& pTimeDest) const;
+	// Operations
+	BOOL SetTime(const CTime* pTimeNew);
+	DWORD GetTime(CTime& pTimeDest) const;
 
 public:
-    CCEDateTimeCtrl();
+	CCEDateTimeCtrl();
 
-    // Attributes
-public:
-
-    // Operations
+// Attributes
 public:
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CCEDateTimeCtrl)
-    //}}AFX_VIRTUAL
-
-    // Implementation
+// Operations
 public:
-    virtual ~CCEDateTimeCtrl();
 
-    // Generated message map functions
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CCEDateTimeCtrl)
+	//}}AFX_VIRTUAL
+
+// Implementation
+public:
+	virtual ~CCEDateTimeCtrl();
+
+	// Generated message map functions
 protected:
-    //{{AFX_MSG(CCEDateTimeCtrl)
-    afx_msg void OnPaint();
-    afx_msg void OnButton1();
-    afx_msg void OnButton2(); 
-    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-    //}}AFX_MSG
+	//{{AFX_MSG(CCEDateTimeCtrl)
+	afx_msg void OnPaint();
+	afx_msg void OnButton1();
+	afx_msg void OnButton2(); 
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	//}}AFX_MSG
 
-    DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

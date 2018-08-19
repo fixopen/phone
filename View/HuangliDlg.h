@@ -13,48 +13,49 @@
 /////////////////////////////////////////////////////////////////////////////
 // CHuangliDlg dialog
 
-class CHuangliDlg : public CDialog {
+class CHuangliDlg : public CDialog
+{
 public:
-    int m_curIndex;
-    CMJPGStatic m_MJPGList;
-    int m_Year, m_Month, m_Day;
-    void SetData(int y, int m, int d, BOOL flag = TRUE);
-    void ShowLunderRight(BOOL isDraw);
+	int				m_curIndex;
+	CMJPGStatic		m_MJPGList;
+	int				m_Year, m_Month, m_Day;
+	void SetData(int y, int m, int d, BOOL flag = TRUE);
+	void ShowLunderRight(BOOL isDraw);
 
-    void OnYleft();
-    void OnYright();
-    void OnMleft();
-    void OnMright();
-    void OnExit();
+	void OnYleft();
+	void OnYright();
+	void OnMleft();
+	void OnMright();
+	void OnExit();
 
-    // Construction
+// Construction
 public:
-    CHuangliDlg(CWnd* pParent = NULL);   // standard constructor
+	CHuangliDlg(CWnd* pParent = NULL);   // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CHuangliDlg)
-    enum { IDD = IDD_DIALOG_HUANGLI };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
+// Dialog Data
+	//{{AFX_DATA(CHuangliDlg)
+	enum { IDD = IDD_DIALOG_HUANGLI };
+		// NOTE: the ClassWizard will add data members here
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CHuangliDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CHuangliDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
 
-    // Implementation
+// Implementation
 protected:
 
-    // Generated message map functions
-    //{{AFX_MSG(CHuangliDlg)
-    virtual BOOL OnInitDialog();
-    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-    afx_msg LRESULT OnMJPGMOVE(WPARAM w, LPARAM l);
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CHuangliDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnMJPGMOVE(WPARAM w, LPARAM l);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

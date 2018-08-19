@@ -14,58 +14,61 @@
 /////////////////////////////////////////////////////////////////////////////
 // CMainMenuDlg dialog
 
-class CMainMenuDlg : public CDialog {
+class CMainMenuDlg : public CDialog
+{
 public:
-    //  CPlayerDlg  *playerDlg_; 
-    void SetVideo();
-    void SetSkinStyle();
+//	CPlayerDlg	*playerDlg_; 
+	void SetVideo();
+	void SetSkinStyle();
 
-    void OnVideoBtn();
-    void OnPhotoBtn(int type = 0);
-    void OnMp3Btn();
-    void OnScreenSaveBtn();
-    void OnCalculBtn();
-    void OnLunarderBtn();
-    void ShowWindow_(int nCmdShow, int type = 0);
-    // Construction
+	void OnVideoBtn();
+	void OnPhotoBtn(int type = 0);
+	void OnMp3Btn();
+	void OnScreenSaveBtn();
+	void OnCalculBtn();
+	void OnLunarderBtn();
+	void ShowWindow_(int nCmdShow, int type = 0);
+// Construction
 public:
-    CMainMenuDlg(CWnd* pParent = NULL);   // standard constructor
+	CMainMenuDlg(CWnd* pParent = NULL);   // standard constructor
 public:
-    virtual ~CMainMenuDlg();
-    // Dialog Data
-    //{{AFX_DATA(CMainMenuDlg)
-    enum { IDD = IDD_DIALOG_MAINMENU };
-    /*  
-    CCEButtonST m_ScreenSaveBtn;
-    CCEButtonST m_CalcuBtn;
-    CCEButtonST m_CalenBtn;
-    CCEButtonST m_MusicBtn;
-    CCEButtonST m_PhotoBtn;
-    CCEButtonST m_VideoBtn;
-    */
-    CCEIconSoftKey  m_AppSoftKey;
-    CCEFrameStatic m_backGroudStatic;
-    //}}AFX_DATA
+	virtual ~CMainMenuDlg();
+// Dialog Data
+	//{{AFX_DATA(CMainMenuDlg)
+	enum { IDD = IDD_DIALOG_MAINMENU };
+
+/*	
+	CCEButtonST	m_ScreenSaveBtn;
+	CCEButtonST m_CalcuBtn;
+	CCEButtonST	m_CalenBtn;
+	CCEButtonST	m_MusicBtn;
+	CCEButtonST	m_PhotoBtn;
+	CCEButtonST	m_VideoBtn;
+*/
+	CCEIconSoftKey  m_AppSoftKey;
+	CCEFrameStatic m_backGroudStatic;
+	
+	//}}AFX_DATA
 
 
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CMainMenuDlg)
-    protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-    //}}AFX_VIRTUAL
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CMainMenuDlg)
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	//}}AFX_VIRTUAL
 
-    // Implementation
+// Implementation
 protected:
 
-    // Generated message map functions
-    //{{AFX_MSG(CMainMenuDlg)
-    virtual BOOL OnInitDialog();
-    afx_msg void OnPaint();
-    afx_msg LRESULT OnAppSoftKey(WPARAM wParam, LPARAM lParam);
-    afx_msg void OnTimer(UINT nIDTimer);
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CMainMenuDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnPaint();
+	afx_msg void OnAppSoftKey(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnTimer(UINT nIDTimer);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

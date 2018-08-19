@@ -6,7 +6,7 @@
 
 namespace Data
 {
-    typedef std::string Note;
+	typedef std::string Note;
 }
 
 #endif //__DATA_NODE_H__
