@@ -13,7 +13,7 @@
 #include "Util/Reg.h"
 //#include "Util/StringOp.h"
 
-//#define _T TEXT
+#define _T TEXT
 
 // ∫Í∂®“Â
 #define SAFE_CLOSE_HANDLE(x)		if (x) {CloseHandle(x); x = NULL;}

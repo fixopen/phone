@@ -1,0 +1,8 @@
+该目录中为所有别的应用提供界面组件，基本上采用MFC的控件（一部分）作为核心，
+同时要包装出：
+VideoPlayer
+AudioPlayer
+ImageViewer
+SoftKeyboard
+PhoneDialPad
+等控件，这些控件可以依赖于TCPMP外部库进行包装，图片显示的空间可能还需要依赖于CxImage这个外部库。
