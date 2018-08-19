@@ -21,7 +21,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg dialog
-CString s_VerSionTitle = "7.41091012";
+CString s_VerSionTitle = "7.39090929";
 CString s_VerSion = "\
 6.03090325\
 1.–ﬁ∏ƒ¡À¬º“Ù√‹¬Î.\

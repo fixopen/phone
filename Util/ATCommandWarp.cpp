@@ -315,7 +315,7 @@ int ATCommandWarp::On(char* pin)
 	bool result = true;
 	char ans[1024] = {0};      // 应答串   
 	
-	PhoneVolume(5);
+	PhoneVolume(3);
 	
 	if (!Command(CREG1, strlen(CREG1)))
 	{
@@ -463,9 +463,6 @@ bool ATCommandWarp::PhoneDial(char * number, BOOL isVideo)
 	PhoneDialTone(0, NULL);
 	Sleep(10);
 
-	extern void GNotifyDial(BOOL isDial);
-	GNotifyDial(TRUE);
-
 	char ATD[] = "ATD";
 	char CMD[1024];
 	strcpy(CMD, ATD);
@@ -475,10 +472,6 @@ bool ATCommandWarp::PhoneDial(char * number, BOOL isVideo)
 		char temp[] = "AT^DUSBPOWER=1\r";
 		char r[64] = {0}; 
 		Transaction(temp, strlen(temp), r, 64);
-
-		memset(CMD, 0, 1024);
-		strcpy(CMD, "AT^DVTDIAL=");
-		strcat(CMD, number);
 		strcat(CMD, "\r");
 	}
 	else
@@ -672,9 +665,6 @@ bool ATCommandWarp::PhoneRing(char * number, int * type)
 
 bool ATCommandWarp::PhoneHangup(void)
 {
-	extern void GNotifyDial(BOOL isDial);
-	GNotifyDial(FALSE);
-
 	char ATH[] = "ATH\r";//对于挂断AT指令，AT＋CHUP（挂断当前激活CS链路）和AT＋CHLD 也可作为可选AT指令。被动挂断，则LC6311 会给APP 上报“3\r”，3 表示“NO CARRIER”,为对端主动挂断
 	bool result = true;
 	char ans[1024] = {0};      // 应答串 
@@ -1093,8 +1083,6 @@ unsigned int ATCommandWarp::PhoneNettype(void)			//LC6211
 	return result;
 }
 
-extern void GPlayDialTone(char *dialtone);
-extern void GIsOpenMix(BOOL isOn);
 void ATCommandWarp::PhoneDialTone(BOOL isOn, char *tone)
 {
 	char AT[64] = {0};
@@ -1103,22 +1091,19 @@ void ATCommandWarp::PhoneDialTone(BOOL isOn, char *tone)
 	int ansLen = 1024;
 	if(!isOn)
 	{
-		//strcpy(AT, "AT^DAUDCTRL=0\r");
-		//Command_1(AT, strlen(AT));
-		GIsOpenMix(0);
+		strcpy(AT, "AT^DAUDCTRL=0\r");
+		Command_1(AT, strlen(AT));
 	}
 	else
 	{
 	//	if(strlen(tone) < 2)
 		{
-			//PhoneDialTone(0, NULL);
+			PhoneDialTone(0, NULL);
 		}
-		//strcpy(AT, "AT^DAUDCTRL=1,\"");
-		//strcat(AT, tone);
-		//strcat(AT, "\"\r");
-		//Command_1(AT, strlen(AT));
-		 GIsOpenMix(1);
-		 GPlayDialTone(tone);
+		strcpy(AT, "AT^DAUDCTRL=1,\"");
+		strcat(AT, tone);
+		strcat(AT, "\"\r");
+		Command_1(AT, strlen(AT));
 	}
 }
 
@@ -2030,66 +2015,15 @@ void ATCommandWarp::USC2toGB2312(char *src,char *des,int length)
 	des[nDstLength] = '\0';	
 }
 
-struct VideoThreadParam 
-{
-	Util::ComWarp * pVideoComm;
-	BOOL			*pIsRunThread;
-	BOOL            *pIsExitThread;
-	pGetVideoData   GetVideoData; 
-};
-
-VideoThreadParam   gVideaoParam;
-
-void GetVideoDataProc(void *pParam)
-{
-	VideoThreadParam *pVideoParam = (VideoThreadParam *)pParam;
-	char data[1024];
-	while(pVideoParam->pIsRunThread)
-	{
-		int len = pVideoParam->pVideoComm->ReadComm(data, 1024);
-		pVideoParam->GetVideoData(data, len);
-	}
-	*pVideoParam->pIsExitThread = TRUE;
-}
 
 //开始视频
 bool ATCommandWarp::StartVideoPhone(Util::ComWarp *pVideoCom)
 {
-	pVideoCom->OpenComm(L"COM4:");
-	char *cmd = "AT^DVTCHL=1\r";
-	pVideoCom->WriteComm(cmd, strlen(cmd));
-	m_bIsVideoRun = TRUE;
-	m_bIsVideoExit = FALSE;
-	
-	gVideaoParam.pVideoComm = pVideoCom;
-	gVideaoParam.pIsRunThread = &m_bIsVideoRun;
-	gVideaoParam.pIsExitThread = &m_bIsVideoExit;
-	
-	DWORD d;
-	HANDLE pThread = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)GetVideoDataProc, (void *)&gVideaoParam, 0, &d );
-
 	return TRUE;
 }
 
 //结束视频
 bool ATCommandWarp::EndVideoPhone(Util::ComWarp *pVideoCom)
 {
-	m_bIsVideoRun = FALSE;
-	while(!m_bIsVideoExit)
-	{
-		Sleep(5);
-	}
-	pVideoCom->CloseComm();
 	return TRUE;
-}
-
-int ATCommandWarp::GetVideoData(void *pData, int length)
-{
-	return 0;
-}
-
-int ATCommandWarp::SendVideoData(void *pData, int length)
-{
-	int ret = gVideaoParam.pVideoComm->WriteComm(pData, length);
-	return ret;
 }

@@ -5,6 +5,7 @@
 #include "../multimediaphone.h"
 #include "../MultimediaPhoneDlg.h"
 #include "3GDetailReadDlg.h"
+#include "../Protocol/BizManagerSession.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -13,6 +14,46 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #define IDT_SHOWWEATHER_ICON	0xFF00
+
+namespace {
+	int subscribeId = 0;
+	void subscribe(std::string const& no, std::string const& type) {
+		BizManagerSession* biz = new BizManagerSession();
+		std::string body;
+		body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<subscriberequest>\n  <subscribeid>";
+		char buffer[8] = {0};
+		sprintf(buffer, "%06X", subscribeId);
+		++subscribeId;
+		body += buffer;
+		body += "</subscribeid>\n  <msisdn>";
+		body += biz->msisdn();
+		body += "</msisdn>\n  <serviceid>";
+		body += no;
+		body += "</serviceid>\n  <servicetype>";
+		body += type;
+		body += "</servicetype>\n  <useraction>1</useraction>\n</subscriberequest>";
+		biz->Process(body);
+		delete biz;
+	}
+	void unsubscribe(std::string const& no, std::string const& type) {
+		BizManagerSession* biz = new BizManagerSession();
+		std::string body;
+		body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<subscriberequest>\n  <subscribeid>";
+		char buffer[8] = {0};
+		sprintf(buffer, "%06X", subscribeId);
+		++subscribeId;
+		body += buffer;
+		body += "</subscribeid>\n  <msisdn>";
+		body += biz->msisdn();
+		body += "</msisdn>\n  <serviceid>";
+		body += no;
+		body += "</serviceid>\n  <servicetype>";
+		body += type;
+		body += "</servicetype>\n  <useraction>3</useraction>\n</subscriberequest>";
+		biz->Process(body);
+		delete biz;
+	}
+}
 
 int FindFileEx(CString s, CString &sPath, CString &sFilename)
 {
@@ -172,6 +213,17 @@ BOOL C3GDetailReadDlg::OnInitDialog()
 	m_onlyEdit.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | ES_READONLY , CRect(285, 68, 775, 320), this, 0xFFFF);
 	m_MMSShow.Create(WS_CHILD, CRect(285, 68, 775, 320), this, 0, 0);
 
+
+// 	CButton *pButton[4];
+// 	for(int i = 0; i < 4; i++)
+// 	{
+// 		m_rdo[i].Create(L"", WS_CHILD, CRect(317, 133+i*35, 317+32, 133+i*35+34), this, IDC_RADIO_SETTINT_CONNECTADSL);
+// 		pButton[i] = &m_rdo[i];
+// 	}
+// 	
+// 	for(i = 0; i < 4; i++)
+// 		m_rdo[i].SetGroupButton(pButton, 4);
+
 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_家庭百事通阅读.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
@@ -210,6 +262,8 @@ void C3GDetailReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 11:		//删除
 		{
 			//doDelete();
+			if(m_nMenuType > 1)
+				break;
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
 			std::string strTemp = ".\\adv\\mjpg\\k1\\common\\确定删除吗.bmp";
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
@@ -232,6 +286,36 @@ void C3GDetailReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 100:
 		OnExit();
+		break;
+	case 113:			//订购 退订	
+		if (m_pYWPacket[0]->isOrder()) {
+			unsubscribe(m_pYWPacket[0]->no(), m_pYWPacket[0]->type());
+		} else {
+			subscribe(m_pYWPacket[0]->no(), m_pYWPacket[0]->type());
+		}
+		break;
+	case 213:		
+		if (m_pYWPacket[1]->isOrder()) {
+			unsubscribe(m_pYWPacket[1]->no(), m_pYWPacket[1]->type());
+		} else {
+			subscribe(m_pYWPacket[1]->no(), m_pYWPacket[1]->type());
+		}
+		break;
+	case 313:		
+		if (m_pYWPacket[2]->isOrder()) {
+			unsubscribe(m_pYWPacket[2]->no(), m_pYWPacket[2]->type());
+		} else {
+			subscribe(m_pYWPacket[2]->no(), m_pYWPacket[2]->type());
+		}
+		break;
+	case 413:		
+		if (m_pYWPacket[3]->isOrder()) {
+			unsubscribe(m_pYWPacket[3]->no(), m_pYWPacket[3]->type());
+		} else {
+			subscribe(m_pYWPacket[3]->no(), m_pYWPacket[3]->type());
+		}
+		break;
+	 
 	default:
 		break;
 	}
@@ -259,13 +343,21 @@ void C3GDetailReadDlg::initmenu(int menutype, std::string spCode, int nOffset)
 	}
 	else
 		filter = spCode;
-	pMenuManagerresult = Data::MenuManager::GetFromDatabase(filter);
-	if(pMenuManagerresult.size() > 0)
-		inittitle((char *)pMenuManagerresult[0]->menuInfos.menuName.c_str(), (char *)pMenuManagerresult[0]->menuInfos.imageName.c_str());
+	
+	if(m_nMenuType <= 1)
+	{
+		pMenuManagerresult = Data::MenuManager::GetFromDatabase(filter);
+		if(pMenuManagerresult.size() > 0)
+			inittitle((char *)pMenuManagerresult[0]->menuInfos.menuName.c_str(), (char *)pMenuManagerresult[0]->menuInfos.imageName.c_str());
+		else
+			inittitle("定制消息", "定制消息");
+	}
+
 	else
-		inittitle("定制消息", "定制消息");
-
-
+	{
+		inittitle("家庭业务定制", "家庭业务定制");
+	}
+	
 	m_nMenuType = menutype;
 	m_nMenuCount = 0;
 	if(nOffset == 0)
@@ -295,7 +387,7 @@ void C3GDetailReadDlg::initmenu(int menutype, std::string spCode, int nOffset)
 			ShowDetailRead(0, FALSE);
 		}
 	}
-	else
+	else if(m_nMenuType == 1)
 	{
 		m_pMediaFileresult = Data::MultimediaDownload::GetFromDatabaseByTypeOffsetLength(m_filter, nOffset, 6); 
 		if(m_pMediaFileresult.size() > 0)
@@ -305,6 +397,20 @@ void C3GDetailReadDlg::initmenu(int menutype, std::string spCode, int nOffset)
 			{
 				m_MJPGList.SetUnitIsShow(i+8, TRUE, FALSE);
 				m_MJPGList.SetUnitText(i+8, m_pMediaFileresult[i]->multimediaInfos.subject.c_str(), FALSE, TRUE);
+			}
+			ShowDetailRead(0, FALSE);
+		}
+	}
+	else      //家庭业务定制
+	{
+		m_pYWService = Data::Service::GetFromDatabaseByTypeOffsetLength(m_filter, nOffset, 6); 
+		if(m_pYWService.size() > 0)
+		{
+			m_nMenuCount = m_pYWService.size();
+			for(int i= 0; i < 5 && i < m_nMenuCount; i++)
+			{
+				m_MJPGList.SetUnitIsShow(i+8, TRUE, FALSE);
+				m_MJPGList.SetUnitText(i+8, m_pYWService[i]->name().c_str(), FALSE, TRUE);
 			}
 			ShowDetailRead(0, FALSE);
 		}
@@ -324,8 +430,18 @@ void C3GDetailReadDlg::ShowDetailRead(int i, int flag)
 	m_nClickIndex = i;
 	m_onlyEdit.ShowWindow(SW_HIDE);
 	m_MMSShow.ShowWindow(SW_HIDE);
-	for(int j = 0; j < 5; j++)
+
+	//for(int nn = 0; nn < 4; nn++)
+	//	m_rdo[nn].ShowWindow(SW_HIDE);
+
+	for(int j = 100; j < 503; j++)
+	{
+		m_MJPGList.SetUnitIsShow(j, FALSE, FALSE);
+	}
+
+	for( j = 0; j < 5; j++)
 		m_MJPGList.SetUnitIsDownStatus(8+j, FALSE);
+	
 	if(m_nMenuType == 0)			//天气
 	{
 		m_onlyEdit.ShowWindow(SW_SHOW);
@@ -369,7 +485,7 @@ void C3GDetailReadDlg::ShowDetailRead(int i, int flag)
 		m_onlyEdit.SetWindowText(str);
 		SetTimer(IDT_SHOWWEATHER_ICON, 20, NULL);
 	}
-	else
+	else if(m_nMenuType == 1)
 	{
 		if(m_pMediaFileresult[i]->multimediaInfos.type == Data::MultimediaDownload::MultimediaInfo::Type::tText)
 		{
@@ -401,6 +517,111 @@ void C3GDetailReadDlg::ShowDetailRead(int i, int flag)
 		}
 		m_pMediaFileresult[i]->multimediaInfos.isRead = true;
 		m_pMediaFileresult[i]->Update();
+	}
+	else if (m_nMenuType == 8)	//业务订购
+	{
+		m_MJPGList.SetUnitIsShow(100, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(101, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(102, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(103, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(104, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(105, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(106, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(500, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(501, TRUE, FALSE);
+	
+		CString s;
+		s = m_pYWService[i]->name().c_str();
+		m_MJPGList.SetUnitText(100, s, flag, TRUE);
+		s = m_pYWService[i]->code().c_str();
+		m_MJPGList.SetUnitText(101, s, flag, TRUE);
+		s = m_pYWService[i]->welcomeInfo().c_str();
+		m_MJPGList.SetUnitText(102, s, flag, TRUE);
+
+		std::string fil = "serviceId = " + Util::StringOp::FromInt(m_pYWService[i]->id());
+		m_pYWPacket = Data::Pack::GetFromDatabase(fil);
+
+		for(int k = 0; k < m_pYWPacket.size(); k++)
+		{
+			if(k > 4)
+				break;
+		   CString s_;
+		//	m_rdo[k].ShowWindow(SW_SHOW);
+			if(m_pYWPacket[k]->isOrder())
+			{
+				s_ = "是 退订";
+			}
+			else
+			{
+				s_ = "否 订购";
+			}
+			m_MJPGList.SetUnitText((k+1)*100+13, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+13, TRUE, FALSE);
+		//		m_rdo[k].SetCheck_(TRUE);
+			
+			s_ = m_pYWPacket[k]->no().c_str();
+			m_MJPGList.SetUnitText((k+1)*100+10, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+10, TRUE, FALSE);
+			s_ = m_pYWPacket[k]->type().c_str();
+			m_MJPGList.SetUnitText((k+1)*100+11, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+11, TRUE, FALSE);
+			s_ = m_pYWPacket[k]->rate().c_str();
+			m_MJPGList.SetUnitText((k+1)*100+12, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+12, TRUE, FALSE);
+		}
+	} else if (m_nMenuType == 2) { //bill
+		m_MJPGList.SetUnitIsShow(100, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(101, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(102, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(103, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(104, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(105, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(106, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(500, TRUE, FALSE);
+		m_MJPGList.SetUnitIsShow(501, TRUE, FALSE);
+		/*
+		CString s;
+		s = m_pYWService[i]->name().c_str();
+		m_MJPGList.SetUnitText(100, s, flag, TRUE);
+		s = m_pYWService[i]->code().c_str();
+		m_MJPGList.SetUnitText(101, s, flag, TRUE);
+		s = m_pYWService[i]->welcomeInfo().c_str();
+		m_MJPGList.SetUnitText(102, s, flag, TRUE);
+
+		std::string fil = "serviceId = " + Util::StringOp::FromInt(m_pYWService[i]->id());
+		m_pYWPacket = Data::Pack::GetFromDatabase(fil);
+
+		for(int k = 0; k < m_pYWPacket.size(); k++)
+		{
+			if(k > 4)
+				break;
+		   CString s_;
+		//	m_rdo[k].ShowWindow(SW_SHOW);
+			if(m_pYWPacket[k]->isOrder())
+			{
+				s_ = "是 退订";
+			}
+			else
+			{
+				s_ = "否 订购";
+			}
+			m_MJPGList.SetUnitText((k+1)*100+13, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+13, TRUE, FALSE);
+		//		m_rdo[k].SetCheck_(TRUE);
+			
+			s_ = m_pYWPacket[k]->no().c_str();
+			m_MJPGList.SetUnitText((k+1)*100+10, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+10, TRUE, FALSE);
+			s_ = m_pYWPacket[k]->type().c_str();
+			m_MJPGList.SetUnitText((k+1)*100+11, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+11, TRUE, FALSE);
+			s_ = m_pYWPacket[k]->rate().c_str();
+			m_MJPGList.SetUnitText((k+1)*100+12, s_, flag, TRUE);
+			m_MJPGList.SetUnitIsShow((k+1)*100+12, TRUE, FALSE);
+		}
+		*/	
+	} else {
+		//other
 	}
 	m_MJPGList.SetUnitIsDownStatus(i+8, TRUE);
 	m_MJPGList.Invalidate();
@@ -471,6 +692,15 @@ void C3GDetailReadDlg::OnExit()
 	m_onlyEdit.SetWindowText(L"");
 	m_MMSShow.ShowWindow(SW_HIDE);
 	m_onlyEdit.ShowWindow(SW_HIDE);
+
+	//for(int nn = 0; nn < 4; nn++)
+	//	m_rdo[nn].ShowWindow(SW_HIDE);
+	
+	for( int j = 100; j < 503; j++)
+	{
+		m_MJPGList.SetUnitIsShow(j, FALSE, FALSE);
+	}
+
 	ShowWindow(SW_HIDE);
 }
 

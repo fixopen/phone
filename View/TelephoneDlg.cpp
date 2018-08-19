@@ -9,6 +9,8 @@
 #include "../Logical/Telephone.h"
 #include "../Data/SkinStyle.h"
 #include "../inc/shine.h"
+#include "../Data/Contact.h"
+#include "../Data/ContactGroup.h"
 #include <queue>
 #include "sip.h"
 
@@ -317,6 +319,39 @@ void CTelephoneDlg::OnTelStatus(WPARAM w, LPARAM l)
 
 /////////////////////////////////////////////////////////////////////////////
 // CTelephoneDlg message handlers
+
+void CTelephoneDlg::initSpeedCode()
+{
+	for(int i = 0; i < 5; i++)
+	{
+		m_sPeedCode[i] = "";
+		m_MJPGList.SetUnitText(301+i, L"", FALSE);
+	}
+	std::string filter = "name = '¼ÒÍ¥'";
+
+	std::vector<boost::shared_ptr<Data::ContactGroup> > result;
+	result = Data::ContactGroup::GetFromDatabase(filter);
+	if(result.size() > 0)
+	{
+		int id = result[0]->id();
+
+		filter = "groupId = " + Util::StringOp::FromInt(id);
+		std::vector<boost::shared_ptr<Data::Contact> >  Result_ = Data::Contact::GetFromDatabase(filter);
+		for(int j = 0; j < Result_.size(); j++)
+		{
+			m_sPeedCode[j] = Result_[j]->mobilesTelephone().number();
+			std::string n_ = Result_[j]->name();
+			if(n_ == "")
+				n_ = m_sPeedCode[j];
+			CString name = n_.c_str();
+			//m_MJPGList.SetUnitText(301+i, n_.c_str(), FALSE);
+			m_MJPGList.SetUnitText(301+j, name, FALSE);
+			if(j == 4)
+				break;
+		}
+	}
+}
+
 void CTelephoneDlg::DialSpeedCode(int index)
 {
 	m_MJPGList.SetUnitText(100, "", TRUE);
@@ -324,8 +359,9 @@ void CTelephoneDlg::DialSpeedCode(int index)
 	std::string telcode = "";
 	if(index < 5&& index >= 0)
 	{
-		std::map<char, std::string> ms = pMainDlg->m_pSettingDlg->m_pSetting->speedDials();
-		telcode = ms[index+1];
+	//	std::map<char, std::string> ms = pMainDlg->m_pSettingDlg->m_pSetting->speedDials();
+	//	telcode = ms[index+1];
+		telcode = m_sPeedCode[index];
 	}
 	else if(index == 5)
 	{
@@ -2155,6 +2191,8 @@ void CTelephoneDlg::OnTimer(UINT nIDEvent)
 	}
 	else if(nIDEvent == IDC_TELDLGSHOW)
 	{
+		initSpeedCode();
+
 		KillTimer(IDC_TELDLGSHOW);
 		Dprintf("TelDlg show\n");
 		if(m_bRing || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->GetPhoneHungOn())

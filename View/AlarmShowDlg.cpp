@@ -140,7 +140,12 @@ void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		KillTimer(1);
 		main->phone_->StartRing(L"");
 		boost::shared_ptr<Data::Scheduler> m_result = Data::Scheduler::GetFromDatabaseById(m_nAlarmID);
-		m_result->tipsType(Data::ttRead);
+		
+		if(m_result->tipsType() == Data::ttNet)
+			m_result->tipsType(Data::ttNetRead);
+		else
+			m_result->tipsType(Data::ttRead);
+		
 		m_result->Update();
 		main->m_pMainDlg->FindTodayAlarm();
 		ShowWindow_(SW_HIDE);

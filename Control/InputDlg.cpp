@@ -408,7 +408,7 @@ void CInputDlg::CreateCtrl()
 		}
 	}
 
-	for( i = 0; i < 7; i++)
+	for(i = 0; i < 7; i++)
 	{
 		r2[i+48] = CRect(x1Local[9+i]+1+m_xPoint, y1Local[0]+1+m_yPoint, x1Local[9+i+1]-1+m_xPoint, y1Local[1]-1+m_yPoint);
 	}

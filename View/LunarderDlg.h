@@ -76,7 +76,7 @@ public:
 	void ShowAlarmDlg(BOOL isNew);
 	void ShowLunarderDlg();
 
-	BOOL IsHaveAlarm(int y, int m ,int d);
+	int IsHaveAlarm(int y, int m ,int d);
 
 	//—°‘Ò¡Â…˘
 	CCEComboBox_ m_cmbRing;

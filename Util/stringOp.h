@@ -1,9 +1,12 @@
 #ifndef __UTIL_STRINGOP_H__
 #define __UTIL_STRINGOP_H__
 
+#include <afx.h>
+//#include <atltypes.h>
+#include <afxwin.h>
 #include "DateTime.h"
-
 #include <string>
+#include <vector>
 
 namespace Util
 {
@@ -51,6 +54,16 @@ namespace Util
 		static std::string const FromUTF8(std::string const& value);
 		static std::string const ToUTF8(std::string const& content);
 	
+        static std::vector<std::wstring> const Split(std::wstring const& value, std::wstring const& delimeter);
+        static std::wstring const Merge(std::vector<std::wstring> const& value, std::wstring const& delimeter);
+        static std::vector<std::string> const Split(std::string const& value, std::string const& delimeter);
+        static std::string const Merge(std::vector<std::string> const& value, std::string const& delimeter);
+        static std::wstring const Trim(std::wstring const& value, std::wstring const& spaceChars = L" ");
+        static std::string const Trim(std::string const& value, std::string const& spaceChars = " ");
+    public: //base16 <=> binary
+        static std::string const ToBase16(std::string const& binary);
+        static std::string const ToBinary(std::string const& base16);
+        static std::string const Base16ToArray(std::string const& v);
 	};
 }
 

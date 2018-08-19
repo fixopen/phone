@@ -16,7 +16,6 @@ namespace Data
 		LangResource(RI_COMN_HOURSTC,					"时"),
 		LangResource(RI_COMN_MINUTSSTC,					"分"),
 		LangResource(RI_COMN_SECONDSTC,					"秒"),
-
 		LangResource(RI_COMN_SUNSTC,					"星期日"),
 		LangResource(RI_COMN_MONSTC,					"星期一"),
 		LangResource(RI_COMN_TUESSTC,					"星期二"),
@@ -24,16 +23,6 @@ namespace Data
 		LangResource(RI_COMN_TURSSTC,					"星期四"),
 		LangResource(RI_COMN_FRISTC,					"星期五"),
 		LangResource(RI_COMN_SATSTC,					"星期六"),
-
-// 		LangResource(RI_COMN_SUNSTC,					"Sun."),
-// 		LangResource(RI_COMN_MONSTC,					"Mon."),
-// 		LangResource(RI_COMN_TUESSTC,					"Tues."),
-// 		LangResource(RI_COMN_WEDSTC,					"Wed."),
-// 		LangResource(RI_COMN_TURSSTC,					"Thur."),
-// 		LangResource(RI_COMN_FRISTC,					"Fri."),
-// 		LangResource(RI_COMN_SATSTC,					"Sat."),
-// 
-
 		LangResource(RI_COMN_ENTRIESSTC,				"个"),
 		LangResource(RI_COMN_MISSTELSTC,				"未接电话"),
 		LangResource(RI_COMN_RECORDETELSTC,				"留言电话"),

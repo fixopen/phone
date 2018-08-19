@@ -47,21 +47,12 @@ typedef struct
 	char name[CALLID_NAME_LEN];  // string ending with '\0'
 } CALLID_INFO;
 
-enum BATTERY{BATTERY_1, BATTERY_DC};
-typedef struct
-{
-	BATTERY batteryType;          //0 电池  1  直流电  
-	BOOL    isCharge;			  //1 充电 
-	int batteryProccess;
-}BATTERYSTATUS;
-
 namespace Telephone
 {
 	class TelephoneWarp 
 	{
 	//key
 	public:
-		BATTERYSTATUS  m_BatteryStatus;
 		Util::RS232* m_pRS232;
 
 	 public:
@@ -179,10 +170,9 @@ namespace Telephone
 		HANDLE			hPlayRingThread;
 		TCHAR			gRingFilename[64];
 		BOOL m_bInputtingUserID;
-		int DetectTestStatus(unsigned char c);
 		BOOL m_bStartRing;
 		
-		char m_chDetectCode[64];
+		char m_chDetectCode[24];
 		char m_chTelVersion[24];
 		BOOL DeteTelVersion(unsigned char c);
 		

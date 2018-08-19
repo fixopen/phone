@@ -29,6 +29,30 @@ static char THIS_FILE[] = __FILE__;
 #include "Data/LanguageResource.h"
 #include "sip.h"
 
+#include "Protocol/Communicator.h"
+#include "Protocol/Session.h"
+#include "Protocol/KeySession.h"
+#include "Protocol/RegisterSession.h"
+#include "Protocol/InitializeSession.h"
+#include "Protocol/BizManagerSession.h"
+#include "Protocol/TaskSession.h"
+#include "Protocol/MemberManagerSession.h"
+#include "Protocol/FriendManagerSession.h"
+#include "Protocol/GroupManagerSession.h"
+#include "Protocol/UpdateMenuSession.h"
+#include "Protocol/ApplicationSession.h"
+#include "Protocol/ScheduleSession.h"
+#include "Protocol/BillSession.h"
+#include "Protocol/WeatherSession.h"
+#include "Protocol/ContentSession.h"
+#include "Protocol/TimeSession.h"
+#include "Protocol/SoftwareUpdaterSession.h"
+#include "Protocol/MediaDownloadSession.h"
+#include "Protocol/MMInfoSession.h"
+#include "Protocol/TaskReportSession.h"
+#include "Protocol/StockSession.h"
+#include "Protocol/DeviceParametersSession.h"
+
 //#define WM_PLAYVIDEO	8002
 #define  BMP_WIDTH			 800
 #define  BMP_HEIGHT          420
@@ -1103,7 +1127,7 @@ CMultimediaPhoneDlg::CMultimediaPhoneDlg(CWnd* pParent /*=NULL*/)
 	m_bNetOkStatus = FALSE;
 	m_bNetType = 0;
 	m_nTELRigster = TELRIGSTER_UN;
-	m_bIsDial = FALSE;
+	m_bIsDial = TRUE;
 	m_sMobileNumber = "";
 }
 
@@ -1140,7 +1164,6 @@ BEGIN_MESSAGE_MAP(CMultimediaPhoneDlg, CDialog)
 	ON_MESSAGE(WM_GEN_EVENT, OnEvent)
 	ON_MESSAGE(WM_DEVICECHANGE, OnDeviceChange)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-	ON_MESSAGE(WM_MJPGTOGGLE, OnClickToggle)
 	/*
 	ON_BN_CLICKED(IDC_BUTTON_TIME, OnButtonTime)
 	ON_BN_CLICKED(IDC_BUTTON_IME, OnButtonIME)
@@ -1182,50 +1205,6 @@ void IpConfigRenew()
 	CloseHandle(processInfo.hProcess);
 }
 */
-void CMultimediaPhoneDlg::OnClickToggle(WPARAM w, LPARAM l)
-{
-	switch (w)
-	{
-		case 3:
-			OnButtonMain();
-			//test 20090602
-			//	CNetStatusDlg::ADSLDial(m_nAPN.dialnumber, "", "", (CWnd *)this, (DIALTYPE)m_nAPN.apn_type);			
-			break;
-		case 4:
-			OnButtonContact();
-			
-			//test 20090602
-			//	Net3GHungOff();
-			
-			break;
-		case 5:
-			OnButtonContactinfo();
-			break;
-		case 6:
-			OnButtonSound();
-			break;
-		case 7:
-			OnButtonInformation();
-			break;
-		case 8:
-			OnButtonSetting();
-			break;
-		default:
-			break;
-	}
-	if(w >= 3)
-	{
-		m_MJPGList.SetUnitIsDownStatus(2, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(3, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(4, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(5, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(6, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(7, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(w-1, TRUE);
-		m_MJPGList.Invalidate();
-	}
-}
-
 /////////////////////////////////////////////////////////////////////////////
 // CMultimediaPhoneDlg message handlers
 extern BOOL watchdog_test;
@@ -1285,7 +1264,8 @@ void  CMultimediaPhoneDlg::SetAPN(int apn)
 	if(apn == 0)			//CMWAP
 	{
 		strcpy(m_nAPN.dialnumber, m_pSettingDlg->m_pSetting->gprsDialnumber1_.c_str());
-		sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pSetting->gprsProxyIp1_.c_str(), m_pSettingDlg->m_pSetting->gprsProxyPort1_);
+		//sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pSetting->gprsProxyIp1_.c_str(), m_pSettingDlg->m_pSetting->gprsProxyPort1_);
+		sprintf(m_nAPN.proxy, "%s:%d", "192.168.230.8", "9028"); //218.206.176.171
 		strcpy(m_nAPN.http, m_pSettingDlg->m_pSetting->gprsHttp1_.c_str());
 	}
 	else
@@ -1353,7 +1333,8 @@ void TdDoWithProc()
 	*/
 
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	pMainDlg->SetAPN((int)CMNET);
+	//pMainDlg->SetAPN((int)CMNET);
+	pMainDlg->SetAPN((int)CMWAP);
 	while(1)
 	{
 	//	break;
@@ -1382,15 +1363,94 @@ void TdDoWithProc()
 				Sleep(1000);
 			}	
 		}
-		else if(pMainDlg->m_nTELRigster == TELRIGSTER_DIALED /*&& isFirstReg*/)
+		else if(pMainDlg->m_nTELRigster == TELRIGSTER_DIALED && isFirstReg)
 		{
 			//Dprintf("doRegisterTel :\r\n");
 			//pMainDlg->doRegisterTel();    //LXZ 20090618k
+			KeySession* key = new KeySession();
+			key->Process();
+			delete key;
+			RegisterSession* reg = new RegisterSession();
+			reg->Process();
+			delete reg;
+			InitializeSession* init = new InitializeSession();
+			init->Process();
+			delete init;
+			/*
+			BizManagerSession* biz = new BizManagerSession();
+			std::string body;
+			body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<subscriberequest>\n  <subscribeid>0000001</subscribeid>\n  <msisdn>13912345678</msisdn>\n  <serviceid>001002</serviceid>\n  <servicetype>五元包月套餐</servicetype>\n  <useraction>1</useraction>\n</subscriberequest>";
+			biz->Process(body);
+			delete biz;
+			MemberManagerSession* member = new MemberManagerSession();
+			//member->SetParameter("");
+			member->Process();
+			delete member;
+			FriendManagerSession* friendList = new FriendManagerSession();
+			//friendList->SetParameter("");
+			friendList->Process();
+			delete friendList;
+			BillSession* bill = new BillSession();
+			bill->SetBillTime("200912");
+			bill->SetBillType("3");
+			bill->Process();
+			delete bill;
+			TimeSession* time = new TimeSession();
+			time->Process();
+			delete time;
+			*/
+			TaskSession* task = new TaskSession();
+			task->Process();
+			delete task;
+
+			/*
+			DeviceParametersSession* parameters = new DeviceParametersSession();
+			parameters->Process();
+			delete parameters;
+			StockSession* stock = new StockSession();
+			stock->SetParameter("000001");
+			stock->Process();
+			delete stock;
+			*/
+
+			isFirstReg = FALSE;
+			/*
+			GroupManagerSession* group = new GroupManagerSession();
+			group->SetType(GroupManagerSession::tInfo);
+			group->Process();
+			group->SetType(GroupManagerSession::tList);
+			group->Process();
+			delete group;
+			UpdateMenuSession* menu = new UpdateMenuSession();
+			menu->Process();
+			delete menu;
+			ApplicationSession* app = new ApplicationSession();
+			app->Process();
+			delete app;
+			ContentSession* content = new ContentSession();
+			content->SetType(ContentSession::tNormal);
+			content->Process();
+			content->SetType(ContentSession::tDel);
+			content->Process();
+			delete content;
+			SoftwareUpdaterSession* soft = new SoftwareUpdaterSession();
+			soft->Process();
+			delete soft;
+			MediaDownloadSession* media = new MediaDownloadSession();
+			media->Process();
+			delete media;
+			MMInfoSession* mminfo = new MMInfoSession();
+			mminfo->Process();
+			delete mminfo;
+			TaskReportSession* taskReport = new TaskReportSession();
+			taskReport->Process();
+			delete taskReport;
+			*/
 		}
 	//	else if(pMainDlg->m_nTELRigster == TELRIGSTER_REG)
 		if(pMainDlg->m_nTELRigster >= TELRIGSTER_TD)
 		{
-			pMainDlg->doWithDownLoad();   //test
+		//	pMainDlg->doWithDownLoad();   //test   调试 20091015
 		}
 	}
 }
@@ -1470,11 +1530,6 @@ void WatchDogProc(void *)
 		}
 		else
 			Sleep(5000);
-
-		static int gCCCC = 0;
-		extern void GAskBatteryStatus();
-		if(gCCCC++%3 == 0)
-			GAskBatteryStatus();
 	}
 }
 
@@ -1779,106 +1834,6 @@ Util::ATCommandWarp* GetATCommandWarp()
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	return main->m_pATCommandWarp1;
 }
-
-void GIsOpenMix(BOOL isOn) 
-{
-     CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	 if(!isOn)
-	 {
-		waveInMessage(0, 0x10000001,0,0);
-		char *sound = "ATN'MIX=0'\r";
-		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
-	 }
-	 else
-	 {
-		 waveInMessage(0, 0x10000002,0,0);
-		 char *sound = "ATN'MIX=1'\r";
-		 main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
-	 }
-	 ::Sleep(10);
-}
-void PlayDialToneProc(void *p)
-{
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	char *ptr = (char *)p;
-	int offtime = 200;
-	if(strlen(ptr) > 1)
-		offtime = 150;
-	while(*ptr != '\0')
-	{
-		char filename[32];
-		sprintf(filename, "/hive/res/%c.wav", *ptr);
-		ptr++;
-		CString s = filename;
-		main->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
-		Sleep(offtime);
-	}
-	main->phone_->StartRing(L"");
-	GIsOpenMix(0);
-}
-
-char gDiatone[64];
-void GPlayDialTone(char *dialtone) 
-{
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int nVolume = main->m_pSettingDlg->m_pSetting->smsRingVolume_;
-	UINT16 volume[] = {0xFF00, 0xcc00, 0x8800, 0x4400, 0x1000}; //(5-nVolume)*0xFFFF/5;
- 	main->phone_->g_RingSound = (volume[nVolume]|(volume[nVolume]<<16));
-	if(strstr(dialtone, "dialing") > 0)
-	{
-		main->phone_->StartRing(L"/hive/res/dial.wav", 0xFF);
-	}
-	else if(strstr(dialtone, "hangup") > 0)
-	{
-		main->phone_->StartRing(L"");
-		GIsOpenMix(0);
-	}
-	else if(strlen(dialtone) > 0)
-	{
-		DWORD d;
-		strcpy(gDiatone, dialtone);
-		HANDLE pThread = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)PlayDialToneProc, (void *)gDiatone, 0, &d );
-	}
-// 	else
-// 	{
-// 		char filename[64] = {0};
-// 		sprintf(filename, "/hive/res/%s.wav", dialtone);
-// 		CString s = filename;
-// 		main->phone_->StartRing((LPTSTR)(LPCTSTR)filename, 1);
-// 	}
-}
-void GNotifyDial(BOOL isDial)
-{
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if(!isDial)
-	{
-		char *sound = "ATN'TLK=0'\r";
-		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
-	}
-	else
-	{
-		char *sound = "ATN'TLK=1'\r";
-		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
-	}
-	 ::Sleep(10);
-}
-void GAskBatteryStatus()
-{
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	char *status = "ATN'STA=?'\r";
-	main->phone_->m_pRS232->WritePort((unsigned char *)status, strlen(status));
-	::Sleep(10);
-}
-void GNotifyReady()
-{
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	char *sound = "ATN'RDY=1'\r";
-	main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
-	::Sleep(10);
-	char *status = "ATN'STA=?'\r";
-	main->phone_->m_pRS232->WritePort((unsigned char *)status, strlen(status));
-	::Sleep(10);
-}
 BOOL CMultimediaPhoneDlg::OnInitDialog()
 {
 	//lxz test jpg
@@ -1936,7 +1891,7 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 
 #if(G3_MODULOR == 1)
  	m_pComWarp1 = new Util::ComWarp();
- 	m_bATComm = m_pComWarp1->OpenComm(L"COM8:");
+ 	m_pComWarp1->OpenComm(L"COM8:");
  	m_pATCommandWarp1 = new Util::ATCommandWarp();
  	m_pATCommandWarp1->Bind(m_pComWarp1);
 	m_pSMSWarp = SMS::SMSWarp::GetSMSWarp();
@@ -1944,9 +1899,6 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	m_pVideoComWarp = new Util::ComWarp();
 // 	
  	phone_ = Telephone::TelephoneWarp::GetTelephoneWarp();//new Telephone::TelephoneWarp();
-	extern void GNotifyReady();
-	GNotifyReady();
-
 #else
 	m_pComWarp1 = new Util::ComWarp();
 	m_pComWarp1->OpenComm(L"COM4:");
@@ -2214,15 +2166,7 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	DWORD watchdogThreadID = 0;
 	HANDLE m_pThread1 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)WatchDogProc, 0, 0, &watchdogThreadID );
 	DWORD tdThreadID = 0;
-	HANDLE m_pThread2;
-	if(m_bATComm)
-	{
-		m_pThread2 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)TdDoWithProc, 0, 0, &tdThreadID );
-	}
-	else
-	{
-		SetTimer(0x126, 0, 0);
-	}
+	HANDLE m_pThread2 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)TdDoWithProc, 0, 0, &tdThreadID );
 	TestDB();
 	/*
 	if (m_pATCommandWarp1->Connect(""))
@@ -2388,13 +2332,10 @@ void CMultimediaPhoneDlg::SetNetTelStatus()
 {
 	static CString gsNet = "";
 	static CString gsTelName = "";
-	static CString gsChongdian = "";
 	CString sTel = ".\\adv\\mjpg\\k1\\common\\电话1.bmp";
 	CString sNet = ".\\adv\\mjpg\\k1\\common\\网络1.bmp";
-	CString sChongdian = ".\\adv\\mjpg\\k1\\common\\网络1.bmp";
 	static int gnTel = 0;
 	static int gnNet = 0;
-	static int gnChongdian = 0;
 
 	if (m_pFSM->getCurrentState() != tsHangOff /*&& m_pTelephoneDlg->m_MJPGList.GetUnitText(100) != ""*/)   //摘机
 	{
@@ -2416,27 +2357,6 @@ void CMultimediaPhoneDlg::SetNetTelStatus()
 		m_MJPGList.SetUnitBitmap(1, sTel, "", TRUE);
 		gsTelName = sTel;
 	}
-
-	if (phone_->m_BatteryStatus.isCharge)   //外接电源
-	{
-		
-		m_MJPGList.SetUnitIsDisable(13, FALSE);
-		if(gnChongdian++%2)
-			sChongdian = ".\\adv\\mjpg\\k1\\common\\3g\\外界电源.bmp";
-		else
-			sChongdian = "";
-	}
-	else
-	{
-		sChongdian = "";
-		m_MJPGList.SetUnitIsDisable(13, TRUE);
-	}
-	if(gsChongdian != sChongdian)
-	{
-		m_MJPGList.SetUnitBitmap(13, sChongdian, "", TRUE);
-		gsChongdian = sChongdian;
-	}
-
 	//20090429 lxz
 	return;
 
@@ -2886,44 +2806,6 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 			m_MJPGList.SetUnitBitmap(10, txt, txt, TRUE);
 		}
 		break;
-	case WM_CHANGE_BATTERY:
-		{
-		//	if(!phone_->m_BatteryStatus.isCharge)
-			{
-				if(phone_->m_BatteryStatus.batteryType == 0)
-				{
-					m_MJPGList.SetUnitBitmap(13, "", "", TRUE);
-				}
-				else
-				{
-					char *sChongdian = ".\\adv\\mjpg\\k1\\common\\3g\\外界电源.bmp";
-					m_MJPGList.SetUnitBitmap(13, sChongdian, sChongdian, TRUE);
-				}
-				char txt[64];
-				sprintf(txt, ".\\adv\\mjpg\\k1\\common\\3g\\电量%d.bmp", phone_->m_BatteryStatus.batteryProccess);
-				m_MJPGList.SetUnitBitmap(11, txt, txt, TRUE);
-			}
-		}
-		break;
-	case WM_CHANGE_BATTERYOK:
-		{
-			char txt[64];
-			sprintf(txt, ".\\adv\\mjpg\\k1\\common\\3g\\电量%d.bmp", phone_->m_BatteryStatus.batteryProccess);
-			m_MJPGList.SetUnitBitmap(11, txt, txt, TRUE);
-
-			m_pDeleteTipDlg->SetHWnd(GetSafeHwnd());
-			m_pDeleteTipDlg->SetPasswordModel(false);
-			m_pDeleteTipDlg->SetTitle("充电已完成!");
-			m_pDeleteTipDlg->ShowWindow_(TRUE);
-		}
-		break;
-	case WM_ATCOMM_ERROR:
-		{
-			m_pDeleteTipDlg->SetHWnd(GetSafeHwnd());
-			m_pDeleteTipDlg->SetPasswordModel(false);
-			m_pDeleteTipDlg->SetTitle("TD 模块错误!", 10000);
-			m_pDeleteTipDlg->ShowWindow_(TRUE);
-		}
 	case WM_SMS_SENDPRO:
 		{
 			SMS::SMSWarp::SM_PARAM *pParam = (SMS::SMSWarp::SM_PARAM *)wParam;
@@ -3132,11 +3014,6 @@ void CMultimediaPhoneDlg::OnTimer(UINT nIDEvent)
 		PostMessage(WM_TEL_HUNGOFF, 0, 0);
 		KillTimer(0x998);
 		SetTimer(0x999, 1000, NULL);
-	}
-	else if(nIDEvent == 0x126)
-	{
-		KillTimer(0x126);
-		PostMessage(WM_ATCOMM_ERROR, 0, 0);
 	}
 
 	// TODO: Add your message handler code here and/or call default
