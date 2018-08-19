@@ -240,6 +240,11 @@ DEP_CPP_MULTI=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
@@ -268,12 +273,7 @@ DEP_CPP_MULTI=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	
 
 !IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"
@@ -443,6 +443,11 @@ DEP_CPP_MULTIM=\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"imaging.h"\
 	{$(INCLUDE)}"imgguids.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
@@ -474,12 +479,7 @@ DEP_CPP_MULTIM=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	
 
 !IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"
@@ -638,6 +638,11 @@ DEP_CPP_PBLME=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
@@ -666,12 +671,7 @@ DEP_CPP_PBLME=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	
 # ADD CPP /YX
 # End Source File
@@ -2008,13 +2008,13 @@ DEP_CPP_3GDET=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -2028,11 +2028,19 @@ DEP_CPP_3GDET=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -2044,9 +2052,6 @@ DEP_CPP_3GDET=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -2064,12 +2069,7 @@ DEP_CPP_3GDET=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -2201,13 +2201,13 @@ DEP_CPP_3GDETA=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -2221,11 +2221,19 @@ DEP_CPP_3GDETA=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -2237,9 +2245,6 @@ DEP_CPP_3GDETA=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -2257,12 +2262,7 @@ DEP_CPP_3GDETA=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -2394,13 +2394,13 @@ DEP_CPP_3GHOM=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -2414,11 +2414,19 @@ DEP_CPP_3GHOM=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -2430,9 +2438,6 @@ DEP_CPP_3GHOM=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -2450,12 +2455,7 @@ DEP_CPP_3GHOM=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -2587,13 +2587,13 @@ DEP_CPP_3GHOME=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -2607,11 +2607,19 @@ DEP_CPP_3GHOME=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -2623,9 +2631,6 @@ DEP_CPP_3GHOME=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -2643,12 +2648,7 @@ DEP_CPP_3GHOME=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -2781,13 +2781,13 @@ DEP_CPP_3GSMS=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -2801,11 +2801,19 @@ DEP_CPP_3GSMS=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -2819,9 +2827,6 @@ DEP_CPP_3GSMS=\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -2839,12 +2844,7 @@ DEP_CPP_3GSMS=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -2976,13 +2976,13 @@ DEP_CPP_3GSMSD=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -2996,11 +2996,19 @@ DEP_CPP_3GSMSD=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -3012,9 +3020,6 @@ DEP_CPP_3GSMSD=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -3032,12 +3037,7 @@ DEP_CPP_3GSMSD=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -3169,13 +3169,13 @@ DEP_CPP_3GSMSL=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -3189,11 +3189,19 @@ DEP_CPP_3GSMSL=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -3205,9 +3213,6 @@ DEP_CPP_3GSMSL=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -3225,12 +3230,7 @@ DEP_CPP_3GSMSL=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -3362,13 +3362,13 @@ DEP_CPP_3GSYS=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -3382,11 +3382,19 @@ DEP_CPP_3GSYS=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -3398,9 +3406,6 @@ DEP_CPP_3GSYS=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -3418,12 +3423,7 @@ DEP_CPP_3GSYS=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -3555,13 +3555,13 @@ DEP_CPP_3GTEL=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -3575,11 +3575,19 @@ DEP_CPP_3GTEL=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -3591,9 +3599,6 @@ DEP_CPP_3GTEL=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -3611,12 +3616,7 @@ DEP_CPP_3GTEL=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -3748,13 +3748,13 @@ DEP_CPP_ALARM=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -3768,11 +3768,19 @@ DEP_CPP_ALARM=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -3784,9 +3792,6 @@ DEP_CPP_ALARM=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -3804,12 +3809,7 @@ DEP_CPP_ALARM=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -3863,31 +3863,186 @@ DEP_CPP_CALCU=\
 SOURCE=.\View\CallSetDlg.cpp
 DEP_CPP_CALLS=\
 	".\control\CeBtnST.h"\
+	".\Control\CEComboBox_.h"\
+	".\Control\CEDateTimeCtrl.h"\
 	".\Control\CEDialog.h"\
 	".\control\CELineEdit.h"\
+	".\control\CEListCtrl.h"\
+	".\Control\CELunarder.h"\
+	".\control\CEProcessBar.h"\
+	".\Control\CERadioButton.h"\
+	".\control\CEScrollBar_.h"\
 	".\control\CEStatic.h"\
+	".\Control\DateCtrl.h"\
 	".\Control\DIBSectionCE.h"\
 	".\control\InputDlg.h"\
 	".\Control\MJPGStatic.h"\
+	".\Control\MmsShow.h"\
 	".\control\SoftKey.h"\
+	".\Data\Contact.h"\
+	".\Data\ContactData.h"\
+	".\Data\ContactGroup.h"\
+	".\Data\ContactInfo.h"\
+	".\Data\Data.h"\
 	".\Data\LanguageResource.h"\
+	".\Data\Message.h"\
+	".\Data\MMSData.h"\
+	".\Data\OTAData.h"\
+	".\Data\Picture.h"\
+	".\Data\SchedulerData.h"\
 	".\Data\Setting.h"\
 	".\Data\SkinStyle.h"\
+	".\Data\SoundSegment.h"\
 	".\Data\TelephoneNumber.h"\
+	".\inc\csplayer.h"\
+	".\inc\SABTD.h"\
+	".\inc\SABTD_Param_Type.h"\
+	".\inc\SABTD_Return_Codes.h"\
+	".\inc\sqlite3.h"\
+	".\inc\xfile.h"\
+	".\inc\ximacfg.h"\
+	".\inc\ximadef.h"\
+	".\inc\ximage.h"\
+	".\inc\xiofile.h"\
+	".\inc\xmemfile.h"\
+	".\Logical\LunarderDate.h"\
+	".\Logical\Phone.h"\
+	".\Logical\serialPort.h"\
+	".\Logical\Telephone.h"\
+	".\Logical\Telephone_IO.h"\
+	".\Logical\Telephone_rs232.h"\
+	".\Logical\TelephoneWarp.h"\
 	".\MultimediaPhone.h"\
+	".\MultimediaPhoneDlg.h"\
 	".\StdAfx.h"\
+	".\Util\ATCommandWarp.h"\
+	".\Util\ComWarp.h"\
 	".\Util\DateTime.h"\
+	".\Util\fsm.h"\
+	".\Util\MMSWarp.h"\
+	".\Util\OggCodec.h"\
 	".\Util\SmartPtr.h"\
+	".\Util\SMSWarp.h"\
 	".\Util\stringOp.h"\
+	".\Util\thread.h"\
+	".\View\3GDetailDlg.h"\
+	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
+	".\View\3GSMSDetailDlg.h"\
+	".\View\3GSMSDlg.h"\
+	".\View\3GSMSListDlg.h"\
+	".\View\3GSysToolTelDlg.h"\
+	".\View\3GTelDlg.h"\
+	".\View\AlarmShowDlg.h"\
+	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
+	".\View\ContactDlg.h"\
+	".\View\contactgroupdlg.h"\
+	".\View\ContactInfoDlg.h"\
+	".\View\contactinfosearchdlg.h"\
+	".\View\ContactNewDlg.h"\
+	".\View\contactsearchdlg.h"\
+	".\View\copyfileDlg.h"\
+	".\View\deletetipdlg.h"\
+	".\View\fastdialsdlg.h"\
+	".\View\firewalldlg.h"\
+	".\View\HuangliDlg.h"\
+	".\View\LunarderDlg.h"\
+	".\View\MainDlg.h"\
+	".\View\mainmenudlg.h"\
+	".\View\MainMp3Dlg.h"\
+	".\View\mainphotodlg.h"\
+	".\View\MainVideoDlg.h"\
+	".\View\NetStatusDlg.h"\
+	".\View\NotebookDlg.h"\
+	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
+	".\View\Player.h"\
+	".\View\PlayerDlg.h"\
+	".\View\playsounddlg.h"\
+	".\View\RecordSoundDlg.h"\
+	".\View\RenameDlg.h"\
+	".\View\RingSetDlg.h"\
+	".\View\ScreenSaveDlg.h"\
+	".\View\SettingDlg.h"\
+	".\View\SoundDlg.h"\
+	".\View\soundsearchdlg.h"\
+	".\View\SpecCodeDlg.h"\
+	".\View\telephonedlg.h"\
+	".\View\WarningNoFlashDlg.h"\
+	".\View\WebDialog.h"\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
+	{$(INCLUDE)}"amextra.h"\
+	{$(INCLUDE)}"amfilter.h"\
+	{$(INCLUDE)}"bldver.h"\
+	{$(INCLUDE)}"cache.h"\
+	{$(INCLUDE)}"celog.h"\
+	{$(INCLUDE)}"combase.h"\
+	{$(INCLUDE)}"Control\MJPGStatic.h"\
+	{$(INCLUDE)}"cprop.h"\
+	{$(INCLUDE)}"ctlutil.h"\
+	{$(INCLUDE)}"dllsetup.h"\
+	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
+	{$(INCLUDE)}"measure.h"\
+	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
+	{$(INCLUDE)}"mtype.h"\
+	{$(INCLUDE)}"outputq.h"\
+	{$(INCLUDE)}"perflog.h"\
+	{$(INCLUDE)}"perflogdata.h"\
+	{$(INCLUDE)}"pstream.h"\
+	{$(INCLUDE)}"refclock.h"\
+	{$(INCLUDE)}"reftime.h"\
+	{$(INCLUDE)}"renbase.h"\
+	{$(INCLUDE)}"renbaseasync.h"\
+	{$(INCLUDE)}"renqual.h"\
+	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
+	{$(INCLUDE)}"source.h"\
 	{$(INCLUDE)}"stdafx.h"\
+	{$(INCLUDE)}"streams.h"\
+	{$(INCLUDE)}"strmctl.h"\
+	{$(INCLUDE)}"sysclock.h"\
+	{$(INCLUDE)}"transfrm.h"\
+	{$(INCLUDE)}"transip.h"\
+	{$(INCLUDE)}"util\DateTime.h"\
+	{$(INCLUDE)}"util\stringOp.h"\
+	{$(INCLUDE)}"videoctl.h"\
+	{$(INCLUDE)}"View\HuangliDlg.h"\
+	{$(INCLUDE)}"vtrans.h"\
+	{$(INCLUDE)}"winctrl.h"\
+	{$(INCLUDE)}"winutil.h"\
+	{$(INCLUDE)}"winx.h"\
+	{$(INCLUDE)}"wxdebug.h"\
+	{$(INCLUDE)}"wxlist.h"\
+	{$(INCLUDE)}"wxutil.h"\
+	{$(INCLUDE)}"ximage.h"\
+	{$(INCLUDE)}"xml\config.h"\
+	{$(INCLUDE)}"xml\DateTime.h"\
+	{$(INCLUDE)}"xml\xmlParser.h"\
 	
 # ADD CPP /YX
 # End Source File
@@ -4010,13 +4165,13 @@ DEP_CPP_CARDS=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -4030,11 +4185,19 @@ DEP_CPP_CARDS=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -4046,9 +4209,6 @@ DEP_CPP_CARDS=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -4066,12 +4226,7 @@ DEP_CPP_CARDS=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -4205,13 +4360,13 @@ DEP_CPP_CONTACTD=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -4225,11 +4380,19 @@ DEP_CPP_CONTACTD=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -4241,9 +4404,6 @@ DEP_CPP_CONTACTD=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -4261,12 +4421,7 @@ DEP_CPP_CONTACTD=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -4399,13 +4554,13 @@ DEP_CPP_CONTACTG=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -4419,11 +4574,19 @@ DEP_CPP_CONTACTG=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -4437,9 +4600,6 @@ DEP_CPP_CONTACTG=\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -4457,12 +4617,7 @@ DEP_CPP_CONTACTG=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -4595,13 +4750,13 @@ DEP_CPP_CONTACTIN=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -4615,11 +4770,19 @@ DEP_CPP_CONTACTIN=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -4631,9 +4794,6 @@ DEP_CPP_CONTACTIN=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -4651,12 +4811,7 @@ DEP_CPP_CONTACTIN=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -4708,21 +4863,21 @@ DEP_CPP_CONTACTINF=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
 	{$(INCLUDE)}"msxml2.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	
 
@@ -4853,13 +5008,13 @@ DEP_CPP_CONTACTN=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -4873,11 +5028,19 @@ DEP_CPP_CONTACTN=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -4891,9 +5054,6 @@ DEP_CPP_CONTACTN=\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -4911,12 +5071,7 @@ DEP_CPP_CONTACTN=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -5096,13 +5251,13 @@ DEP_CPP_COPYF=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -5116,11 +5271,19 @@ DEP_CPP_COPYF=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -5132,9 +5295,6 @@ DEP_CPP_COPYF=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -5152,12 +5312,7 @@ DEP_CPP_COPYF=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -5374,13 +5529,13 @@ DEP_CPP_FIREW=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -5394,11 +5549,19 @@ DEP_CPP_FIREW=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -5410,9 +5573,6 @@ DEP_CPP_FIREW=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -5430,12 +5590,7 @@ DEP_CPP_FIREW=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -5569,13 +5724,13 @@ DEP_CPP_HUANG=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -5589,11 +5744,19 @@ DEP_CPP_HUANG=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -5605,9 +5768,6 @@ DEP_CPP_HUANG=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -5625,12 +5785,7 @@ DEP_CPP_HUANG=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -5756,13 +5911,13 @@ DEP_CPP_INFOR=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -5777,12 +5932,20 @@ DEP_CPP_INFOR=\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"icmpapi.h"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"ipexport.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -5794,9 +5957,6 @@ DEP_CPP_INFOR=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -5814,12 +5974,7 @@ DEP_CPP_INFOR=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -5952,13 +6107,13 @@ DEP_CPP_LUNAR=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -5972,11 +6127,19 @@ DEP_CPP_LUNAR=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -5988,9 +6151,6 @@ DEP_CPP_LUNAR=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -6008,12 +6168,7 @@ DEP_CPP_LUNAR=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -6146,13 +6301,13 @@ DEP_CPP_MAIND=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -6166,11 +6321,19 @@ DEP_CPP_MAIND=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -6182,9 +6345,6 @@ DEP_CPP_MAIND=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -6202,12 +6362,7 @@ DEP_CPP_MAIND=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -6340,13 +6495,13 @@ DEP_CPP_MAINM=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -6360,11 +6515,19 @@ DEP_CPP_MAINM=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -6376,9 +6539,6 @@ DEP_CPP_MAINM=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -6396,12 +6556,7 @@ DEP_CPP_MAINM=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -6535,13 +6690,13 @@ DEP_CPP_MAINMP=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -6555,11 +6710,19 @@ DEP_CPP_MAINMP=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -6571,9 +6734,6 @@ DEP_CPP_MAINMP=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -6591,12 +6751,7 @@ DEP_CPP_MAINMP=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -6729,13 +6884,13 @@ DEP_CPP_MAINP=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -6749,11 +6904,19 @@ DEP_CPP_MAINP=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -6765,9 +6928,6 @@ DEP_CPP_MAINP=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -6785,12 +6945,7 @@ DEP_CPP_MAINP=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -6923,13 +7078,13 @@ DEP_CPP_MAINV=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -6943,11 +7098,19 @@ DEP_CPP_MAINV=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -6959,9 +7122,6 @@ DEP_CPP_MAINV=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -6979,12 +7139,7 @@ DEP_CPP_MAINV=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -7116,13 +7271,13 @@ DEP_CPP_NETST=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -7136,11 +7291,19 @@ DEP_CPP_NETST=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -7152,9 +7315,6 @@ DEP_CPP_NETST=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -7172,12 +7332,7 @@ DEP_CPP_NETST=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -7302,13 +7457,13 @@ DEP_CPP_NOTEB=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -7322,11 +7477,19 @@ DEP_CPP_NOTEB=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -7338,9 +7501,6 @@ DEP_CPP_NOTEB=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -7358,12 +7518,7 @@ DEP_CPP_NOTEB=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -7431,6 +7586,8 @@ DEP_CPP_PASSW=\
 	".\Data\SkinStyle.h"\
 	".\MultimediaPhone.h"\
 	".\StdAfx.h"\
+	".\Util\ATCommandWarp.h"\
+	".\Util\ComWarp.h"\
 	".\Util\DateTime.h"\
 	".\Util\SmartPtr.h"\
 	".\Util\stringOp.h"\
@@ -7461,8 +7618,12 @@ DEP_CPP_PASSW=\
 SOURCE=.\View\PinSetDlg.cpp
 DEP_CPP_PINSE=\
 	".\control\CeBtnST.h"\
+	".\Control\CEComboBox_.h"\
 	".\Control\CEDialog.h"\
 	".\control\CELineEdit.h"\
+	".\control\CEListCtrl.h"\
+	".\Control\CERadioButton.h"\
+	".\control\CEScrollBar_.h"\
 	".\control\CEStatic.h"\
 	".\Control\DIBSectionCE.h"\
 	".\control\InputDlg.h"\
@@ -7474,9 +7635,12 @@ DEP_CPP_PINSE=\
 	".\Data\TelephoneNumber.h"\
 	".\MultimediaPhone.h"\
 	".\StdAfx.h"\
+	".\Util\ATCommandWarp.h"\
+	".\Util\ComWarp.h"\
 	".\Util\DateTime.h"\
 	".\Util\SmartPtr.h"\
 	".\Util\stringOp.h"\
+	".\View\passworddlg.h"\
 	".\View\PinSetDlg.h"\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
@@ -7614,13 +7778,13 @@ DEP_CPP_PLAYE=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -7634,11 +7798,19 @@ DEP_CPP_PLAYE=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -7650,9 +7822,6 @@ DEP_CPP_PLAYE=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -7670,12 +7839,7 @@ DEP_CPP_PLAYE=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -7807,13 +7971,13 @@ DEP_CPP_PLAYER=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -7827,11 +7991,19 @@ DEP_CPP_PLAYER=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -7843,9 +8015,6 @@ DEP_CPP_PLAYER=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -7863,12 +8032,7 @@ DEP_CPP_PLAYER=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -8001,13 +8165,13 @@ DEP_CPP_PLAYS=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -8021,11 +8185,19 @@ DEP_CPP_PLAYS=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -8037,9 +8209,6 @@ DEP_CPP_PLAYS=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -8057,12 +8226,7 @@ DEP_CPP_PLAYS=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -8195,13 +8359,13 @@ DEP_CPP_RECOR=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -8215,11 +8379,19 @@ DEP_CPP_RECOR=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -8231,9 +8403,6 @@ DEP_CPP_RECOR=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -8251,12 +8420,7 @@ DEP_CPP_RECOR=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -8420,13 +8584,13 @@ DEP_CPP_RINGS=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -8440,11 +8604,19 @@ DEP_CPP_RINGS=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -8458,9 +8630,6 @@ DEP_CPP_RINGS=\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -8478,12 +8647,7 @@ DEP_CPP_RINGS=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -8607,13 +8771,13 @@ DEP_CPP_SCREE=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -8627,11 +8791,19 @@ DEP_CPP_SCREE=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -8645,9 +8817,6 @@ DEP_CPP_SCREE=\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -8665,12 +8834,7 @@ DEP_CPP_SCREE=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -8805,13 +8969,13 @@ DEP_CPP_SETTIN=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -8825,6 +8989,15 @@ DEP_CPP_SETTIN=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"ipexport.h"\
 	{$(INCLUDE)}"iphlpapi.h"\
 	{$(INCLUDE)}"iptypes.h"\
@@ -8832,7 +9005,6 @@ DEP_CPP_SETTIN=\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -8844,9 +9016,6 @@ DEP_CPP_SETTIN=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -8864,12 +9033,7 @@ DEP_CPP_SETTIN=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -8994,13 +9158,13 @@ DEP_CPP_SOUNDD=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -9014,11 +9178,19 @@ DEP_CPP_SOUNDD=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -9030,9 +9202,6 @@ DEP_CPP_SOUNDD=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -9050,12 +9219,7 @@ DEP_CPP_SOUNDD=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -9106,21 +9270,21 @@ DEP_CPP_SOUNDS=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
 	{$(INCLUDE)}"msxml2.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	
 
@@ -9287,13 +9451,13 @@ DEP_CPP_TELEPH=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -9307,11 +9471,19 @@ DEP_CPP_TELEPH=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -9325,9 +9497,6 @@ DEP_CPP_TELEPH=\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -9345,12 +9514,7 @@ DEP_CPP_TELEPH=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -9484,13 +9648,13 @@ DEP_CPP_TESTD=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -9506,12 +9670,20 @@ DEP_CPP_TESTD=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
 	{$(INCLUDE)}"MultimediaPhone.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -9523,9 +9695,6 @@ DEP_CPP_TESTD=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -9543,12 +9712,7 @@ DEP_CPP_TESTD=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -9673,13 +9837,13 @@ DEP_CPP_WARNI=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -9693,11 +9857,19 @@ DEP_CPP_WARNI=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -9709,9 +9881,6 @@ DEP_CPP_WARNI=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -9729,12 +9898,7 @@ DEP_CPP_WARNI=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -9859,13 +10023,13 @@ DEP_CPP_WEBDI=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -9879,11 +10043,19 @@ DEP_CPP_WEBDI=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -9897,9 +10069,6 @@ DEP_CPP_WEBDI=\
 	{$(INCLUDE)}"sip.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -9917,12 +10086,7 @@ DEP_CPP_WEBDI=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -10165,8 +10329,12 @@ SOURCE=.\View\WebDialog.h
 
 SOURCE=.\Util\ATCommandWarp.cpp
 DEP_CPP_ATCOM=\
+	".\control\InputDlg.h"\
+	".\control\SoftKey.h"\
+	".\MultimediaPhone.h"\
 	".\Util\ATCommandWarp.h"\
 	".\Util\ComWarp.h"\
+	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"stdafx.h"\
 	
 
@@ -10283,17 +10451,17 @@ DEP_CPP_NEWSO=\
 SOURCE=.\Util\OggCodec.cpp
 DEP_CPP_OGGCO=\
 	".\Util\OggCodec.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
-	{$(INCLUDE)}"os_types.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	
 
@@ -10425,13 +10593,13 @@ DEP_CPP_SMSWA=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -10445,11 +10613,19 @@ DEP_CPP_SMSWA=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -10461,9 +10637,6 @@ DEP_CPP_SMSWA=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -10481,12 +10654,7 @@ DEP_CPP_SMSWA=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -10866,13 +11034,13 @@ DEP_CPP_TELEPHO=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -10886,11 +11054,19 @@ DEP_CPP_TELEPHO=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -10902,9 +11078,6 @@ DEP_CPP_TELEPHO=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -10922,12 +11095,7 @@ DEP_CPP_TELEPHO=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -11384,13 +11552,13 @@ DEP_CPP_MJPGS=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
-	{$(INCLUDE)}"5\inc\ogg.h"\
-	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
-	{$(INCLUDE)}"5\inc\speex_header.h"\
-	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
-	{$(INCLUDE)}"5\inc\speex_stereo.h"\
-	{$(INCLUDE)}"5\inc\wav_io.h"\
-	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"7\inc\ogg.h"\
+	{$(INCLUDE)}"7\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"7\inc\speex_header.h"\
+	{$(INCLUDE)}"7\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"7\inc\speex_stereo.h"\
+	{$(INCLUDE)}"7\inc\wav_io.h"\
+	{$(INCLUDE)}"7\inc\wave_out.h"\
 	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
@@ -11404,11 +11572,19 @@ DEP_CPP_MJPGS=\
 	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"inc\os_types.h"\
+	{$(INCLUDE)}"inc\speex.h"\
+	{$(INCLUDE)}"inc\speex_bits.h"\
+	{$(INCLUDE)}"inc\speex_types.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"measure.h"\
 	{$(INCLUDE)}"msgthrd.h"\
 	{$(INCLUDE)}"msxml2.h"\
 	{$(INCLUDE)}"mtype.h"\
-	{$(INCLUDE)}"os_types.h"\
 	{$(INCLUDE)}"outputq.h"\
 	{$(INCLUDE)}"perflog.h"\
 	{$(INCLUDE)}"perflogdata.h"\
@@ -11420,9 +11596,6 @@ DEP_CPP_MJPGS=\
 	{$(INCLUDE)}"renqual.h"\
 	{$(INCLUDE)}"Schedule.h"\
 	{$(INCLUDE)}"source.h"\
-	{$(INCLUDE)}"speex.h"\
-	{$(INCLUDE)}"speex_bits.h"\
-	{$(INCLUDE)}"speex_types.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"streams.h"\
 	{$(INCLUDE)}"strmctl.h"\
@@ -11440,12 +11613,7 @@ DEP_CPP_MJPGS=\
 	{$(INCLUDE)}"wxdebug.h"\
 	{$(INCLUDE)}"wxlist.h"\
 	{$(INCLUDE)}"wxutil.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	{$(INCLUDE)}"xml\config.h"\
 	{$(INCLUDE)}"xml\DateTime.h"\
 	{$(INCLUDE)}"xml\xmlParser.h"\
@@ -11477,13 +11645,13 @@ DEP_CPP_MMSSH=\
 	".\Util\DateTime.h"\
 	".\Util\MMSWarp.h"\
 	".\Util\stringOp.h"\
+	{$(INCLUDE)}"INC\xfile.h"\
+	{$(INCLUDE)}"INC\ximacfg.h"\
+	{$(INCLUDE)}"INC\ximadef.h"\
+	{$(INCLUDE)}"INC\xiofile.h"\
+	{$(INCLUDE)}"INC\xmemfile.h"\
 	{$(INCLUDE)}"stdafx.h"\
-	{$(INCLUDE)}"xfile.h"\
-	{$(INCLUDE)}"ximacfg.h"\
-	{$(INCLUDE)}"ximadef.h"\
 	{$(INCLUDE)}"ximage.h"\
-	{$(INCLUDE)}"xiofile.h"\
-	{$(INCLUDE)}"xmemfile.h"\
 	
 
 !IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"

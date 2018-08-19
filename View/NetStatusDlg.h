@@ -22,7 +22,7 @@ public:
 	static int CheckADSLStatus(int &nStatusCode);
 
 // Construction
-public: 
+public:
 	BOOL m_bADSLISConnnect;
 	int  m_nADSLTimeCount;
 	CMJPGStatic		m_MJPGList;

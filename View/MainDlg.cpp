@@ -421,7 +421,7 @@ void CMainDlg::SetRightInfo(BOOL isDraw)
 	if(sLeaveContent != gsLeaveContent)
 	{
 		gsLeaveContent = sLeaveContent;
-	//	m_MJPGList.SetUnitText(404, sLeaveContent, isDraw);
+		m_MJPGList.SetUnitText(404, sLeaveContent, isDraw);
 	}
 }
 
@@ -589,7 +589,7 @@ BOOL CMainDlg::ShowTodayAlarm()
 }
 
 // // 
-BOOL CMainDlg::FindTodayAlarm(BOOL isDraw)
+BOOL CMainDlg::FindTodayAlarm()
 {
 	m_bIsAlarm = FALSE;
 
@@ -620,14 +620,10 @@ BOOL CMainDlg::FindTodayAlarm(BOOL isDraw)
 			if(m_result[i]->tipsType() == Data::ttAlarmSound && (nowtm > tm))
 			{
 				m_bIsAlarm = TRUE;
-				CString s;
-				s = m_result[i]->what().c_str();
-				m_MJPGList.SetUnitText(404, s, TRUE);
 				return TRUE;
 			}
 		}
 	}
-	m_MJPGList.SetUnitText(404, L"无日程提醒", isDraw);
 	return FALSE;
 }
 
@@ -935,6 +931,7 @@ void CMainDlg::OnTimer(UINT nIDEvent)
 		}
 		else if(nIDEvent == 2)				//右边的广告区
 		{
+			/*
 			int size = m_PhotoList.size();
 			if(size > 0)
 			{
@@ -943,6 +940,7 @@ void CMainDlg::OnTimer(UINT nIDEvent)
 				m_MJPGList.SetUnitBitmap(20, m_PhotoList[nAdvIndex%size], "", TRUE);
 				nAdvIndex++;
 			}
+			*/
 		}
 	}
 	CDialog::OnTimer(nIDEvent);
@@ -1443,9 +1441,9 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		m_p3GSMSDlg->ShowWindow(SW_SHOW);
 		break;
 	case 3:					//家庭相册
-		m_mainPhotoDlg_->OnOpenFile();
-		m_mainmenuDlg_->OnPhotoBtn(1);
-	//	m_p3GHomePicDlg->ShowWindow(SW_SHOW);
+	//	m_mainPhotoDlg_->OnOpenFile();
+	//	m_mainmenuDlg_->OnPhotoBtn();
+		m_p3GHomePicDlg->ShowWindow(SW_SHOW);
 		break;
 	case 4:			//家庭百事通
 		/*
@@ -1455,13 +1453,12 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		
 		m_firewalDlg_->ShowWindow(SW_SHOW);
 		*/
-	//	m_p3GDetailDlg->initmenu(4);
-	//	m_p3GDetailDlg->ShowWindow(SW_SHOW);
-		m_mainmenuDlg_->OnVideoBtn();
+		m_p3GDetailDlg->initmenu(4);
+		m_p3GDetailDlg->ShowWindow(SW_SHOW);
 		break;
 	case 5:						//家庭影院	
-		m_mainmenuDlg_->OnMp3Btn();	
-	//	m_p3GHomeJoyDlg->ShowWindow(SW_SHOW);
+	//	m_mainmenuDlg_->OnMp3Btn();	
+		m_p3GHomeJoyDlg->ShowWindow(SW_SHOW);
 	//	m_mainmenuDlg_->OnVideoBtn();
 		break;
 	case 6:					    //系统工具		//
@@ -1566,12 +1563,7 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		doReadSMS();
 		break;
 	case 404:
-		//doReadLeaveHome();
-		if(m_bIsAlarm)
-		{
-			SetMainMenu();
-			ShowTodayAlarm();
-		}
+		doReadLeaveHome();
 		break;
 
 	default:

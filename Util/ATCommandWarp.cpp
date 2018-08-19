@@ -111,14 +111,10 @@ void ATCommandWarp::Bind(Util::ComWarp* com)
 }
 int ATCommandWarp::Connect(char* pin)
 {
-	static int gbInit = 0;
-	if(gbInit == 0)
-		gbInit = Init();
 	if (!bInit)
 	{
-		//int i = Init();
-		//if (i == 1)
-		if(gbInit == 1)
+		int i = Init();
+		if (i == 1)
 		{
 			int o = On(pin);
 			if (o == 1)
@@ -319,13 +315,13 @@ int ATCommandWarp::On(char* pin)
 	bool result = true;
 	char ans[1024] = {0};      // Ó¦´ð´®   
 	
-//	PhoneVolume(3);
+	PhoneVolume(5);
 	
 	if (!Command(CREG1, strlen(CREG1)))
 	{
 		return 0;
 	}
-	
+
 //	Command(CMER, strlen(CMER));
 	memset(ans, 0, 1024);
 	BOOL bIsUnSIM = FALSE;
@@ -462,19 +458,14 @@ bool ATCommandWarp::Off(void)
 	return false;
 }
 
-extern BOOL gIsHandSet;
 bool ATCommandWarp::PhoneDial(char * number, BOOL isVideo)
 {
-	Sleep(50);
 	PhoneDialTone(0, NULL);
-	if(!gIsHandSet)
-	{
-		extern void GNotifyDial(BOOL isDial);
-		GNotifyDial(TRUE);
-	}
-	gIsHandSet = FALSE;
+	Sleep(10);
 
-	
+	extern void GNotifyDial(BOOL isDial);
+	GNotifyDial(TRUE);
+
 	char ATD[] = "ATD";
 	char CMD[1024];
 	strcpy(CMD, ATD);
@@ -890,11 +881,11 @@ bool ATCommandWarp::CallLimit(const char *fac,bool able)
 	memset(ans,0,1024);
 	if (able)
 	{
-		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",5\r",fac,1);
+		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",2\r",fac,1);
 	}
 	else
 	{
-		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",5\r",fac,0);
+		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",2\r",fac,0);
 	}
 	Transaction(CLCK,strlen(CLCK),ans,1024, 0xFF);
 	if (strstr(ans,"ERROR") != NULL)
@@ -945,11 +936,11 @@ bool ATCommandWarp::PhoneSetCallWaiting(bool able)//ÉèÖÃºô½ÐµÈ´ý
 	char ans[1024];
 	if (able)
 	{
-		sprintf(CCWA,"AT+CCWA=1,%d\r",1);		
+		sprintf(CCWA,"AT+CCWA=%d\r",1);		
 	}
 	else
 	{
-		sprintf(CCWA,"AT+CCWA=1,%d\r",0);		
+		sprintf(CCWA,"AT+CCWA=%d\r",0);		
 	}
 	Transaction(CCWA,strlen(CCWA),ans,1024);
 	if (strstr(ans,"ERROR") != NULL)
@@ -961,7 +952,7 @@ bool ATCommandWarp::PhoneSetCallWaiting(bool able)//ÉèÖÃºô½ÐµÈ´ý
 
 bool ATCommandWarp::PhoneGetCallWaiting(int &status)//»ñÈ¡ºô½ÐµÈ´ýÉèÖÃ
 {
-	char CCWA[] = "AT+CCWA=1,2\r";
+	char CCWA[] = "AT+CCWA?\r";
 	char ans[1024];
 	memset(ans,0,1024);
 	Transaction(CCWA,strlen(CCWA),ans,1024);
@@ -995,20 +986,19 @@ bool ATCommandWarp::PhoneCallSwitch(int n)
 
 int ATCommandWarp::ReportSCE()
 {
-	char DAUDSCS[] = "AT^DAUDO?\r";
+	char DAUDSCS[] = "AT^DAUDSCS?\r";
 	char ans[1024] = {0};      // Ó¦´ð´® 
 	int ansLen = 1024;
 	Transaction(DAUDSCS, strlen(DAUDSCS), ans, ansLen);
-	if(strstr(ans, "DAUDO: 1") != NULL)   
+	if(strstr(ans, "0") != NULL)   
 	{
-		return 1;
+		return 0;
 	}
 	
 	return 2;
 }
 
 int gTelVolume = 3;
-
 bool ATCommandWarp::PhoneVolume(unsigned int level)
 {
 	gTelVolume = level;
@@ -1023,7 +1013,7 @@ bool ATCommandWarp::PhoneVolume(unsigned int level)
 	int ansLen = 1024;
 	// 	m_pCom->WriteComm(cmd, strlen(cmd));
 	// 	//m_pCom->ReadComm(ans, 1024);
-	if(ReportSCE() == 1)
+	if(ReportSCE() == 0)
 		Transaction(cmd1, strlen(cmd1), ans, ansLen);
 	else
 		Transaction(cmd2, strlen(cmd2), ans, ansLen);
@@ -1033,7 +1023,6 @@ bool ATCommandWarp::PhoneVolume(unsigned int level)
 	}
 	return false;
 }
-
 bool ATCommandWarp::PhoneMute(bool isMute)
 {
 	int mute = 0;
@@ -1177,7 +1166,6 @@ unsigned int ATCommandWarp::PhoneSignalQuality(void)
 
 bool ATCommandWarp::PhoneHandFree(bool isHandFree)
 {
-	/*
 	int hf = 0;
 	if (isHandFree)
 	{
@@ -1193,40 +1181,6 @@ bool ATCommandWarp::PhoneHandFree(bool isHandFree)
 	int ansLen = 1024;
 // 	m_pCom->WriteComm(cmd, strlen(cmd));
 // 	//m_pCom->ReadComm(ans, 1024);
-	Transaction(cmd, strlen(cmd), ans, ansLen);
-	//if(strstr(ans, "OK\r\n") != NULL)   
-	{
-		return true;
-	}
-	return false;
-	*/
-	
-	int hf = 0;
-	if (isHandFree)
-	{
-		hf = 2;
-// 		char cmd1[16];       // ÃüÁî´®   
-// 		sprintf(cmd1, "AT^DAUDAECON=1\r"); // Éú³ÉÃüÁî    
-// 		char ans[1024] = {0};      // Ó¦´ð´® 
-// 		int ansLen = 1024;
-// 		Transaction(cmd1, strlen(cmd1), ans, ansLen);
-	}
-	else
-	{
-		hf = 1;
-// 		char cmd1[16];       // ÃüÁî´®   
-// 		sprintf(cmd1, "AT^DAUDAECON=0\r"); // Éú³ÉÃüÁî    
-// 		char ans[1024] = {0};      // Ó¦´ð´® 
-// 		int ansLen = 1024;
-// 		Transaction(cmd1, strlen(cmd1), ans, ansLen);
-	}
-	char cmd[16];       // ÃüÁî´®   
-	extern int gTelVolume;
-	sprintf(cmd, "AT^DAUDO=%d,%d\r", hf, gTelVolume); // Éú³ÉÃüÁî    
-	char ans[1024] = {0};      // Ó¦´ð´® 
-	int ansLen = 1024;
-	// 	m_pCom->WriteComm(cmd, strlen(cmd));
-	// 	//m_pCom->ReadComm(ans, 1024);
 	Transaction(cmd, strlen(cmd), ans, ansLen);
 	//if(strstr(ans, "OK\r\n") != NULL)   
 	{

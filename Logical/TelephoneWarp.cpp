@@ -148,7 +148,6 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 	return isBatteryStatus;
 }
 
-BOOL gIsHandSet = FALSE;
 void ParseTelephoneData(unsigned char const* const data, unsigned int const length)
 {
 	Sleep(10);
@@ -197,21 +196,19 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 				case 0xB7: case 0xB8: case 0xB9: case 0xBA: case 0xBB: case 0xBC:
  					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_KEYCODE, g_tel_code[c-0xB0], 0);
 					break;
-				case 0xC8:   //Handset摘机
-					gIsHandSet = TRUE;
+				case 0xC8:
 					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
 						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
 					break;
-				case 0xC9:	//Handfree 摘机
-					gIsHandSet = FALSE;
+				case 0xC9:
 					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
 						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
 					break;
-				case 0xCA:	//Handset -> Handfree
+				case 0xCA:
 					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
 						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
 					break;
-				case 0xCB:  //Handfree -> Handset
+				case 0xCB:
 					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
 						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
 					break;
@@ -471,21 +468,10 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 			break;   
 
 		case stSendPhoneRequest:   
-			{
-				CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-				if(main->m_pTelephoneDlg->IsWindowVisible())
-				{
-					TRACE(L"State=stSendPhoneRequest\n");    
-					p->Dial_(param[0]);   
-					memset(&buff, 0, sizeof(buff));   
-					nState = stSendPhoneResponse;   
-				}
-				else
-				{
-					nState = stReadPhoneRequest;  // 转到读来电状态    
-				}
-			}
-			
+			TRACE(L"State=stSendPhoneRequest\n");    
+			p->Dial_(param[0]);   
+			memset(&buff, 0, sizeof(buff));   
+			nState = stSendPhoneResponse;   
 			break;   
 
 		case stSendPhoneResponse:   
@@ -952,7 +938,7 @@ void TelephoneWarp::StartRing(TCHAR *filename, int ncount)
 // 	if(hWnd)
 // 		AfxMessageBox(L"csplayer_win1");
 
-//	::Sleep(50);
+	::Sleep(50);
 
 	::EnterCriticalSection(&m_ringSetion_);
 	nRingCount = ncount;

@@ -22,7 +22,6 @@ class C3GSMSListDlg : public CDialog
 {
 // Construction
 public:
-	BOOL m_bChangeMain;
 	int m_nSelectItem;
 	int m_nListCountTotal;
 	int m_nPageSize;

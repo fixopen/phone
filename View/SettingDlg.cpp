@@ -21,7 +21,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg dialog
-CString s_VerSionTitle = "5.48091202";
+CString s_VerSionTitle = "7.41091012";
 CString s_VerSion = "\
 6.03090325\
 1.ÐÞ¸ÄÁËÂ¼ÒôÃÜÂë.\
@@ -211,8 +211,6 @@ BEGIN_MESSAGE_MAP(CSettingDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_SETTING_LSTLOCAL, OnLocalLst)
 	ON_NOTIFY(NM_CLICK, IDC_SETTING_LSTUSB, OnUSBLst)
 	*/
-
-	ON_MESSAGE(WM_COMMBOX_CLICKED, OnSelectApn)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 	ON_MESSAGE(WM_STOPTRYRING, OnStopTryRing)
 	ON_MESSAGE(WM_BTNST_CLICK, OnBtnSTClick)
@@ -412,20 +410,7 @@ void CSettingDlg::SetShowTimer()
 //	m_editPlayPassWord.ShowWindow(FALSE);				
 //	m_editSupperPassWord.ShowWindow(FALSE);			
 	m_recordMiddle.ShowWindow(FALSE);			
-	m_recordHight.ShowWindow(FALSE);
-	
-	m_smsC.ShowWindow(FALSE);
-	m_mmsC.ShowWindow(FALSE);
-	m_apnType.ShowWindow(FALSE);
-	m_apnGW[0].ShowWindow(FALSE);
-	m_apnGW[1].ShowWindow(FALSE);
-	m_apnGW[2].ShowWindow(FALSE);
-	m_apnGW[3].ShowWindow(FALSE);
-	m_apnPort.ShowWindow(FALSE);
-	m_apnDot.ShowWindow(FALSE);
-	m_apnUser.ShowWindow(FALSE);
-	m_apnPwd.ShowWindow(FALSE);
-	m_Web.ShowWindow(FALSE);
+	m_recordHight.ShowWindow(FALSE);			
 
 	SetTimer(1, 5, NULL);
 }
@@ -1064,29 +1049,6 @@ BOOL CSettingDlg::OnInitDialog()
 	pButton[1] = &m_recordHight;
 	m_recordMiddle.SetGroupButton(pButton, 2);
 	m_recordHight.SetGroupButton(pButton, 2);
-
-	m_smsC.Create(WS_CHILD|WS_VISIBLE, CRect(236, 64, 487, 102), this, 0xFFFF);
-	m_mmsC.Create(WS_CHILD|WS_VISIBLE, CRect(236, 120, 646, 157), this, 0xFFFF);
-	m_apnType.Create(WS_CHILD|WS_VISIBLE, CRect(236, 173, 487, 410), this, IDC_SELECT_CMDAPN);
-
-	m_apnGW[0].Create(WS_CHILD|WS_VISIBLE, CRect(229, 245, 276, 272), this, 0xFFFF);
-	m_apnGW[1].Create(WS_CHILD|WS_VISIBLE, CRect(288, 245, 334, 272), this, 0xFFFF);
-	m_apnGW[2].Create(WS_CHILD|WS_VISIBLE, CRect(345, 245, 392, 272), this, 0xFFFF);
-	m_apnGW[3].Create(WS_CHILD|WS_VISIBLE, CRect(402, 245, 451, 272), this, 0xFFFF);
-	m_apnGW[0].SetLimitDiagital();
-	m_apnGW[1].SetLimitDiagital();
-	m_apnGW[2].SetLimitDiagital();
-	m_apnGW[3].SetLimitDiagital();
-
-	m_apnPort.Create(WS_CHILD|WS_VISIBLE, CRect(229, 285, 296, 312), this, 0xFFFF);
-	m_apnPort.SetLimitDiagital();
-
-	m_apnDot.Create(WS_CHILD|WS_VISIBLE, CRect(561, 240, 666, 268), this, 0xFFFF);
-	//m_apnDot.SetReadOnly();
-
-	m_apnUser.Create(WS_CHILD|WS_VISIBLE, CRect(561, 284, 666, 311), this, 0xFFFF);
-	m_apnPwd.Create(WS_CHILD|WS_VISIBLE, CRect(561, 325, 666, 351), this, 0xFFFF);
-	m_Web.Create(WS_CHILD|WS_VISIBLE, CRect(244, 363, 666, 400), this, 0xFFFF);
 
 // 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_SCREENADJUSTSTC);
 // 	str = strTemp.c_str();
@@ -1802,22 +1764,6 @@ void CSettingDlg::IniCtrlData()
 		m_recordMiddle.SetCheck_(BST_CHECKED);
 	}
 
-
-	CString s__ = m_pSetting->speCode12_.c_str();
-	m_smsC.SetWindowText(s__);
-	s__ = m_pSetting->gprsHttp1_.c_str();
-	m_mmsC.SetWindowText(s__);
-
-	m_apnType.ResetContent();
-	m_apnType.AddString(L"CMWAP");
-	m_apnType.AddString(L"CMNET");
-	m_apnType.SetCurSel(0);
-
-	s__ = m_pSetting->hardwareVersion_.c_str();
-	m_Web.SetWindowText(s__);
-
-	SetApn(0);
-
 	/*
 	if(m_pSetting->isPlayProtect())
 		m_chbSettingPlayPassWord.SetCheck(TRUE);
@@ -1851,133 +1797,6 @@ void CSettingDlg::IniCtrlData()
 // 	m_sticVersionRight.SetWindowText(Util::StringOp::ToCString(m_pSetting->copyright()));
 }
 
-void CSettingDlg::SetApn(int type)
-{
-	if(type == 0)
-	{
-		CString s__;
-		CString ip = m_pSetting->gprsProxyIp1_.c_str();
-		int index1 = 0;
-		for(int i = 0; i < 4; i++)
-		{
-			int index = ip.Find('.', index1);
-			CString ss;
-			if(index>0)
-			{
-				ss = ip.Mid(index1, index-index1);
-			}
-			else
-			{
-				ss = ip.Mid(index1);
-			}
-			index1 = index+1;
-			m_apnGW[i].SetWindowText(ss);
-		}
-		
-		s__ = Util::StringOp::ToCString(Util::StringOp::FromInt(m_pSetting->gprsProxyPort1_));
-		m_apnPort.SetWindowText(s__);
-		
-		s__ = m_pSetting->gprsDialnumber1_.c_str();
-		m_apnDot.SetWindowText(s__);
-		
-		m_apnUser.SetWindowText(L"");
-		m_apnPwd.SetWindowText(L"");
-	}
-	else if(type == 1)
-	{
-		CString s__;
-		CString ip = m_pSetting->gprsProxyIp2_.c_str();
-		int index1 = 0;
-		for(int i = 0; i < 4; i++)
-		{
-			int index = ip.Find('.', index1);
-			CString ss;
-			if(index>0)
-			{
-				ss = ip.Mid(index1, index-index1);
-			}
-			else
-			{
-				ss = ip.Mid(index1);
-			}
-			index1 = index+1;
-			m_apnGW[i].SetWindowText(ss);
-		}
-		
-		s__ = Util::StringOp::ToCString(Util::StringOp::FromInt(m_pSetting->gprsProxyPort2_));
-		m_apnPort.SetWindowText(s__);
-		
-		s__ = m_pSetting->gprsDialnumber2_.c_str();
-		m_apnDot.SetWindowText(s__);
-		
-		m_apnUser.SetWindowText(L"");
-		m_apnPwd.SetWindowText(L"");
-	}
-}
-
-void CSettingDlg::OnSelectApn(WPARAM w, LPARAM l)
-{
-	if(w == IDC_SELECT_CMDAPN)
-	{
-		int nSel = m_apnType.GetCurSel();
-		SetApn(nSel);
-	}
-}
-
-void CSettingDlg::GetApn()
-{
-	if(m_apnType.GetCurSel() == 0)
-	{
-		CString s__;
-		char txt[32];
-		memset(txt, 0, 32);
-		int ip[4];
-		for(int i = 0; i < 4; i++)
-		{
-			CString str;
-			m_apnGW[i].GetWindowText(str);
-			ip[i] = Util::StringOp::ToInt(Util::StringOp::FromCString(str));
-		}
-		
-		sprintf(txt, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-		m_pSetting->gprsProxyIp1_ = txt;
-		
-		m_apnPort.GetWindowText(s__);
-		m_pSetting->gprsProxyPort1_ = Util::StringOp::ToInt(Util::StringOp::FromCString(s__));
-		
-		m_apnDot.GetWindowText(s__);
-		m_pSetting->gprsDialnumber1_ = Util::StringOp::FromCString(s__);
-		
-	//	m_apnDot.GetWindowText(s__);
-	//	m_pSetting->gprsDialnumber1_ = Util::StringOp::FromCString(s__);
-
-	//	m_apnUser.SetWindowText(L"");
-	//	m_apnPwd.SetWindowText(L"");
-	}
-	else if(m_apnType.GetCurSel() == 1)
-	{
-		CString s__;
-		char txt[32];
-		memset(txt, 0, 32);
-		int ip[4];
-		for(int i = 0; i < 4; i++)
-		{
-			CString str;
-			m_apnGW[i].GetWindowText(str);
-			ip[i] = Util::StringOp::ToInt(Util::StringOp::FromCString(str));
-		}
-		
-		sprintf(txt, "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-		m_pSetting->gprsProxyIp2_ = txt;
-		
-		m_apnPort.GetWindowText(s__);
-		m_pSetting->gprsProxyPort2_ = Util::StringOp::ToInt(Util::StringOp::FromCString(s__));
-		
-		m_apnDot.GetWindowText(s__);
-		m_pSetting->gprsDialnumber2_ = Util::StringOp::FromCString(s__);
-	}
-}
-
 void CSettingDlg::OnButtonSettingOk() 
 {
 	//test
@@ -1994,30 +1813,17 @@ void CSettingDlg::OnButtonSettingOk()
 		SYSTEMTIME curtime, curtime1, curtime2;
 		m_dtDate.GetTime(curtime1);
 		m_dtTime.GetTime(curtime2);
-		BOOL flag = FALSE;
-		GetLocalTime(&curtime);
-		//memcpy(&curtime, &m_curtime, sizeof(SYSTEMTIME));
-		if(!(m_curtime.wYear == curtime1.wYear && m_curtime.wMonth == curtime1.wMonth &&m_curtime.wDay == curtime1.wDay))
+
+		if(!(m_curtime.wYear == curtime1.wYear && m_curtime.wMonth == curtime1.wMonth &&m_curtime.wDay == curtime1.wDay &&\
+			m_curtime.wHour == curtime2.wHour && m_curtime.wMinute == curtime2.wMinute &&m_curtime.wSecond == curtime2.wSecond))
 		{
-			flag = TRUE;
-			curtime.wYear = curtime1.wYear;
-			curtime.wMonth = curtime1.wMonth;
-			curtime.wDay = curtime1.wDay;
-			
-		}
-		if(!(m_curtime.wHour == curtime2.wHour && m_curtime.wMinute == curtime2.wMinute &&m_curtime.wSecond == curtime2.wSecond))
-		{
-			flag = TRUE;
+			memcpy(&curtime, &curtime1, sizeof(SYSTEMTIME));
 			curtime.wHour = curtime2.wHour;
 			curtime.wMinute = curtime2.wMinute;
 			curtime.wSecond = curtime2.wSecond;
-		}
-		if(flag)
-		{
 			SetLocalTime(&curtime);	
 			memcpy(&m_curtime, &curtime, sizeof(SYSTEMTIME));
-			m_dtDate.SetTime(m_curtime);
-			m_dtTime.SetTime(m_curtime);
+			
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetAlarmList();    //ÖØÐÂ¼ÆËãÄÖÁå
 		}
 	}
@@ -2282,17 +2088,7 @@ void CSettingDlg::OnButtonSettingOk()
 	m_pSetting->adminPassword(Util::StringOp::FromCString(str));
 */	
 
-	CString s__;
-	m_smsC.GetWindowText(s__);
-	m_pSetting->speCode12_ = ::Util::StringOp::FromCString(s__);
-
-	m_mmsC.GetWindowText(s__);
-	m_pSetting->gprsHttp1_ = ::Util::StringOp::FromCString(s__);
-
-	m_Web.GetWindowText(s__);
-	m_pSetting->hardwareVersion_ = ::Util::StringOp::FromCString(s__);
-	
-	GetApn();
+	m_pSetting->Update();
 
 	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 	{
@@ -2583,19 +2379,6 @@ void CSettingDlg::ShowConfigItems(void)
 	m_recordMiddle.ShowWindow(FALSE);			
 	m_recordHight.ShowWindow(FALSE);
 
-	m_smsC.ShowWindow(FALSE);
-	m_mmsC.ShowWindow(FALSE);
-	m_apnType.ShowWindow(FALSE);
-	m_apnGW[0].ShowWindow(FALSE);
-	m_apnGW[1].ShowWindow(FALSE);
-	m_apnGW[2].ShowWindow(FALSE);
-	m_apnGW[3].ShowWindow(FALSE);
-	m_apnPort.ShowWindow(FALSE);
-	m_apnDot.ShowWindow(FALSE);
-	m_apnUser.ShowWindow(FALSE);
-	m_apnPwd.ShowWindow(FALSE);
-	m_Web.ShowWindow(FALSE);
-
 	switch (m_uiType)
 	{
 	case 0:
@@ -2633,10 +2416,10 @@ void CSettingDlg::ShowConfigItems(void)
 		m_ringButton.ShowWindow(TRUE);
 		*/
 	
-		m_chbEnableAutoLeaveWord.ShowWindow(FALSE);
+		m_chbEnableAutoLeaveWord.ShowWindow(TRUE);
 //		m_sticRingTimes.ShowWindow(TRUE);
-		m_cmbRingTimes.ShowWindow(FALSE);
-		m_cmbAutoRecoedeTimes.ShowWindow(FALSE);
+		m_cmbRingTimes.ShowWindow(TRUE);
+		m_cmbAutoRecoedeTimes.ShowWindow(TRUE);
 	//		m_sticAutoLeaveWord.ShowWindow(TRUE);
 	//		m_cmbAutoLeaveWordTip.ShowWindow(TRUE);
 	//		m_btnRecardLeaveWordTip.ShowWindow(TRUE);
@@ -2812,26 +2595,12 @@ void CSettingDlg::ShowConfigItems(void)
 	case 6:
 //		m_chbSettingPlayPassWord.ShowWindow(TRUE);		
 //		m_chbSettingSupperPassWord.ShowWindow(TRUE);		
-		m_rdoAutoRecord.ShowWindow(FALSE);				
-		m_rdoManulRecord.ShowWindow(FALSE);			
+		m_rdoAutoRecord.ShowWindow(TRUE);				
+		m_rdoManulRecord.ShowWindow(TRUE);			
 //		m_editPlayPassWord.ShowWindow(TRUE);				
 //		m_editSupperPassWord.ShowWindow(TRUE);			
-		m_recordMiddle.ShowWindow(FALSE);			
-		m_recordHight.ShowWindow(FALSE);
-
-		m_smsC.ShowWindow(TRUE);
-		m_mmsC.ShowWindow(TRUE);
-		m_apnType.ShowWindow(TRUE);
-		m_apnGW[0].ShowWindow(TRUE);
-		m_apnGW[1].ShowWindow(TRUE);
-		m_apnGW[2].ShowWindow(TRUE);
-		m_apnGW[3].ShowWindow(TRUE);
-		m_apnPort.ShowWindow(TRUE);
-		m_apnDot.ShowWindow(TRUE);
-		m_apnUser.ShowWindow(TRUE);
-		m_apnPwd.ShowWindow(TRUE);
-		m_Web.ShowWindow(TRUE);
-
+		m_recordMiddle.ShowWindow(TRUE);			
+		m_recordHight.ShowWindow(TRUE);
 		break;
 	}
 }
@@ -3456,8 +3225,7 @@ void CSettingDlg::OnStaticClick(WPARAM w, LPARAM l)
 			m_editVersion.ShowWindow(SW_SHOW);
 	}
 	*/
-
-	/*
+/*
 	if(m_pTestDlg0 == NULL)
 	{
 		m_pTestDlg0 = new CTestDlg(this);
@@ -3783,18 +3551,9 @@ LRESULT CSettingDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	}	
 	return CDialog::WindowProc(message, wParam, lParam);
 }
-bool DeleteStartFlag()
-{
-	bool result = false;
-	//	char* filename = "/Hive/startflag.txt";
-	DeleteFile(L"/Hive/startflag.txt");
-	return result;
-}
 
 void CSettingDlg::SetSettingDefault()
 {
-	DeleteStartFlag();
-
 	int id = m_pSetting->id();
 	Data::SettingType type = m_pSetting->type();
 	m_pSetting = Data::Setting::GetDefaultConfig();

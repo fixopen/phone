@@ -252,12 +252,6 @@ END_MESSAGE_MAP()
 
 void CTelephoneDlg::OnTelStatus(WPARAM w, LPARAM l)
 {
-	if(!IsWindowVisible())
-	{
-		m_strTelStatus = "";
-		m_MJPGList.SetUnitText(400, m_strTelStatus, FALSE);
-		return;
-	}
 	char *chTel_status[] = {"对方忙!", "通话中...", "对方已接听!", "通话保持!", "正在呼叫...", "对方振铃...", "等待...", "无拨号音!", "无应答!", "呼叫结束!","网络拥塞!", "对方挂机", "呼叫受限", "来电呼入..."};
 	switch(w)
 	{
@@ -368,8 +362,7 @@ void CTelephoneDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonTelephoneNote();
 		break;
 	case 3:
-		//OnButtonTelephoneRecord();
-		HandleOff();
+		OnButtonTelephoneRecord();
 		break;
 	case 4:
 		HandleOff();
@@ -393,10 +386,6 @@ void CTelephoneDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				m_bTelUsing = TRUE; 
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->phone_->DialNumber((char*)(Util::StringOp::FromCString(s)).c_str(), 0);    //视频测试
 				SetTimer(IDT_DIAL_PRESS, 50, NULL);
-				if(IsWindowVisible())
-				{
-					m_MJPGList.SetUnitText(400, "正在呼叫...", TRUE);
-				}
 			}
 		}
 
@@ -474,18 +463,7 @@ void CTelephoneDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->Mute(true);
 			}
 			m_MJPGList.SetUnitBitmap(502, "", "", TRUE);
-			break;
 		}
-	case 503:
-	case 504:
-	case 505:
-	case 506:
-	case 507:
-		{
-			gTelVolume = w-503+1;
-			AdjustVolume(gTelVolume);
-		}
-		break;
 
 	default:
 		break;
@@ -552,8 +530,8 @@ BOOL CTelephoneDlg::OnInitDialog()
 	m_MJPGList.SetUnitIsShow(7, FALSE);
 	m_MJPGList.SetUnitIsShow(0, TRUE);
 	m_MJPGList.SetUnitIsShow(1, TRUE);
-	m_MJPGList.SetUnitIsShow(2, FALSE);   //lxz 20091028    
-	m_MJPGList.SetUnitIsShow(3, FALSE);
+	m_MJPGList.SetUnitIsShow(2, FALSE);
+	m_MJPGList.SetUnitIsShow(3, TRUE);
 
 	m_MJPGList.SetUnitIsShow(19, FALSE);
 	m_MJPGList.SetUnitIsShow(8, FALSE);
@@ -1023,7 +1001,7 @@ void CTelephoneDlg::HangOff_(void* param)
 // 	m_btnRecord.ShowWindow(FALSE);
 // 	m_btnHandle.SetWindowText(m_strHangOn);
 
-	m_MJPGList.SetUnitIsShow(2, FALSE);     //lxz 20091028
+	m_MJPGList.SetUnitIsShow(2, FALSE);
 	m_MJPGList.SetUnitIsShow(8, FALSE);
 
 	m_MJPGList.SetUnitIsShow(9, FALSE);
@@ -1085,7 +1063,7 @@ void CTelephoneDlg::HangOn_(void* param)
 //	m_MJPGList.SetUnitIsShow(3, FALSE);
 //	m_MJPGList.SetUnitIsShow(19, FALSE);  //拨打
 	m_MJPGList.SetUnitIsShow(8, FALSE);   //退出时该隐藏   090306
-	m_MJPGList.SetUnitIsShow(2, FALSE);    //lxz 20091028
+	m_MJPGList.SetUnitIsShow(2, FALSE);
 		
 // 	m_btnHandle.SetWindowText(m_strHangOff);
 // 	m_btnHandle.ShowWindow(TRUE);
@@ -1132,8 +1110,7 @@ void CTelephoneDlg::Key_(void* param)
 		m_MJPGList.SetUnitFont(100, font_30);
 		m_MJPGList.SetUnitText(100, number, flag);
 	}
-	if(!m_MJPGList.GetUnitIsShow(9) && !m_MJPGList.GetUnitIsShow(3) && !m_MJPGList.GetUnitIsShow(19))
-		m_MJPGList.SetUnitIsShow(19, TRUE, flag);  //拨打
+	m_MJPGList.SetUnitIsShow(19, TRUE, flag);  //拨打
  	if (!m_spContactInfo)
  	{
  		m_spContactInfo = boost::shared_ptr<Data::ContactInfo>(new Data::ContactInfo);
@@ -1160,7 +1137,7 @@ void CTelephoneDlg::Key_(void* param)
 	code[0] = char(param);
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PhoneDialTone(TRUE, code);
 	KillTimer(IDT_AUTO_DIAL);
-	SetTimer(IDT_AUTO_DIAL, 5000, NULL);
+	SetTimer(IDT_AUTO_DIAL, 8000, NULL);
 }
 
 void CTelephoneDlg::SubKey_(void* param)
@@ -1249,7 +1226,7 @@ void CTelephoneDlg::Connect_(void* param)
 		else
 		{
 			m_MJPGList.SetUnitIsShow(8, FALSE);
-			m_MJPGList.SetUnitIsShow(2, FALSE);
+			m_MJPGList.SetUnitIsShow(2, TRUE);
 		}	
 	}
 
@@ -1334,7 +1311,7 @@ void CTelephoneDlg::Ring_(void* param)
 	
 	m_bRing = TRUE;
 	m_MJPGList.SetUnitIsShow(8, FALSE);
-	m_MJPGList.SetUnitIsShow(2, TRUE);      //lxz 20091028
+	m_MJPGList.SetUnitIsShow(2, FALSE);
 
 	if (!m_spContactInfo)
 	{

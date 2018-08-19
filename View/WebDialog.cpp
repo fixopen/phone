@@ -129,11 +129,10 @@ void CWebDialog::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 5:				//ึ๗าณ
 		{
-			CString s = "www.google.com";
-			CString s_ = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->hardwareVersion_.c_str();
-			if(s_.GetLength() > 0)
-			  s = s_;
-			SetURL(s);   //http://www.wuhan.net.cn/ 
+			CString s = "www.sohu.com";
+			if(strlen(m_sUrlList[0]) > 0)
+				s = m_sUrlList[0];
+			SetURL(s);   //http://www.wuhan.net.cn/
 			m_MJPGList.Invalidate();
 		}
 		break;
@@ -526,9 +525,8 @@ void CWebDialog::SetURL(CString url)
 		
 		memset(&processInfo, 0, sizeof(processInfo));
 		CString s = "http://www.google.com";
-		CString s_ = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->hardwareVersion_.c_str();
-		if(s_.GetLength() > 0)
-			s = s_;
+		if(strlen(m_sUrlList[0]) > 0)
+			s = m_sUrlList[0];
 		if (!CreateProcess(L"\\windows\\iesample.exe", s, NULL, NULL, NULL, CREATE_NEW_CONSOLE, NULL, NULL, /*&lpStartupInfo*/ 0, &processInfo))
 		{
 			
@@ -538,7 +536,7 @@ void CWebDialog::SetURL(CString url)
 		::Sleep(50);
 		
 		m_hIEWnd = ::FindWindow(TEXT("iExplore"), NULL);
-		SetTimer(2, 5, NULL);   //ต๗สิ
+		SetTimer(2, 5, NULL);
 	
 		::MoveWindow(m_hIEWnd, m_IERect.left, m_IERect.top, m_IERect.Width(), m_IERect.Height(), TRUE);
 		//::MoveWindow(m_hIEWnd, 7, 54, 786, 480-54, TRUE);

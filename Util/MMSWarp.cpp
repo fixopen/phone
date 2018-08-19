@@ -647,7 +647,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 				n = ((n << 8) | t);
 				length += 1;
 			}
-			pDst->DateAndTime = (n+8*3600);
+			pDst->DateAndTime = n;
 		}
 		else if (flag == 0x96)
 		{
@@ -1118,7 +1118,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 		else
 		{
 			pSrc[length++];
-		//	Dprintf("DecodeRetrieveResponse error flag=%x\n", flag);
+			Dprintf("DecodeRetrieveResponse error flag=%x\n", flag);
 		}
 	}
 

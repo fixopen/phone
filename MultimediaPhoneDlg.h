@@ -292,7 +292,6 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
-public:
 	std::map<int, CDialog*> panels_;
 	CDialog* currentPanel_;
 	UINT	 currentPanelID_;
