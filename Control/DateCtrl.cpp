@@ -129,8 +129,9 @@ BOOL CDateCtrl::OnEraseBkgnd(CDC* pDC )
 	return CEdit::OnEraseBkgnd(pDC);
 }
 
-void CDateCtrl::OnSubBtnUp(WPARAM wParam, LPARAM lParam)
+LRESULT CDateCtrl::OnSubBtnUp(WPARAM wParam, LPARAM lParam)
 {
+    LRESULT result = 0;
 	if(IsWindowVisible())
 	{
 		if(wParam == ID_BUTTON_DOWN)
@@ -138,6 +139,7 @@ void CDateCtrl::OnSubBtnUp(WPARAM wParam, LPARAM lParam)
 		else if(wParam == ID_BUTTON_UP)
 			OnButtonUp();
 	}
+    return result;
 }
 
 void CDateCtrl::OnLButtonDown(UINT nFlags, CPoint point)

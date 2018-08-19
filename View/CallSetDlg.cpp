@@ -26,7 +26,6 @@ CCallSetDlg::CCallSetDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CCallSetDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	m_Data = NULL;
 }
 
 
@@ -49,8 +48,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CCallSetDlg message handlers
-void CCallSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CCallSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 100:
@@ -60,6 +60,7 @@ void CCallSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonFastDialsCancel();
 		break;
 	}
+    return result;
 }
 
 void CCallSetDlg::SetButtonDefaultColor(CCEButtonST* button)
@@ -74,9 +75,9 @@ BOOL CCallSetDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-//	m_chbCallToCall.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+68, 62+74, 54+68+35, 62+74+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
-//	m_chbCallToCall.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
-//	SetButtonDefaultColor(&m_chbCallToCall);	
+	m_chbCallToCall.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+68, 62+74, 54+68+35, 62+74+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
+	m_chbCallToCall.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
+	SetButtonDefaultColor(&m_chbCallToCall);	
 	
 	m_chbNoAnswer.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+202, 62+74, 54+202+35, 62+74+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
 	m_chbNoAnswer.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
@@ -98,9 +99,9 @@ BOOL CCallSetDlg::OnInitDialog()
 	m_edtTelCode.SetLimitText(15);
 	m_edtTelCode.SetLimitDiagital();
 
-//	m_chbCallToLimit.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+68, 62+189, 54+68+35, 62+189+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
-//	m_chbCallToLimit.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
-//	SetButtonDefaultColor(&m_chbCallToLimit);	
+	m_chbCallToLimit.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+68, 62+189, 54+68+35, 62+189+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
+	m_chbCallToLimit.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
+	SetButtonDefaultColor(&m_chbCallToLimit);	
 
 	m_chbLimitCallIn.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+202, 62+189, 54+202+35, 62+189+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
 	m_chbLimitCallIn.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
@@ -110,9 +111,9 @@ BOOL CCallSetDlg::OnInitDialog()
 	m_chbLimitCallOut.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
 	SetButtonDefaultColor(&m_chbLimitCallOut);	
 
-//	m_chbCallToWaiting.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+68, 62+228, 54+68+35, 62+228+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
-//	m_chbCallToWaiting.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
-//	SetButtonDefaultColor(&m_chbCallToWaiting);	
+	m_chbCallToWaiting.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+68, 62+228, 54+68+35, 62+228+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
+	m_chbCallToWaiting.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
+	SetButtonDefaultColor(&m_chbCallToWaiting);	
 
 	m_rdoIsYes.Create(L"", WS_CHILD|WS_VISIBLE/*|BS_RADIOBUTTON*/, CRect(54+201, 62+227, 54+201+32, 62+227+34), this, IDC_RADIO_SETTINT_CONNECTADSL);
 	m_rdoIsYes.SetColor(RGB(0, 0, 0), RGB(206, 206, 206));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
@@ -143,39 +144,6 @@ void CCallSetDlg::OnButtonFastDialsOk()
 	
 	}
 	
-	extern Util::ATCommandWarp* GetATCommandWarp();
-	Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
-	
-	PhoneCallTRans callTrans;
-	PhoneCallWaiting callWaiting;
-	PhoneCallLimit callLimit;
-	callTrans.isNoAswer = m_chbNoAnswer.GetCheck();
-	callTrans.isUncondify = m_chbUnCondifie.GetCheck();
-	callTrans.isBusy = m_chbIsTeling.GetCheck();
-	callTrans.isNoTel = m_chbIsNoTeling.GetCheck();
-
-	callLimit.isCallin = m_chbLimitCallIn.GetCheck();
-	callLimit.isCallout = m_chbLimitCallOut.GetCheck();
-	
-	callWaiting.isCallWaiting = m_rdoIsYes.GetCheck_();
-	
-	CString s;
-	m_edtTelCode.GetWindowText(s);
-	callTrans.teccode = ::Util::StringOp::FromCString(s);
-	if(callTrans.isNoAswer != m_calltrans.isNoAswer || callTrans.isUncondify != m_calltrans.isUncondify ||\
-		callTrans.isBusy != m_calltrans.isBusy ||callTrans.isNoTel != m_calltrans.isNoTel)
-	{
-		pATCommanWarp->PhoneSetTrans(callTrans);
-	}
-	if(callWaiting.isCallWaiting != m_callwaiting.isCallWaiting)
-	{
-		pATCommanWarp->PhoneSetCallWaiting(callWaiting.isCallWaiting);
-	}
-	if(callLimit.isCallin != m_calllimit.isCallin || callLimit.isCallout != m_calllimit.isCallout)
-	{
-		pATCommanWarp->PhoneSetCallLimit(callLimit);
-	}
-
 	SipShowIM(SIPF_OFF);
 
 	ShowWindow_(FALSE);
@@ -192,36 +160,6 @@ void CCallSetDlg::OnButtonFastDialsCancel()
 void CCallSetDlg::SetCallSetParam(boost::shared_ptr<Data::Setting> data)
 {
 	m_Data = data;
-	extern Util::ATCommandWarp* GetATCommandWarp();
-	Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
-
-	memset(&m_calltrans, 0, sizeof(PhoneCallTRans));
-	memset(&m_calllimit, 0, sizeof(PhoneCallLimit));
-	memset(&m_callwaiting, 0, sizeof(PhoneCallWaiting));
-
-	pATCommanWarp->PhoneGetTrans(m_calltrans);
-	pATCommanWarp->PhoneGetCallLimit(m_calllimit);
-	int nCallWaiting; 
-	pATCommanWarp->PhoneGetCallWaiting(nCallWaiting);
-	m_callwaiting.isCallWaiting = (bool)nCallWaiting;
-
-	m_chbNoAnswer.SetCheck(m_calltrans.isNoAswer);
-	m_chbUnCondifie.SetCheck(m_calltrans.isUncondify);
-	m_chbIsTeling.SetCheck(m_calltrans.isBusy);
-	m_chbIsNoTeling.SetCheck(m_calltrans.isNoTel);
-	m_edtTelCode.SetWindowText(::Util::StringOp::ToCString(m_calltrans.teccode));
-
-	m_chbLimitCallIn.SetCheck(m_calllimit.isCallin);
-	m_chbLimitCallOut.SetCheck(m_calllimit.isCallout);
-
-	if(m_callwaiting.isCallWaiting)
-	{
-		m_rdoIsYes.SetCheck_(1);
-		m_rdoIsNo.SetCheck_(0);
-	}
-	else
-	{
-		m_rdoIsYes.SetCheck_(0);
-		m_rdoIsNo.SetCheck_(1);
-	}
+	PhoneCallTRans calltrans;
+	Util::ATCommandWarp::PhoneGetTrans(calltrans);
 }

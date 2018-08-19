@@ -83,9 +83,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CRecordSoundDlg message handlers
-void CRecordSoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CRecordSoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-
+    LRESULT result = 0;
 	CMultimediaPhoneDlg *pWnd = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	switch(w)
 	{
@@ -107,6 +107,7 @@ void CRecordSoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonSoundRecord();
 		break;		
 	}
+    return result;
 }
 
 BOOL CRecordSoundDlg::OnInitDialog() 
@@ -638,14 +639,17 @@ void CRecordSoundDlg::OnButtonSoundRecord()
 	}
 }
 
-void CRecordSoundDlg::OnMM_WIM_OPEN(UINT wParam, LONG lParam) 
+LRESULT CRecordSoundDlg::OnMM_WIM_OPEN(UINT wParam, LONG lParam) 
 {
+    LRESULT result = 0;
 	// TODO: Add your message handler code here and/or call default
 	Dprintf("OnMM_WIM_OPEN\n");
+    return result;
 }
 
-void CRecordSoundDlg::OnMM_WIM_DATA(UINT wParam, LONG lParam) 
+LRESULT CRecordSoundDlg::OnMM_WIM_DATA(UINT wParam, LONG lParam) 
 {
+    LRESULT result = 0;
 	//Dprintf("OnMM_WIM_DATA\n");		
 //	Dprintf("OnMM_WIM_DATA = %d\n", ((PWAVEHDR) lParam)->dwBytesRecorded);
 
@@ -681,15 +685,17 @@ void CRecordSoundDlg::OnMM_WIM_DATA(UINT wParam, LONG lParam)
 		Dprintf("waveInClose\n");
 		//waveInReset(m_hWaveIn);
 		waveInClose(m_hWaveIn) ;
-		return;
+		return result;
 	}
 	
 	// Send out a new buffer	
 	waveInAddBuffer (m_hWaveIn, (PWAVEHDR) lParam, sizeof (WAVEHDR));
+    return result;
 }
 
-void CRecordSoundDlg::OnMM_WIM_CLOSE(UINT wParam, LONG lParam) 
+LRESULT CRecordSoundDlg::OnMM_WIM_CLOSE(UINT wParam, LONG lParam) 
 {
+    LRESULT result = 0;
 	// TODO: Add your message handler code here and/or call default
 	Dprintf("OnMM_WIM_CLOSE\n");
 	
@@ -745,10 +751,12 @@ void CRecordSoundDlg::OnMM_WIM_CLOSE(UINT wParam, LONG lParam)
 // 	}
 	Sleep(500);
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->ShowItemsInList(-1);
+    return result;
 }
 
-void CRecordSoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
+LRESULT CRecordSoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if ((int)l == IDC_PBAR_RECORDDLG_PROCESS)
 	{
 		if (m_bPlaying)
@@ -773,6 +781,7 @@ void CRecordSoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return result;
 }
 
 void CRecordSoundDlg::OnTimer(UINT nIDEvent) 

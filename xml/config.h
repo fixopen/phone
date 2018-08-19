@@ -118,12 +118,11 @@ namespace Structure
 		std::vector<KEYFILEItem*> Keyitems;
 		~PLAYConfigList()
 		{
-			int i;
-			for (i = 0; i < ADVItems.size(); ++i)
+			for (int i = 0; i < ADVItems.size(); ++i)
 				delete ADVItems[i];
-			for (i = 0; i < Sounditems.size(); ++i)
+			for (int i = 0; i < Sounditems.size(); ++i)
 				delete Sounditems[i];
-			for (i = 0; i < Keyitems.size(); ++i)
+			for (int i = 0; i < Keyitems.size(); ++i)
 				delete Keyitems[i];
 		}
 	private:
@@ -142,7 +141,6 @@ namespace Structure
 		CString bgfilename_down;
 		SHOWTYPE showtype;
 		CRect    m_Rect;
-		CString  m_sTab;
 
 		std::vector<MJPGItem*> items;
 		~MJPGList()

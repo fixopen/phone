@@ -69,19 +69,21 @@ void CContactInfoDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 }
 
-void CContactInfoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CContactInfoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_LIST_CONTACTINFO_TYPE)
 		OnClickListType(NULL, &ret);
 	else if(w == IDC_LIST_CONTACTINFO_LIST)
 		OnClickListList(NULL, &ret);
+    return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CContactInfoDlg message handlers
-void CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch (w)
 	{
 	case 1:
@@ -112,6 +114,7 @@ void CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonClose();
 		break;
 	}
+    return result;
 }
 
 BOOL CContactInfoDlg::OnInitDialog() 

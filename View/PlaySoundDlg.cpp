@@ -72,8 +72,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CPlaySoundDlg message handlers
-void CPlaySoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CPlaySoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg *pWnd = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	switch(w)
 	{
@@ -93,6 +94,7 @@ void CPlaySoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonPlay();
 		break;		
 	}
+    return result;
 }
 BOOL CPlaySoundDlg::OnInitDialog() 
 {
@@ -761,8 +763,9 @@ void CPlaySoundDlg::OnCheckPlaycontinue()
 	// TODO: Add your control notification handler code here
 }
 
-void CPlaySoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
+LRESULT CPlaySoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if ((int)l == IDC_PBAR_SOUNDDLG_PROCESS)
 	{
 		if (m_bPlaying)
@@ -788,6 +791,7 @@ void CPlaySoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return result;
 }
 
 void CPlaySoundDlg::OnTimer(UINT nIDEvent) 

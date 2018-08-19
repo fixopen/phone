@@ -58,7 +58,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnChangeEdit1();
-	afx_msg void OnOutEvent(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnOutEvent(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

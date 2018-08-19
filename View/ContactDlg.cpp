@@ -59,19 +59,21 @@ BEGIN_MESSAGE_MAP(CContactDlg, CDialog)
 	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
-void CContactDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CContactDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_LIST_CONTACT_TYPE)
 		OnClickListType(NULL, &ret);
 	else if(w == IDC_LIST_CONTACT_LIST)
 		OnClickListList(NULL, &ret);
+    return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CContactDlg message handlers
-void CContactDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CContactDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch (w)
 	{
 	case 1:
@@ -94,6 +96,7 @@ void CContactDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	//	OnButtonContactClose();
 		break;
 	}
+    return result;
 }
 
 void CContactDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
@@ -659,7 +662,9 @@ void CContactDlg::OnButtonContactClose()
 LRESULT CContactDlg::OnSoftKeyMessage(WPARAM wParam, LPARAM lParam)
 {
 	unsigned short key = wParam; 
-	CString py(key); 
+	//CString py(key);
+    CString py;
+    py.Format(L"%c", key);
 	switch(char(key))
 	{
 	case 0x7F://del
@@ -677,7 +682,7 @@ LRESULT CContactDlg::OnSoftKeyMessage(WPARAM wParam, LPARAM lParam)
 		{
 			return 0;
 		}
-		GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(py + key);
+		GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(py + (wchar_t)key);
 		break;
 	}
 	ShowItemsInList();

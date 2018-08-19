@@ -17,7 +17,6 @@ protected:
     ResponseMessage const auth_(std::map<std::string, std::string>& values, std::string const& digestUriValue) const;
     ResponseMessage const timeout_() const;
     virtual void selfProcess_(ResponseMessage const& response) const;
-	std::string const findContent_(std::string const& whole, std::string const& tagName, size_t& offset) const;
 
     std::string const sha1_(std::string const& value) const;
     std::string const md5_(std::string const& value) const;

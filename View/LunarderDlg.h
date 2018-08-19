@@ -76,7 +76,7 @@ public:
 	void ShowAlarmDlg(BOOL isNew);
 	void ShowLunarderDlg();
 
-	int IsHaveAlarm(int y, int m ,int d);
+	BOOL IsHaveAlarm(int y, int m ,int d);
 
 	//—°‘Ò¡Â…˘
 	CCEComboBox_ m_cmbRing;
@@ -104,7 +104,7 @@ public:
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
-	afx_msg void OnStopTryRing(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnStopTryRing(WPARAM w, LPARAM l);
 	void StopTryRing();
 
 // Overrides
@@ -127,12 +127,12 @@ protected:
 	afx_msg void OnMright();
 	afx_msg void OnUp();
 	afx_msg void OnDown();
-	afx_msg void OnLunarClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnLunarClick(WPARAM w, LPARAM l);
 	afx_msg void OnOk();
 	afx_msg void OnCancel();
 	afx_msg void OnDelete();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnDeleteItem(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDeleteItem(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

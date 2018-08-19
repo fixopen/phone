@@ -404,8 +404,9 @@ void CScreenSaveDlg::OnChangeEdit1()
 	SetTimer(IDT_SCREENSAVE_INPUTTIME, 30*1000, NULL);
 }
 
-void CScreenSaveDlg::OnOutEvent(WPARAM w, LPARAM l)
+LRESULT CScreenSaveDlg::OnOutEvent(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(l == 0)
 	{
 		if(playerDlg_->player_->isPlaying_ && playerDlg_->player_->owner_ == playerDlg_)
@@ -421,4 +422,5 @@ void CScreenSaveDlg::OnOutEvent(WPARAM w, LPARAM l)
 		else if(IsWindowVisible())
 			OnExit();
 	}
+    return result;
 }

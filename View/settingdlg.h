@@ -93,7 +93,7 @@ protected:
 	afx_msg void OnButtonSettingDefineFastDial();
 	afx_msg void OnAdjustTouchPanel();
 	afx_msg void OnSettingSaveScreenPassword();
-	afx_msg void OnSetSaveScreenPassWordOK(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnSetSaveScreenPassWordOK(WPARAM w, LPARAM l);
 	afx_msg void OnSettingClearContact();
 	afx_msg void OnSettingClearContactInfo();
 	afx_msg void OnSettingClearSound();
@@ -104,7 +104,7 @@ protected:
 	afx_msg void OnFileOut();
 
 	afx_msg void OnRingLst(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnStaticClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnStaticClick(WPARAM w, LPARAM l);
 	afx_msg void OnRingSelect();
 	afx_msg void OnPaint();
 
@@ -118,10 +118,10 @@ protected:
 	afx_msg void OnLocalLst(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnUSBLst(NMHDR* pNMHDR, LRESULT* pResult);
 	*/
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
-	afx_msg void OnDeleteTipOk(WPARAM w, LPARAM l);
-	afx_msg void OnCheckPWD(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDeleteTipOk(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnCheckPWD(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnButtonSettingDefault();
@@ -310,8 +310,8 @@ public:
 	void SetIPConfig(NETWORK_ADPT_INFO& AdptInfo);
 	void SetShowTimer();
 	
-	afx_msg void OnStopTryRing(WPARAM w, LPARAM l);
-	afx_msg void OnBtnSTClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnStopTryRing(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnBtnSTClick(WPARAM w, LPARAM l);
 	void StopTryRing();
 
 public:

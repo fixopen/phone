@@ -391,7 +391,7 @@ void CInputDlg::CreateCtrl()
 	m_oSoftkeyP.ModifyStyle(0, SS_NOTIFY);
 
 	//ENG INPUT
-	for(i = 0; i < 48; i++)
+	for(int i = 0; i < 48; i++)
 	{
 		if(i < 16)
 		{
@@ -408,7 +408,7 @@ void CInputDlg::CreateCtrl()
 		}
 	}
 
-	for(i = 0; i < 7; i++)
+	for(int i = 0; i < 7; i++)
 	{
 		r2[i+48] = CRect(x1Local[9+i]+1+m_xPoint, y1Local[0]+1+m_yPoint, x1Local[9+i+1]-1+m_xPoint, y1Local[1]-1+m_yPoint);
 	}
@@ -433,7 +433,7 @@ void CInputDlg::CreateCtrl()
 	'!', '?',',', '.','4', '5','6', 
 	VOIPINPUT_WRITE_VALUE, VOIPINPUT_PINYIN_VALUE, VOIPINPUT_ENG_VALUE, VOIPINPUT_ZIFU_VALUE,'7', '8','9'
 	}; //40
-	for(i = 0; i < 37; i++)
+	for(int i = 0; i < 37; i++)
 	{
 		if(i <= 15)
 		{
@@ -1032,14 +1032,15 @@ void CInputDlg::OnTimer(UINT nIDEvent)
 	CDialog::OnTimer(nIDEvent);
 }
 
-void CInputDlg ::OnSoftKey(WPARAM w, LPARAM l)
+LRESULT CInputDlg ::OnSoftKey(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	NMHDR_ hm = {this, CN_COMMAND, w, (UINT32)0};
 	if(w == VOIPINPUT_HIDE_VALUE)   //hide 
 	{
 		m_CopyString = "";
 		hide();
-		return;
+		return result;
 	}
 	else if(w == VOIPINPUT_MOVE_VALUE)		//move
 	{
@@ -1049,7 +1050,7 @@ void CInputDlg ::OnSoftKey(WPARAM w, LPARAM l)
 			MoveTo(TOP_INPUT);
 		else
 			MoveTo(BOTTOM_INPUT);
-		return;		
+		return result;		
 	}
 	else if(w == VOIPINPUT_COPY_VALUE)		//copy
 	{
@@ -1064,7 +1065,7 @@ void CInputDlg ::OnSoftKey(WPARAM w, LPARAM l)
 				m_CopyString = s.Mid(n, n1-n);
 			}
 		}
-		return;
+		return result;
 	}
 
 	else if(w == VOIPINPUT_PASTE_VALUE)		//paste
@@ -1077,7 +1078,7 @@ void CInputDlg ::OnSoftKey(WPARAM w, LPARAM l)
 			//	m_CopyString = "";
 			}
 		}
-		return;
+		return result;
 	}
 
 	switch(l)
@@ -1096,10 +1097,12 @@ void CInputDlg ::OnSoftKey(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
+    return result;
 }
 
-void CInputDlg ::OnSoftKeyReg(WPARAM w, LPARAM l)
+LRESULT CInputDlg ::OnSoftKeyReg(WPARAM w, LPARAM l)
 { 
+    LRESULT result = 0;
 	memset(m_chSxShowBuff, 0, sizeof(m_chSxShowBuff));
 	/*if(w==0)
 	{
@@ -1131,6 +1134,7 @@ void CInputDlg ::OnSoftKeyReg(WPARAM w, LPARAM l)
 		m_pOwnerEdit->Invalidate();
 	}
 	Invalidate();
+    return result;
 }
 
 void CInputDlg::OnPaint() 

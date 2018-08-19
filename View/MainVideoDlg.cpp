@@ -80,11 +80,12 @@ void CMainVideoDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 }
 
-void CMainVideoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CMainVideoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_LIST_PLAYLIST)
 		OnClickPlayList(NULL, &ret);
+    return ret;
 }
 /////////////////////////////////////////////////////////////////////////////
 // CMainVideoDlg message handlers
@@ -201,18 +202,11 @@ void CMainVideoDlg::SetPlayList(TCHAR *dir, int local)
 	int ncount = 0;
 	if(local == 0)
 	{
-		if(m_nMp4Type == mp4_net_type)
-		{
-			memcpy(m_chDir, _T("/flashdrv/my_net_video/"), wcslen(_T("/flashdrv/my_net_video/"))*2);	
-		}
-		else
-		{
-			if(DetectDIR(_T("/usbdisk")))
-				m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
-			if(DetectDIR(_T("/storagecard")))
-				m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
-			memcpy(m_chDir, _T("/flashdrv/my_video/"), wcslen(_T("/flashdrv/my_video/"))*2);
-		}
+		if(DetectDIR(_T("/usbdisk")))
+			m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
+		if(DetectDIR(_T("/storagecard")))
+			m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
+		memcpy(m_chDir, _T("/flashdrv/my_video/"), wcslen(_T("/flashdrv/my_video/"))*2);
 	}
 	
 	else
@@ -704,8 +698,9 @@ void CMainVideoDlg::OnMute()
 	m_IsSound = !m_IsSound;
 }
 //
-void CMainVideoDlg::OnPregress(WPARAM w, LPARAM l)
+LRESULT CMainVideoDlg::OnPregress(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	//设置声音
 	if(l == IDC_PROGRESS_VIDEOSOUND)
@@ -720,6 +715,7 @@ void CMainVideoDlg::OnPregress(WPARAM w, LPARAM l)
 		int percent = m_prgPlayTime.GetPercent();
 		main->playervideo_->PlayPos(percent);	
 	}
+    return result;
 }
 
 void CMainVideoDlg::SetCtrlEnable(BOOL flag)
@@ -869,8 +865,9 @@ void CMainVideoDlg::OnTimer(UINT nIDEvent)
 	CDialog::OnTimer(nIDEvent);
 }
 
-void CMainVideoDlg::OnDeviceChange(WPARAM w, LPARAM l)
+LRESULT CMainVideoDlg::OnDeviceChange(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if (w == 0x8000) //insert
 	{
 		::Sleep(500);
@@ -892,10 +889,12 @@ void CMainVideoDlg::OnDeviceChange(WPARAM w, LPARAM l)
 		if(memcmp(m_chDir, _T("/flashdrv/my_video/"), wcslen(m_chDir)*2) == 0)
 			SetPlayList(_T("/flashdrv/my_video/"), 0);
 	}
+    return result;
 }
 
-void CMainVideoDlg::OnOutEvent(WPARAM w, LPARAM l)
+LRESULT CMainVideoDlg::OnOutEvent(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	
 	if(l == 0)  //暂停播放
@@ -907,6 +906,7 @@ void CMainVideoDlg::OnOutEvent(WPARAM w, LPARAM l)
 	{
 		SetTimer(1001, 50, NULL);
 	}
+    return result;
 }
 
 /*
@@ -920,8 +920,9 @@ ON_BN_CLICKED(IDC_BUTTON_VIDEOOPEN, OnOpenFile)
 ON_BN_CLICKED(IDC_BUTTON_VIDEOPLAYALL, OnPlayerAll)
 ON_BN_CLICKED(IDC_BUTTON_VIDEOMUTE, OnMute)
 */
-void CMainVideoDlg ::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CMainVideoDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:			//全选
@@ -952,4 +953,5 @@ void CMainVideoDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 		OnPlayerAll();
 		break;
 	}
+    return result;
 }

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "MultimediaPhone.h"
+#include "../MultimediaPhone.h"
 #include "RenameDlg.h"
 
 #ifdef _DEBUG
@@ -41,8 +41,9 @@ void  CRenameDlg::SetWndParam(CWnd *pWnd, int index, CString sName)
 	m_edtName.SetWindowText(sName);
 }
 
-void CRenameDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CRenameDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -58,6 +59,7 @@ void CRenameDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		ShowWindow_(SW_HIDE);
 		break;
 	}
+    return result;
 }
 
 BEGIN_MESSAGE_MAP(CRenameDlg, CCEDialog)

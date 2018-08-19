@@ -609,10 +609,13 @@ namespace boost
             return pn.get_deleter(ti);
         }
     private:
+#if defined(EVC)
         friend class shared_ptr;
         friend class weak_ptr;
-        //template<class Y> friend class shared_ptr;
-        //template<class Y> friend class weak_ptr;
+#elif defined(VS2008)
+        template<class Y> friend class shared_ptr;
+        template<class Y> friend class weak_ptr;
+#endif
         T * px;                     
         boost::detail::shared_count pn;    
     };  

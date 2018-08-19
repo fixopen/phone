@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TelephoneWarp.h"
 #include "../multimediaphone.h"
 #include "../multimediaphoneDlg.h"
@@ -88,47 +87,6 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 				case 1: case 2: case 3: case 4: case 5: case 6:	
 				case 7: case 8: case 9: case 10: case 11: case 12:
 					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_SPEEDDIAL, c, 0);
-					/*
-					{
-						CPoint pt1 ;
-						::GetCursorPos(&pt1);
-						CPoint pt2 = CPoint(2, 120);
-						if(pt1 == pt2)
-							pt2.x += 2;
-						::SetCursorPos(pt2.x, pt2.y);
-						mouse_event(MOUSEEVENTF_LEFTDOWN|MOUSEEVENTF_LEFTUP,0,0,0,0);
-					}
-					if( c == 1)
-					{
-						keybd_event(VK_NUMPAD4, 0, 0, 0);
-					//	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, CANCEL_KEY, 0);	
-					}
-					else if(c == 2)
-					{
-						keybd_event(VK_NUMPAD0, 0, 0, 0);
-						//PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, UP_KEY, 0);
-					}
-					else if(c == 3)
-					{
-						keybd_event(VK_NUMPAD5, 0, 0, 0);
-						//PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, OK_KEY, 0);
-					}
-					else if(c == 4)
-					{
-						keybd_event(VK_NUMPAD2, 0, 0, 0);
-						//PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, LEFT_KEY, 0);
-					}
-					else if(c == 6)
-					{
-						keybd_event(VK_NUMPAD3, 0, 0, 0);
-						//PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, RIGHT_KEY, 0);
-					}
-					else if(c == 8)
-					{
-						keybd_event(VK_NUMPAD1, 0, 0, 0);
-						//PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, DOWN_KEY, 0);
-					}
-					*/
 					break;
 				
 				case 0xBD:
@@ -214,15 +172,9 @@ TelephoneWarp* TelephoneWarp::GetTelephoneWarp()
 	}
 	return tw;
 }
-
-void TelephoneWarp::Bind_(Util::ATCommandWarp* at)
-{
-	m_pAT = at;
-}
-
 void TelephoneWarp::Bind(Util::ATCommandWarp* at)
 {
-//	m_pAT = at;
+	m_pAT = at;
 	// 启动子线程    
 	AfxBeginThread(TelephoneThread, this, THREAD_PRIORITY_NORMAL);   
 }
@@ -366,15 +318,12 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 				netType = p->PhoneNettype_();
 			//	if(netType != netTypeOrg)
 				{
-					if(netType != 0xF)
-					{
-						netTypeOrg = netType;
-						p->PhoneNettype(netType);
-					}
+					netTypeOrg = netType;
+					p->PhoneNettype(netType);
 				}
 				//TRACE(L"Net %d\r", r);
 				signalNow = p->SignalQuality_();
-				if (signalNow != 0xFF && signalNow != signalOrg)
+				if (signalNow != signalOrg)
 				{
 					signalOrg = signalNow;
 					p->SignalQuality(signalNow);
@@ -424,7 +373,7 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 
 bool TelephoneWarp::Dial_(TEL_NUM num)
 {
-	return m_pAT->PhoneDial(num.NUM, (BOOL)num.TYPE);
+	return m_pAT->PhoneDial(num.NUM);
 }
 
 unsigned char TelephoneWarp::State_(void)
@@ -525,12 +474,11 @@ void TelephoneWarp::PhoneDialTone(BOOL isOn, char *tone)
 	m_pAT->PhoneDialTone(isOn, tone);
 }
 //////////////////////////////////////////////////////////////////////////
-bool TelephoneWarp::Dial(char* number, BOOL isVideo)
+bool TelephoneWarp::Dial(char* number)
 {
 	TEL_NUM num;
 	memset(&num, 0, sizeof(TEL_NUM));
 	strcpy(num.NUM, number);
-	num.TYPE = isVideo;
 	PutSendMessage(&num);
 	return true;
 }
@@ -655,13 +603,13 @@ void TelephoneWarp::PhoneNettype(int type)
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_NETTYPE, type);
 }
 //拨打电话
-void TelephoneWarp::DialNumber(char* telcode, int dial_tyle)   //int dial_type 0 语音电话， 1 视频电话
+void TelephoneWarp::DialNumber(char* telcode, int dial_tyle)   //int dial_type 0 免提， 1 摘机
 {
 //	if(dial_tyle == 0)
 //		HandFree(true);
 //	else
 //		HandFree(false);
-	Dial(telcode, dial_tyle);
+	Dial(telcode);
 }
 //挂机
 void TelephoneWarp::HungOff()

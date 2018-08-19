@@ -50,8 +50,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CPasswordDlg message handlers
-void CPasswordDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CPasswordDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 100:
@@ -61,6 +62,7 @@ void CPasswordDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonPasswordCancel();
 		break;
 	}
+    return result;
 }
 BOOL CPasswordDlg::OnInitDialog() 
 {

@@ -83,9 +83,9 @@ protected:
 	// NOTE: the ClassWizard will add member functions here
 	afx_msg void OnButtonCancel();
 	afx_msg void OnTimer(UINT nIDTimer);
-	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDeviceChange(WPARAM w, LPARAM l);
 	//}}AFX_MSG
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 private:
 	CMJPGStatic		m_MJPGList;

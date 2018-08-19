@@ -98,7 +98,7 @@ int ComWarp::ReadComm(void* pData, int nLength)
 	memset(pData, 0, nLength);
 	DWORD  s = GetTickCount();
 
-	while((GetTickCount() - s) < 1000)
+	while((GetTickCount() -s) < 1000)
 	{
 		ReadFile(hComm, pData, (DWORD)nLength, &dwNumRead, NULL);  
 		ret += dwNumRead;

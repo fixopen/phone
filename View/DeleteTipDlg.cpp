@@ -49,8 +49,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CDeleteTipDlg message handlers
-void CDeleteTipDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CDeleteTipDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -60,6 +61,7 @@ void CDeleteTipDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonDeleteTipCancel();
 		break;
 	}
+    return result;
 }
 BOOL CDeleteTipDlg::OnInitDialog() 
 {

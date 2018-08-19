@@ -1,6 +1,6 @@
-#include "../Util/StringOp.h"
 #include "Session.h"
 #include "Communicator.h"
+#include "../Util/StringOp.h"
 #include "../Util/MD5/md5.h"
 //#define MD_CTX MD5_CTX
 //#define MDInit MD5Init
@@ -25,7 +25,7 @@ void Session::Process(std::string const& body) {
     RequestMessage request;
     //request.type = RequestMessage::tGet;
     request.uri = "http://" + server_ + "/" + resourceName_() + "?msisdn_d=" + msisdn_d_() + "&ua=" + userAgent_ + "&os=" + os_ + "&version=" + version_ + additionParameter_();
-    request.HeaderFields.insert(std::make_pair(std::string("Content-Length"), Util::StringOp::ToUTF8(Util::StringOp::FromInt(body.length()))));
+    request.HeaderFields.insert(std::make_pair("Content-Length", Util::StringOp::ToUTF8(Util::StringOp::FromInt(body.length()))));
     request.Body = body;
     //request.version = "HTTP/1.1";
     //request.HeaderFields.insert(std::make_pair("x-device-id", deviceId_()));
@@ -83,7 +83,7 @@ ResponseMessage const Session::auth_(std::map<std::string, std::string>& values,
         + "\",opaque=" + values["opaque"];
     RequestMessage request;
     request.uri = "http://" + server_ + "/" + resourceName_() + "?msisdn_d=" + msisdn_d_() + "&ua=" + userAgent_ + "&os=" + os_ + "&version=" + version_;
-    request.HeaderFields.insert(std::make_pair(std::string("Authorization"), authInfo));
+    request.HeaderFields.insert(std::make_pair("Authorization", authInfo));
     result = communicator_->Get(request);
     return result;
 
@@ -182,19 +182,6 @@ ResponseMessage const Session::timeout_() const {
 }
 
 void Session::selfProcess_(ResponseMessage const& response) const {
-}
-
-std::string const Session::findContent_(std::string const& whole, std::string const& tagName, size_t& offset) const {
-    size_t startPos = whole.find("<" + tagName + ">", offset) + tagName.length() + 2;
-	if (startPos == std::string::npos) {
-		return "";
-	}
-    size_t stopPos = whole.find("</" + tagName + ">", startPos);
-	if (stopPos == std::string::npos) {
-		return "";
-	}
-	offset = stopPos + tagName.length() + 3;
-    return whole.substr(startPos, stopPos - startPos);
 }
 
 std::string const Session::sha1_(std::string const& value) const {

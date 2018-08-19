@@ -64,7 +64,7 @@ BEGIN_MESSAGE_MAP(CMainPhotoDlg, CDialog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-void CMainPhotoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CMainPhotoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 //	if(w == IDC_LIST_PLAYPHOTOLIST)
@@ -73,7 +73,6 @@ void CMainPhotoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 		{
 			if(l == 1)
 			{
-				/*
 				if(w >= 0 && w <= (8-1))
 				{
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
@@ -81,7 +80,6 @@ void CMainPhotoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 				}
-				*/
 			}
 			else
 			{
@@ -91,6 +89,7 @@ void CMainPhotoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 		else
 			OnClickPlayList(NULL, &ret);
 	}
+    return ret;
 }
 
 void CMainPhotoDlg ::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
@@ -179,7 +178,7 @@ int CMainPhotoDlg::SetPlayList(TCHAR *dir, int local)
 	memset(m_chDir, 0, 128*2);
 	m_lstPlayList.DeleteAllItems();
 	int ncount = 0;
-/*
+
 	if(m_nPhotoType == net_type)   //网络相片
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
@@ -209,22 +208,15 @@ int CMainPhotoDlg::SetPlayList(TCHAR *dir, int local)
 		m_lstPlayList.SetScrollRagle(TRUE);
 		return filecount;	
 	}
-*/
+
 	
 	if(local == 0)
 	{
-		if(m_nPhotoType == net_type)
-		{
-			memcpy(m_chDir, _T("/flashdrv/my_net_photo/"), wcslen(_T("/flashdrv/my_net_photo/"))*2);
-		}
-		else
-		{
-			if(DetectDIR(_T("/usbdisk")))
-				m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
-			if(DetectDIR(_T("/storagecard")))
-				m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
-			memcpy(m_chDir, _T("/flashdrv/my_photo/"), wcslen(_T("/flashdrv/my_photo/"))*2);
-		}
+		if(DetectDIR(_T("/usbdisk")))
+			m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
+		if(DetectDIR(_T("/storagecard")))
+			m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
+		memcpy(m_chDir, _T("/flashdrv/my_photo/"), wcslen(_T("/flashdrv/my_photo/"))*2);
 	}
 	
 	else
@@ -408,7 +400,7 @@ void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
 		CString s;
 		CString s1 = Data::LanguageResource::Get(Data::RI_COMN_TOBOTTOM).c_str();
 		s = m_lstPlayList.GetItemText(index, 0);
-/*
+
 		if(m_nPhotoType == net_type)			//网络相片
 		{
 			int id = m_lstPlayList.GetItemData(index);
@@ -417,7 +409,7 @@ void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
 			lvitem.mask=LVIF_TEXT | LVIF_IMAGE;   
 			lvitem.iItem=index;   
 			lvitem.iSubItem=0;   
-			lvitem.pszText = (LPTSTR)(LPCTSTR)s;//(LPTSTR)(LPCTSTR)m_lstPlayList.GetItemText(index, 0);  
+			lvitem.pszText = (LPTSTR)(LPCTSTR)s;//(LPTSTR)(LPCTSTR)m_lstPlayList.GetItemText(index, 0)/*.GetBuffer(128)*/;  
 			lvitem.lParam=index;   
 			lvitem.iImage=id;
 			m_lstPlayList.SetItem(&lvitem);
@@ -425,7 +417,7 @@ void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
 			
 			return;
 		}
-*/
+
 		//usb
 		if(s.Compare(_T("usbdisk")) == 0)
 		{
@@ -503,8 +495,12 @@ void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 }
 
+void CMainPhotoDlg::OnPlayer() {
+    OnPlayer_(0);
+}
+
 //播放
-void CMainPhotoDlg::OnPlayer(int index)
+void CMainPhotoDlg::OnPlayer_(int index)
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	main->CancelBalckLightSaveTimer();
@@ -519,7 +515,7 @@ void CMainPhotoDlg::OnPlayer(int index)
 		int val = m_lstPlayList.GetItemData(i);
 		if(val == 1)
 		{
-		//	if(m_nPhotoType == local_type)			//本地相片
+			if(m_nPhotoType == local_type)			//本地相片
 			{
 				char filename[128];
 				CString s = m_lstPlayList.GetItemText(i, 0);
@@ -536,14 +532,12 @@ void CMainPhotoDlg::OnPlayer(int index)
 				m_PhotoList.push_back(txt);
 				nFileSelected++;
 			}
-			/*
 			else
 			{
 				CString s = m_pMediaFileresult[i]->multimediaInfos.filename.c_str();
 				m_PhotoList.push_back(s);
 				nFileSelected++;
 			}
-			*/
 		}
 	}
 
@@ -681,8 +675,9 @@ void CMainPhotoDlg ::SetAllScreenPlayer(BOOL flag)
 	Invalidate();   //lxz 2007 11 30
 }
 
-void CMainPhotoDlg::OnDeviceChange(WPARAM w, LPARAM l)
+LRESULT CMainPhotoDlg::OnDeviceChange(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if (w == 0x8000) //insert
 	{
 		SetTimer(100, 2000, NULL);
@@ -700,10 +695,12 @@ void CMainPhotoDlg::OnDeviceChange(WPARAM w, LPARAM l)
 // 		if(memcmp(m_chDir, _T("/flashdrv/my_photo/"), wcslen(m_chDir)*2) == 0)
 // 			SetPlayList(_T("/flashdrv/my_photo/"), 0);
 	}
+    return result;
 }
 
-void CMainPhotoDlg ::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CMainPhotoDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:			//全选
@@ -745,6 +742,7 @@ void CMainPhotoDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 			*/
 		}
 	}
+    return result;
 }
 
 
@@ -761,7 +759,7 @@ void CMainPhotoDlg::OnTimer(UINT nIDEvent)
 		KillTimer(0x100);
 		if(IsWindowVisible())
 		{
-			OnPlayer(-1);
+			OnPlayer_(-1);
 			//CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 			//playerDlg_->ShowWindow(SW_SHOW);
 			//main->playerimage_->Down();
@@ -777,8 +775,9 @@ void CMainPhotoDlg::OnTimer(UINT nIDEvent)
 	CDialog::OnTimer(nIDEvent);
 }
 
-void CMainPhotoDlg::OnOutEvent(WPARAM w, LPARAM l)
+LRESULT CMainPhotoDlg::OnOutEvent(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(IsWindowVisible())
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
@@ -804,6 +803,7 @@ void CMainPhotoDlg::OnOutEvent(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return 0;
 }
 
 LRESULT CMainPhotoDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 

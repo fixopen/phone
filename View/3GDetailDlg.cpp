@@ -87,8 +87,9 @@ BOOL C3GDetailDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void C3GDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT C3GDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
@@ -114,6 +115,7 @@ void C3GDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
+    return result;
 }
 
 //初始化菜单，parentId = 0 第一级菜单,家庭百事通的主界面

@@ -57,9 +57,9 @@ protected:
 	afx_msg void OnButtonSetTip();
 	afx_msg void OnButtonDelete();
 	afx_msg void OnButtonClose();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
-	afx_msg void OnRename(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnRename(WPARAM w, LPARAM l);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	DECLARE_MESSAGE_MAP()
 

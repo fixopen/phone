@@ -1,5 +1,5 @@
-#include "../Util/StringOp.h"
 #include "Communicator.h"
+#include "../Util/StringOp.h"
 
 Communicator::Communicator()
 : sessionCount_(0)
@@ -118,8 +118,7 @@ void Communicator::reconnect_() const {
     ::sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof serverAddr);
     serverAddr.sin_family = AF_INET;
-    //serverAddr.sin_addr.s_addr = ::inet_addr("218.249.60.87"); //@@https ip
-    serverAddr.sin_addr.s_addr = ::inet_addr("192.168.13.245"); //@@https ip
+    serverAddr.sin_addr.s_addr = ::inet_addr("218.249.60.87"); //@@https ip
     serverAddr.sin_port = ::htons(8088); //@@https port
     int r = ::connect(socket_, reinterpret_cast<sockaddr*>(&serverAddr), sizeof serverAddr);
     if (r == 0) { //success

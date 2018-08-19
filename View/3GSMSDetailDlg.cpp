@@ -67,8 +67,9 @@ void  C3GSMSDetailDlg::SetSMSDetail(CString Sender, CString Content)
 	m_contentEdit.SetWindowText(Content);
 }
 
-void C3GSMSDetailDlg::OnComboSelect(WPARAM w, LPARAM l)
+LRESULT C3GSMSDetailDlg::OnComboSelect(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	int i = m_cmbType.GetCurSel();
 	if(i == 0)
 	{
@@ -84,6 +85,7 @@ void C3GSMSDetailDlg::OnComboSelect(WPARAM w, LPARAM l)
 			initDataBase(MMS_NEW, -1, TRUE);
 		}
 	}
+    return result;
 }	
 void  C3GSMSDetailDlg::initDataBase(SMSDETAILTYPE type,  int smsid, BOOL reDraw )
 {
@@ -257,8 +259,9 @@ BOOL C3GSMSDetailDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void C3GSMSDetailDlg:: OnDeleteItem(WPARAM w, LPARAM l)
+LRESULT C3GSMSDetailDlg:: OnDeleteItem(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(m_nSMSType == MMS_READ)
 	{
 		m_pMMSData->Remove();
@@ -278,11 +281,13 @@ void C3GSMSDetailDlg:: OnDeleteItem(WPARAM w, LPARAM l)
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	pMainDlg->m_pMainDlg->m_p3GSMSDlg->m_pSMSListDlg->DeleteRefreshList();
 	ShowWindow(SW_HIDE);
+    return result;
 }
 
 int g_iSendSMSId = -1;
-void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
@@ -607,4 +612,5 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
+    return result;
 }

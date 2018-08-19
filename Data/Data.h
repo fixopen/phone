@@ -1,7 +1,6 @@
 #ifndef __DATA_DATAACCESS_H__
 #define __DATA_DATAACCESS_H__
 
-#include "../Util/StringOp.h"
 #pragma warning(disable: 4786)
 #include <vector>
 #include <string>
@@ -9,6 +8,7 @@
 
 #include "../Util/DateTime.h"
 #include "../Util/SmartPtr.h"
+#include "../Util/StringOp.h"
 #include "../inc/sqlite3.h"
 
 namespace Data

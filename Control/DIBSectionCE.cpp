@@ -50,7 +50,7 @@ UINT CEGetDIBColorTable(HDC hdc, UINT uStartIndex, UINT cEntries, RGBQUAD *pColo
 // CDIBSectionCE static functions
 
 // 
-// --- In  : nBitsPerPixel - bits per pixel
+// --- In?: nBitsPerPixel - bits per pixel
 // --- Out : 
 // --- Returns :The number of colours for this colour depth
 // --- Effect : Returns the number of color table entries given the number
@@ -79,7 +79,7 @@ UINT CEGetDIBColorTable(HDC hdc, UINT uStartIndex, UINT cEntries, RGBQUAD *pColo
 }
 
 // 
-// --- In  : nWidth - image width in pixels
+// --- In?: nWidth - image width in pixels
 //           nBitsPerPixel - bits per pixel
 // --- Out :
 // --- Returns : Returns the number of storage bytes needed for each scanline 
@@ -96,7 +96,7 @@ UINT CEGetDIBColorTable(HDC hdc, UINT uStartIndex, UINT cEntries, RGBQUAD *pColo
 #ifndef DIBSECTION_NO_PALETTE
 
 // 
-// --- In  : palette - reference to a palette object which will be filled
+// --- In?: palette - reference to a palette object which will be filled
 //           nNumColours - number of colour entries to fill
 // --- Out :
 // --- Returns : TRUE on success, false otherwise
@@ -179,7 +179,7 @@ CDIBSectionCE::~CDIBSectionCE()
     DeleteObject();
 }
 
-// --- In  :
+// --- In?:
 // --- Out :
 // --- Returns :
 // --- Effect : Resets the object to an empty state, and frees all memory used.
@@ -231,7 +231,7 @@ void CDIBSectionCE::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CDIBSectionCE operations
 
-// --- In  : pDC - Pointer to a device context
+// --- In?: pDC - Pointer to a device context
 //           ptDest - point at which the topleft corner of the image is drawn
 // --- Out :
 // --- Returns : TRUE on success
@@ -271,7 +271,7 @@ BOOL CDIBSectionCE::Draw(CDC* pDC, CPoint ptDest, BOOL bForceBackground /*=FALSE
     return bResult;
 }
 
-// --- In  : pDC - Pointer to a device context
+// --- In?: pDC - Pointer to a device context
 //           ptDest - point at which the topleft corner of the image is drawn
 //           size - size to stretch the image
 // --- Out :
@@ -322,7 +322,7 @@ BOOL CDIBSectionCE::Stretch(CDC* pDC, CPoint ptDest, CSize size,
 //////////////////////////////////////////////////////////////////////////////
 // Setting the bitmap...
 
-// --- In  : nIDResource - resource ID
+// --- In?: nIDResource - resource ID
 // --- Out :
 // --- Returns : Returns TRUE on success, FALSE otherwise
 // --- Effect : Initialises the bitmap from a resource. If failure, then object is
@@ -332,7 +332,7 @@ BOOL CDIBSectionCE::SetBitmap(UINT nIDResource)
     return SetBitmap(MAKEINTRESOURCE(nIDResource));
 }
 
-// --- In  : lpszResourceName - resource name
+// --- In?: lpszResourceName - resource name
 // --- Out :
 // --- Returns : Returns TRUE on success, FALSE otherwise
 // --- Effect : Initialises the bitmap from a resource. If failure, then object is
@@ -361,7 +361,7 @@ BOOL CDIBSectionCE::SetBitmap(LPCTSTR lpszResourceName)
     return bResult;
 }
 
-// --- In  : lpBitmapInfo - pointer to a BITMAPINFO structure
+// --- In?: lpBitmapInfo - pointer to a BITMAPINFO structure
 //           lpBits - pointer to image bits
 // --- Out :
 // --- Returns : Returns TRUE on success, FALSE otherwise
@@ -445,7 +445,7 @@ BOOL CDIBSectionCE::SetBitmap(LPBITMAPINFO lpBitmapInfo, LPVOID lpBits)
     return TRUE;
 }
 
-// --- In  : hBitmap - handle to image
+// --- In?: hBitmap - handle to image
 //           pPalette - optional palette to use when setting image
 // --- Out :
 // --- Returns : Returns TRUE on success, FALSE otherwise
@@ -583,7 +583,7 @@ BOOL CDIBSectionCE::SetBitmap(HBITMAP hBitmap, CPalette* pPalette /*= NULL*/)
 //////////////////////////////////////////////////////////////////////////////
 // Persistance...
 
-// --- In  : lpszFileName - image filename
+// --- In?: lpszFileName - image filename
 // --- Out :
 // --- Returns : Returns TRUE on success, FALSE otherwise
 // --- Effect : Loads the bitmap from a bitmap file with the name lpszFileName. 
@@ -684,7 +684,7 @@ BOOL CDIBSectionCE::Load(LPCTSTR lpszFileName)
     return TRUE;
 }
 
-// --- In  : lpszFileName - image filename
+// --- In?: lpszFileName - image filename
 // --- Out :
 // --- Returns : Returns TRUE on success, FALSE otherwise
 // --- Effect : Saves the image to file.
@@ -727,7 +727,7 @@ BOOL CDIBSectionCE::Save(LPCTSTR lpszFileName)
 
 #ifndef DIBSECTION_NO_PALETTE
 
-// --- In  :
+// --- In?:
 // --- Out :
 // --- Returns : TRUE on success
 // --- Effect : Creates the palette from the DIBSection's color table. Assumes 
@@ -794,8 +794,8 @@ BOOL CDIBSectionCE::CreatePalette()
     // Create and fill a LOGPALETTE structure with the colours used.
     PALETTEINFO PaletteInfo;
     PaletteInfo.palNumEntries = (WORD) m_iColorTableSize;
-    int i        ;            
-    for ( i = 0; i < nColours; i++)
+    int i = 0                    ;
+    for (; i < nColours; i++)
     {
         PaletteInfo.palPalEntry[i].peRed   = pRGB[i].rgbRed;
         PaletteInfo.palPalEntry[i].peGreen = pRGB[i].rgbGreen;
@@ -816,7 +816,7 @@ BOOL CDIBSectionCE::CreatePalette()
     return m_Palette.CreatePalette(&PaletteInfo);
 }
 
-// --- In  : pPalette - new palette to use
+// --- In?: pPalette - new palette to use
 // --- Out :
 // --- Returns : TRUE on success
 // --- Effect : Sets the current palette used by the image from the supplied CPalette,
@@ -841,7 +841,7 @@ BOOL CDIBSectionCE::SetPalette(CPalette* pPalette)
     return SetLogPalette(&pi);
 }
 
-// --- In  : pLogPalette - new palette to use
+// --- In?: pLogPalette - new palette to use
 // --- Out :
 // --- Returns : TRUE on success
 // --- Effect : Sets the current palette used by the image from the supplied LOGPALETTE
@@ -879,7 +879,7 @@ BOOL CDIBSectionCE::SetLogPalette(LOGPALETTE* pLogPalette)
     return FillDIBColorTable(nColours, RGBquads);
 }
 
-// --- In  : nNumColours - number of colours to set
+// --- In?: nNumColours - number of colours to set
 //           pRGB - colours to fill
 // --- Out :
 // --- Returns : Returns TRUE on success
@@ -915,7 +915,7 @@ BOOL CDIBSectionCE::FillDIBColorTable(UINT nNumColours, RGBQUAD *pRGB)
 #endif // DIBSECTION_NO_PALETTE
 
 
-// --- In  : hdc     - the Device Context in which the DIBSection is selected
+// --- In?: hdc     - the Device Context in which the DIBSection is selected
 //           hBitmap - the bitmap whose solor entries are to be queried
 //           lpbi    - a pointer to a BITMAPINFO structure that will have it's
 //                     color table filled.
@@ -954,10 +954,9 @@ UINT CDIBSectionCE::GetColorTableEntries(HDC hdc, HBITMAP hBitmap)
     {       
         int nNumStandardColours = sizeof(ms_StdColours) / sizeof(ms_StdColours[0]);
         UINT nIndex = 0;
-        
+        int i = 0;
         // The standard colours (16)
-		int i;
-        for (i = 0; i < nNumStandardColours; i++)
+        for (; i < nNumStandardColours; i++)
         {
             if (nIndex >= nColorTableSize) 
                 break;
@@ -1082,7 +1081,7 @@ UINT CEGetDIBColorTable(HDC hdc, UINT uStartIndex, UINT cEntries,
 }
 
 
-// --- In  : pDC - device context to use when calling CreateCompatibleDC
+// --- In?: pDC - device context to use when calling CreateCompatibleDC
 //           bSelectPalette - if TRUE, the current palette will be preselected
 // --- Out :
 // --- Returns : A pointer to a memory DC
@@ -1150,7 +1149,7 @@ CDC* CDIBSectionCE::GetMemoryDC(CDC* pDC /*=NULL*/, BOOL bSelectPalette /*=TRUE*
     return &m_MemDC;
 }
 
-// --- In  : bForceRelease - if TRUE, then the memory DC is forcibly released
+// --- In?: bForceRelease - if TRUE, then the memory DC is forcibly released
 // --- Out :
 // --- Returns : TRUE on success
 // --- Effect : Selects out the current bitmap and deletes the mem dc. If bForceRelease 

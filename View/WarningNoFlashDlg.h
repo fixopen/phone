@@ -23,7 +23,7 @@ public:
 	CCEProcessBar m_procbarSound;
 
 	static void RemoveThread(void *type);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 
 // Dialog Data
 	//{{AFX_DATA(CWarningNoFlashDlg)

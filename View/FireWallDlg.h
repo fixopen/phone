@@ -49,7 +49,7 @@ protected:
 	//}}AFX_MSG
 	afx_msg void OnButtonFireWallOk();
 	afx_msg void OnButtonFireWallCancel();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 private:
 

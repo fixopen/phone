@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "MultimediaPhone.h"
+#include "../MultimediaPhone.h"
 #include "TestDlg.h"
 
 #include "../MultimediaPhoneDlg.h"
@@ -64,8 +64,9 @@ void CTestDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-void CTestDlg::OnTelData(WPARAM w, LPARAM l)
+LRESULT CTestDlg::OnTelData(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	unsigned char *data = (unsigned char *)w;
 	int len = l;
 	CString s;
@@ -79,6 +80,7 @@ void CTestDlg::OnTelData(WPARAM w, LPARAM l)
 	s.Format(_T("\r\n"), len); 
 	m_listBoxMem.AddString(s);
 //	m_listBoxMem.SendMessage(WM_VSCROLL, SB_BOTTOM, 0);
+    return result;
 }
 
 BEGIN_MESSAGE_MAP(CTestDlg, CDialog)
@@ -358,8 +360,9 @@ void CTestDlg::OnBtnTestExit()
 	m_bExit = TRUE;
 }
 
-void CTestDlg::OnExit(WPARAM w, LPARAM l)
+LRESULT CTestDlg::OnExit(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if (!m_bFlagCall && !m_bFlagTestDb)
 	{
 		KillTimer(1);
@@ -368,6 +371,7 @@ void CTestDlg::OnExit(WPARAM w, LPARAM l)
 		m_bExit = FALSE;
 		ShowWindow(SW_HIDE);
 	}
+    return result;
 }
 
 BOOL CTestDlg::OnInitDialog() 

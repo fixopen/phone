@@ -1,8 +1,8 @@
-#include "../Util/StringOp.h"
 #include "RegisterSession.h"
 #include "RequestMessage.h"
 #include "ResponseMessage.h"
 #include "Communicator.h"
+#include "../Util/StringOp.h"
 
 RegisterSession::RegisterSession(void) {
 }

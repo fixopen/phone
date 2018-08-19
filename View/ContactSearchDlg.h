@@ -45,7 +45,7 @@ protected:
 	//}}AFX_MSG
 	afx_msg void OnButtonSearchContactCancel();
 	afx_msg void OnButtonSearchContactSearch();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 		
 private:

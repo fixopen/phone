@@ -131,8 +131,9 @@ BOOL CNotebookDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CNotebookDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CNotebookDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch (w)
 	{
 	case 5:
@@ -153,6 +154,7 @@ void CNotebookDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
+    return result;
 }
 
 void CNotebookDlg::SetPageIndex()

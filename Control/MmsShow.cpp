@@ -2,8 +2,22 @@
 //
 
 #include "stdafx.h"
+//#include "stdafx.h"
+//#include "MmsView.h"
+//#include "TextViewer.h"
+//#include "stdafx.h"
 #include "MmsShow.h"
+//#include "ImageViewer.h"
+
 #include "../Util/stringOp.h"
+
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[]=__FILE__;
+#define new DEBUG_NEW
+#endif
+
 
 // ImageShow
 
@@ -737,7 +751,7 @@ void MmsShow::InitialRegion()
 	region1.top		= TEXT_TOP								;
 
 	// 目前只能显示一张图片，一个文本
-	int j;
+    int j;
 	for (j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
 	{   
 		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("image") == 0 )
@@ -1792,17 +1806,6 @@ HBRUSH MmsShow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 }
 
 
-#include "stdafx.h"
-//#include "ImageViewer.h"
-
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
-
 BEGIN_MESSAGE_MAP(CImageViewer, CStatic)
 	//{{AFX_MSG_MAP(CImageViewer)
 	ON_WM_DESTROY()
@@ -2445,14 +2448,6 @@ void CImageViewer::GifStop()
 
 }
 
-// TextViewer.cpp : implementation file
-//
-
-#include "stdafx.h"
-//#include "MmsView.h"
-//#include "TextViewer.h"
-
-
 // CTextViewer
 
 IMPLEMENT_DYNAMIC(CTextViewer, CStatic)
@@ -2582,10 +2577,6 @@ HBRUSH CTextViewer::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 }
 // CTextViewer message handlers
-
-
-#include "stdafx.h"
-//#include "GifShow.h"
 
 DWORD WINAPI ThreadFunc(CGIFShow* ptr)
 {
@@ -3734,8 +3725,9 @@ CString CListContral::GetPath()
 	return allpath;
 } 
 
-void CListContral::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CListContral::OnListCltrlClick(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if ( IDC_LIST_CONTRAL== (UINT)w)//得到当前哪项被点击
 	{
 		POSITION pos = m_lslist.GetFirstSelectedItemPosition();
@@ -3799,4 +3791,5 @@ void CListContral::OnListCltrlClick(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return result;
 }

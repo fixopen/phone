@@ -69,17 +69,19 @@ void CSoundDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 }
 
-void CSoundDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CSoundDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_LIST_SOUND_TYPE)
 		OnClickListType(NULL, &ret);
 	else if(w == IDC_LIST_SOUND_LIST)
 		OnClickListList(NULL, &ret);
+    return ret;
 }
 
-void CSoundDlg::OnRename(WPARAM w, LPARAM l)
+LRESULT CSoundDlg::OnRename(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CString s;
 	m_pRenameDlg->m_edtName.GetWindowText(s);
 	std::string sName = Util::StringOp::FromCString(s);
@@ -97,12 +99,14 @@ void CSoundDlg::OnRename(WPARAM w, LPARAM l)
 	}
 
 	m_lsList.SetItemText(w, 1, s);
+    return result;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CSoundDlg message handlers
-void CSoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CSoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch (w)
 	{
 	case 1:
@@ -143,6 +147,7 @@ void CSoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonClose();
 		break;
 	}
+    return result;
 }
 
 BOOL CSoundDlg::OnInitDialog() 

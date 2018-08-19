@@ -51,9 +51,9 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CNetStatusDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnRasErrorCode(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnRasErrorCode(WPARAM w, LPARAM l);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

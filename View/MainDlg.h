@@ -87,7 +87,7 @@ public:
 	BOOL	GetCallWallInfo();
 	void 	OnShowNoteStatic();
 	void	OnShowCallWallStatic();
-	void	OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam);
+	LRESULT	OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam);
 	void	ShowWindow_(int nShowCmd);
 	void	SetMainMenu();
 
@@ -143,16 +143,15 @@ protected:
 	//{{AFX_MSG(CMainDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
-	afx_msg void OnChangeWindow(WPARAM w, LPARAM l);
-	afx_msg void OnPlayVideo(WPARAM w, LPARAM l);
-	afx_msg void OnPlayPhoto(WPARAM w, LPARAM l);
-	afx_msg void OnStaticClick(WPARAM w, LPARAM l);
-	afx_msg void OnMJPGShowHalf(WPARAM w, LPARAM l);
-	afx_msg void OnClickMJPGToApp(WPARAM w, LPARAM l);
-	afx_msg void OnSetAdmin(WPARAM w, LPARAM l);
-	afx_msg void OnUnSetAdmin(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnChangeWindow(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnPlayVideo(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnPlayPhoto(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnStaticClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnMJPGShowHalf(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPGToApp(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnSetAdmin(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnUnSetAdmin(WPARAM w, LPARAM l);
 	afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_MSG
 private:
 	//CCEButtonST m_btnMovie;

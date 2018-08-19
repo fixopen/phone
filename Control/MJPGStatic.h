@@ -18,8 +18,6 @@ struct MULTILINEINFO
 	int nCount;
 };
 
-enum FOCUSDIRECT{TOUP, TODOWN, TOLEFT, TORIGHT};
-
 class CMJPGStatic : public CStatic
 {
 public:
@@ -33,11 +31,12 @@ public:
 	CString  m_oldLinkFile;
 	CString	ToFileDir(CString filename);
 
- 	HDC  m_hMemDC;   //移到全局
- 	HBITMAP m_hBmp;
- 	HBITMAP m_hOldBmp;
- 	LPVOID  m_plpBits;	
-
+//	CDC *m_pMemDC;
+	HDC  m_hMemDC;
+//	CBitmap *m_pBmp;
+	HBITMAP m_hBmp;
+	HBITMAP m_hOldBmp;
+	LPVOID   m_plpBits;
 //	CBitmap *m_pOldbmp;
 //	void CreateMemDC();
 //	void ReleaseMemDC();
@@ -55,8 +54,6 @@ public:
 	int FindUnitIndex(CPoint pt);
 	void InvertRect(CRect rt);
 	void InvertRect_HDC(HDC hdc, CRect rt);
-
-	void DrawGroup_HDC(int *nNO, int nCount, BOOL isShow);
 //	void DrawUnitStatus(UNIT *pUnit, int nUintStatus);
 		
 	CRect		m_rtMJPG;
@@ -67,7 +64,7 @@ public:
 	void GetCurrentLinkFile(CString &s){s = m_sCurrentLinkFile;}
 
 	BOOL SetUnitIsDownStatus(int UnitNO, BOOL isDown);
-	int SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh = TRUE, BOOL isInvalidate = FALSE);
+	BOOL SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh = TRUE, BOOL isInvalidate = FALSE);
 
 	BOOL SetUnitBitmap(int UnitNO, CString filename_up, CString filename_down, BOOL isDraw, BOOL isInvalidate = FALSE);
 	BOOL SetUnitText(int UnitNO, CString text, BOOL isDraw, BOOL isInvalidate = FALSE);
@@ -79,18 +76,6 @@ public:
 	BOOL GetUnitIsShow(int UnitNO);
 	BOOL GetUnitIsDownStatus(int UnitNO);
 	CRect GetUnitRect(int UnitNO);
-	BOOL GetUnitIsDisable(int UnitNO);
-
-private:
-	int  m_nFocusUnit;				//当前光标
-	int  m_nRowFocusUnit;			//行光标
-	int  m_nColFocusUnit;			//列光标
-
-	BOOL InitFocusUnit();
-	int  FindRowFocusUnit(FOCUSDIRECT direct);
-	int  FindColFocusUnit(FOCUSDIRECT direct);
-	BOOL SetFocusUnit(FOCUSDIRECT direct, int noUnit);
-
 // Construction
 public:
 	CMJPGStatic();

@@ -69,8 +69,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainMenuDlg message handlers
-void CMainMenuDlg::OnAppSoftKey(WPARAM wParam, LPARAM lParam)
+LRESULT CMainMenuDlg::OnAppSoftKey(WPARAM wParam, LPARAM lParam)
 {
+    LRESULT result = 0;
 	if(wParam == 1)
 	{
 		OnVideoBtn();
@@ -95,16 +96,13 @@ void CMainMenuDlg::OnAppSoftKey(WPARAM wParam, LPARAM lParam)
 	{
 		OnScreenSaveBtn();
 	}
+    return result;
 }
 
-void CMainMenuDlg::OnVideoBtn(int type) 
+void CMainMenuDlg::OnVideoBtn() 
 {
 	// TODO: Add your control notification handler code here
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-	main->m_pMainDlg->m_mainVideoDlg_->m_MJPGList.SetUnitIsDownStatus(9, !type);
-	main->m_pMainDlg->m_mainVideoDlg_->m_MJPGList.SetUnitIsShow(9, TRUE, FALSE);
-	main->m_pMainDlg->m_mainVideoDlg_->m_nMp4Type = (Mp4Type)(!type);
 	main->m_pMainDlg->m_mainVideoDlg_->SetPlayList(_T("/flashdrv/my_video/"), 0);
 	main->m_pMainDlg->m_mainVideoDlg_->InitCtrl();
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)0, SW_SHOW);   //切换到视频
@@ -124,13 +122,9 @@ void CMainMenuDlg::OnPhotoBtn(int type)
 //	main->m_mainVideoDlg_->ShowWindow(SW_SHOW);
 }
 
-void CMainMenuDlg::OnMp3Btn(int type)
+void CMainMenuDlg::OnMp3Btn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-	main->m_pMainDlg->m_mainMp3Dlg_->m_MJPGList.SetUnitIsDownStatus(9, !type);
-	main->m_pMainDlg->m_mainMp3Dlg_->m_MJPGList.SetUnitIsShow(9, TRUE, FALSE);
-	main->m_pMainDlg->m_mainMp3Dlg_->m_nMp3Type = (Mp3Type)(!type);
 	main->m_pMainDlg->m_mainMp3Dlg_->SetPlayList(_T("/flashdrv/my_music/"), 0);
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)2, SW_SHOW);   //切换到Mp3
 }
@@ -153,7 +147,6 @@ void CMainMenuDlg::SetVideo()
 void CMainMenuDlg ::OnScreenSaveBtn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
 	int type = (int)main->m_pSettingDlg->m_pSetting->screenSaverContent();
 	((CMainDlg *)(main->GetPanel(IDC_BUTTON_MAIN)))->m_mainScreenSaveDlg_->SetSaveScreenType(type, TRUE);	  //1 图片屏保   0  时间屏保
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)5, SW_SHOW);   //切换到互联网

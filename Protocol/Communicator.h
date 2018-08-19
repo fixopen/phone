@@ -1,7 +1,6 @@
 #pragma once
 
-//#include <WinSock2.h>
-#include <WinSock.h>
+#include <WinSock2.h>
 #include <string>
 #include "ResponseMessage.h"
 #include "RequestMessage.h"

@@ -26,15 +26,12 @@ class CTelephoneDlg : public CCEDialog
 {
 // Construction
 public:
-	
 	BOOL m_bFirstConnect;
 	CMJPGStatic		m_MJPGList;
 	CString m_strTelStatus;
 	int     m_nTelStatus;
 	BOOL    m_bTelUsing;
-	std::string m_sPeedCode[5]; 
 	void DialSpeedCode(int index);
-	void initSpeedCode();
 
 	CTelephoneDlg(CWnd* pParent = NULL);   // standard constructor
 	BOOL m_bRecording;
@@ -66,20 +63,20 @@ protected:
 	//{{AFX_MSG(CTelephoneDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnMM_WIM_OPEN(UINT wParam,LONG lParam);
-	afx_msg void OnMM_WIM_DATA(UINT wParam,LONG lParam);
-	afx_msg void OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
-	afx_msg void OnMM_WOM_OPEN(UINT wParam,LONG lParam);
-	afx_msg void OnMM_WOM_DONE(UINT wParam,LONG lParam);
-	afx_msg void OnMM_WOM_CLOSE(UINT wParam,LONG lParam);
+	afx_msg LRESULT OnMM_WIM_OPEN(UINT wParam,LONG lParam);
+	afx_msg LRESULT OnMM_WIM_DATA(UINT wParam,LONG lParam);
+	afx_msg LRESULT OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
+	afx_msg LRESULT OnMM_WOM_OPEN(UINT wParam,LONG lParam);
+	afx_msg LRESULT OnMM_WOM_DONE(UINT wParam,LONG lParam);
+	afx_msg LRESULT OnMM_WOM_CLOSE(UINT wParam,LONG lParam);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	//}}AFX_MSG
 	afx_msg void OnButtonTelephoneHide();
 	afx_msg void OnButtonTelephoneNote();
 //	afx_msg void OnButtonTelephoneRecord();
 	afx_msg void OnButtonTelephoneHandle();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnTelStatus(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnTelStatus(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 
 private:
@@ -189,7 +186,6 @@ public:
 	UINT GetUnconnectCount(void);
 //	void ClearUnconnectCount(void);
 	UINT GetRecordCount(void); 
-	void AdjustVolume(int nVolume, BOOL isDraw = TRUE);
 //	void ClearRecordCount(void);
 
 	BOOL GetIsRecordStatus(){return m_bRecording;}

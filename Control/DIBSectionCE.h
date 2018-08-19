@@ -5,6 +5,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#undef _DEBUG
+
 // DIBSectionCE.h : header file
 //
 

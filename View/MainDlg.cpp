@@ -72,11 +72,6 @@ void CMainDlg ::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
 	}
 }
 
-void CMainDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
-{
-	int i = 0;
-	i++;
-}
 
 BEGIN_MESSAGE_MAP(CMainDlg, CDialog)
 	//{{AFX_MSG_MAP(CMainDlg)
@@ -91,7 +86,6 @@ BEGIN_MESSAGE_MAP(CMainDlg, CDialog)
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_CHECKPASSWORD, OnSetAdmin)
 	ON_MESSAGE(WM_DELETESELITEM, OnUnSetAdmin)
-	ON_WM_KEYDOWN()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -230,7 +224,7 @@ BOOL CMainDlg::OnInitDialog()
 	m_p3GDetailDlg->Create(C3GDetailDlg::IDD, this);
 	m_p3GDetailDlg->ShowWindow(SW_HIDE);
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this, 10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_桌面.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
@@ -905,8 +899,9 @@ void CMainDlg::OnTimer(UINT nIDEvent)
 	CDialog::OnTimer(nIDEvent);
 }
 
-void CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(l == SW_HIDE)
 	{
 		if((CWnd *)w != m_mainmenuDlg_)
@@ -1008,10 +1003,12 @@ void CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 			m_mainScreenSaveDlg_->ShowWindow(SW_SHOW);
 		}
 	}
+    return result;
 }
 
-void CMainDlg::OnPlayPhoto(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnPlayPhoto(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	if(m_mainPhotoDlg_->IsWindowVisible())
 	{	
@@ -1043,6 +1040,7 @@ void CMainDlg::OnPlayPhoto(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return result;
 }
 
 void CMainDlg::SetTimer_(BOOL flag)
@@ -1059,8 +1057,9 @@ void CMainDlg::SetTimer_(BOOL flag)
 		KillTimer(2);
 	}
 }
-void CMainDlg::OnPlayVideo(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnPlayVideo(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	{
 
@@ -1126,10 +1125,12 @@ void CMainDlg::OnPlayVideo(WPARAM w, LPARAM l)
 			*/
 		}
 	}
+    return result;
 }
 
-void CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(w == IDC_STATIC_CALLWALL)		//防火墙
 	{
 		m_firewalDlg_->OnStart();
@@ -1152,6 +1153,7 @@ void CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
 //		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_mainLunarderDlg1_->SetData(curtime.wYear, curtime.wMonth, curtime.wDay);
 //		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAINNOTE);
 	}
+    return result;
 }
 
 void CMainDlg::OnShowNoteStatic()
@@ -1194,8 +1196,9 @@ void CMainDlg::OnShowCallWallStatic()
 	*/
 }
 
-void CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
+LRESULT CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
 {
+    LRESULT result = 0;
 	//todo: 获取未接电话条数
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	if(wParam == 0)
@@ -1265,7 +1268,7 @@ void CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
 
 	s.Format(_T("%d"), m_nUnSMS);
 	m_MJPGList.SetUnitText(403, s, TRUE);
-
+    return result;
 }
 
 LRESULT CMainDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
@@ -1333,8 +1336,6 @@ void CMainDlg::ShowWindow_(int nCmdShow)
 		m_pWebDialog->ShowWindow_(SW_HIDE);	
 		((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pNotebookDlg->ShowWindow(SW_HIDE);
 		m_MJPGList.ShowWindow(SW_SHOW);
-		
-		SetFocus();   //lxz 20090923
 	}
 	SetTimer_(TRUE);
 }
@@ -1371,8 +1372,9 @@ void CMainDlg::SetMainMenu()
 	}
 }
 
-void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	/*
 	void OnVideoBtn();
 	void OnPhotoBtn();
@@ -1388,12 +1390,6 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 	case 1:					//视频电话
 		{
 			m_p3GTelDlg->ShowWindow(SW_SHOW);
-			/*
-			int no[] = {2, 3, 4, 5, 6, 100, 101, 102, 103, 104, 105, 106, 107, 108};
-			static BOOL flag = FALSE;
-			m_MJPGList.DrawGroup_HDC(no, 14, flag);
-			flag = !flag;
-			*/
 		}
 		break;
 	case 2:					//家庭留言								
@@ -1533,6 +1529,7 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		SetStatusAll(TRUE);
 
 	m_MJPGList.m_nIndexSelectUnit = -1;
+    return result;
 }
 
 void CMainDlg::ShowRightCtrl(int nCmdShow)
@@ -1545,30 +1542,35 @@ void CMainDlg::ShowRightCtrl(int nCmdShow)
 	*/
 }
 
-void CMainDlg::OnMJPGShowHalf(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnMJPGShowHalf(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(w == 0)
 		ShowRightCtrl(SW_HIDE);
 	else
 		ShowRightCtrl(SW_SHOW);
-
+    return result;
 }
 
-void CMainDlg::OnSetAdmin(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnSetAdmin(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(w == 1)
 	{
 		m_MJPGList.SetUnitIsDownStatus(170, TRUE);
 		SetStatusAll(FALSE);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin = TRUE;
 	}
+    return result;
 }
 
-void CMainDlg::OnUnSetAdmin(WPARAM w, LPARAM l)
+LRESULT CMainDlg::OnUnSetAdmin(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	m_MJPGList.SetUnitIsDownStatus(170, FALSE);
 	SetStatusAll(FALSE);
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin = FALSE;
+    return result;
 }
 
 void  CMainDlg::StartWeb()

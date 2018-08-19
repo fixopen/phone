@@ -64,7 +64,7 @@ protected:
 	afx_msg void OnButtonContactEdittype();
 	afx_msg void OnButtonContactSearch();
 	afx_msg void OnButtonContactClose();
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnBtnSelectAll();

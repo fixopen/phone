@@ -47,8 +47,9 @@ void copyfileDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-void copyfileDlg::OnDeviceChange(WPARAM w, LPARAM l)
+LRESULT copyfileDlg::OnDeviceChange(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if (w == 0x8000) 
 	{
 				
@@ -86,6 +87,7 @@ void copyfileDlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 	
 	//GetLogicalDrives()
+    return result;
 }
 
 BEGIN_MESSAGE_MAP(copyfileDlg, CCEDialog)
@@ -98,8 +100,9 @@ BEGIN_MESSAGE_MAP(copyfileDlg, CCEDialog)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 END_MESSAGE_MAP()
 
-void copyfileDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT copyfileDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	// 	switch(w)
 	// 	{
 	// 	case 1:
@@ -127,7 +130,7 @@ void copyfileDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		Import(FALSE);
 		break;		
 	}
-	
+	return result;
 }
 BOOL copyfileDlg::OnInitDialog()
 {

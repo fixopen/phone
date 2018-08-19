@@ -170,8 +170,9 @@ BOOL C3GSMSListDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void C3GSMSListDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT C3GSMSListDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
@@ -219,6 +220,7 @@ void C3GSMSListDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
+    return result;
 }
 
 
@@ -488,8 +490,9 @@ LRESULT C3GSMSListDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	return CDialog::WindowProc(message, wParam, lParam);
 }
 
-void C3GSMSListDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT C3GSMSListDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	if(l == 7)    //ฯ๊ว้
 	{
@@ -621,4 +624,5 @@ void C3GSMSListDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return result;
 }

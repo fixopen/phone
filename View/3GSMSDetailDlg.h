@@ -65,9 +65,9 @@ protected:
 	//{{AFX_MSG(C3GSMSDetailDlg)
 	virtual BOOL OnInitDialog();
 //	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnDeleteItem(WPARAM w, LPARAM l);
-	afx_msg void OnComboSelect(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDeleteItem(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnComboSelect(WPARAM w, LPARAM l);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

@@ -25,7 +25,6 @@ CPinSetDlg::CPinSetDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CPinSetDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	m_Data = NULL;
 }
 
 
@@ -49,8 +48,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CPinSetDlg message handlers
-void CPinSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CPinSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -71,13 +71,16 @@ void CPinSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		}
 		break;
 	}
+    return result;
 }
 
-void CPinSetDlg::OnCheckPIN(WPARAM w, LPARAM l)
+LRESULT CPinSetDlg::OnCheckPIN(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	SipShowIM(SIPF_OFF);
 	ShowWindow_(FALSE);
 	SipShowIM(SIPF_OFF);
+    return result;
 }
 
 void CPinSetDlg::SetButtonDefaultColor(CCEButtonST* button)

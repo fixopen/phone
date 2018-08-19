@@ -62,7 +62,7 @@ protected:
 	//{{AFX_MSG(CCELunarder)
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	afx_msg void OnDaySelect(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDaySelect(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nID);
 	//}}AFX_MSG
 

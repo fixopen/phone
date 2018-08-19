@@ -30,7 +30,7 @@ public:
 	enum { IDD = IDD_DIALOG_CONTACTGROUP };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-	afx_msg void OnStopTryRing(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnStopTryRing(WPARAM w, LPARAM l);
 	void StopTryRing();
 
 // Overrides
@@ -54,8 +54,8 @@ protected:
 
 	afx_msg void OnRingLst(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnRingSelect();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 private:
 	CMJPGStatic		m_MJPGList;

@@ -70,9 +70,9 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CCalculaterDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnSoftKey(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnSoftKey(WPARAM w, LPARAM l);
 	afx_msg void OnExit();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

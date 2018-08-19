@@ -1,7 +1,6 @@
-#include "../Util/StringOp.h"
 #include "InitializeSession.h"
 #include "Communicator.h"
-//#include "../Util/XMLParser.h"
+#include "../Util/StringOp.h"
 
 InitializeSession::InitializeSession(void) {
 }
@@ -73,45 +72,6 @@ InitializeSession::~InitializeSession(void)
 //    }
 //}
 void InitializeSession::selfProcess_(ResponseMessage const& response) const {
-    //Util::DocSource* source = new Util::MemDocSource(Util::StringOp::FromUTF8(response.Body));
-    //Util::XMLParser parser;
-    //Util::shared_ptr<Xml::Document> doc = parser.Parse(source);
-    //delete source;
-    /*
-<?xml version="1.0" encoding="UTF-8"?>
-<initialresponse>
-	<msisdn>13912345678</msisdn>
-	<username>13912345678</username>
-	<password>11111111</password>
-	<services>
-		<service>
-			<servicename>互联家庭业务</servicename>
-			<servicecode>001</servicecode>
-			<pack>
-				<feetype>单条计费套餐</feetype>
-				<serviceid>001001</serviceid>
-				<servicerate>0</servicerate>
-				<order>0</order>
-			</pack>
-			<pack>
-				<feetype>5元包月套餐</feetype>
-				<serviceid>001002</serviceid>
-				<servicerate>20</servicerate>
-				<order>1</order>
-			</pack>
-			<welcomeinfo>欢迎使用互联家庭业务</welcomeinfo>
-		</service>
-	</services>
-</initialresponse>
-    */
-	//size_t offset = 0;
-    //std::string tagName = "service";
-    //size_t startPos = response.Body.find("<" + tagName + ">", offset) + tagName.length() + 2;
-    //size_t stopPos = response.Body.find("</" + tagName + ">", startPos);
-	//offset = stopPos + tagName.length() + 3;
-    //std::string service = response.Body.substr(startPos, stopPos - startPos);
-	size_t offset = 0;
-	std::string service = findContent_(response.Body, "service", offset);
 }
 
 std::string const InitializeSession::resourceName_() const {

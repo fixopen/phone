@@ -30,8 +30,12 @@ int  DMemprintf(char *title, DWORD &t, DWORD &a);
 int DMemprintf(char *title);
 void DWriteLog(char *tile, unsigned char *pData, int len);
 void DWriteDat(char *tile, unsigned char *pData, int len);
-void Dprintf(CString s);
+//void Dprintf(CString s);
 
+inline void _invalid_parameter_noinfo() {
+}
+
+#define for if(true) for
 //{{AFX_INSERT_LOCATION}}
 // Microsoft eMbedded Visual C++ will insert additional declarations immediately before the previous line.
 

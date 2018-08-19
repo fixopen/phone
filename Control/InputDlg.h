@@ -66,8 +66,8 @@ protected:
 	//{{AFX_MSG(CInputDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnSoftKey(WPARAM w, LPARAM l);
-	afx_msg void OnSoftKeyReg(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnSoftKey(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnSoftKeyReg(WPARAM w, LPARAM l);
 	afx_msg void OnPaint();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	//}}AFX_MSG

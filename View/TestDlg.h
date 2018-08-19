@@ -45,8 +45,8 @@ protected:
 	afx_msg void OnBtnTestCall();
 	afx_msg void OnBtnTestDb();
 	afx_msg void OnBtnTestExit();
-	afx_msg void OnTelData(WPARAM w, LPARAM l);
-	afx_msg void OnExit(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnTelData(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnExit(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT nIDEvent);

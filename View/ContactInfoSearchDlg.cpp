@@ -46,8 +46,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CContactInfoSearchDlg message handlers
-void CContactInfoSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CContactInfoSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -58,6 +59,7 @@ void CContactInfoSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	//m_MJPGList.m_nIndexSelectUnit = -1;
 	}
+    return result;
 }
 
 BOOL CContactInfoSearchDlg::OnInitDialog() 

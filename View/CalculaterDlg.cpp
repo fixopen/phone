@@ -190,8 +190,9 @@ BOOL CCalculaterDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CCalculaterDlg ::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CCalculaterDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	UINT16 keyV[] = {0x800, BACKSPACE_KEYV, CE_KEYV, C_KEYV,\
 		MC_KEYV, '7', '8', '9', CHU_KEYV, GENHAO_KEYV,\
 		MR_KEYV, '4', '5', '6', CHENG_KEYV, BAIFENHAO_KEYV,\
@@ -199,18 +200,20 @@ void CCalculaterDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 		MJ_KEYV, '0', FUHAO_KEYV, '.', JIA_KEYV, DENG_KEYV
 	};
 	OnSoftKey(keyV[w-1], 0);
+    return result;
 }
 
 //软键盘的响应函数
-void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
+LRESULT CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(w == 0x800)   //退出
 	{
 		OnExit();
-		return;
+		return result;
 	}
 
-	if (m_IsError && w != C_KEYV)return; //2005.5.19 zmy 错误，点击任何键都无反应		
+	if (m_IsError && w != C_KEYV)return result; //2005.5.19 zmy 错误，点击任何键都无反应		
 	
 	//数字键的输入
 	if (w < m_keynull)
@@ -220,10 +223,10 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 			WCHAR t_buffer[20];
 			//CString s;
 			int len = m_DialNumEdit.GetWindowText(t_buffer, 20);
-			if((len == 0) && (w == '.'))return;
-			if((len == 1) && (t_buffer[0] == '0') && (w == '0'))return;
+			if((len == 0) && (w == '.'))return result;
+			if((len == 1) && (t_buffer[0] == '0') && (w == '0'))return result;
 			for (int i = wcslen(t_buffer); i > 0; i --)
-				if ((t_buffer[i-1] == '.') && (w == '.')) return;//小数点只能点击一次
+				if ((t_buffer[i-1] == '.') && (w == '.')) return result;//小数点只能点击一次
 		
 			if (len < 9)
 			{
@@ -240,7 +243,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 		else
 		{
 			m_DialNumEdit.SetWindowText(L"");
-			if(w == '.')return;
+			if(w == '.')return result;
 			CString s;
 			m_DialNumEdit.GetWindowText(s);
 			if(s == "0")
@@ -270,7 +273,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 		//2005.3.30-zmy 当输入框为空时，点击符号键（除了MS外），不显示
 		WCHAR buff[20];
 		int len = m_DialNumEdit.GetWindowText(buff, 20);
-		if ((len == 0) && (w != MR_KEYV)) return;
+		if ((len == 0) && (w != MR_KEYV)) return result;
 		WCHAR buffer[20];
 		WCHAR buffer1[20];
 		int i;
@@ -493,7 +496,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 						m_keyvalue = m_keynull;
 						m_keyvalue1 = m_keynull;
 						m_keyvalue2 = m_keynull;
-						return;
+						return result;
 					}
 					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
@@ -561,7 +564,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 						m_keyvalue = m_keynull;
 						m_keyvalue1 = m_keynull;
 						m_keyvalue2 = m_keynull;
-						return;
+						return result;
 					}
 					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
@@ -628,7 +631,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 						m_keyvalue = m_keynull;
 						m_keyvalue1 = m_keynull;
 						m_keyvalue2 = m_keynull;
-						return;
+						return result;
 					}
 					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
@@ -695,7 +698,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 						m_keyvalue = m_keynull;
 						m_keyvalue1 = m_keynull;
 						m_keyvalue2 = m_keynull;
-						return;
+						return result;
 					}
 					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
@@ -828,7 +831,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 						m_keyvalue = m_keynull;
 						m_keyvalue1 = m_keynull;
 						m_keyvalue2 = m_keynull;
-						return;
+						return result;
 					}
 					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
@@ -859,6 +862,7 @@ void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 				
 		}	
 	}
+    return result;
 }
 
 void CCalculaterDlg::ClearData()

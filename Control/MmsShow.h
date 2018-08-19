@@ -9,7 +9,7 @@
 #include "CEStatic.h"
 #include "CERadioButton.h"
 #include "../Resource.h"
-#include "ximage.h"
+#include "../inc/ximage.h"
 
 
 #define		DISPOSAL_NO 0
@@ -84,7 +84,7 @@ public:
 protected:
 	afx_msg void OnbtnOk();
 	afx_msg void OnbtnCancel();
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
 	
 protected:
 	

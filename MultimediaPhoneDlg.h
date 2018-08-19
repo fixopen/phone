@@ -113,7 +113,7 @@ const std::string ssStorageCardRecordPath = "\\StorageCard\\MY_RECORD\\";
 const CString csStarageCard = _T("\\StorageCard\\");
 const std::string ssStarageCard = "\\StorageCard\\";
 const CString csUsbDisk = _T("\\UsbDisk\\");
-enum TelTDStatus{TELRIGSTER_UN, TELRIGSTER_FAILED, TELRIGSTER_TD, TELRIGSTER_DIALING, TELRIGSTER_DIALED, TELRIGSTER_REG, TEL_UNNET};    //电话未搜网   //电话已搜网   //电话已注册   //无网络
+enum TelTDStatus{TELRIGSTER_UN, TELRIGSTER_TD, TELRIGSTER_DIALING, TELRIGSTER_DIALED, TELRIGSTER_REG, TEL_UNNET};    //电话未搜网   //电话已搜网   //电话已注册   //无网络
 
 struct DIAL_APN
 {
@@ -141,7 +141,7 @@ public:
 	//		   1	百事通
 	//		   2	来电
 	void SMSSpecRing(int type, CString s);
-	void doWithSMS(WPARAM wParam, LPARAM lParam);
+	LRESULT doWithSMS(WPARAM wParam, LPARAM lParam);
 	void doSerachrTDNet();    //手机搜网
 	void doRegisterTel();	  //开机注册搜网
 	void doWithDownLoad();    //在另一个进程中去调用
@@ -165,9 +165,6 @@ public:
 	Util::ComWarp* m_pComWarp2;
 	Util::ATCommandWarp* m_pATCommandWarp2;
 	SMS::SMSWarp* m_pSMSWarp;
-
-	//用于VP数据通道
-	Util::ComWarp* m_pVideoComWarp;
 	
 	int          n_StyleMain;
 	unsigned int n_bklightcount; 
@@ -250,7 +247,7 @@ public:
 	BOOL  GetPhoneHungOn(){return m_bIsHungOn;}
 
 	void SetSkinStyle();
-	void SendOutEvnet(WPARAM w = 0, LPARAM l = 0);
+	LRESULT SendOutEvnet(WPARAM w = 0, LPARAM l = 0);
 	void SetScreenSaveTimer();
 	void KillScreenSaveTimer();
 
@@ -301,7 +298,7 @@ public:
 	void SwitchPanel_(int panelId);
 	afx_msg void OnButtonSetting();
 
-	afx_msg void OnMainSoftKey(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnMainSoftKey(WPARAM w, LPARAM l);
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(CMultimediaPhoneDlg)
@@ -316,11 +313,11 @@ protected:
 	afx_msg void OnButtonContactinfo();
 	afx_msg void OnButtonSound();
 	afx_msg void OnButtonInformation();
-	afx_msg void OnEvent(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnEvent(WPARAM w, LPARAM l);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnRasErrorCode(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDeviceChange(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnRasErrorCode(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 
 private:

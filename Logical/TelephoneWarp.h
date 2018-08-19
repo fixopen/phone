@@ -63,7 +63,6 @@ namespace Telephone
 
 		 static TelephoneWarp* GetTelephoneWarp();
 		 void Bind(Util::ATCommandWarp* at);
-		 void Bind_(Util::ATCommandWarp* at);
 		 typedef struct
 		 {
 			 char NUM[16];
@@ -127,7 +126,7 @@ namespace Telephone
 		
 	public:
 		//外部调用
-		bool Dial(char* number, BOOL isVideo = FALSE);
+		bool Dial(char* number);
 		bool Hangup(void);
 		bool Answer(void);
 		bool Redial(void);

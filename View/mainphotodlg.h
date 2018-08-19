@@ -74,18 +74,19 @@ protected:
 	afx_msg void OnExit();
 	afx_msg void OnSelectAll();
 	afx_msg void OnClearAll();
-	afx_msg void OnPlayer(int index = 0);
+    afx_msg void OnPlayer();
+	afx_msg void OnPlayer_(int index = 0);
 	afx_msg void OnPre();
 	afx_msg void OnBack();
 	afx_msg void OnPlayerAll();
 	afx_msg void OnScreenSave();
 	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized); 
-	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDeviceChange(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
-	afx_msg void OnOutEvent(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnOutEvent(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

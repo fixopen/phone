@@ -15,14 +15,13 @@
 #include "PlayerDlg.h"
 /////////////////////////////////////////////////////////////////////////////
 // CMainVideoDlg dialog
-enum Mp4Type{mp4_local_type, mp4_net_type};
 
 class CMainVideoDlg : public CDialog
 {
 //control
 public:
 	std::vector<CString> m_VideoList;
-	Mp4Type	m_nMp4Type;
+
 	BOOL m_bIsPausebyEvent;
 
 	TCHAR		m_chDir[128];
@@ -83,13 +82,13 @@ protected:
 	afx_msg void OnBack();
 	afx_msg void OnPlayerAll();
 	afx_msg void OnMute();
-	afx_msg void OnPregress(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnPregress(WPARAM w, LPARAM l);
 	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized); 
-	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
-	afx_msg void OnOutEvent(WPARAM w, LPARAM l);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnDeviceChange(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnOutEvent(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

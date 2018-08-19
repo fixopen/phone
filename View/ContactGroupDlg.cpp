@@ -51,11 +51,12 @@ BEGIN_MESSAGE_MAP(CContactGroupDlg, CDialog)
 	ON_MESSAGE(WM_STOPTRYRING, OnStopTryRing)
 END_MESSAGE_MAP()
 
-void CContactGroupDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CContactGroupDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_SETTING_LSTRING)
 		OnRingLst(NULL, &ret);
+    return ret;
 }
 
 void CContactGroupDlg::StopTryRing()
@@ -68,8 +69,9 @@ void CContactGroupDlg::StopTryRing()
 }
 /////////////////////////////////////////////////////////////////////////////
 // CContactGroupDlg message handlers
-void CContactGroupDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CContactGroupDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(w != 10)
 		StopTryRing();
 
@@ -109,10 +111,12 @@ void CContactGroupDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		}
 		break;
 	}
+    return result;
 }
 
-void CContactGroupDlg::OnStopTryRing(WPARAM w, LPARAM l)
+LRESULT CContactGroupDlg::OnStopTryRing(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(m_MJPGList.GetUnitIsDownStatus(5))
 	{
 		m_MJPGList.SetUnitIsDownStatus(5, FALSE);
@@ -120,6 +124,7 @@ void CContactGroupDlg::OnStopTryRing(WPARAM w, LPARAM l)
 
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
 	}
+    return result;
 }
 
 BOOL CContactGroupDlg::OnInitDialog() 

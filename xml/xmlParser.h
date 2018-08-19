@@ -24,8 +24,6 @@
 
 #include "config.h"
 
-#include<algorithm>
-
 using Structure::MJPGList;
 using Structure::MJPGItem;
 using Structure::PLAYConfigList;
@@ -54,6 +52,15 @@ extern CString g_YesNo[];
 
 namespace Util
 {
+    namespace {
+        int FindStringArryIndex(CString sArry[], int ncount, std::string s)
+	    {
+		    for(int i = 0; i < ncount; i++)
+			    if(sArry[i] == s.c_str())
+				    return i;
+			    return 0;
+	    }
+    }
 	class XmlParser
 	{
 	public:
@@ -106,7 +113,7 @@ namespace Util
 			else if(nodeName == "SHOWTYPE")
 			{
 				std::string s = GetText(element);
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLShowType, showtype_end, s);
+				int nIndex = FindStringArryIndex(g_XMLShowType, showtype_end, s);
 				result->showtype = (SHOWTYPE)nIndex;
 			}
 			else if(nodeName == "ITEM")
@@ -149,6 +156,7 @@ namespace Util
 			std::string s = GetText(element);
 			if(nodeName == "RECT")
 			{
+				//item->unitparam.m_Rect = Util::StringOp::ToRectangle(s);
 				Util::StringOp::ToRectangle(s, item->unitparam.m_Rect);
 			}
 			else if(nodeName == "PIC")
@@ -181,47 +189,47 @@ namespace Util
 			}
 			else if(nodeName == "FONT")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLFont, textfont_end, s);
+				int nIndex = FindStringArryIndex(g_XMLFont, textfont_end, s);
 				item->unitparam.m_Font = (TEXTFONT)nIndex;
 			}
 			else if(nodeName == "SIZE")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLSize, textsize_end, s);
+				int nIndex = FindStringArryIndex(g_XMLSize, textsize_end, s);
 				item->unitparam.m_FontSize = (TEXTSIZE)nIndex;
 			}
 			else if(nodeName == "WEIGHTS")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLWeights, textweights_end, s);
+				int nIndex = FindStringArryIndex(g_XMLWeights, textweights_end, s);
 				item->unitparam.m_FontWeights = (TEXTWEIGHTS)nIndex;
 			}
 			else if(nodeName == "ITALIC")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLItalic, 2, s);
+				int nIndex = FindStringArryIndex(g_XMLItalic, 2, s);
 				item->unitparam.m_bFontItalic = (BOOL)nIndex;
 			}
 			else if(nodeName == "UNDERLINE")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLUnderLine, 2, s);
+				int nIndex = FindStringArryIndex(g_XMLUnderLine, 2, s);
 				item->unitparam.m_bFontUnLine = (BOOL)nIndex;
 			}
 			else if(nodeName == "COLOR")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLColor, textcolor_end, s);
+				int nIndex = FindStringArryIndex(g_XMLColor, textcolor_end, s);
 				item->unitparam.m_FontColor = (TEXTCOLOR)nIndex;
 			}
 			else if(nodeName == "HEIGHT")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLHeight, font_h_end, s);
+				int nIndex = FindStringArryIndex(g_XMLHeight, font_h_end, s);
 				item->unitparam.m_FontHeight = (TEXTHEIGHT)nIndex;
 			}
 			else if(nodeName == "ALIGN")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLAlign, textalign_end, s);
+				int nIndex = FindStringArryIndex(g_XMLAlign, textalign_end, s);
 				item->unitparam.m_FontAlign = (TEXTALIGN)nIndex;
 			}
 			else if(nodeName == "ACTIVE")
 			{
-				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLActive, unittype_end, s);
+				int nIndex = FindStringArryIndex(g_XMLActive, unittype_end, s);
 				item->unitparam.m_UnitType = (UNIT_TYPE)nIndex;
 			}
 			else if(nodeName == "DOWITH")
@@ -675,15 +683,6 @@ public:
 			return result;
 		}
 		
-		static BOOL rectInRect(MJPGItem* m1, MJPGItem* m2)
-		{
-			CPoint pt1 = CPoint(m1->unitparam.m_Rect.left, m1->unitparam.m_Rect.top);
-			CPoint pt2 = CPoint(m1->unitparam.m_Rect.right, m1->unitparam.m_Rect.bottom);
-			if(m2->unitparam.m_Rect.PtInRect(pt1) && m2->unitparam.m_Rect.PtInRect(pt2))
-				return TRUE;
-			return FALSE;
-		}
-
 		static MJPGList* const ParseFileToMJPGList_(CString sFilename)
 		{
 			MJPGList* result = NULL;
@@ -779,17 +778,6 @@ public:
 							CString s = Util::StringOp::utf82Cstring(sChar);
 							int nIndex = Util::StringOp::FindStringArryIndex(g_XMLShowType, showtype_end, s);
 							result->showtype = (SHOWTYPE)nIndex;
-							offset += (strlen(sFindName)+2)*2 + 1 + strlen(sChar);
-							if(sChar)
-								delete sChar;
-						}
-						else if(strstr(sFindName, "TAB"))
-						{
-							char *sChar = FindElementsContent(sXmlFile, sFindName);
-							CString s = Util::StringOp::utf82Cstring(sChar);
-							result->m_sTab = s;
-							if(result->m_sTab == "no")
-								result->m_sTab = "";
 							offset += (strlen(sFindName)+2)*2 + 1 + strlen(sChar);
 							if(sChar)
 								delete sChar;
@@ -1024,28 +1012,6 @@ public:
 						flag = FALSE;
 				}
 				delete lBuff;
-
-				std::sort(result->items.begin(), result->items.end(), rectInRect);
-				/*
-				//调整顺序
-				for(int i = 0; i < result->items.size(); i++)
-				{
-					if(i > 0)
-					{
-						CRect rect = result->items[i]->unitparam.m_Rect;
-						for(int j = 0; j < (i-1); j++)
-						{
-							CRect rt = result->items[j]->unitparam.m_Rect;
-							if(rectInRect(rt, rect))    //区域大的放在前面
-							{
-								
-								break;
-							}
-						}
-						
-					}
-				}
-				*/
 			}
 			return result;
 		}

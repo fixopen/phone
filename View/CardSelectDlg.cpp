@@ -60,13 +60,14 @@ BEGIN_MESSAGE_MAP(CCardSelectDlg, CDialog)
 	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
-void CCardSelectDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CCardSelectDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_LIST_CONTACT_TYPE)
 		OnClickListType(NULL, &ret);
 	else if(w == IDC_LIST_CONTRAL_CARDSELECT)
 		OnClickListList(NULL, &ret);
+    return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -324,8 +325,8 @@ void CCardSelectDlg::ShowArrayInList(std::vector<boost::shared_ptr<Data::Contact
 		}
 		else
 		{
-			int j;
-			for ( j = 0 ; j < m_vContact.size();j++)
+            int j;
+			for (j = 0 ; j < m_vContact.size();j++)
 			{
 				if (0 == m_vContact[j].name.compare(name) && 0 == m_vContact[j].telnum.compare(telnum))
 				{	
@@ -573,8 +574,8 @@ void CCardSelectDlg::OnBtnSelectAll()
 		Util::ATCommandWarp::SIM_FORMAT vc ;
 		vc.name		= name	;	
 		vc.telnum   = mobilephone ;
-		int j = 0;
-		for ( ; j < m_vContact.size() ; j++)
+        int j;
+		for (j = 0 ; j < m_vContact.size() ; j++)
 		{
 			if ( 0 == m_vContact[j].name.compare(name) && 0 == m_vContact[j].telnum.compare(mobilephone))
 			{

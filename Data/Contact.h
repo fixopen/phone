@@ -1,11 +1,11 @@
 #ifndef __DATA_CONTACT_H__
 #define __DATA_CONTACT_H__
 
-#include "Data.h"
 #pragma warning(disable: 4786)
 #include <string>
 #include <vector>
 
+#include "Data.h"
 #include "TelephoneNumber.h"
 //#include "SoundSegment.h"
 //#include "Picture.h"

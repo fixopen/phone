@@ -10,7 +10,7 @@
 /*ÊÖÐ´ÊÇ±ð¿â
 */
 
-#include "HWAPI.H"
+#include "../inc/HWAPI.H"
 #define WRITE_LINE_BUFFMAX		10
 #define WRITE_LINE_POINTMAX		1024*4
 struct WriteLineBuff

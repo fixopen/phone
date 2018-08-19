@@ -169,8 +169,9 @@ void CWarningNoFlashDlg::SetType(int type)
 		m_MJPGList.SetUnitBitmap(1, ".\\adv\\mjpg\\k1\\common\\´æÖü¿Õ¼ä²»×ã.bmp", ".\\adv\\mjpg\\k1\\common\\´æÖü¿Õ¼ä²»×ã.bmp", FALSE);
 	}
 }
-void CWarningNoFlashDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CWarningNoFlashDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	m_MJPGList.SetUnitIsShow(3, FALSE);
 	m_procbarSound.ShowWindow(SW_HIDE);
 
@@ -179,6 +180,7 @@ void CWarningNoFlashDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	KillTimer(1);
 	KillTimer(2);
 	m_MJPGList.SetUnitIsShow(2, TRUE);
+    return result;
 }
 
 void CWarningNoFlashDlg::OnTimer(UINT nIDEvent)

@@ -45,8 +45,8 @@ bool Player::InitPlayer()
 		{
 			RETAILMSG(1, (TEXT("plyCreate ok-----\r\n")));
 			//Dprintf("plyCreate ok\n");
-			int i;
-			for ( i = 0; i < 100; ++i)
+            int i;
+			for (i = 0; i < 100; ++i)
 			{
 				if (plyInit(playerOwner_->m_hWnd, mt_) == 0)
 				{

@@ -47,10 +47,6 @@ SMSWarp* SMSWarp::GetSMSWarp()
 	}
 	return sms;
 }
-void SMSWarp::Bind_(Util::ATCommandWarp* at)
-{
-	m_pAT = at;
-}
 void SMSWarp::Bind(Util::ATCommandWarp* at)
 {
 	m_pAT = at;
@@ -1251,7 +1247,6 @@ void SMSWarp::Send(std::string number, std::string content)
 	std::string sca = m_pAT->SmsCenterAddress();
 	if (sca.empty())
 	{
-		SetCenterAddress();
 		sca = m_strCenterAddress;
 	}
 
@@ -1299,9 +1294,9 @@ void SMSWarp::Send(std::string number, std::string content)
 	}while(true);
 }
 
-void SMSWarp::SetCenterAddress()
+void SMSWarp::SetCenterAddress(std::string address)
 {
-	m_strCenterAddress = ((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->speCode12_;
+	m_strCenterAddress = address;
 //	m_pAT->SmsCenterAddress(address);
 }
 

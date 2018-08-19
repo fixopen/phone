@@ -6,7 +6,7 @@
 #include "../Data/SkinStyle.h"
 #include "../resource.h"
 
-#include "./MultimediaPhone.h"
+#include "../MultimediaPhone.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -161,8 +161,9 @@ BOOL CCEListCtrl ::Create(DWORD dwStyle, CRect &rect, CWnd *pParentWnd, UINT nID
 	return ret;
 }
 
-void CCEListCtrl::OnClicked() 
+BOOL CCEListCtrl::OnClicked() 
 {
+    BOOL result = false;
 	// TODO: Add your control notification handler code here
 	if(m_bIsScroll)
 	{
@@ -172,6 +173,7 @@ void CCEListCtrl::OnClicked()
 			m_scollbar_.SetPos(n);
 		}
 	}
+    return result;
 }
 /*
 
@@ -249,7 +251,7 @@ LRESULT CCEListCtrl ::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 				nY = (lParam - nPos)%m_nPage;
 				for(int i = 0; i < nPage; i++)
 					SendMessage(WM_VSCROLL, SB_PAGEDOWN, 0 );
-				for(i = 0; i < nY; i++)
+				for(int i = 0; i < nY; i++)
 					SendMessage(WM_VSCROLL, SB_LINEDOWN, 0 );
 			}
 			else
@@ -258,7 +260,7 @@ LRESULT CCEListCtrl ::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 				nY = (nPos - lParam)%m_nPage;
 				for(int i = 0; i < nPage; i++)
 					SendMessage(WM_VSCROLL, SB_PAGEUP, 0 );
-				for(i = 0; i < nY; i++)
+				for(int i = 0; i < nY; i++)
 					SendMessage(WM_VSCROLL, SB_LINEUP, 0 );
 			}
 		}

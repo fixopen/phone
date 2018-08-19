@@ -56,8 +56,8 @@ protected:
 	afx_msg void OnButtonContactSearch();
 	afx_msg void OnButtonContactClose();
 	afx_msg LRESULT OnSoftKeyMessage(WPARAM wParam, LPARAM lParam);   
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 

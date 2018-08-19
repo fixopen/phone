@@ -71,24 +71,23 @@ BOOL C3GHomeJoyDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
 	case 1:			//音乐商店
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn(1);
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn();
 		break;
 	case 2:			//影音天地
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn(1);
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
 		break;
 	case 3:			//游戏集中营
-// 		if(pMainDlg->IsConnectNet())
-// 			pMainDlg->m_pMainDlg->StartWeb();
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn(0);
+		if(pMainDlg->IsConnectNet())
+			pMainDlg->m_pMainDlg->StartWeb();
 		break;
 	case 4:			//收音机
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn(0);
 		break;
 	case 5:
 		break;
@@ -107,4 +106,5 @@ void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
+    return result;
 }

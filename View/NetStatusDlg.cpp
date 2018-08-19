@@ -326,7 +326,7 @@ CNetStatusDlg::CNetStatusDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	m_nADSLTimeCount = 0;
 	m_bADSLISConnnect = FALSE;
-	//ADSLInit();
+	ADSLInit();
 }
 
 
@@ -338,8 +338,9 @@ void CNetStatusDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-void CNetStatusDlg::OnRasErrorCode(WPARAM w, LPARAM l)
+LRESULT CNetStatusDlg::OnRasErrorCode(WPARAM w, LPARAM l)
 {
+    LRESULT r = 0;
 	int result = w;
 	char txt[64];
 	sprintf(txt, "Ras code %d %d %d\r\n", result, w, l);
@@ -369,6 +370,7 @@ void CNetStatusDlg::OnRasErrorCode(WPARAM w, LPARAM l)
 	{
 		m_bADSLISConnnect = FALSE;
 	}
+    return r;
 }
 
 LRESULT CNetStatusDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
@@ -503,8 +505,9 @@ BOOL CNetStatusDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CNetStatusDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CNetStatusDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	switch(w)
 	{
@@ -541,6 +544,7 @@ void CNetStatusDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		}
 		break;
 	}
+    return result;
 }
 
 void CNetStatusDlg::ShowWindow_(int cmdshow)

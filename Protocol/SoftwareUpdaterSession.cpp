@@ -9,11 +9,11 @@ SoftwareUpdaterSession::~SoftwareUpdaterSession(void)
 }
 
 void SoftwareUpdaterSession::selfProcess_(ResponseMessage const& response) const {
-    /*std::*/FILE* file = /*std::*/fopen("img.jpg", "wb");
+    std::FILE* file = std::fopen("img.jpg", "wb");
     size_t length = response.Body.length();
     if (file) {
-        /*std::*/fwrite(response.Body.c_str(), 1, response.Body.length(), file);
-        /*std::*/fclose(file);
+        std::fwrite(response.Body.c_str(), 1, response.Body.length(), file);
+        std::fclose(file);
     }
 }
 

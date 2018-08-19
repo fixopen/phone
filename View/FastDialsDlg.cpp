@@ -24,7 +24,6 @@ CFastDialsDlg::CFastDialsDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CFastDialsDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	m_Data = NULL;
 }
 
 
@@ -47,8 +46,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CFastDialsDlg message handlers
-void CFastDialsDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CFastDialsDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -58,6 +58,7 @@ void CFastDialsDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonFastDialsCancel();
 		break;
 	}
+    return result;
 }
 
 BOOL CFastDialsDlg::OnInitDialog() 

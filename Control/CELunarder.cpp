@@ -158,7 +158,7 @@ void CCELunarder::SetStcDay()
 		m_StcDay[i].SetTogle(FALSE);
 	}
 
-	for(i = 0; i < nDay; i++)
+	for(int i = 0; i < nDay; i++)
 	{
 		char txt[3];
 		sprintf(txt, "%d", i+1);
@@ -275,8 +275,9 @@ BOOL CCELunarder::OnEraseBkgnd(CDC* pDC)
 	return CStatic::OnEraseBkgnd(pDC);
 }
 
-void CCELunarder::OnDaySelect(WPARAM w, LPARAM l)
+LRESULT CCELunarder::OnDaySelect(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CString s;
 	m_StcDay[w-IDC_BTN_D0].GetDateTxt(s);
 	char txt[3];
@@ -354,6 +355,7 @@ void CCELunarder::OnDaySelect(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return result;
 }
 
 void CCELunarder::OnTimer(UINT nID)

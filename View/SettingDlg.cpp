@@ -21,7 +21,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg dialog
-CString s_VerSionTitle = "7.39090929";
+CString s_VerSionTitle = "7.37090731";
 CString s_VerSion = "\
 6.03090325\
 1.ÐÞ¸ÄÁËÂ¼ÒôÃÜÂë.\
@@ -162,13 +162,14 @@ void CSettingDlg::DoDataExchange(CDataExchange* pDX)
 #define IDC_SETTING_LSTLOCAL			9018
 #define IDC_SETTING_LSTUSB				9019
 
-void CSettingDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_LIST_SETTING_TYPE)
 		OnClickListType(NULL, &ret);
 	else if(w == IDC_SETTING_LSTRING)
 		OnRingLst(NULL, &ret);
+    return ret;
 }
 
 BEGIN_MESSAGE_MAP(CSettingDlg, CDialog)
@@ -217,8 +218,9 @@ BEGIN_MESSAGE_MAP(CSettingDlg, CDialog)
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
-void CSettingDlg::OnCheckPWD(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnCheckPWD(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(l == IDC_CHECK_SETTING_PLAYPROTECT)
 	{
 		if(w == 0 )
@@ -275,6 +277,7 @@ void CSettingDlg::OnCheckPWD(WPARAM w, LPARAM l)
 		}	
 	}
 	*/
+    return result;
 }
 
 void CSettingDlg::SetShowTimer()
@@ -415,18 +418,21 @@ void CSettingDlg::SetShowTimer()
 	SetTimer(1, 5, NULL);
 }
 
-void CSettingDlg::OnStopTryRing(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnStopTryRing(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(m_MJPGList.GetUnitIsDownStatus(10))
 	{
 		m_MJPGList.SetUnitIsDownStatus(10, FALSE);
 		m_MJPGList.SetUnitIsShow(10, TRUE);
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
 	}
+    return result;
 }
 
-void CSettingDlg::OnBtnSTClick(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnBtnSTClick(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	BOOL ret;
 	if(IDC_SETTING_BLACKSCREEN1 == w)
 	{
@@ -477,6 +483,7 @@ void CSettingDlg::OnBtnSTClick(WPARAM w, LPARAM l)
 		}
 	}
 */
+    return result;
 }
 
 void CSettingDlg::StopTryRing()
@@ -490,8 +497,9 @@ void CSettingDlg::StopTryRing()
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg message handlers
-void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(m_uiType == 0 && w != 110)
 	{
 		StopTryRing();
@@ -752,6 +760,7 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		}
 		break;
 	}
+    return result;
 }
 BOOL CSettingDlg::OnInitDialog() 
 {
@@ -759,7 +768,7 @@ BOOL CSettingDlg::OnInitDialog()
 	
 	// TODO: Add extra initialization here
 	std::string strTemp = Data::LanguageResource::Get(Data::RI_RECORD_TYPE);
-	CString str = strTemp.c_str();
+    CString str = Util::StringOp::ToCString(strTemp);
 
 	m_edtLocalAreaNumber.Create(WS_CHILD|WS_VISIBLE, CRect(322, 59, 575,98), this, IDC_EDIT_SETTING_AREANO);
  	m_edtLocalAreaNumber.SetLimitText(15);
@@ -775,7 +784,7 @@ BOOL CSettingDlg::OnInitDialog()
 	m_edtOutLine.SetLimitDiagital();
 */
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_IPDIAL);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	m_chbEnableIPDial.Create(str, WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(138, 119, 138+35, 119+32), this, IDC_CHECK_SETTING_IPDIAL);
 	m_chbEnableIPDial.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
 	SetButtonDefaultColor(&m_chbEnableIPDial);	
@@ -793,7 +802,7 @@ BOOL CSettingDlg::OnInitDialog()
 //	m_cmbRing.Create(WS_CHILD|WS_VISIBLE, CRect(354,238,608,460), this, IDC_COMBOBOX_SETTING_RING);
 	
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_ENABLEAUTOLEAVEWORD);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	m_chbEnableAutoLeaveWord.Create(str, WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(138, 172, 138+35, 172+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
 	m_chbEnableAutoLeaveWord.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
 	SetButtonDefaultColor(&m_chbEnableAutoLeaveWord);	
@@ -836,12 +845,12 @@ BOOL CSettingDlg::OnInitDialog()
 
 	//browser======================================================================================================
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_CONNECTAUTO);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	str = _T("");
 	m_rdoConnectAuto.Create(str, WS_CHILD|WS_VISIBLE/*|BS_RADIOBUTTON*/, CRect(182-15, 62-4, 214-15, 100-4), this, IDC_RADIO_SETTING_CONNECTAUTO);
 	m_rdoConnectAuto.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_CONNECTMANUAL);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	str = _T("");
 	m_rdoConnectADSL.Create(str, WS_CHILD|WS_VISIBLE/*|BS_RADIOBUTTON*/, CRect(182-15, 102-4, 214-15, 136-4), this, IDC_RADIO_SETTINT_CONNECTADSL);
 	m_rdoConnectADSL.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
@@ -871,13 +880,13 @@ BOOL CSettingDlg::OnInitDialog()
 	
 
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_USEDYNAMICIP);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	str = _T("");
 	m_rdoGetIPDHCP.Create(str, WS_CHILD|WS_VISIBLE/*|BS_RADIOBUTTON*/, CRect(182-15, 174-4, 214-15, 208-4), this, IDC_RADIO_SETTING_DHCP);
 	m_rdoGetIPDHCP.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 	
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_USESTATICIIP);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	str = _T("");
 	m_rdoGetIPStatic.Create(str, WS_CHILD|WS_VISIBLE, CRect(182-15, 211-4, 214-15, 245-4), this, IDC_RADIO_SETTING_STATIC);
 	m_rdoGetIPStatic.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
@@ -930,7 +939,7 @@ BOOL CSettingDlg::OnInitDialog()
 
 	//systom======================================================================================================
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_ENABLESP);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	m_chbEnnabeScreenProtect.Create(str, WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(182-44, 68-4, 217-44, 100-4), this, IDC_CHECK_SETTING_SCREENPROTECT);
 	m_chbEnnabeScreenProtect.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
 	SetButtonDefaultColor(&m_chbEnnabeScreenProtect);	
@@ -941,12 +950,12 @@ BOOL CSettingDlg::OnInitDialog()
 // 	m_sticScreenProtctType.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 // 
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_TIMESP);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	m_rdoTimeScreen.Create(str, WS_CHILD|WS_VISIBLE/*|BS_CHECKBOX*/, CRect(312-37, 101-4, 344-37, 135-4), this, IDC_RADIO_SETTING_TIMESCREEN);
 	m_rdoTimeScreen.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_IMAGESP);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	m_rdoImageScreen.Create(str, WS_CHILD|WS_VISIBLE/*|BS_CHECKBOX*/, CRect(442-37, 101-4, 474-37, 135-4), this, IDC_RADIO_SETTING_IMAGESCREEN);
 	m_rdoImageScreen.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
@@ -962,7 +971,7 @@ BOOL CSettingDlg::OnInitDialog()
 	m_cmbSystemVolume.Create(WS_CHILD|WS_VISIBLE, CRect(303, 222, 303+138, 222+190), this, 0xFFFF);
 
 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_ENABLEPASSWORD);
-	str = strTemp.c_str();
+	str = Util::StringOp::ToCString(strTemp);
 	m_chbEnablePassword.Create(str, WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(218-37, 176-4, 253-37, 208-4), this, IDC_CHECK_SETTING_SPPASSWORD);
 	m_chbEnablePassword.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
 	SetButtonDefaultColor(&m_chbEnablePassword);	
@@ -1091,7 +1100,7 @@ BOOL CSettingDlg::OnInitDialog()
 // 	str = strTemp.c_str();
 // 	m_sticMemorySize1.Create(str, WS_CHILD|WS_VISIBLE, CRect(104, 68, 170, 84), this);
 // 	m_sticMemorySize1.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-	str = "";
+	str = L"";
 	m_sticMemorySize.Create(str, WS_CHILD|WS_VISIBLE, CRect(328-15, 144-4, 650-15, 170-4), this);
 	m_sticMemorySize.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
@@ -1099,7 +1108,7 @@ BOOL CSettingDlg::OnInitDialog()
 // 	str = strTemp.c_str();
 // 	m_sticStorageSize1.Create(str, WS_CHILD|WS_VISIBLE, CRect(104, 86, 170, 102), this);
 // 	m_sticStorageSize1.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-	str = "";
+	str = L"";
 	m_sticStorageSize.Create(str, WS_CHILD|WS_VISIBLE, CRect(328-15, 180-4, 650-15, 206-4), this);
 	m_sticStorageSize.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 	
@@ -1107,7 +1116,7 @@ BOOL CSettingDlg::OnInitDialog()
 // 	str = strTemp.c_str();
 // 	m_sticContactSize1.Create(str, WS_CHILD|WS_VISIBLE, CRect(124, 104, 190, 120), this);
 // 	m_sticContactSize1.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-	str = "";
+	str = L"";
 	m_sticContactSize.Create(str, WS_CHILD|WS_VISIBLE, CRect(360-15, 234-4, 440-15, 260-4), this);
 	m_sticContactSize.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
@@ -1115,7 +1124,7 @@ BOOL CSettingDlg::OnInitDialog()
 // 	str = strTemp.c_str();
 // 	m_sticContactInfoSize1.Create(str, WS_CHILD|WS_VISIBLE, CRect(124, 124, 190, 140), this);
 // 	m_sticContactInfoSize1.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-	str = "";
+	str = L"";
 	m_sticContactInfoSize.Create(str, WS_CHILD|WS_VISIBLE, CRect(360-15, 274-4, 440-15, 300-4), this);
 	m_sticContactInfoSize.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
@@ -1123,7 +1132,7 @@ BOOL CSettingDlg::OnInitDialog()
 // 	str = strTemp.c_str();
 // 	m_sticSoundSize1.Create(str, WS_CHILD|WS_VISIBLE, CRect(124, 144, 190, 160), this);
 // 	m_sticSoundSize1.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-	str = "";
+	str = L"";
 	m_sticSoundSize.Create(str, WS_CHILD|WS_VISIBLE, CRect(360-15, 314-4, 440-15, 340-4), this);
 	m_sticSoundSize.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
@@ -1131,7 +1140,7 @@ BOOL CSettingDlg::OnInitDialog()
 // 	str = strTemp.c_str();
 // 	m_sticInformationSize1.Create(str, WS_CHILD|WS_VISIBLE, CRect(124, 164, 190, 180), this);
 // 	m_sticInformationSize1.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
-	str = "";
+	str = L"";
 	m_sticInformationSize.Create(str, WS_CHILD|WS_VISIBLE, CRect(194-15, 164-4, 270-15, 180-4), this);
 	m_sticInformationSize.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));//Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
@@ -1546,7 +1555,7 @@ void CSettingDlg::IniCtrlData()
 
 	ip = m_ip.mask;
 	index1 = 0;
-	for(i = 0; i < 4; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		int index = ip.Find('.', index1);
 		CString ss;
@@ -1564,7 +1573,7 @@ void CSettingDlg::IniCtrlData()
 
 	ip = m_ip.gw;
 	index1 = 0;
-	for(i = 0; i < 4; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		int index = ip.Find('.', index1);
 		CString ss;
@@ -1582,7 +1591,7 @@ void CSettingDlg::IniCtrlData()
 
 	ip = m_ip.dns;
 	index1 = 0;
-	for(i = 0; i < 4; i++)
+	for(int i = 0; i < 4; i++)
 	{
 		int index = ip.Find('.', index1);
 		CString ss;
@@ -2111,8 +2120,9 @@ void CSettingDlg::OnButtonSettingCancel()
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
 }
 
-void CSettingDlg::OnDeleteTipOk(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnDeleteTipOk(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	/*
 	int id = m_pSetting->id();
 	Data::SettingType type = m_pSetting->type();
@@ -2123,6 +2133,7 @@ void CSettingDlg::OnDeleteTipOk(WPARAM w, LPARAM l)
 	IniCtrlData();
 	ShowConfigItems();
 	*/
+    return result;
 }
 
 void CSettingDlg::OnButtonSettingDefault() 
@@ -2212,13 +2223,15 @@ void CSettingDlg::OnAdjustTouchPanel()
 	*/
 }
 
-void CSettingDlg::OnSetSaveScreenPassWordOK(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnSetSaveScreenPassWordOK(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(l == SETTINGPLAY_PASSWORD)
 		m_pSetting->playRecordPassword((char *)w);
 	else if(l== SETTINGSUPPER_PASSWORD)
 		m_pSetting->adminPassword((char *)w);
 	m_pSetting->Update();
+    return result;
 }
 
 void CSettingDlg::OnSettingSaveScreenPassword()
@@ -2439,7 +2452,7 @@ void CSettingDlg::ShowConfigItems(void)
 // 		m_sticMask.ShowWindow(TRUE);
 // 		m_sticGateway.ShowWindow(TRUE);
 // 		m_sticDNS.ShowWindow(TRUE);
-		for(i = 0; i < 4; i++)
+		for(int i = 0; i < 4; i++)
 		{
 			m_edtIP[i].ShowWindow(TRUE);
 			m_edtMask[i].ShowWindow(TRUE);
@@ -3214,8 +3227,9 @@ void CSettingDlg::SetIPConfig(NETWORK_ADPT_INFO& AdptInfo)
 }
 
 CTestDlg *m_pTestDlg0 = NULL;
-void CSettingDlg::OnStaticClick(WPARAM w, LPARAM l)
+LRESULT CSettingDlg::OnStaticClick(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	/*
 	if(w == IDC_SETTING_VERSION)
 	{
@@ -3235,6 +3249,7 @@ void CSettingDlg::OnStaticClick(WPARAM w, LPARAM l)
 	_test_call = TRUE;
 	m_pTestDlg0->ShowWindow(SW_SHOW);
 	*/
+    return result;
 }
 
 /*

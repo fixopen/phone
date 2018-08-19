@@ -58,7 +58,7 @@ protected:
 		// NOTE - the ClassWizard will add and remove member functions here.
 	afx_msg void OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnPaint();
-	afx_msg void OnClicked();
+	afx_msg BOOL OnClicked();
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnClick(NMHDR* pNMHDR, LRESULT* pResult);
 	//}}AFX_MSG

@@ -56,8 +56,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CContactNewDlg message handlers
-void CContactNewDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CContactNewDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch (w)
 	{
 	case 1:
@@ -134,6 +135,7 @@ void CContactNewDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		}
 		break;
 	}
+    return result;
 }
 BOOL CContactNewDlg::OnInitDialog() 
 {

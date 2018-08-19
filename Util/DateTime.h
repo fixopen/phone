@@ -1,12 +1,8 @@
 #ifndef __UTIL_DATETIME_H__
 #define __UTIL_DATETIME_H__
 
-//#include "../stdafx.h"
-
-//#include <time.h>
-
-class CTime;
-class CTimeSpan;
+#include "../stdafx.h"
+#include <time.h>
 
 namespace Util
 {

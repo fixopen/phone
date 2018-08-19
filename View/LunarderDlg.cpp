@@ -311,8 +311,9 @@ void CLunarderDlg::OnDown()
 //	m_Edit.Invalidate();
 }
 
-void CLunarderDlg::OnLunarClick(WPARAM w, LPARAM l)
+LRESULT CLunarderDlg::OnLunarClick(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	/*
 	UINT16 y;
 	UINT8 m;
@@ -379,6 +380,7 @@ void CLunarderDlg::OnLunarClick(WPARAM w, LPARAM l)
 		}
 	}
 	*/
+    return result;
 }
 
 //保存
@@ -597,14 +599,8 @@ void CLunarderDlg::SetData(int y, int m, int d, BOOL flag)
 			m_MJPGList.SetUnitIsShow(nIndex, isDraw, TRUE);
 
 			//如果有提醒，将显示的文字改为红色
-			int ret2 = IsHaveAlarm(m_Year, m_Month, i+1-nWeek);
-			if(ret2>0)
-			{
-				if(ret2 == (int)(Data::ttNet) || ret2 == (int)(Data::ttNetRead))
-					m_MJPGList.SetUnitColor(nIndex, font_red, isDraw, TRUE);
-				else
-					m_MJPGList.SetUnitColor(nIndex, font_green, isDraw, TRUE);
-			}
+			if(IsHaveAlarm(m_Year, m_Month, i+1-nWeek))
+				m_MJPGList.SetUnitColor(nIndex, font_red, isDraw, TRUE);
 		}
 		
 		//判断天，toggle
@@ -612,8 +608,9 @@ void CLunarderDlg::SetData(int y, int m, int d, BOOL flag)
 
 }
 
-void CLunarderDlg ::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CLunarderDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(w != 101)
 		StopTryRing();
 
@@ -731,6 +728,7 @@ void CLunarderDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 			}
 		}
 	}
+    return result;
 }
 
 //显示日历
@@ -763,8 +761,9 @@ void CLunarderDlg::SetCtrlIsShow(BOOL isShow)
 //	m_scollbar.ShowWindow(isShow);
 }
 
-void CLunarderDlg::OnDeleteItem(WPARAM w, LPARAM l)
+LRESULT CLunarderDlg::OnDeleteItem(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	m_pScheduler->Remove();
 	if(IsHaveAlarm(m_Year, m_Month, m_Day))
 	{
@@ -775,6 +774,7 @@ void CLunarderDlg::OnDeleteItem(WPARAM w, LPARAM l)
 		ShowLunarderDlg();
 	}
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetAlarmList();
+    return result;
 }
 
 void CLunarderDlg::DeleteCurrentAlarm()
@@ -933,7 +933,7 @@ void CLunarderDlg ::SetAlarmCtrl(BOOL isNew)
 	m_rdoIsNoAlarm.Invalidate();
 }
 
-int CLunarderDlg::IsHaveAlarm(int y, int m ,int d)
+BOOL CLunarderDlg::IsHaveAlarm(int y, int m ,int d)
 {
 	m_nAlarmCount = 0;
 	m_nAlarmCurrent = 0;
@@ -956,14 +956,14 @@ int CLunarderDlg::IsHaveAlarm(int y, int m ,int d)
 		m_nAlarmCount = m_result.size();
 		m_nAlarmCurrent = 0;
 		m_pScheduler = m_result[0];
-		int ret = m_pScheduler->tipsType();
-		return ret;
+		return TRUE;
 	}
 	return FALSE;
 }
 
-void CLunarderDlg::OnStopTryRing(WPARAM w, LPARAM l)
+LRESULT CLunarderDlg::OnStopTryRing(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(m_MJPGList.GetUnitIsDownStatus(101))
 	{
 		m_MJPGList.SetUnitIsDownStatus(101, FALSE);
@@ -971,6 +971,7 @@ void CLunarderDlg::OnStopTryRing(WPARAM w, LPARAM l)
 
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
 	}
+    return result;
 }
 
 void CLunarderDlg::StopTryRing()

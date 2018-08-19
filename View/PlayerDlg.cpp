@@ -98,8 +98,9 @@ BOOL CPlayerDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CPlayerDlg::OnReceiveMsg(WPARAM w, LPARAM l)
+LRESULT CPlayerDlg::OnReceiveMsg(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	/*
 	HWND hWnd;
 	CCheckDlg* main = (CCheckDlg*)theApp.m_pMainWnd;
@@ -169,6 +170,7 @@ void CPlayerDlg::OnReceiveMsg(WPARAM w, LPARAM l)
 		}
 	}
 	*/
+    return result;
 }
 
 void CPlayerDlg::OnOk(void)

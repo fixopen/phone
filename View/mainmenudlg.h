@@ -21,9 +21,9 @@ public:
 	void SetVideo();
 	void SetSkinStyle();
 
-	void OnVideoBtn(int type = 0);
+	void OnVideoBtn();
 	void OnPhotoBtn(int type = 0);
-	void OnMp3Btn(int type = 0);
+	void OnMp3Btn();
 	void OnScreenSaveBtn();
 	void OnCalculBtn();
 	void OnLunarderBtn();
@@ -65,7 +65,7 @@ protected:
 	//{{AFX_MSG(CMainMenuDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
-	afx_msg void OnAppSoftKey(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnAppSoftKey(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnTimer(UINT nIDTimer);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

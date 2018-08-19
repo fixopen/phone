@@ -131,8 +131,9 @@ void CAlarmShowDlg::ShowWindow_(int cmdshow)
 	
 }
 
-void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	switch(w)
 	{
@@ -140,12 +141,7 @@ void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		KillTimer(1);
 		main->phone_->StartRing(L"");
 		boost::shared_ptr<Data::Scheduler> m_result = Data::Scheduler::GetFromDatabaseById(m_nAlarmID);
-		
-		if(m_result->tipsType() == Data::ttNet)
-			m_result->tipsType(Data::ttNetRead);
-		else
-			m_result->tipsType(Data::ttRead);
-		
+		m_result->tipsType(Data::ttRead);
 		m_result->Update();
 		main->m_pMainDlg->FindTodayAlarm();
 		ShowWindow_(SW_HIDE);
@@ -155,6 +151,7 @@ void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
 		break;
 	}
+    return result;
 }
 
 void CAlarmShowDlg::OnTimer(UINT nIDEvent) 

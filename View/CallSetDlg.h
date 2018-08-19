@@ -17,7 +17,6 @@
 #include "../Data/Setting.h"
 
 #include "../control/MJPGStatic.h"
-#include "../Util/ATCommandWarp.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCallSetDlg dialog
@@ -26,20 +25,16 @@ class CCallSetDlg : public CCEDialog
 {
 // Construction
 public:
-	PhoneCallTRans m_calltrans;
-	PhoneCallWaiting  m_callwaiting;
-	PhoneCallLimit m_calllimit;
-
-//	CCEButtonST m_chbCallToCall;
+	CCEButtonST m_chbCallToCall;
 		CCEButtonST  m_chbNoAnswer;
 		CCEButtonST  m_chbUnCondifie;
 		CCEButtonST  m_chbIsTeling;
 		CCEButtonST  m_chbIsNoTeling;
 		CCERectEdit m_edtTelCode;
-//	CCEButtonST m_chbCallToLimit;
+	CCEButtonST m_chbCallToLimit;
 		CCEButtonST  m_chbLimitCallIn;
 		CCEButtonST  m_chbLimitCallOut;
-//	CCEButtonST m_chbCallToWaiting;
+	CCEButtonST m_chbCallToWaiting;
 		CCERadioButton m_rdoIsYes;
 		CCERadioButton m_rdoIsNo;
 	
@@ -71,7 +66,7 @@ protected:
 	//}}AFX_MSG
 	afx_msg void OnButtonFastDialsOk();
 	afx_msg void OnButtonFastDialsCancel();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 		
 private:

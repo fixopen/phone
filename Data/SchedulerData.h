@@ -1,13 +1,12 @@
 #ifndef __DATA_SCHEDULER_H__
 #define __DATA_SCHEDULER_H__
 
-#include "Data.h"
-
 #pragma warning(disable: 4786)
 #include <string>
 #pragma warning(disable: 4786)
 #include <vector>
 
+#include "Data.h"
 
 #include "../Util/DateTime.h"
 #include "../Util/SmartPtr.h"
@@ -24,8 +23,6 @@ namespace Data
 		ttAlarmSoundAndPopupFormAndCanDial,
 		ttAutoDial,
 		ttNote,
-		ttNet,
-		ttNetRead,
 		ttRead,
 	};
 

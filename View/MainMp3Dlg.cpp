@@ -160,13 +160,14 @@ void CMainMp3Dlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 }
 
-void CMainMp3Dlg::OnListCltrlClick(WPARAM w, LPARAM l)
+LRESULT CMainMp3Dlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if(m_IsPlay == 0)
 	{
-		LRESULT ret;
-		OnClickPlayList(NULL, &ret);
+		OnClickPlayList(NULL, &result);
 	}
+    return result;
 }
 
 void CMainMp3Dlg ::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
@@ -264,18 +265,11 @@ void CMainMp3Dlg::SetPlayList(TCHAR *dir, int local)
 	int ncount = 0;
 	if(local == 0)
 	{
-		if(m_nMp3Type == mp3_net_type)
-		{
-			memcpy(m_chDir, _T("/flashdrv/my_net_music/"), wcslen(_T("/flashdrv/my_net_music/"))*2);	
-		}
-		else
-		{
-			if(DetectDIR(_T("/usbdisk")))
-				m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
-			if(DetectDIR(_T("/storagecard")))
-				m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
-			memcpy(m_chDir, _T("/flashdrv/my_music/"), wcslen(_T("/flashdrv/my_music/"))*2);	
-		}
+		if(DetectDIR(_T("/usbdisk")))
+			m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
+		if(DetectDIR(_T("/storagecard")))
+			m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
+		memcpy(m_chDir, _T("/flashdrv/my_music/"), wcslen(_T("/flashdrv/my_music/"))*2);
 	}
 
 	else
@@ -785,8 +779,9 @@ void CMainMp3Dlg::SetVolume()
 	m_prgSoundSelect.SetPos(m_Volume);
 }
 
-void CMainMp3Dlg::OnPregress(WPARAM w, LPARAM l)
+LRESULT CMainMp3Dlg::OnPregress(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	//设置声音
 	if(l == IDC_PROGRESS_MP3SOUND)
@@ -802,6 +797,7 @@ void CMainMp3Dlg::OnPregress(WPARAM w, LPARAM l)
 		int percent = m_prgPlayTime.GetPercent();
 		main->playeraudio_->PlayPos(percent);
 	}
+    return result;
 }
 
 void CMainMp3Dlg::SetCtrlEnable(BOOL flag)
@@ -951,8 +947,9 @@ void CMainMp3Dlg::OnTimer(UINT nIDEvent)
 	CDialog::OnTimer(nIDEvent);
 }
 
-void CMainMp3Dlg::OnDeviceChange(WPARAM w, LPARAM l)
+LRESULT CMainMp3Dlg::OnDeviceChange(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	if (w == 0x8000) //insert
 	{
 		::Sleep(500);
@@ -976,10 +973,12 @@ void CMainMp3Dlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 	
 	//GetLogicalDrives()
+    return result;
 }
 
-void CMainMp3Dlg::OnOutEvent(WPARAM w, LPARAM l)
+LRESULT CMainMp3Dlg::OnOutEvent(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	
 	if(l == 0)  //暂停播放
@@ -993,10 +992,12 @@ void CMainMp3Dlg::OnOutEvent(WPARAM w, LPARAM l)
 
 		SetTimer(1001, 5, NULL);
 	}
+    return result;
 }
 
-void CMainMp3Dlg ::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CMainMp3Dlg ::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:			//全选
@@ -1027,6 +1028,7 @@ void CMainMp3Dlg ::OnClickMJPG(WPARAM w, LPARAM l)
 	//	OnPlayerAll();
 		break;
 	}
+    return result;
 }
 
 // BOOL CMainMp3Dlg::PreTranslateMessage(MSG* pMsg) 

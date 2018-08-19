@@ -85,7 +85,7 @@ protected:
 	 afx_msg void OnSize(UINT nType, int cx, int cy);
 	 afx_msg void OnButtonUp();
 	 afx_msg void OnButtonDown();
-	 afx_msg void OnSubBtnUp(WPARAM wParam, LPARAM lParam);
+	 afx_msg LRESULT OnSubBtnUp(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 };
 

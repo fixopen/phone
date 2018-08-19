@@ -25,7 +25,6 @@ CRingSetDlg::CRingSetDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CRingSetDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	m_Data = NULL;
 }
 
 
@@ -47,8 +46,9 @@ BEGIN_MESSAGE_MAP(CRingSetDlg, CCEDialog)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 END_MESSAGE_MAP()
 
-void CRingSetDlg::OnComboSelect(WPARAM w, LPARAM l)
+LRESULT CRingSetDlg::OnComboSelect(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	UINT16 volume[] = {0xFF00, 0xcc00, 0x8800, 0x4400, 0x1000}; //(5-nVolume)*0xFFFF/5;
 	CString s = "";
 	int nVolume;
@@ -78,11 +78,13 @@ void CRingSetDlg::OnComboSelect(WPARAM w, LPARAM l)
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->g_RingSound = v;
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StartRing((LPTSTR)(LPCTSTR)sFile, 1);
 	}
+    return result;
 }
 /////////////////////////////////////////////////////////////////////////////
 // CRingSetDlg message handlers
-void CRingSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
+LRESULT CRingSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
+    LRESULT result = 0;
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StartRing(L"");
 	switch(w)
 	{
@@ -93,6 +95,7 @@ void CRingSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonFastDialsCancel();
 		break;
 	}
+    return result;
 }
 
 BOOL CRingSetDlg::OnInitDialog() 
