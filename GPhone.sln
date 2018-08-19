@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPhone", "GPhone\GPhone.vcproj", "{2306B37E-3C16-4310-BE4E-4028240F2223}"
+	ProjectSection(ProjectDependencies) = postProject
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A} = {975D1E3B-8FDC-405C-A770-A13D2E6DE41A}
+		{95B424A9-A91F-47A0-A39E-6F37209510FB} = {95B424A9-A91F-47A0-A39E-6F37209510FB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLite", "SQLite\SQLite.vcproj", "{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TCPMPLib", "TCPMPLib\TCPMPLib.vcproj", "{95B424A9-A91F-47A0-A39E-6F37209510FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Idea6410_SDK (ARMV4I) = Debug|Idea6410_SDK (ARMV4I)
+		Debug|IngenicMedia (MIPSII) = Debug|IngenicMedia (MIPSII)
+		Release|Idea6410_SDK (ARMV4I) = Release|Idea6410_SDK (ARMV4I)
+		Release|IngenicMedia (MIPSII) = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Debug|Idea6410_SDK (ARMV4I).ActiveCfg = Debug|Idea6410_SDK (ARMV4I)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Debug|Idea6410_SDK (ARMV4I).Build.0 = Debug|Idea6410_SDK (ARMV4I)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Debug|Idea6410_SDK (ARMV4I).Deploy.0 = Debug|Idea6410_SDK (ARMV4I)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Debug|IngenicMedia (MIPSII).ActiveCfg = Debug|IngenicMedia (MIPSII)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Debug|IngenicMedia (MIPSII).Build.0 = Debug|IngenicMedia (MIPSII)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Debug|IngenicMedia (MIPSII).Deploy.0 = Debug|IngenicMedia (MIPSII)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Release|Idea6410_SDK (ARMV4I).ActiveCfg = Release|Idea6410_SDK (ARMV4I)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Release|Idea6410_SDK (ARMV4I).Build.0 = Release|Idea6410_SDK (ARMV4I)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Release|Idea6410_SDK (ARMV4I).Deploy.0 = Release|Idea6410_SDK (ARMV4I)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Release|IngenicMedia (MIPSII).ActiveCfg = Release|IngenicMedia (MIPSII)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Release|IngenicMedia (MIPSII).Build.0 = Release|IngenicMedia (MIPSII)
+		{2306B37E-3C16-4310-BE4E-4028240F2223}.Release|IngenicMedia (MIPSII).Deploy.0 = Release|IngenicMedia (MIPSII)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Debug|Idea6410_SDK (ARMV4I).ActiveCfg = Debug|Idea6410_SDK (ARMV4I)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Debug|Idea6410_SDK (ARMV4I).Build.0 = Debug|Idea6410_SDK (ARMV4I)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Debug|Idea6410_SDK (ARMV4I).Deploy.0 = Debug|Idea6410_SDK (ARMV4I)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Debug|IngenicMedia (MIPSII).ActiveCfg = Debug|IngenicMedia (MIPSII)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Debug|IngenicMedia (MIPSII).Build.0 = Debug|IngenicMedia (MIPSII)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Debug|IngenicMedia (MIPSII).Deploy.0 = Debug|IngenicMedia (MIPSII)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Release|Idea6410_SDK (ARMV4I).ActiveCfg = Release|Idea6410_SDK (ARMV4I)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Release|Idea6410_SDK (ARMV4I).Build.0 = Release|Idea6410_SDK (ARMV4I)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Release|Idea6410_SDK (ARMV4I).Deploy.0 = Release|Idea6410_SDK (ARMV4I)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Release|IngenicMedia (MIPSII).ActiveCfg = Release|IngenicMedia (MIPSII)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Release|IngenicMedia (MIPSII).Build.0 = Release|IngenicMedia (MIPSII)
+		{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}.Release|IngenicMedia (MIPSII).Deploy.0 = Release|IngenicMedia (MIPSII)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Debug|Idea6410_SDK (ARMV4I).ActiveCfg = Debug|Idea6410_SDK (ARMV4I)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Debug|Idea6410_SDK (ARMV4I).Build.0 = Debug|Idea6410_SDK (ARMV4I)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Debug|Idea6410_SDK (ARMV4I).Deploy.0 = Debug|Idea6410_SDK (ARMV4I)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Debug|IngenicMedia (MIPSII).ActiveCfg = Debug|IngenicMedia (MIPSII)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Debug|IngenicMedia (MIPSII).Build.0 = Debug|IngenicMedia (MIPSII)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Debug|IngenicMedia (MIPSII).Deploy.0 = Debug|IngenicMedia (MIPSII)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Release|Idea6410_SDK (ARMV4I).ActiveCfg = Release|Idea6410_SDK (ARMV4I)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Release|Idea6410_SDK (ARMV4I).Build.0 = Release|Idea6410_SDK (ARMV4I)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Release|Idea6410_SDK (ARMV4I).Deploy.0 = Release|Idea6410_SDK (ARMV4I)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Release|IngenicMedia (MIPSII).ActiveCfg = Release|IngenicMedia (MIPSII)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Release|IngenicMedia (MIPSII).Build.0 = Release|IngenicMedia (MIPSII)
+		{95B424A9-A91F-47A0-A39E-6F37209510FB}.Release|IngenicMedia (MIPSII).Deploy.0 = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,100 @@
+COM8:
+ATZ
+AT^DUSBDEG=1,1
+
+OK
+
+OK
+
+AT^DUSBDEG=2,1
+
+OK
+
+AT^DUSBDEG=3,1
+
+OK
+
+AT^DUSBDEG=4,1
+
+OK
+
+AT^DGPIOSM=1
+
+OK
+
+AT^DSQ=1
+
+OK
+
+AT+CRC=1
+
+OK
+
+AT^DSCI=1
+
+OK
+
+AT^DCPI=1
+
+OK
+
+AT+CREG=1
+
+OK
+
+AT+CMER=2,0,0,2
+
+OK
+
+AT+CFUN=5
+COM3:
+
+^DUSIMU: 1
+
+^DPROFI: 0
+
+
+OK
+
+AT^DVTCHL=13
+AT^DVTTYPE=3
+
+OK
+
+AT^DVTABLE=2,2,1
+
+OK
+
+AT+CFUN=1
+
+OK
+
+AT+COPS=0
+COM1:
+
+OK
+
++CREG: 2
+
+
+^DCALLPI
+
+^DCINFO: 0,0,1,0
+
+^DSQU: 18
+
+
++CREG: 1
+
++CIEV: 2,1
+
++CIEV: 8,0
+
+AT^DVTDIAL=10086,,0
+
++CME ERROR: 100
+
+
+^DSQU: 0
+
++CIEV: 2,0

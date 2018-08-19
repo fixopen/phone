@@ -1,0 +1,482 @@
+Load module: GPhone.exe
+Load module: WS2.dll
+Load module: LPCRT.dll
+Load module: RPCRT4.dll
+Load module: ole32.dll
+Load module: OLEAUT32.dll
+Load module: FPCRT.dll
+Load module: commctrl.dll
+Load module: coredll.dll
+Load module: aygshell.dll
+Platform Type : SMDK6410
+COM8:
+AT
+
+
+OK
+
+
+ATZ
+
+
+OK
+
+
+AT^DUSBDEG=1,1
+
+
+OK
+
+
+AT^DUSBDEG=2,1
+
+
+OK
+
+
+AT^DUSBDEG=3,1
+
+
+OK
+
+
+AT^DUSBDEG=4,1
+
+
+OK
+
+
+AT^DGPIOSM=1
+
+
+OK
+
+
+AT^DSQ=1
+
+
+OK
+
+
+AT+CRC=1
+
+
+OK
+
+
+AT^DSCI=1
+
+
+OK
+
+
+AT^DCPI=1
+
+
+OK
+
+
+AT+CREG=1
+
+
+OK
+
+
+AT+CMER=2,0,0,2
+
+
+OK
+
+
+AT^DACTI=1
+
+
+OK
+
+
+AT^DUSIMR=1
+
+
+OK
+
+
+AT+CFUN=5
+
+
+^DUSIMU: 1
+
+
+
+^DPROFI: 0
+
+
+
+
+OK
+
+
+AT^DVTABLE=1,1,1
+
+
+OK
+
+
+AT^DVTTYPE=3
+
+
+OK
+
+
+AT+CFUN=1
+
+
+OK
+
+
+AT^DCINFO=1
+
+
+OK
+
+
+AT+CGMR
+
+
++CGMR: LC6311_2.00.10.P01
+
+
+
+OK
+
+
+AT^DDTM=1,2
+
+
+OK
+
+
+AT+COPS=0
+
+
+OK
+
+
+
++CREG: 2
+
+
+
+^DSQU: 0
+
+
+AT^DSTM?
+
+
+^DSTM: 0,1,2
+
+
+
+OK
+
+
+
+
+^DCALLPI
+
+
+
+
+^DCINFO: 0,0,1,0
+
+
+
+^DSQU: 36
+
+
+
+
++CREG: 1
+
+
+
++CIEV: 2,2
+
+
+
++CIEV: 8,0
+
+
+Load module: SampleGrabberFilter.dll
+Load module: dump.dll
+Load module: quartz.dll
+Load module: MMTimer.dll
+Load module: urlmon.dll
+Load module: SHLWAPI.dll
+Load module: WININET.dll
+Load module: iphlpapi.dll
+COM6:
+AT^DVTCHL=1
+154527
+154535
+AT^DVTDIAL=18811038175,,0
+currentState is 0, event is 4
+
+
+^DSCI: 1,0,2,1,0,"18811038175",129,1,,127,"",255
+
+
+
+^DCPI: 0,0,0,1
+
+
+
+
+^DCPI: 0,3,0,1
+
+
+
+
+^HTCDIS: 12
+
+
+
+^DSCI: 1,0,6,1,0,"18811038175",129,1,18,128,"",255
+
+
+
+^DCPI: 0,1,0,1
+
+
+
+NO DIALTONE
+
+
+
+^DVTCLOSED
+
+
+currentState is 4, event is 9
+AT^DVTDIAL=18811038175,,0
+currentState is 4, event is 4
+
+
+^DSCI: 1,0,2,1,0,"18811038175",129,1,,127,"",255
+
+
+
+^DCPI: 0,0,0,1
+
+
+
+
+^DCPI: 0,3,0,1
+
+
+
+
+^DCPI: 0,4,0,1
+
+
+
+^DSCI: 1,0,3,1,0,"18811038175",129,1,,128,"",255
+
+
+
+^DCPI: 0,2,0,1
+
+
+
+
+^DCPI: 0,6,0,1
+
+
+
++COLP: "",0,"",0
+
+
+
+^DSCI: 1,0,0,1,0,"18811038175",129,1,,128,"",0
+
+
+
+OK
+
+
+currentState is 4, event is 5
+
+
+^DVTCODEC: 1
+
+
+
+^DVTCODEC: 3,1,0,1,176,144,0,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,20,0,0,0,0,0,0,0,1
+
+
+currentState is 4, event is 17
+AT^DVTCODEC=1
+currentState is 5, event is 18
+AT^DVTCODEC=3,1,0,1,176,144,0,1000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,20,0,0,0,0,0,0,0,0
+
+
+OK
+
+
+
++CME ERROR: 100
+
+
+
+^DVTDATA: 0
+
+
+
+^DVTDATA: 0
+
+
+
+^DVTDATA: 0
+
+
+
+^DVTDATA: 0
+
+
+
+^DVTDATA: 0
+
+
+233489
+233496
+233513
+236261
+236268
+236283
+238611
+238617
+238628
+240471
+240475
+240488
+243179
+243188
+243203
+243554
+243561
+243591
+245270
+245280
+245310
+246601
+246625
+246638
+249600
+249605
+249617
+251948
+251960
+251974
+252577
+252582
+252595
+252977
+252982
+252993
+255192
+255198
+255209
+255656
+255661
+255673
+258573
+258577
+258594
+260354
+260359
+260375
+260784
+260790
+260806
+261679
+261684
+261696
+264491
+264496
+264509
+264887
+264895
+264910
+265583
+265589
+265601
+267801
+267805
+267819
+270683
+270688
+270730
+272005
+272010
+272026
+273792
+273797
+273836
+276708
+276743
+276757
+277199
+277205
+277244
+278888
+278893
+278937
+280214
+280221
+280232
+283123
+283129
+283145
+285341
+285346
+285363
+286862
+286867
+286884
+288219
+288224
+288240
+291859
+291864
+291880
+293275
+293279
+293291
+293712
+293717
+293730
+295102
+295112
+295126
+296513
+296521
+296536
+
+
+^HTCDIS: 1b
+
+
+
+^DSCI: 1,0,6,1,0,"18811038175",129,1,27,128,"",0
+
+
+
+^DVTCLOSED
+
+
+currentState is 6, event is 9
+
+
+^DVTCODEC: 2
+
+
+currentState is 7, event is 20
+The program '[0x8DE000E] GPhone.exe' has exited with code 1067 (0x42b).
