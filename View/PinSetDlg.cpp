@@ -48,39 +48,53 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CPinSetDlg message handlers
-LRESULT CPinSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CPinSetDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	switch(w)
 	{
-	case 1:
-		OnButtonFastDialsOk();
-		break;
-	case 2:
-		OnButtonFastDialsCancel();
-		break;
-	case 3:
+	case 41:
+	case 42:
+		if(41 == w)
 		{
-			if(m_bPin)
-			{
-				m_pPasswordDlg->SetType(SETTINGPIN_PASSWORD);
-				m_pPasswordDlg->SetHWnd(this->m_hWnd);
-				m_pPasswordDlg->ShowWindow_(SW_SHOW);
-			}
-		
+			m_MJPGList.SetUnitIsDownStatus(w+1, FALSE);
+			m_MJPGList.SetUnitIsShow(w+1, TRUE);
+			m_pPasswordDlg->SettingType(CHECK_LOCKPINPASSWORD);
+		}
+		else if(42 == w)
+		{
+			m_MJPGList.SetUnitIsDownStatus(w-1, FALSE);
+			m_MJPGList.SetUnitIsShow(w-1, TRUE);
+			m_pPasswordDlg->SettingType(CHECK_UNLOCKPINPASSWORD);
+		}
+		m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+		m_MJPGList.SetUnitIsShow(w, TRUE);
+		m_pPasswordDlg->SetHWnd(this->m_hWnd);
+		m_pPasswordDlg->ShowWindow_(SW_SHOW);
+		break;
+	case 43:
+		if(m_bPin)
+		{
+			m_pPasswordDlg->SettingType(SETTINGPIN_PASSWORD);
+			m_pPasswordDlg->SetHWnd(this->m_hWnd);
+			m_pPasswordDlg->ShowWindow_(SW_SHOW);
 		}
 		break;
+	case 44:
+		break;
+	case 1001:
+		OnButtonFastDialsOk();
+		break;
+	case 1000:
+		OnButtonFastDialsCancel();
+		break;
 	}
-    return result;
 }
 
-LRESULT CPinSetDlg::OnCheckPIN(WPARAM w, LPARAM l)
+void CPinSetDlg::OnCheckPIN(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	SipShowIM(SIPF_OFF);
 	ShowWindow_(FALSE);
 	SipShowIM(SIPF_OFF);
-    return result;
 }
 
 void CPinSetDlg::SetButtonDefaultColor(CCEButtonST* button)
@@ -95,13 +109,13 @@ BOOL CPinSetDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-	m_chbPIN.Create(L"", WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(54+67, 62+74, 54+67+35, 62+74+32), this, IDC_CHECK_SETTING_AUTOLEAVEWORD);
-	m_chbPIN.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
-	SetButtonDefaultColor(&m_chbPIN);	
+	m_edtPinNumber.Create(WS_CHILD|WS_VISIBLE, CRect(138, 128+57, 138+212, 128+30+57), this, IDC_EDIT_PINNUMBER);
+	m_edtPinNumber.SetLimitText(15);
+	m_edtPinNumber.SetLimitDiagital();
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\PIN设置.xml");
-	m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(100, 137, 540, 407), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\设置PIN码.xml");
+	m_MJPGList.SetMJPGRect(CRect(100, 137, 540, 407));
 
 	m_pPasswordDlg = new CPasswordDlg(this);
 	m_pPasswordDlg->Create(CPasswordDlg::IDD);
@@ -112,28 +126,9 @@ BOOL CPinSetDlg::OnInitDialog()
 
 void CPinSetDlg::OnButtonFastDialsOk()
 {
-	if(m_Data)
-	{
-	
-	}
-
-	BOOL flag = m_chbPIN.GetCheck();
-	if(flag == m_bPin)
-	{
-		SipShowIM(SIPF_OFF);
-		
-		ShowWindow_(FALSE);
-		SipShowIM(SIPF_OFF);
-	}
-	else
-	{
-		if(flag)
-			m_pPasswordDlg->SetType(CHECK_LOCKPINPASSWORD);
-		else
-			m_pPasswordDlg->SetType(CHECK_UNLOCKPINPASSWORD);
-		m_pPasswordDlg->SetHWnd(this->m_hWnd);
-		m_pPasswordDlg->ShowWindow_(SW_SHOW);
-	}	
+	SipShowIM(SIPF_OFF);
+	ShowWindow_(FALSE);
+	SipShowIM(SIPF_OFF);
 }
 
 void CPinSetDlg::OnButtonFastDialsCancel()
@@ -143,9 +138,8 @@ void CPinSetDlg::OnButtonFastDialsCancel()
 	SipShowIM(SIPF_OFF);
 }
 
-void CPinSetDlg::SetCallSetParam(boost::shared_ptr<Data::Setting> data)
+void CPinSetDlg::SetCallSetParam()
 {
-	m_Data = data;
 	int nStatus;
 	
 	extern Util::ATCommandWarp* GetATCommandWarp();
@@ -153,5 +147,14 @@ void CPinSetDlg::SetCallSetParam(boost::shared_ptr<Data::Setting> data)
 	pATCommanWarp->GetSimStatus(nStatus);
 	m_bPin = (BOOL)nStatus;
 
-	m_chbPIN.SetCheck(m_bPin);
+	if(m_bPin)
+	{
+		m_MJPGList.SetUnitIsDownStatus(41, TRUE);
+		m_MJPGList.SetUnitIsDownStatus(42, FALSE);
+	}
+	else
+	{
+		m_MJPGList.SetUnitIsDownStatus(41, FALSE);
+		m_MJPGList.SetUnitIsDownStatus(42, TRUE);
+	}
 }

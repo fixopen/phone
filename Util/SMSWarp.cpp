@@ -47,6 +47,10 @@ SMSWarp* SMSWarp::GetSMSWarp()
 	}
 	return sms;
 }
+void SMSWarp::Bind_(Util::ATCommandWarp* at)
+{
+	m_pAT = at;
+}
 void SMSWarp::Bind(Util::ATCommandWarp* at)
 {
 	m_pAT = at;
@@ -1141,23 +1145,23 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 			switch (p->gsmGetResponse(&buff))   
 			{   
 			case GSM_OK:    
-				TRACE(L"Send  GSM_OK \n");    //需要通知APP，方式待定
-				p->SendCallback(true);
-				break;   
+				TRACE(L"Send  GSM_OK \n"); //需要通知APP，方式待定
+				p->SendCallback(true,param);
+				break;
 			case GSM_ERR:   
 				TRACE(L"Send  GSM_ERR \n");    
-				p->SendCallback(false);
+				p->SendCallback(false,param);
 				break;   
 			default:   
 				if (strstr(buff.data, "+CMGS:") != NULL)//+CMGS:
 				{
 					TRACE(L"Send  GSM_WAIT \n"); 
-					p->SendCallback(true);
+					p->SendCallback(true,param);
 				}
 				else  
 				{   
 					TRACE(L"Send  Timeout!\n");    
-					p->SendCallback(false);
+					p->SendCallback(false,param);
 				}   
 			} 
 			LeaveCriticalSection(&csCom);
@@ -1247,6 +1251,7 @@ void SMSWarp::Send(std::string number, std::string content)
 	std::string sca = m_pAT->SmsCenterAddress();
 	if (sca.empty())
 	{
+		SetCenterAddress();
 		sca = m_strCenterAddress;
 	}
 
@@ -1260,43 +1265,42 @@ void SMSWarp::Send(std::string number, std::string content)
 	SmParam.TP_PID = 0;   
 	SmParam.TP_DCS = GSM_UCS2;
 
-
 	std::string number_;
 	do{
-		    BOOL flag = FALSE; 
-			int nIndex = number.find(",");
-			if(nIndex < 0)
-				nIndex = number.find(";");
-			if(nIndex < 0)
-			{
-				flag = TRUE;
-				number_ = number;
-			}
-			else
-			{
-				number_ = number.substr(0, nIndex);
-				number = number.substr(nIndex+1, number.length() - (nIndex+1));
-			}
+		BOOL flag = FALSE; 
+		int nIndex = number.find(",");
+		if(nIndex < 0)
+			nIndex = number.find(";");
+		if(nIndex < 0)
+		{
+			flag = TRUE;
+			number_ = number;
+		}
+		else
+		{
+			number_ = number.substr(0, nIndex);
+			number = number.substr(nIndex+1, number.length() - (nIndex+1));
+		}
 
-			if(number_ != "")
+		if(number_ != "")
+		{
+			if (number_.substr(0, 2) != "10")
 			{
-				if (number_.substr(0, 2) != "10")
-				{
-					if(number_[0] == '+')  number_ = number_.substr(1); 
-					if(number_.substr(0, 2) != "86")  number_ = "86" + number_;   
-				}
-				strcpy(SmParam.TPA, number_.c_str());   
-				PutSendMessage(&SmParam);
+				if(number_[0] == '+')  number_ = number_.substr(1); 
+				if(number_.substr(0, 2) != "86")  number_ = "86" + number_;   
 			}
-			
-			if(flag)
-				break;
+			strcpy(SmParam.TPA, number_.c_str());   
+			PutSendMessage(&SmParam);
+		}
+		
+		if(flag)
+			break;
 	}while(true);
 }
 
-void SMSWarp::SetCenterAddress(std::string address)
+void SMSWarp::SetCenterAddress()
 {
-	m_strCenterAddress = address;
+	m_strCenterAddress = ((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->speCode12_;
 //	m_pAT->SmsCenterAddress(address);
 }
 
@@ -1452,7 +1456,29 @@ void SMSWarp::ReceiveCallback(SMS_TYPE type, void* msg)
 		break;
 	}
 }
-void SMSWarp::SendCallback(bool send)
+void SMSWarp::SendCallback(bool send,SM_PARAM *sm)
 {
+	std::string content = sm->TP_UD;
+	std::string number	= sm->TPA ;
+	std::string filter	= "data = '" ; 
+				filter += content;
+				filter += "'";
+	
+	std::vector<boost::shared_ptr<Data::Message> >result ;
+	result = Data::Message::GetFromDatabase(filter);
+	if (!result.empty())
+	{	
+		if (send)
+		{
+			result[0]->state = Data::Message::sReaded;
+		}
+		else
+		{
+			result[0]->state = Data::Message::sNoRead;
+
+		}
+		result[0]->Update();
+	}
+
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_SMS_STATUS, WM_SMS_SENDRESULT, int(send));
 }

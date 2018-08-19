@@ -158,11 +158,9 @@ void C3GDetailReadDlg::OnTimer(UINT nIDEvent)
 }
 */
 
-LRESULT C3GDetailReadDlg:: OnDeleteItem(WPARAM w, LPARAM l)
+void C3GDetailReadDlg:: OnDeleteItem(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	doDelete();
-    return result;
 }
 
 BOOL C3GDetailReadDlg::OnInitDialog() 
@@ -185,9 +183,8 @@ BOOL C3GDetailReadDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-LRESULT C3GDetailReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void C3GDetailReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
@@ -238,7 +235,6 @@ LRESULT C3GDetailReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
-    return result;
 }
 
 void C3GDetailReadDlg::inittitle(char *titleTxt, char *titleIconFilename)

@@ -47,7 +47,7 @@ protected:
 	afx_msg void OnButtonNoteNext();
 	afx_msg void OnButtonNoteClear();
 	afx_msg void OnButtonNoteClose();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 private:
 	char *pbuffer[3];

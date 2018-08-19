@@ -41,6 +41,15 @@
 #include "View/PasswordDlg.h"
 #include "./util/SMSWarp.h"
 
+#include "View/MMSDlg.h"
+#include "View/3GSMSListDlg.h"
+#include "View/SMSDraftDlg.h"
+#include "View/ShiftFile.h"
+#include "View/CSMSSettingDlg.h"
+#include "View/CMMSSettingDlg.h"
+#include "View/TelephoneDialDlg.h"
+#include "View/TelephoneRingDlg.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CMultimediaPhoneDlg dialog
 
@@ -113,7 +122,8 @@ const std::string ssStorageCardRecordPath = "\\StorageCard\\MY_RECORD\\";
 const CString csStarageCard = _T("\\StorageCard\\");
 const std::string ssStarageCard = "\\StorageCard\\";
 const CString csUsbDisk = _T("\\UsbDisk\\");
-enum TelTDStatus{TELRIGSTER_UN, TELRIGSTER_TD, TELRIGSTER_DIALING, TELRIGSTER_DIALED, TELRIGSTER_REG, TEL_UNNET};    //电话未搜网   //电话已搜网   //电话已注册   //无网络
+enum TelTDStatus{TELRIGSTER_UN,TELRIGSTER_FAILED, TELRIGSTER_TD, TELRIGSTER_DIALING, TELRIGSTER_DIALED, TELRIGSTER_REG, TEL_UNNET};    //电话未搜网   //电话已搜网   //电话已注册   //无网络
+
 
 struct DIAL_APN
 {
@@ -141,12 +151,13 @@ public:
 	//		   1	百事通
 	//		   2	来电
 	void SMSSpecRing(int type, CString s);
-	LRESULT doWithSMS(WPARAM wParam, LPARAM lParam);
+	void doWithSMS(WPARAM wParam, LPARAM lParam);
 	void doSerachrTDNet();    //手机搜网
 	void doRegisterTel();	  //开机注册搜网
 	void doWithDownLoad();    //在另一个进程中去调用
 	void Net3GHungOff();
-	//telmodem
+
+//	telmodem
 // 	Util::ComWarp* m_pComWarp;
 // 	Util::ATCommandWarp* m_pATCommandWarp;
 // 	Telephone::TelephoneWarp* phone_;
@@ -165,6 +176,10 @@ public:
 	Util::ComWarp* m_pComWarp2;
 	Util::ATCommandWarp* m_pATCommandWarp2;
 	SMS::SMSWarp* m_pSMSWarp;
+	BOOL m_bATComm;
+
+	//用于VP数据通道
+	Util::ComWarp* m_pVideoComWarp;
 	
 	int          n_StyleMain;
 	unsigned int n_bklightcount; 
@@ -202,11 +217,22 @@ public:
 	void SaveDataToContact(const std::vector<Util::ATCommandWarp::SIM_FORMAT> vsim);
 	void InsertSimToContact(const std::vector<Util::ATCommandWarp::SIM_FORMAT> vsim);//把sim卡里电话插入到Contact
 	std::string GetAlias(std::string name);
+	
+	void AddIcon(CString icon);//添加图标
+	void PopbackIcon();//移除图标
+	void Desktop();//周面
+	void AddDesktopBtn();//
+	bool GetSimStatus();
+	std::string GetName(std::string number);//获得名字
+
+	std::vector<CString>	m_vIcon ; //保存每个界面的图标
 
 private :
 	int m_nSIMID ;
+	int m_bInsertSim;//是否插入SIM卡
+	std::vector<CDialog* >		m_vAllCwnd;//所有窗口
 public:
-	CMJPGStatic		m_MJPGList;
+	CMJPGStatic			m_MJPGList;
 
 	//Logical::Phone* m_pPhone;
 
@@ -220,26 +246,34 @@ public:
 	//CMainVideoDlg	*mainVideoDlg_;
 	//CPlayerDlg	*playerDlg_; 
 
-	CPasswordDlg	*m_pPasswordDlg;
-	CMainDlg* m_pMainDlg;
-	CContactDlg* m_pContactDlg;
-	CContactNewDlg* m_pContactNewDlg;
-	CContactGroupDlg* m_pContactGroupDlg;
-	CTelephoneDlg* m_pTelephoneDlg;
-	CDeleteTipDlg* m_pDeleteTipDlg;
+	CPasswordDlg		*m_pPasswordDlg;
+	CMainDlg			*m_pMainDlg;
+	CContactDlg			*m_pContactDlg;
+	CContactNewDlg		*m_pContactNewDlg;
+	CContactGroupDlg	*m_pContactGroupDlg;
+	CTelephoneDlg		*m_pTelephoneDlg;
+	CDeleteTipDlg		*m_pDeleteTipDlg;
 
-	CContactInfoDlg* m_pContactInfoDlg;
-	CSoundDlg* m_pSoundDlg;
-	CSettingDlg* m_pSettingDlg;
-	CNotebookDlg *m_pNotebookDlg;
-	CAlarmShowDlg *m_AlarmShowDlg;
-	CWarningNoFlashDlg *m_pWarningNoFlashDlg;
-	CNetStatusDlg *m_pNetStatusDlg;
+	CContactInfoDlg		*m_pContactInfoDlg;
+	CSoundDlg			*m_pSoundDlg;
+	CSettingDlg			*m_pSettingDlg;
+	CNotebookDlg		*m_pNotebookDlg;
+	CAlarmShowDlg		*m_AlarmShowDlg;
+	CWarningNoFlashDlg	*m_pWarningNoFlashDlg;
+
+	CMMSDlg				*m_pMMSDlg ;//写彩信界面
+	C3GSMSListDlg		*m_pSMSListDlg;//收件箱
+	CDraftDlg			*m_pDraftDlg;//草稿箱
+	CSMSSettingDlg		*m_pSmsSettingDlg;//短消息设置
+	CMMSSettingDlg		*m_pMmsSettingDlg;//彩消息设置
+	CTelephoneDialDlg	*m_pTelphoneDialDlg;//电话拨号
+	CTelephoneRingDlg	*m_pTelphoneRingDlg;//电话振铃界面
 
 //	CWebDialog* m_pWebDialog;
-
 //	CLunarderDlg	*m_mainLunarderDlg1_;
-//	CHuangliDlg		*m_pHuangLiDlg_;
+
+	// add by qi 2009_10_19
+	CShiftFile	*m_pShiftFileDlg ;
 
 	BOOL			m_bIsHaveUSB;
 	BOOL			m_bIsSD;
@@ -247,7 +281,7 @@ public:
 	BOOL  GetPhoneHungOn(){return m_bIsHungOn;}
 
 	void SetSkinStyle();
-	LRESULT SendOutEvnet(WPARAM w = 0, LPARAM l = 0);
+	void SendOutEvnet(WPARAM w = 0, LPARAM l = 0);
 	void SetScreenSaveTimer();
 	void KillScreenSaveTimer();
 
@@ -292,13 +326,14 @@ protected:
 	CDialog* currentPanel_;
 	UINT	 currentPanelID_;
 	UINT	 oldcurrentPanelID_;
+
 public:
 	CDialog *GetPanel(int nID){return panels_[nID];}
 public:
 	void SwitchPanel_(int panelId);
 	afx_msg void OnButtonSetting();
 
-	afx_msg LRESULT OnMainSoftKey(WPARAM w, LPARAM l);
+	afx_msg void OnMainSoftKey(WPARAM w, LPARAM l);
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(CMultimediaPhoneDlg)
@@ -313,11 +348,11 @@ protected:
 	afx_msg void OnButtonContactinfo();
 	afx_msg void OnButtonSound();
 	afx_msg void OnButtonInformation();
-	afx_msg LRESULT OnEvent(WPARAM w, LPARAM l);
+	afx_msg void OnEvent(WPARAM w, LPARAM l);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnDeviceChange(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnRasErrorCode(WPARAM w, LPARAM l);
+	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnRasErrorCode(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 
 private:

@@ -47,17 +47,17 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CRecordSoundDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg LRESULT OnMM_WIM_OPEN(UINT wParam,LONG lParam);
-	afx_msg LRESULT OnMM_WIM_DATA(UINT wParam,LONG lParam);
-	afx_msg LRESULT OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_OPEN(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_DATA(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
 	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	afx_msg void OnButtonSoundClose();
 	afx_msg void OnButtonSoundClear();
 	afx_msg void OnButtonSoundPlay();
 	afx_msg void OnButtonSoundRecord();
-	afx_msg LRESULT OnPlaySeek(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnPlaySeek(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	DECLARE_MESSAGE_MAP()
 private:

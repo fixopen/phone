@@ -72,9 +72,8 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CPlaySoundDlg message handlers
-LRESULT CPlaySoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CPlaySoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg *pWnd = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	switch(w)
 	{
@@ -94,13 +93,11 @@ LRESULT CPlaySoundDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonPlay();
 		break;		
 	}
-    return result;
 }
 BOOL CPlaySoundDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
 	// TODO: Add extra initialization here
-	//CenterWindow(GetDesktopWindow());	// center to the hpc screen
 
 	std::string strTemp;
 	CString str;
@@ -118,39 +115,7 @@ BOOL CPlaySoundDlg::OnInitDialog()
 	m_chkPlayContinue.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 	m_chkPlayContinue.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 	m_chkPlayContinue.SetCheck(BST_CHECKED);
-/*
-	strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_CLOSE);
-	str = strTemp.c_str();
-	m_btnClose.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 78, 434, 98), this, IDC_BUTTON_SOUNDDLG_CLOSE);
-	m_btnClose.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-	
-	strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_PREV);
-	str = strTemp.c_str();
-	m_btnPrev.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 103, 434, 123), this, IDC_BUTTON_SOUNDDLG_PREV);
-	m_btnPrev.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-	
-	strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_TEXT);
-	str = strTemp.c_str();
-	m_btnNext.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 128, 434, 148), this, IDC_BUTTON_SOUNDDLG_NEXT);
-	m_btnNext.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-	
-	strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_PLAY);
-	str = strTemp.c_str();
-	m_btnPlay.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 153, 434, 173), this, IDC_BUTTON_SOUNDDLG_PLAY);
-	m_btnPlay.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
 
-	m_sticBackground.Create(CRect(34, 40, 448, 184), this, 1);
-	
-	TextStruct ts[1];
-	memset(ts, 0, sizeof(TextStruct) * 1);
-	
-	ts[0].txtRect = CRect(8, 0, 100, 20);
-	ts[0].txtFontSize = 16;
-	ts[0].sAlign = DT_LEFT | DT_BOTTOM;
-	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_SOUND_PLAY_TITLE).c_str(), Data::LanguageResource::Get(Data::RI_SOUND_PLAY_TITLE).length());
-	
-	m_sticBackground.SetTextStruct(ts, 1);
-*/
 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\听录音.xml");
 	m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
@@ -177,8 +142,6 @@ BOOL CPlaySoundDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-//void CPlaySoundDlg::SetSound(int listID, int offset)
-/*
 BOOL CPlaySoundDlg::SetSound(int type, int id, int dir, std::string searchFilter)
 {
 	BOOL ret = FALSE;
@@ -192,257 +155,9 @@ BOOL CPlaySoundDlg::SetSound(int type, int id, int dir, std::string searchFilter
 		{
 			filter = searchFilter;
 		}
-		else
+		else if(type == 0xFF)
 		{
-			filter = "type = ";
-			filter += Util::StringOp::FromInt(type);
-			if (type == 0 && m_bOnlyNew)
-			{
-				filter += " AND played = 0";
-			}
-		}
-		std::vector<boost::shared_ptr<Data::SoundSegment> > result;
-		if (dir == 0)
-		{
-			filter = "id = ";
-			filter += Util::StringOp::FromInt(id);
-			result = Data::SoundSegment::GetFromDatabase(filter);
-			if (!result.empty())
-			{			
-				m_iCurrentID = result[0]->id();
-				//m_sticTitle;
-				std::string nameNo;
-				if (result[0]->name() != "")
-				{
-					nameNo = result[0]->name();
-					if(result[0]->telephoneNumber().number() != "")
-						nameNo = nameNo + "(" + result[0]->telephoneNumber().number() + ")";
-				}
-				else
-				{
-					nameNo = result[0]->telephoneNumber().number();
-				}
-				//m_sticNameNO.SetWindowText(Util::StringOp::ToCString(nameNo));
-				m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(nameNo), TRUE);
-				
-				m_sFilePath = result[0]->filename();
-				m_iTotalSeconds = result[0]->duration();
-				m_procbarSound.SetParam(0, 0, m_iTotalSeconds, 1);
-				std::string sFile = result[0]->filename();
-				CString sTemp = Util::StringOp::ToCString(sFile);				
-				if(DetectFile((TCHAR *)(LPCTSTR)sTemp))
-				{
-					m_bHasNext = true;
-					ret = TRUE;
-					//m_sticSoundName.SetWindowText(Util::StringOp::ToCString(result[0]->filename().substr(result[0]->filename().length() - 10)));
-					m_MJPGList.SetUnitText(101, Util::StringOp::ToCString(result[0]->filename().substr(result[0]->filename().length() - 12)), TRUE);
-				}
-				else
-				{
-					m_MJPGList.SetUnitText(101, L"文件不存在", TRUE);
-					m_MJPGList.SetUnitText(102, "", TRUE);
-				}
-			}
-		}
-		else
-		{
-			while (true)
-			{
-				result = Data::SoundSegment::GetFromDatabase(filter, Data::Direction(dir), id, 1);
-				if (!result.empty())
-				{			
-					m_iCurrentID = result[0]->id();
-					id = m_iCurrentID;
-					//m_sticTitle;
-					std::string nameNo;
-					if (result[0]->name() != "")
-					{
-						nameNo = result[0]->name();
-						if(result[0]->telephoneNumber().number() != "")
-							nameNo = nameNo + "(" + result[0]->telephoneNumber().number() + ")";
-					}
-					else
-					{
-						nameNo = result[0]->telephoneNumber().number();
-					}
-					//m_sticNameNO.SetWindowText(Util::StringOp::ToCString(nameNo));
-					m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(nameNo), TRUE);
-					
-					m_sFilePath = result[0]->filename();
-					m_iTotalSeconds = result[0]->duration();
-					m_procbarSound.SetParam(0, 0, m_iTotalSeconds, 1);
- 					std::string sFile = result[0]->filename();
- 					CString sTemp = Util::StringOp::ToCString(sFile);
-					if(DetectFile((TCHAR *)(LPCTSTR)sTemp))
-					{
-						m_bHasNext = true;
-						ret = TRUE;
-						//m_sticSoundName.SetWindowText(Util::StringOp::ToCString(result[0]->filename().substr(result[0]->filename().length() - 10)));
-						m_MJPGList.SetUnitText(101, Util::StringOp::ToCString(result[0]->filename().substr(result[0]->filename().length() - 12)), TRUE);
-						break;
-					}
-					else
-					{
-						m_MJPGList.SetUnitText(101, L"文件不存在", TRUE);
-						m_MJPGList.SetUnitText(102, "", TRUE);
-					}
-				}
-				else
-				{
-					break;
-				}
-			}
-
-		}
-	}
-	else if (m_iModel == 1)
-	{		
-		std::string filter;
-		if (type == 3)
-		{
-			filter = searchFilter;
-		}
-		else
-		{
-			filter = "type = ";
-			filter += Util::StringOp::FromInt(type);
-		}
-
-		std::vector<boost::shared_ptr<Data::ContactInfo> > result;
-		if (dir == 0)
-		{
-			filter = "id = ";
-			filter += Util::StringOp::FromInt(id);
-			result = Data::ContactInfo::GetFromDatabase(filter);
-			if (!result.empty())
-			{
-				int soundCount = result[0]->GetSoundsCount();
-				if (soundCount > 0)
-				{
-					m_iCurrentID = result[0]->id();
-					filter = "contactInfoId = ";
-					filter += Util::StringOp::FromInt(result[0]->id());
-					
-					m_vSoundResult = Data::SoundSegment::GetFromDatabase(filter);
-					if (!m_vSoundResult.empty())
-					{
-						m_iCurrentSound = 0;
-						//m_iCurrentSound = m_vSoundResult.size() - 1;
-						std::string nameNo;
-						if (m_vSoundResult[0]->name() != "")
-						{
-							nameNo = m_vSoundResult[0]->name();
-							if(m_vSoundResult[0]->telephoneNumber().number() != "")
-								nameNo = nameNo + "(" + m_vSoundResult[0]->telephoneNumber().number() + ")";
-						}
-						else
-						{
-							nameNo = m_vSoundResult[0]->telephoneNumber().number();
-						}
-						//m_sticNameNO.SetWindowText(Util::StringOp::ToCString(nameNo));
-						m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(nameNo), TRUE);
-						m_sFilePath = m_vSoundResult[m_iCurrentSound]->filename();
-						m_iTotalSeconds = m_vSoundResult[m_iCurrentSound]->duration();
-						m_procbarSound.SetParam(0, 0, m_iTotalSeconds, 1);						
-						std::string sFile = m_vSoundResult[m_iCurrentSound]->filename();
-						CString sTemp = Util::StringOp::ToCString(sFile);
-						if(DetectFile((TCHAR *)(LPCTSTR)sTemp))
-						{
-							m_bHasNext = true;
-							ret = TRUE;
-							m_MJPGList.SetUnitText(101, Util::StringOp::ToCString(m_vSoundResult[m_iCurrentSound]->filename().substr(m_vSoundResult[m_iCurrentSound]->filename().length() - 12)), TRUE);
-						}
-						else
-						{
-							m_MJPGList.SetUnitText(101, L"文件不存在", TRUE);
-							m_MJPGList.SetUnitText(102, "", TRUE);
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			filter += " AND isSound = 1";
-
-			while (true)
-			{
-				result = Data::ContactInfo::GetFromDatabase(filter, Data::Direction(dir), id, 1);
-				if (!result.empty())
-				{
-					id = result[0]->id();
-					int soundCount = result[0]->GetSoundsCount();
-					if (soundCount > 0)
-					{
-						m_iCurrentID = result[0]->id();
-						filter = "contactInfoId = ";
-						filter += Util::StringOp::FromInt(result[0]->id());
-						
-						m_vSoundResult = Data::SoundSegment::GetFromDatabase(filter);
-						if (!m_vSoundResult.empty())
-						{
-							m_iCurrentSound = 0;
-							//m_iCurrentSound = m_vSoundResult.size() - 1;
-							std::string nameNo;
-							if (m_vSoundResult[0]->name() != "")
-							{
-								nameNo = m_vSoundResult[0]->name();
-								if(m_vSoundResult[0]->telephoneNumber().number() != "")
-									nameNo = nameNo + "(" + m_vSoundResult[0]->telephoneNumber().number() + ")";
-							}
-							else
-							{
-								nameNo = m_vSoundResult[0]->telephoneNumber().number();
-							}
-							//m_sticNameNO.SetWindowText(Util::StringOp::ToCString(nameNo));
-							m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(nameNo), TRUE);
-							m_sFilePath = m_vSoundResult[m_iCurrentSound]->filename();
-							//m_sticSoundName.SetWindowText(Util::StringOp::ToCString(m_vSoundResult[m_iCurrentSound]->filename().substr(m_vSoundResult[m_iCurrentSound]->filename().length() - 10)));
-							m_iTotalSeconds = m_vSoundResult[m_iCurrentSound]->duration();
-							m_procbarSound.SetParam(0, 0, m_iTotalSeconds, 1);
-							ret = TRUE;
-							std::string sFile = m_vSoundResult[m_iCurrentSound]->filename();
-							CString sTemp = Util::StringOp::ToCString(sFile);
-							if(DetectFile((TCHAR *)(LPCTSTR)sTemp))
-							{
-								m_bHasNext = true;
-								ret = TRUE;
-								m_MJPGList.SetUnitText(101, Util::StringOp::ToCString(m_vSoundResult[m_iCurrentSound]->filename().substr(m_vSoundResult[m_iCurrentSound]->filename().length() - 12)), TRUE);
-								break;
-							}
-							else
-							{
-								m_MJPGList.SetUnitText(101, L"文件不存在", TRUE);
-								m_MJPGList.SetUnitText(102, "", TRUE);
-							}
-						}						
-					}
-				}
-				else
-				{
-					break;
-				}
-			}
-		}
-	}
-	if(ret)
-		ShowSeconds();
-	return ret;
-}
-*/
-
-BOOL CPlaySoundDlg::SetSound(int type, int id, int dir, std::string searchFilter)
-{
-	BOOL ret = FALSE;
-	m_iType = type;
-	m_sSearchFilter = searchFilter;
-	if (m_iModel == 0)
-	{
-		std::string filter;
-//		if (type == 4)
-		if (type == 3)
-		{
-			filter = searchFilter;
+			filter = "";
 		}
 		else
 		{
@@ -468,7 +183,6 @@ BOOL CPlaySoundDlg::SetSound(int type, int id, int dir, std::string searchFilter
 		if (!result.empty())
 		{			
 			m_iCurrentID = result[0]->id();
-			//m_sticTitle;
 			std::string nameNo;
 			if (result[0]->name() != "")
 			{
@@ -480,7 +194,6 @@ BOOL CPlaySoundDlg::SetSound(int type, int id, int dir, std::string searchFilter
 			{
 				nameNo = result[0]->telephoneNumber().number();
 			}
-			//m_sticNameNO.SetWindowText(Util::StringOp::ToCString(nameNo));
 			m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(nameNo), TRUE);
 			
 			m_sFilePath = result[0]->filename();
@@ -540,7 +253,6 @@ BOOL CPlaySoundDlg::SetSound(int type, int id, int dir, std::string searchFilter
 				{
 					nameNo = m_vSoundResult[0]->telephoneNumber().number();
 				}
-				//m_sticNameNO.SetWindowText(Util::StringOp::ToCString(nameNo));
 				m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(nameNo), TRUE);
 				m_sFilePath = m_vSoundResult[m_iCurrentSound]->filename();
 				m_iTotalSeconds = m_vSoundResult[m_iCurrentSound]->duration();
@@ -605,7 +317,9 @@ void CPlaySoundDlg::OnButtonClose()
 	m_sFilePath = "";
 
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->ShowItemsInList(-1);
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
+//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ResetTypeInfo();
+
 }
 
 //void CPlaySoundDlg::OnButtonNext() 
@@ -621,7 +335,6 @@ void CPlaySoundDlg::OnButtonPrev()
 		if (m_vSoundResult.size() > 1 && m_iCurrentSound >= 0)
 		{
 			m_sFilePath = m_vSoundResult[m_iCurrentSound]->filename();
-			//m_sticSoundName.SetWindowText(Util::StringOp::ToCString(m_vSoundResult[m_iCurrentSound]->filename().substr(m_vSoundResult[m_iCurrentSound]->filename().length() - 10)));
 			m_MJPGList.SetUnitText(101, Util::StringOp::ToCString(m_vSoundResult[m_iCurrentSound]->filename().substr(m_vSoundResult[m_iCurrentSound]->filename().length() - 12)), TRUE);
 			m_iTotalSeconds = m_vSoundResult[m_iCurrentSound]->duration();
 			m_procbarSound.SetParam(0, 0, m_iTotalSeconds, 1);
@@ -635,7 +348,6 @@ void CPlaySoundDlg::OnButtonPrev()
 		}
 	}
 	SetSound(m_iType, m_iCurrentID, 1, m_sSearchFilter);
-// 	OnButtonPlay();
 }
 
 //void CPlaySoundDlg::OnButtonPrev() 
@@ -651,7 +363,6 @@ void CPlaySoundDlg::OnButtonNext()
 		if (m_vSoundResult.size() > 1 && m_iCurrentSound < m_vSoundResult.size())
 		{
 			m_sFilePath = m_vSoundResult[m_iCurrentSound]->filename();
-			//m_sticSoundName.SetWindowText(Util::StringOp::ToCString(m_vSoundResult[m_iCurrentSound]->filename().substr(m_vSoundResult[m_iCurrentSound]->filename().length() - 10)));
 			m_MJPGList.SetUnitText(101, Util::StringOp::ToCString(m_vSoundResult[m_iCurrentSound]->filename().substr(m_vSoundResult[m_iCurrentSound]->filename().length() - 12)), TRUE);
 			m_iTotalSeconds = m_vSoundResult[m_iCurrentSound]->duration();
 			m_procbarSound.SetParam(0, 0, m_iTotalSeconds, 1);
@@ -665,7 +376,6 @@ void CPlaySoundDlg::OnButtonNext()
 		}
 	}
 	SetSound(m_iType, m_iCurrentID, 2, m_sSearchFilter);
-// 	OnButtonPlay();
 }
 
 void CPlaySoundDlg::OnButtonPlay() 
@@ -690,42 +400,22 @@ void CPlaySoundDlg::OnButtonPlay()
 			m_MJPGList.SetUnitIsShow(3, FALSE);
 		}
 		str = strTemp.c_str();
-		//m_btnPlay.SetWindowText(str);
 		m_pOggCodec->PauseDecode(!m_bPlayPause);		
 	}
 	else
 	{
-// 		KillTimer(1);
-// 		m_pOggCodec->StopDecode(true);		
-//		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StopRing(true);
-// 		m_procbarSound.SetPos(0);
-// 		m_iCurrentSecond = 0;
-// 		ShowSeconds();
-
 		//如果正在播放铃声,或者自动答录，直接退出
 		if(((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->phone_->m_bStartRing)
 			return;
-
-		//移到showwindow_处设置
-// 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-// 		m_nSoundindex = main->m_pSettingDlg->m_pSetting->sysVolume();
-// 		DWORD volume[] = {0xFF00FF00, 0xcc00cc00, 0x88008800, 0x44004400, 0x10001000}; 
-// 		waveOutSetVolume(NULL, volume[m_nSoundindex]);
 
 		CString filename;
 		filename = Util::StringOp::ToCString(m_sFilePath);
 		CFileStatus   status;
 		if (CFile::GetStatus(LPCTSTR(filename),status))
 		{
-// 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StartRing((LPTSTR)LPCTSTR(filename), 1);
 			if(m_pOggCodec->StartDecode(Util::StringOp::FromCString(filename)))
 			{
 				SetTimer(1, 1000, 0);
-				std::string strTemp;
-// 					CString str;
-// 					strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_PAUSE);
-// 					str = strTemp.c_str();
-// 					m_btnPlay.SetWindowText(str);
 				m_MJPGList.SetUnitIsShow(4, TRUE);
 				m_MJPGList.SetUnitIsShow(3, FALSE);
 				m_bPlaying = true;
@@ -763,9 +453,8 @@ void CPlaySoundDlg::OnCheckPlaycontinue()
 	// TODO: Add your control notification handler code here
 }
 
-LRESULT CPlaySoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
+void CPlaySoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if ((int)l == IDC_PBAR_SOUNDDLG_PROCESS)
 	{
 		if (m_bPlaying)
@@ -791,7 +480,6 @@ LRESULT CPlaySoundDlg::OnPlaySeek(WPARAM w, LPARAM l)
 			}
 		}
 	}
-    return result;
 }
 
 void CPlaySoundDlg::OnTimer(UINT nIDEvent) 
@@ -813,13 +501,9 @@ void CPlaySoundDlg::OnTimer(UINT nIDEvent)
 		else
 		{
 			KillTimer(1);
-//			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StopRing(true);
 			m_pOggCodec->StopDecode(true);			
 			m_bPlaying = false;
 			m_bPlayPause = false;			
-// 			std::string strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_PLAY);
-// 			CString str = strTemp.c_str();
-// 			m_btnPlay.SetWindowText(str);
 			m_MJPGList.SetUnitIsShow(3, TRUE);
 			m_MJPGList.SetUnitIsShow(4, FALSE);
 
@@ -844,7 +528,6 @@ void CPlaySoundDlg::OnTimer(UINT nIDEvent)
 
 void CPlaySoundDlg::CloseSound(void)
 {
-	//OnButtonClose();
 	StopPlay();
 }
 

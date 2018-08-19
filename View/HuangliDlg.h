@@ -52,8 +52,8 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CHuangliDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnMJPGMOVE(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnMJPGMOVE(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

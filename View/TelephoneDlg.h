@@ -63,20 +63,20 @@ protected:
 	//{{AFX_MSG(CTelephoneDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg LRESULT OnMM_WIM_OPEN(UINT wParam,LONG lParam);
-	afx_msg LRESULT OnMM_WIM_DATA(UINT wParam,LONG lParam);
-	afx_msg LRESULT OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
-	afx_msg LRESULT OnMM_WOM_OPEN(UINT wParam,LONG lParam);
-	afx_msg LRESULT OnMM_WOM_DONE(UINT wParam,LONG lParam);
-	afx_msg LRESULT OnMM_WOM_CLOSE(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_OPEN(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_DATA(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WIM_CLOSE(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WOM_OPEN(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WOM_DONE(UINT wParam,LONG lParam);
+	afx_msg void OnMM_WOM_CLOSE(UINT wParam,LONG lParam);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	//}}AFX_MSG
 	afx_msg void OnButtonTelephoneHide();
 	afx_msg void OnButtonTelephoneNote();
 //	afx_msg void OnButtonTelephoneRecord();
 	afx_msg void OnButtonTelephoneHandle();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnTelStatus(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnTelStatus(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 
 private:
@@ -189,6 +189,12 @@ public:
 //	void ClearRecordCount(void);
 
 	BOOL GetIsRecordStatus(){return m_bRecording;}
+
+	//add by qi 2009_11_04
+	void FromTelDial(boost::shared_ptr<Data::ContactInfo> pContactInfo,std::string tel);//把电话拨打界面的信息传过来
+	void SetVolume(unsigned int volume);
+	void VolumeSwitch();
+	void Dialback(std::string telnum);
 };
 
 //{{AFX_INSERT_LOCATION}}

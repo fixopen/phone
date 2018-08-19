@@ -67,9 +67,8 @@ void  C3GSMSDetailDlg::SetSMSDetail(CString Sender, CString Content)
 	m_contentEdit.SetWindowText(Content);
 }
 
-LRESULT C3GSMSDetailDlg::OnComboSelect(WPARAM w, LPARAM l)
+void C3GSMSDetailDlg::OnComboSelect(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	int i = m_cmbType.GetCurSel();
 	if(i == 0)
 	{
@@ -85,7 +84,6 @@ LRESULT C3GSMSDetailDlg::OnComboSelect(WPARAM w, LPARAM l)
 			initDataBase(MMS_NEW, -1, TRUE);
 		}
 	}
-    return result;
 }	
 void  C3GSMSDetailDlg::initDataBase(SMSDETAILTYPE type,  int smsid, BOOL reDraw )
 {
@@ -245,10 +243,11 @@ BOOL C3GSMSDetailDlg::OnInitDialog()
 	m_contentEdit.SetLimitText(140);
 	
 	m_MMSShow.Create(WS_CHILD, CRect(180, 60, 180+528, 60+340), this, 0, 0);
+	
 	// TODO: Add extra initialization here
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_阅读短信.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\写短信.xml");
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 //	SetTimer(1, 1000, NULL);
 
 	m_dlgCardSelect.Create(IDD_DIALOG_TELEPHONE,this);
@@ -259,9 +258,8 @@ BOOL C3GSMSDetailDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-LRESULT C3GSMSDetailDlg:: OnDeleteItem(WPARAM w, LPARAM l)
+void C3GSMSDetailDlg:: OnDeleteItem(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(m_nSMSType == MMS_READ)
 	{
 		m_pMMSData->Remove();
@@ -279,15 +277,13 @@ LRESULT C3GSMSDetailDlg:: OnDeleteItem(WPARAM w, LPARAM l)
 		m_pMessageData->Remove();
 	}
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	pMainDlg->m_pMainDlg->m_p3GSMSDlg->m_pSMSListDlg->DeleteRefreshList();
+//	pMainDlg->m_pMainDlg->m_p3GSMSDlg->m_pSMSListDlg->DeleteRefreshList();
 	ShowWindow(SW_HIDE);
-    return result;
 }
 
 int g_iSendSMSId = -1;
-LRESULT C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
@@ -612,5 +608,4 @@ LRESULT C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
-    return result;
 }

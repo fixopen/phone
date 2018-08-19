@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CEBtnST.h"
-#include "../resource.h"
+#include "resource.h"
 //
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -818,7 +818,7 @@ void CCEMoveTxtStatic::OnTimer(UINT nIDEvent)
 	if(nIDEvent == TIMER_TIMESTATIC)
 	{
 		m_nCount++;
-		if(m_nCount*16 >= m_nW)
+		if(m_nCount*2 >= m_nW)
 			m_nCount = 0;
 		Invalidate();
 	}
@@ -828,9 +828,8 @@ BOOL CCEMoveTxtStatic::Create(LPCTSTR sTxt, COLORREF backcl, int style, CRect &r
 {
 	m_backColor = backcl;
 	BOOL ret = CStatic::Create(sTxt, style, rect, pParentWnd);
-	SetTimer(TIMER_TIMESTATIC, 1000, NULL);
+	SetTimer(TIMER_TIMESTATIC, 100, NULL);
 	m_font = GetFont();
-	
 	CRect   rc;   
 	GetClientRect(rc);   
 	CString   strText;   
@@ -838,7 +837,7 @@ BOOL CCEMoveTxtStatic::Create(LPCTSTR sTxt, COLORREF backcl, int style, CRect &r
 	CDC *pdc = GetDC();
 	memDC.CreateCompatibleDC(pdc); 
 
-	memDC.SelectObject(m_font);  
+	memDC.SelectObject(m_font);
 	CSize   size   =   pdc->GetTextExtent(strText);
 	int w = rc.Width()*2+size.cx;
 	m_nW = rc.Width()+size.cx;;
@@ -858,11 +857,28 @@ void CCEMoveTxtStatic::OnPaint()
 	  CPaintDC   dc(this); 
 	  CRect   rc;   
 	  GetClientRect(rc);  
-	  dc.BitBlt(rc.left,   rc.top,   rc.Width(),   rc.Height(),   &memDC,   m_nCount*16,   rc.top,   SRCCOPY);
+	  dc.BitBlt(rc.left,   rc.top,   rc.Width(),   rc.Height(),   &memDC,   m_nCount*2,   rc.top,   SRCCOPY);
 }
 
-void CCEMoveTxtStatic::SetTxt(LPCTSTR sTxt)
+void CCEMoveTxtStatic::SetTxt(LPCTSTR sTxt, int height, COLORREF rgb)
 {
+	m_font = new CFont();
+	m_font->CreateFont(
+		height,              // nHeight
+		0,                         // nWidth
+		0,                         // nEscapement
+		0,                         // nOrientation
+		FW_NORMAL,                 // nWeight
+		FALSE,                     // bItalic
+		FALSE,                     // bUnderline
+		0,                         // cStrikeOut
+		ANSI_CHARSET,              // nCharSet
+		OUT_DEFAULT_PRECIS,        // nOutPrecision
+		CLIP_DEFAULT_PRECIS,       // nClipPrecision
+		DEFAULT_QUALITY,           // nQuality
+		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
+		_T("ËÎÌו"));                 // lpszFacename
+
 	SetWindowText(sTxt);
 
 	memDC.DeleteDC();   
@@ -874,7 +890,7 @@ void CCEMoveTxtStatic::SetTxt(LPCTSTR sTxt)
 	GetWindowText(strText);
 	CDC *pdc = GetDC();
 	memDC.CreateCompatibleDC(pdc); 
-
+	memDC.SetTextColor(rgb);
 	memDC.SelectObject(m_font);  
 	CSize   size   =   pdc->GetTextExtent(strText);
 	int w = rc.Width()*2+size.cx;

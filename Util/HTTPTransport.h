@@ -1,7 +1,6 @@
 #ifndef __UTIL_HTTPTRANSPORT_H__
 #define __UTIL_HTTPTRANSPORT_H__
 
-#include <wininet.h>
 //#include "Thread.h"
 
 //#include "SmartPtr.h"

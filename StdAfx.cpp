@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 
-/*void Dprintf(CString s)
+void Dprintf(CString s)
 {
 #ifdef _DEBUG
 	wprintf(s);
@@ -13,7 +13,7 @@
 // 	wprintf(s);
 // 	printf("\r\n");
 #endif
-}*/
+}
 
 int  Dprintf(const char *format, ...)
 {

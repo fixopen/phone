@@ -176,10 +176,7 @@ namespace Util
 		Dprintf("serial port start\n");
 
 		//检查串口是否打开。
-		//ASSERT(serialPort_->handle_ != INVALID_HANDLE_VALUE);
-        if (serialPort_->handle_ == INVALID_HANDLE_VALUE) {
-            return -1;
-        }
+		ASSERT(serialPort_->handle_ != INVALID_HANDLE_VALUE);
 
 		//清空串口
 		::PurgeComm(serialPort_->handle_, PURGE_RXCLEAR | PURGE_TXCLEAR);

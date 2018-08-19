@@ -48,9 +48,8 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CSoundSearchDlg message handlers
-LRESULT CSoundSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CSoundSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -60,7 +59,6 @@ LRESULT CSoundSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonSearchSoundCancel();
 		break;
 	}
-    return result;
 }
 BOOL CSoundSearchDlg::OnInitDialog() 
 {

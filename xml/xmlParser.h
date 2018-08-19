@@ -23,6 +23,7 @@
 #include <assert.h>
 
 #include "config.h"
+#include<algorithm>
 
 using Structure::MJPGList;
 using Structure::MJPGItem;
@@ -52,15 +53,6 @@ extern CString g_YesNo[];
 
 namespace Util
 {
-    namespace {
-        int FindStringArryIndex(CString sArry[], int ncount, std::string s)
-	    {
-		    for(int i = 0; i < ncount; i++)
-			    if(sArry[i] == s.c_str())
-				    return i;
-			    return 0;
-	    }
-    }
 	class XmlParser
 	{
 	public:
@@ -73,10 +65,7 @@ namespace Util
 
 			Prepare();
 			IXMLDOMDocument* parser = CreateXMLParser();
-			DWORD  s = GetTickCount(); 
 			LoadXMLFile(parser, filename);
-			DWORD os = GetTickCount()-s; 
-			TRACE(L"load %d\n", os);
 			//get root element
 			IXMLDOMElement* rootElement = 0;
 			HRESULT hr = parser->get_documentElement(&rootElement);
@@ -113,7 +102,7 @@ namespace Util
 			else if(nodeName == "SHOWTYPE")
 			{
 				std::string s = GetText(element);
-				int nIndex = FindStringArryIndex(g_XMLShowType, showtype_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLShowType, showtype_end, s);
 				result->showtype = (SHOWTYPE)nIndex;
 			}
 			else if(nodeName == "ITEM")
@@ -156,7 +145,6 @@ namespace Util
 			std::string s = GetText(element);
 			if(nodeName == "RECT")
 			{
-				//item->unitparam.m_Rect = Util::StringOp::ToRectangle(s);
 				Util::StringOp::ToRectangle(s, item->unitparam.m_Rect);
 			}
 			else if(nodeName == "PIC")
@@ -189,47 +177,47 @@ namespace Util
 			}
 			else if(nodeName == "FONT")
 			{
-				int nIndex = FindStringArryIndex(g_XMLFont, textfont_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLFont, textfont_end, s);
 				item->unitparam.m_Font = (TEXTFONT)nIndex;
 			}
 			else if(nodeName == "SIZE")
 			{
-				int nIndex = FindStringArryIndex(g_XMLSize, textsize_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLSize, textsize_end, s);
 				item->unitparam.m_FontSize = (TEXTSIZE)nIndex;
 			}
 			else if(nodeName == "WEIGHTS")
 			{
-				int nIndex = FindStringArryIndex(g_XMLWeights, textweights_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLWeights, textweights_end, s);
 				item->unitparam.m_FontWeights = (TEXTWEIGHTS)nIndex;
 			}
 			else if(nodeName == "ITALIC")
 			{
-				int nIndex = FindStringArryIndex(g_XMLItalic, 2, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLItalic, 2, s);
 				item->unitparam.m_bFontItalic = (BOOL)nIndex;
 			}
 			else if(nodeName == "UNDERLINE")
 			{
-				int nIndex = FindStringArryIndex(g_XMLUnderLine, 2, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLUnderLine, 2, s);
 				item->unitparam.m_bFontUnLine = (BOOL)nIndex;
 			}
 			else if(nodeName == "COLOR")
 			{
-				int nIndex = FindStringArryIndex(g_XMLColor, textcolor_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLColor, textcolor_end, s);
 				item->unitparam.m_FontColor = (TEXTCOLOR)nIndex;
 			}
 			else if(nodeName == "HEIGHT")
 			{
-				int nIndex = FindStringArryIndex(g_XMLHeight, font_h_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLHeight, font_h_end, s);
 				item->unitparam.m_FontHeight = (TEXTHEIGHT)nIndex;
 			}
 			else if(nodeName == "ALIGN")
 			{
-				int nIndex = FindStringArryIndex(g_XMLAlign, textalign_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLAlign, textalign_end, s);
 				item->unitparam.m_FontAlign = (TEXTALIGN)nIndex;
 			}
 			else if(nodeName == "ACTIVE")
 			{
-				int nIndex = FindStringArryIndex(g_XMLActive, unittype_end, s);
+				int nIndex = Util::StringOp::FindStringArryIndex(g_XMLActive, unittype_end, s);
 				item->unitparam.m_UnitType = (UNIT_TYPE)nIndex;
 			}
 			else if(nodeName == "DOWITH")
@@ -392,10 +380,15 @@ public:
 				result = new AdvPlayList();
 										
 				//读取文件
+				DWORD dstart = GetTickCount();
 				int length = file.GetLength();
 				char *lBuff = new char[length+2];
 				memset(lBuff, 0, length+2);
 				file.Read(lBuff, length);
+				
+				DWORD dend = GetTickCount() - dstart;
+				TRACE(L"DDDDDDDDD = %d",dend);
+
 				char *sXmlFile = lBuff;
 				//分析文件
 				BOOL flag = TRUE;
@@ -683,6 +676,21 @@ public:
 			return result;
 		}
 		
+		static BOOL rectInRect(MJPGItem* m1, MJPGItem* m2)
+		{
+			if(m1 && m2)
+			{
+				CPoint pt1 = CPoint(m2->unitparam.m_Rect.left, m2->unitparam.m_Rect.top);
+				CPoint pt2 = CPoint(m2->unitparam.m_Rect.right, m2->unitparam.m_Rect.bottom);
+				if(m1->unitparam.m_Rect.PtInRect(pt1) && m1->unitparam.m_Rect.PtInRect(pt2))
+					return TRUE;
+				return FALSE;
+			}
+			else
+				return FALSE;			
+			return FALSE;
+		}
+
 		static MJPGList* const ParseFileToMJPGList_(CString sFilename)
 		{
 			MJPGList* result = NULL;
@@ -703,6 +711,7 @@ public:
 				char *sXmlFile = lBuff;
 				//分析文件
 				BOOL flag = TRUE;
+				MJPGItem *item = NULL;
 				while(flag)
 				{
 					int offset;
@@ -711,7 +720,29 @@ public:
 					{	
 						if(strstr(sFindName, "ITEM"))
 						{
-							MJPGItem* item = new MJPGItem();
+							if(item)
+							{
+								for(int j = 0; j < result->items.size(); j++)
+ 								{
+ 									if(rectInRect(item, result->items[j]))    //区域大的放在前面
+ 									{
+ 										break;
+ 									}
+ 								}
+ 								if(j != result->items.size())
+ 								{
+ 									result->items.insert(result->items.begin()+j, item);
+								}
+ 								else
+									result->items.push_back(item);
+								char txt[64];
+								sprintf(txt, "%d:[%d, %d, %d, %d]\r\n", item->unitparam.m_nSiererNO, item->unitparam.m_Rect.left, item->unitparam.m_Rect.top, item->unitparam.m_Rect.right, item->unitparam.m_Rect.bottom);
+								extern VOID WriteLog(CHAR* str);
+								WriteLog(txt);
+								item = NULL;
+							}
+
+							item = new MJPGItem();
 							item->unitparam.m_Rect = CRect(0, 0, 0, 0);
 							item->unitparam.m_bgFilename = "";
 							item->unitparam.m_bgFilename_down = "";
@@ -736,7 +767,7 @@ public:
 							item->unitparam.m_nIsScroll = 0;		
 							item->unitparam.m_pUnitWnd = NULL;
 
-							result->items.push_back(item);
+					//		result->items.push_back(item);
 							offset += strlen(sFindName)+2;
 						}
 
@@ -782,18 +813,29 @@ public:
 							if(sChar)
 								delete sChar;
 						}
+						else if(strstr(sFindName, "TAB"))
+						{
+							char *sChar = FindElementsContent(sXmlFile, sFindName);
+							CString s = Util::StringOp::utf82Cstring(sChar);
+							result->m_sTab = s;
+							if(result->m_sTab == "no")
+								result->m_sTab = "";
+							offset += (strlen(sFindName)+2)*2 + 1 + strlen(sChar);
+							if(sChar)
+								delete sChar;
+						}
 						else
 						{
-							if(result->items.size() <= 0)
-							{
-								offset += strlen(sFindName) + 2;
-								if(sFindName)
-									delete sFindName;
-								sXmlFile = sXmlFile+offset;
-								continue;
-							}
+// 							if(result->items.size() <= 0)
+// 							{
+// 								offset += strlen(sFindName) + 2;
+// 								if(sFindName)
+// 									delete sFindName;
+// 								sXmlFile = sXmlFile+offset;
+// 								continue;
+// 							}
 								
-							MJPGItem* item = result->items[result->items.size() - 1];
+						//	MJPGItem* item = result->items[result->items.size() - 1];
 
 							if(strstr(sFindName, "RECT"))
 							{
@@ -1011,7 +1053,74 @@ public:
 					else
 						flag = FALSE;
 				}
+
+				if(item)
+				{
+					for(int j = 0; j < result->items.size(); j++)
+					{
+						if(rectInRect(item, result->items[j]))    //区域大的放在前面
+						{
+							break;
+						}
+					}
+					if(j != result->items.size())
+					{
+						result->items.insert(result->items.begin()+j, item);
+					}
+					else
+						result->items.push_back(item);
+					char txt[64];
+					sprintf(txt, "%d:[%d, %d, %d, %d]\r\n", item->unitparam.m_nSiererNO, item->unitparam.m_Rect.left, item->unitparam.m_Rect.top, item->unitparam.m_Rect.right, item->unitparam.m_Rect.bottom);
+					extern VOID WriteLog(CHAR* str);
+					WriteLog(txt);
+					item = NULL;
+				}
+				extern VOID WriteLog(CHAR* str);
+				WriteLog("1111111111\r\n");
+
+				for(int i = 0; i < result->items.size(); i++)
+				{
+					MJPGItem *t = result->items[i];
+					char txt[64];
+					sprintf(txt, "%d:[%d, %d, %d, %d]\r\n", t->unitparam.m_nSiererNO, t->unitparam.m_Rect.left, t->unitparam.m_Rect.top, t->unitparam.m_Rect.right, t->unitparam.m_Rect.bottom);
+					extern VOID WriteLog(CHAR* str);
+					WriteLog(txt);
+				}
+
 				delete lBuff;
+
+			//	if(result->items.size() >= 2)
+			//		std::sort(result->items.begin(), result->items.end(), rectInRect);
+				
+				//调整顺序
+				/*
+				if(result->items.size() >= 2)
+				{
+					for(int i = 0; i < result->items.size()-1; i++)
+					{
+						//if(i > 0)
+						{
+							int index =0;
+							MJPGItem *item = result->items[i];
+							int j;
+							for(j = i+1; j < result->items.size(); j++)
+							{
+								if(!rectInRect(result->items[j],item))    //区域大的放在前面
+								{
+									index = j;
+									item = result->items[j];
+									//break;
+								}
+							}
+							if(item != result->items[i]);   //调整顺序
+							{
+					//			result->items[j] = result->items[i];
+					//			result->items[i] = item;
+							}
+						}
+					}
+				}
+				*/
 			}
 			return result;
 		}

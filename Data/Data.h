@@ -81,7 +81,7 @@ namespace Data
 		}
 	public:
         typedef void (*ModifyFieldByDB)(int argc, char** argv, char** columnName, boost::shared_ptr<T> item);
-        struct Parameter
+		struct Parameter
         {
             Parameter(ModifyFieldByDB modifyFieldByDBinst, int aPageSize)
                 : modifyFieldByDB(modifyFieldByDBinst)
@@ -164,7 +164,51 @@ namespace Data
 			}    //20090221
             return p.items;
         }
-		
+		//wangzhenxing1028
+		static std::vector<int> GetIdsByFilter(std::string const filter, std::vector<int>& p, Direction const dir = dNull)
+		{
+			std::string cmd = "SELECT";
+			cmd += " id FROM [";
+			cmd += tableName_;
+			cmd += "]";
+			if (filter != "")
+			{
+				cmd += " WHERE ";
+				cmd += filter;
+			}
+			cmd += " ORDER BY id ";
+			if (dUp == dir)
+			{
+				cmd += "ASC";
+			}
+			else
+			{
+				cmd += "DESC";
+			}
+
+//			Parameter p(modifyFieldByDB, pageSize);
+// 			std::vector<int> PP;
+// 			PP.reserve(100);
+            char* errorMessage = 0;
+            rowCount_ = 0;
+			std::string ncmd = Util::StringOp::ToUTF8(cmd);
+            int rc = sqlite3_exec(db_, ncmd.c_str(), idProcess_, &p, &errorMessage);
+            if (rc != SQLITE_OK)
+            {
+                log_(errorMessage);
+                if (indication_)
+                    indication_(errorMessage);
+            }
+			if (errorMessage) {
+				sqlite3_free(errorMessage);
+			}
+            if (dir == dUp)
+            {
+                std::reverse(p.begin(), p.end());
+            }
+            return p;
+		}
+
         static std::vector<boost::shared_ptr<T> > GetDatasByFilter(std::string const filter, ModifyFieldByDB modifyFieldByDB, Direction const dir = dNull, int const id = 0, int const pageSize = 0) //int const maxCount = -1, 
         {
 			std::string cmd = "SELECT";
@@ -415,6 +459,14 @@ namespace Data
                     result = 1;
                 }
             }
+            return result;
+        }
+
+        static int idProcess_(void* parameter, int argc, char** argv, char** columnName)
+        {
+            int result = 0;
+            std::vector<int>* p = reinterpret_cast<std::vector<int>*>(parameter);
+			p->push_back(Util::StringOp::ToInt(argv[0]));
             return result;
         }
 

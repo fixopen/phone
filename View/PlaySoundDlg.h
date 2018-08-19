@@ -52,8 +52,8 @@ protected:
 	afx_msg void OnButtonPrev();
 	afx_msg void OnButtonPlay();
 	afx_msg void OnCheckPlaycontinue();
-	afx_msg LRESULT OnPlaySeek(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnPlaySeek(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	DECLARE_MESSAGE_MAP()
 private:

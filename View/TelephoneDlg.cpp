@@ -29,6 +29,9 @@ static char THIS_FILE[] = __FILE__;
 #define IDT_DIAL_PRESS		1012
 #define IDT_AUTO_DIAL       1013
 
+//add by qi 2009_11_09
+#define SHOW_10CONTACTINFO_TIMER       1014 
+
 typedef enum __WAVEDEV_MSG__
 {
 	WAV_PLAYBACK_FLAG       = 0x10000000,
@@ -84,6 +87,7 @@ CRITICAL_SECTION csVoice;
 short * pVoice;
 int nVoiceLength = 32000;
 
+CString telNumber;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 DWORD WINAPI VoiceCheckThreadPrc(LPVOID lpParameter)
 {
@@ -249,9 +253,8 @@ BEGIN_MESSAGE_MAP(CTelephoneDlg, CCEDialog)
 	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
-LRESULT CTelephoneDlg::OnTelStatus(WPARAM w, LPARAM l)
+void CTelephoneDlg::OnTelStatus(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	char *chTel_status[] = {"对方忙!", "通话中...", "对方已接听!", "通话保持!", "正在呼叫...", "对方振铃...", "等待...", "无拨号音!", "无应答!", "呼叫结束!","网络拥塞!", "对方挂机", "呼叫受限", "来电呼入..."};
 	switch(w)
 	{
@@ -261,7 +264,7 @@ LRESULT CTelephoneDlg::OnTelStatus(WPARAM w, LPARAM l)
 	case TEL_FROMCONNECTED:  //通话联通状态
 		if(!m_bFirstConnect)
 		{
-			return result;
+			return;
 		}
 		m_bFirstConnect = FALSE;
 		::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer);
@@ -313,7 +316,6 @@ LRESULT CTelephoneDlg::OnTelStatus(WPARAM w, LPARAM l)
 	m_MJPGList.SetUnitText(400, m_strTelStatus, TRUE);
 	KillTimer(IDT_TEL_STATUS);
 	SetTimer(IDT_TEL_STATUS, 800, NULL);
-    return result;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -325,8 +327,8 @@ void CTelephoneDlg::DialSpeedCode(int index)
 	std::string telcode = "";
 	if(index < 5&& index >= 0)
 	{
-		std::map<char, std::string> ms = pMainDlg->m_pSettingDlg->m_pSetting->speedDials();
-		telcode = ms[index+1];
+		std::vector<std::pair<std::string, std::string> > ms = pMainDlg->m_pSettingDlg->m_pSetting->speedDials();
+		telcode = ms[index+1].second;
 	}
 	else if(index == 5)
 	{
@@ -350,94 +352,80 @@ void CTelephoneDlg::DialSpeedCode(int index)
 
 }
 
-LRESULT CTelephoneDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CTelephoneDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	char telcode[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', "#"};
+	CString icon;
 	switch (w)
-	{
-	case 1:
-		OnButtonTelephoneHide();
-		break;
-	case 2:
-		OnButtonTelephoneNote();
-		break;
-	case 3:
-		OnButtonTelephoneRecord();
-		break;
-	case 4:
-		HandleOff();
-		break;
-	case 5:
-		OnButtonTelephoneRecord();
-		break;
-	case 6:
-		HandleOn();
-		break;
-	case 19:      //拨号 20090511
-		{
-			//3g 拨号
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->phone_->PhoneDialTone(FALSE, NULL);
-			KillTimer(IDT_AUTO_DIAL);
-			CString s = m_MJPGList.GetUnitText(100);
-			if(s.GetLength() > 0)
-			{
-				m_bTelUsing = TRUE; 
-				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->phone_->DialNumber((char*)(Util::StringOp::FromCString(s)).c_str());
-				SetTimer(IDT_DIAL_PRESS, 50, NULL);
-			}
-		}
+	{	
+		case 1://设置
+			
+			break;
 
-	case 200:
-	case 201:
-	case 202:
-	case 203:
-	case 204:
-	case 205:
-	case 206:
-	case 207:
-	case 208:
-	case 209:
-	case 210:
-	case 211:			//按键拨号
-		pMainDlg->SendMessage(WM_TEL_KEYCODE, (WPARAM)telcode[w-200], 0);
-		break;
-	case 301:			//快捷键拨号
-	case 302:
-	case 303:
-	case 304:
-	case 305:
-	case 306:
-	case 307:
-	case 308:
-		DialSpeedCode(w-301);
-		break;
-	case 309:		//重拨号
-		Redial();
-		break;
-	case 311:		//删除
-		{
-			CString number;
-			number = m_MJPGList.GetUnitText(100);
-			int len = number.GetLength();
-			if (len > 0)
-			{
-				CString s_ = number.Left(len -1);
-				m_MJPGList.SetUnitText(100, s_, TRUE);	
-				if(len == 1)
-				{
-					m_MJPGList.SetUnitIsShow(19, FALSE, TRUE, TRUE);  //拨打
-				}
-			}
-		}
-		break;
+		case 10://录音
+			OnButtonTelephoneRecord();
+			break;
 
+		case 11://便签 == 记事
+			OnButtonTelephoneNote();
+			break;
 
-	default:
+		case 12://通讯录
+			pMainDlg->m_pContactDlg->ShowRightBtn(false);
+			pMainDlg->m_pContactDlg->ShowWindow_();
+			icon = Allicon[2];
+			pMainDlg->AddIcon(icon);
+
+			break;
+
+		case 13://通话记录
+			pMainDlg->m_pContactInfoDlg->ShowRightBtn(false);
+			pMainDlg->m_pContactInfoDlg->ShowWindow_();
+			icon = Allicon[3];
+			pMainDlg->AddIcon(icon);
+			break;
+
+		case 14://二次拨号
+			break;
+			
+		case 20://隐藏本地视频
+			OnButtonTelephoneHide();
+			pMainDlg->PopbackIcon();
+			break;
+
+		case 21://开启本地视频
+			break;
+
+		case 22://挂机
+			HandleOff();
+			break;
+		
+		case 23://切换
+			break;
+
+		case 40:
+		case 41:
+		case 42:
+		case 43:
+		case 44:
+			SetVolume(w-40);
+			break;
+
+		case 50://设置声音
+			VolumeSwitch();
+			break;
+	
+		case 1000:
+			ShowWindow(SW_HIDE);		
+			pMainDlg->m_pTelephoneDlg->HangOff_(NULL);
+			pMainDlg->PopbackIcon();
+			HandleOff();
+			break;
+
+		default:
 		break;
 	}
-    return result;
+
 }
 BOOL CTelephoneDlg::OnInitDialog() 
 {
@@ -448,70 +436,11 @@ BOOL CTelephoneDlg::OnInitDialog()
 	std::string strTemp;
 	CString str;
 	
-//	m_sticNameNo.Create(str, WS_CHILD|WS_VISIBLE, CRect(48 + 54, 90 + 62, 536 + 54, 130 + 62), this, IDC_STATIC_TELEPHONE_NAMENO);
-//	m_sticNameNo.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
-//	m_sticNameNo.SetFontSize(36);   
-
-
-/*
-	strTemp = Data::LanguageResource::Get(Data::RI_TEL_HIDEBTN);
-	str = strTemp.c_str();
-	m_btnHide.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 78, 434, 98), this, IDC_BUTTON_TELEPHONE_HIDE);
-	m_btnHide.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-
-	strTemp = Data::LanguageResource::Get(Data::RI_TEL_NOTEBTN);
-	str = strTemp.c_str();
-	m_btnNote.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD, CRect(378, 103, 434, 123), this, IDC_BUTTON_TELEPHONE_NOTE);
-	m_btnNote.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-
-	strTemp = Data::LanguageResource::Get(Data::RI_TEL_RECORDEBTN);
-	str = strTemp.c_str();
-	m_btnRecord.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD, CRect(378, 128, 434, 148), this, IDC_BUTTON_TELEPHONE_RECORD);
-	m_btnRecord.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-
-	strTemp = Data::LanguageResource::Get(Data::RI_TEL_ACCEPTBTN);
-	str = strTemp.c_str();
-	m_btnHandle.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 153, 434, 173), this, IDC_BUTTON_TELEPHONE_HANDLE);
-	m_btnHandle.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-*/
-//	m_btnRecordTip.Create(_T(""),IDB_BITMAP31, IDB_BITMAP31, WS_CHILD|WS_VISIBLE, CRect(320 + 54, 200 + 62, 350 + 54, 230 + 62), this, IDC_BUTTON_TELEPHONE_RECORDTIP);
-//	m_btnRecordTip.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
-
-/*	
-	m_sticBackground.Create(CRect(34, 40, 448, 184), this, 1);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\电话显示.xml");
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 	
-	TextStruct ts[1];
-	memset(ts, 0, sizeof(TextStruct) * 1);
-	
-	ts[0].txtRect = CRect(8, 0, 100, 20);
-	ts[0].txtFontSize = 16;
-	ts[0].sAlign = DT_LEFT | DT_BOTTOM;
-	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_TEL_NEWTELSTC).c_str(), Data::LanguageResource::Get(Data::RI_TEL_NEWTELSTC).length());
-	
-	m_sticBackground.SetTextStruct(ts, 1);
-*/
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_拨打电话.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
-	
-	m_MJPGList.SetUnitIsShow(4, TRUE);
-	m_MJPGList.SetUnitIsShow(5, FALSE);
-	m_MJPGList.SetUnitIsShow(6, FALSE);
-	m_MJPGList.SetUnitIsShow(7, FALSE);
-	m_MJPGList.SetUnitIsShow(0, TRUE);
-	m_MJPGList.SetUnitIsShow(1, TRUE);
-	m_MJPGList.SetUnitIsShow(2, FALSE);
-	m_MJPGList.SetUnitIsShow(3, TRUE);
-
-	m_MJPGList.SetUnitIsShow(19, FALSE);
-	m_MJPGList.SetUnitIsShow(8, FALSE);
-	m_MJPGList.SetUnitIsShow(9, FALSE);
-
-	m_MJPGList.SetUnitIsShow(104, FALSE);
-	m_MJPGList.SetUnitIsShow(106, FALSE);
-	m_MJPGList.SetUnitIsShow(105, FALSE);
-	m_MJPGList.SetUnitIsShow(107, FALSE);
-
+	MoveWindow(0,57,800,423);
 
 	if (!InitData())
 	{
@@ -639,8 +568,16 @@ bool CTelephoneDlg::InitData(void)
 }
 
 void CTelephoneDlg::OnButtonTelephoneHide()
-{
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StopRing(true);
+{	
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	main->phone_->StopRing(true);
+	
+	if (main->m_pTelphoneDialDlg->IsWindowVisible())
+	{
+		main->m_pTelphoneDialDlg->ShowWindow(SW_HIDE);	
+		main->PopbackIcon();
+	}
+
 	ShowWindow_(FALSE);
 	if(!m_bTelUsing)
 	{
@@ -656,9 +593,12 @@ void CTelephoneDlg::OnButtonTelephoneHide()
 
 void CTelephoneDlg::OnButtonTelephoneNote()
 {
-	//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_INFORMATION);
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pNotebookDlg->m_bIsOPenTel = TRUE;
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pNotebookDlg->ShowWindow(SW_SHOW);
+//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pNotebookDlg->m_bIsOPenTel = TRUE;
+//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pNotebookDlg->ShowWindow(SW_SHOW);
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	main->m_pMainDlg->m_mainLunarderDlg_->OnClickMJPG(7,0); 
+	main->m_pMainDlg->m_mainLunarderDlg_->ShowWindow(SW_SHOW);
+
 }
 
 std::string CTelephoneDlg::GetSoundPath(void)
@@ -805,11 +745,6 @@ void CTelephoneDlg::OnButtonTelephoneRecord()
 		if (RecStop())
 		{
  			KillTimer(m_uiRecordTimer);
-// 			m_btnRecordTip.ShowWindow(FALSE);
-// 			m_sticRecordCaption.ShowWindow(FALSE);
-// 			m_sticRecord.ShowWindow(FALSE);
-// 			m_sticRecord.SetWindowText(_T(""));
-// 			m_btnRecord.SetWindowText(m_strRecord);
 
 			if (m_uiRecordSecond == 0)
 			{
@@ -826,7 +761,8 @@ void CTelephoneDlg::OnButtonTelephoneRecord()
 
 void CTelephoneDlg::HandleOn(void)
 {
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->HungOn(TRUE);
+//	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->HungOn(TRUE);
+	::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 0, 0);
 }
 
 void CTelephoneDlg::HandleOff(void)
@@ -842,10 +778,6 @@ void CTelephoneDlg::HandleOff(void)
 	m_strTelStatus = "";
 	m_MJPGList.SetUnitText(400, "", TRUE);
 	
-
-	m_MJPGList.SetUnitIsShow(9, FALSE);
-	m_MJPGList.SetUnitIsShow(19, FALSE);
-	m_MJPGList.SetUnitIsShow(3, FALSE);
 }
 
 void CTelephoneDlg::OnButtonTelephoneHandle()
@@ -933,11 +865,13 @@ void CTelephoneDlg::HangOff_(void* param)
 		}
 		m_vSoundSegment.clear();
 
- 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactInfoDlg->ShowItemsInList(0);
+ //		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactInfoDlg->ShowItemsInList(0);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ResetTypeInfo();
 		if (m_spContactInfo->type() == Data::citInNo)
 		{
 			::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 1);
 		}
+
 	}
 
 	m_spContactInfo = boost::shared_ptr<Data::ContactInfo>();
@@ -955,8 +889,6 @@ void CTelephoneDlg::HangOff_(void* param)
 	m_bRecording = FALSE;
 	m_bRingPlayed = FALSE;
 
-	ShowWindow_(FALSE);
-
 
 	m_MJPGList.SetUnitText(107, "", FALSE);
 	m_MJPGList.SetUnitIsShow(105, FALSE);
@@ -966,9 +898,6 @@ void CTelephoneDlg::HangOff_(void* param)
 	m_MJPGList.SetUnitIsShow(106, FALSE);
 	m_MJPGList.SetUnitText(106, L"", FALSE);
 	
-// 	m_btnNote.ShowWindow(FALSE);
-// 	m_btnRecord.ShowWindow(FALSE);
-// 	m_btnHandle.SetWindowText(m_strHangOn);
 
 	m_MJPGList.SetUnitIsShow(2, FALSE);
 	m_MJPGList.SetUnitIsShow(8, FALSE);
@@ -977,13 +906,6 @@ void CTelephoneDlg::HangOff_(void* param)
 	m_MJPGList.SetUnitIsShow(19, FALSE);
 	m_MJPGList.SetUnitIsShow(3, FALSE);
 
-//	m_btnHandle.ShowWindow(FALSE);
-	/*
-	m_sticNameNo.SetWindowText(_T(""));
-	m_sticCompany.SetWindowText(_T(""));
-	m_sticDepartment.SetWindowText(_T(""));
-	m_sticDuty.SetWindowText(_T(""));
-	*/
 
 	m_MJPGList.SetUnitText(100, "", FALSE);
 	m_MJPGList.SetUnitText(101, "", FALSE);
@@ -994,15 +916,43 @@ void CTelephoneDlg::HangOff_(void* param)
 
 	Dprintf("TelDlg hide\n");
 	m_MJPGList.Invalidate();
-	ShowWindow_(FALSE);
 	SetTimer(IDC_TELDLGHIDE, 10, NULL);
 	
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PhoneDialTone(FALSE, NULL);
-    KillTimer(IDT_AUTO_DIAL);
-
+    
 	//lxz 20090207
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 1, 0);			//恢复视频
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
+	
+	// add by qi 2009_11_05
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)(theApp.m_pMainWnd);
+	CString icon ;
+	main->m_pTelphoneDialDlg->HangOff_();
+	main->m_pTelphoneDialDlg->m_p10ContactInfoDlg->ShowWindow(SW_HIDE);
+
+	if (main->m_pTelphoneRingDlg->IsWindowVisible())
+	{
+		main->m_pTelphoneRingDlg->ShowWindow_(SW_HIDE);
+		main->PopbackIcon();
+	}
+	
+	if (IsWindowVisible())
+	{
+		ShowWindow_(FALSE);
+		main->PopbackIcon();	
+	}
+
+	if (main->m_pTelphoneDialDlg->IsWindowVisible())
+	{
+		main->m_pTelphoneDialDlg->ShowWindow_(SW_HIDE);
+		main->PopbackIcon();	
+			
+	}
+
+	KillTimer(SHOW_10CONTACTINFO_TIMER);//
+	main->m_pTelphoneDialDlg->KillTimer(IDT_AUTO_DIAL);
+
+
 }
 
 void CTelephoneDlg::HangOn_(void* param)
@@ -1013,35 +963,21 @@ void CTelephoneDlg::HangOn_(void* param)
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSoundDlg->m_pPlaySoundDlg->CloseSound();
 
 	Dprintf("TelDlg show1\n");
-// 	TextStruct ts[1];
-// 	memset(ts, 0, sizeof(TextStruct) * 1);
-// 	
-// 	ts[0].txtRect = CRect(8, 0, 100, 20);
-// 	ts[0].txtFontSize = 16;
-// 	ts[0].sAlign = DT_LEFT | DT_BOTTOM;
-// 	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_TEL_DIALTELSTC).c_str(), Data::LanguageResource::Get(Data::RI_TEL_DIALTELSTC).length());
-// 	
-// 	m_sticBackground.SetTextStruct(ts, 1);
-// 
-
-	m_MJPGList.SetUnitIsShow(4, TRUE);
-	m_MJPGList.SetUnitIsShow(5, FALSE);
-	m_MJPGList.SetUnitIsShow(6, FALSE);
-	m_MJPGList.SetUnitIsShow(7, FALSE);
-	m_MJPGList.SetUnitIsShow(9, FALSE);
-	m_MJPGList.SetUnitIsShow(3, FALSE);
-	m_MJPGList.SetUnitIsShow(19, FALSE);  //拨打
-	m_MJPGList.SetUnitIsShow(8, FALSE);   //退出时该隐藏   090306
-	m_MJPGList.SetUnitIsShow(2, FALSE);
 		
-// 	m_btnHandle.SetWindowText(m_strHangOff);
-// 	m_btnHandle.ShowWindow(TRUE);
-
 	SipShowIM(SIPF_OFF);
 	//ShowWindow_(TRUE);
 	SetTimer(IDC_TELDLGSHOW, 10, NULL);
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PhoneDialTone(TRUE, "dialing");	
-}
+	
+	//是软件启动还是硬件启动
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
+	if (!main->m_pTelphoneDialDlg->m_bSoftware)
+	{
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PhoneDialTone(TRUE, "dialing");	
+	}
+	main->m_pTelphoneDialDlg->m_bSoftware = false ;
+
+}	
+
 
 void CTelephoneDlg::Key_(void* param)
 {
@@ -1073,6 +1009,7 @@ void CTelephoneDlg::Key_(void* param)
 		m_MJPGList.SetUnitFont(100, font_30);
 		m_MJPGList.SetUnitText(100, number, flag);
 	}
+
 	m_MJPGList.SetUnitIsShow(19, TRUE, flag);  //拨打
  	if (!m_spContactInfo)
  	{
@@ -1101,6 +1038,7 @@ void CTelephoneDlg::Key_(void* param)
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PhoneDialTone(TRUE, code);
 	KillTimer(IDT_AUTO_DIAL);
 	SetTimer(IDT_AUTO_DIAL, 8000, NULL);
+
 }
 
 void CTelephoneDlg::SubKey_(void* param)
@@ -1132,11 +1070,6 @@ void CTelephoneDlg::SubKey_(void* param)
 		m_MJPGList.SetUnitText(100, number, flag);
 	}
 	
-	if (!IsWindowVisible())
-	{
-		//ShowWindow_(TRUE);
-		//SetTimer(IDC_TELDLGSHOW, 10, NULL);
-	}
 	//m_MJPGList.SetUnitIsShow(19, TRUE, flag);  //拨打
 	if(m_nTelStatus == TEL_FROMCONNECTED) //正在通话
 	{
@@ -1145,16 +1078,18 @@ void CTelephoneDlg::SubKey_(void* param)
     	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SubDial(char(param));
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PhoneDialTone(TRUE, code);
 	}
+
 }
 
 void CTelephoneDlg::Connect_(void* param)
 {
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->HungOn(TRUE);
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->HungOn(TRUE);    //lxz 20091110
+
 	m_MJPGList.SetUnitIsShow(9, FALSE);
 	m_MJPGList.SetUnitIsShow(19, FALSE);
 	m_MJPGList.SetUnitIsShow(3, TRUE);
-// 		m_btnHandle.SetWindowText(m_strHangOff);
-// 		m_btnHandle.ShowWindow(TRUE);
+// 	m_btnHandle.SetWindowText(m_strHangOff);
+// 	m_btnHandle.ShowWindow(TRUE);
 
 	
 	if (m_bPlayingLeaveWord)
@@ -1247,7 +1182,13 @@ void CTelephoneDlg::Connect_(void* param)
 		}
 	}
 	else
-	{
+	{	
+		if (m_bRing && !IsWindowVisible())
+		{
+			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
+			main->m_pTelphoneRingDlg->ShowWindow_(SW_HIDE);
+			ShowWindow_(SW_SHOW);
+		}
 		m_spContactInfo->type(Data::citInOk);
 	}
 
@@ -1255,6 +1196,7 @@ void CTelephoneDlg::Connect_(void* param)
 	CTimeSpan ts;
 	ts = CTime::GetCurrentTime() - m_spContactInfo->startTime();
 	m_uTelSecondOff = ts.GetTotalSeconds();
+
 }
 
 void CTelephoneDlg::Ring_(void* param)
@@ -1284,22 +1226,34 @@ void CTelephoneDlg::Ring_(void* param)
 		m_spContactInfo->Insert();
 	}	
 	
-	if (!IsWindowVisible() && (m_uiRingCount == 0))
+	//add by qi 2009_11_05
+	CMultimediaPhoneDlg * main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	if (!main->m_pTelphoneRingDlg->IsWindowVisible() && (m_uiRingCount == 0))
 	{
 		//恢复黑屏 lxz 20090304
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->ReStoreBackLight();		
-		m_MJPGList.SetUnitIsShow(5, TRUE);
-		m_MJPGList.SetUnitIsShow(4, FALSE);
-		m_MJPGList.SetUnitIsShow(6, FALSE);
-		m_MJPGList.SetUnitIsShow(7, FALSE);
-		m_MJPGList.SetUnitIsShow(3, FALSE);
-		m_MJPGList.SetUnitIsShow(9, TRUE);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->ReStoreBackLight();
+		
+// 		m_MJPGList.SetUnitIsShow(5, TRUE);
+// 		m_MJPGList.SetUnitIsShow(4, FALSE);
+// 		m_MJPGList.SetUnitIsShow(6, FALSE);
+// 		m_MJPGList.SetUnitIsShow(7, FALSE);
+// 		m_MJPGList.SetUnitIsShow(3, FALSE);
+// 		m_MJPGList.SetUnitIsShow(9, TRUE);
 						
 		SipShowIM(SIPF_OFF);
 		//ShowWindow_(TRUE);
-		SetTimer(IDC_TELDLGSHOW, 10, NULL);
-		KillTimer(IDC_TELDLGHIDE);
+		
+		//change by qi 2009_11_05
+		//SetTimer(IDC_TELDLGSHOW, 10, NULL);
+		
+		//add by qi 2009_11_05
+		main->m_pTelphoneRingDlg->ShowWindow_(SW_SHOW);
+		
+		CString icon = Allicon[0];
+		main->AddIcon(icon);
 
+		KillTimer(IDC_TELDLGHIDE);
+		
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002);   //重复发送了暂停消息
 
 		//m_bAutoRecord = FALSE;
@@ -1498,7 +1452,10 @@ void CTelephoneDlg::CallID_(void* param)
 	}
 	
 	m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(tel+city), TRUE);
-
+	
+	//add by qi 2009_11_09
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneRingDlg->m_MJPGList.SetUnitText(100, Util::StringOp::ToCString(tel+city), TRUE);
+	
 	if (tel == "")
 	{
 		if (((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall())
@@ -1517,6 +1474,9 @@ void CTelephoneDlg::CallID_(void* param)
 		{
 			ShowContact(result[0], tel);
 			
+			//add by qi 2009_11_04
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneRingDlg->ShowContact(result[0], tel);
+
 			if (((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall())
 			{
 				int firetype = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType();
@@ -1621,9 +1581,8 @@ void CTelephoneDlg::Redial(void)
 {
 	Dprintf("Redial\n");
 
-	m_MJPGList.SetUnitIsShow(9, FALSE);
-	m_MJPGList.SetUnitIsShow(19, FALSE);
-	m_MJPGList.SetUnitIsShow(3, TRUE);
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pFSM->getCurrentState() == CMultimediaPhoneDlg::tsHangOff)
+	return;
 
 	std::vector<boost::shared_ptr<Data::ContactInfo> > vCurrentResult = Data::ContactInfo::GetFromDatabase("type = 2");
 	if(vCurrentResult.size() > 0)
@@ -1750,18 +1709,7 @@ void CTelephoneDlg::DialContact(Data::TelephoneNumber telephoneNumber, int conta
 	if (!IsWindowVisible())
 	{
 		flag = FALSE;
-		// 		TextStruct ts[1];
-		// 		memset(ts, 0, sizeof(TextStruct) * 1);
-		// 		
-		// 		ts[0].txtRect = CRect(8, 0, 100, 20);
-		// 		ts[0].txtFontSize = 16;
-		// 		ts[0].sAlign = DT_LEFT | DT_BOTTOM;
-		// 		memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_TEL_NEWTELSTC).c_str(), Data::LanguageResource::Get(Data::RI_TEL_NEWTELSTC).length());
-		// 		
-		// 		m_sticBackground.SetTextStruct(ts, 1);
-		
-		// 		m_btnHandle.SetWindowText(m_strHangOn);
-		// 		m_btnHandle.ShowWindow(TRUE);
+
 		
 		m_MJPGList.SetUnitIsShow(9, FALSE);
 		m_MJPGList.SetUnitIsShow(19, FALSE);
@@ -1864,6 +1812,7 @@ void CTelephoneDlg::DialContact(Data::TelephoneNumber telephoneNumber, int conta
 
 				//m_sticNameNo.SetWindowText(CString(std::string(m_sOutLine + m_sDialNumber).c_str()));    //lxz 20081027
 		}
+
 	}
 	else
 		m_MJPGList.SetUnitText(100, CString(std::string(m_sDialNumber).c_str()), flag);
@@ -1920,7 +1869,7 @@ void CTelephoneDlg::ShowWindow_(int cmdshow)
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);    //暂停视频   重复发送了暂停信息
 
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 1, 0);
-		::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800, 480, 0);
+		::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 57, 800, 480, 0);
 		CCEDialog::ShowWindow_(cmdshow);
 		
 		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
@@ -1936,11 +1885,11 @@ void CTelephoneDlg::ShowWindow_(int cmdshow)
 		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		
 //		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbContrlBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	}
 	else
 	{
@@ -1955,6 +1904,7 @@ void CTelephoneDlg::ShowWindow_(int cmdshow)
 void CTelephoneDlg::OnTimer(UINT nIDEvent) 
 {
 	// TODO: Add your message handler code here and/or call default
+	CString icon ;
 	if(nIDEvent == IDT_TEL_STATUS)
 	{
 		if (((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pFSM->getCurrentState() == CMultimediaPhoneDlg::tsHangOff )
@@ -1968,11 +1918,6 @@ void CTelephoneDlg::OnTimer(UINT nIDEvent)
 		else
 			m_MJPGList.SetUnitText(400, m_strTelStatus, TRUE);
 	}
-	else if(nIDEvent == IDT_AUTO_DIAL)
-	{
-		KillTimer(IDT_AUTO_DIAL);
-		OnClickMJPG(19, 0);
-	}
 	else if(nIDEvent == IDT_DIAL_PRESS)
 	{	
 		KillTimer(IDT_DIAL_PRESS);
@@ -1983,8 +1928,6 @@ void CTelephoneDlg::OnTimer(UINT nIDEvent)
 	}
 	else if(nIDEvent == IDT_TEL_EXIT)
 	{
-
-
 		KillTimer(IDT_TEL_EXIT);
 		HandleOff();
 	}
@@ -2005,6 +1948,7 @@ void CTelephoneDlg::OnTimer(UINT nIDEvent)
 		{
 			duration.Format(_T("%02d:%02d"), ts.GetMinutes(),ts.GetSeconds());
 		}
+
 		//m_sticDuration.SetWindowText(duration);    //lxz test
 		//m_sticDuration.OnDraw(CRect(0, 0, 0, 0), duration);
 		if(IsWindowVisible() && !((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pNotebookDlg->m_bIsOPenTel)
@@ -2122,8 +2066,27 @@ void CTelephoneDlg::OnTimer(UINT nIDEvent)
 		Dprintf("TelDlg show\n");
 		if(m_bRing || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->GetPhoneHungOn())
 		{
-			if(!IsWindowVisible())
-				ShowWindow_(TRUE);
+			//change by qi 2009_11_04				
+			if (!((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->IsWindowVisible())
+			{	
+
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->ShowWindow_(SW_SHOW);
+				
+				//启动10条通话记录
+				SetTimer(SHOW_10CONTACTINFO_TIMER,10,NULL);
+				
+				//加载图标
+				icon = Allicon[0];
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->AddIcon(icon);
+
+			}
+			
+//			old
+// 			if(!IsWindowVisible())
+// 			{	
+// 				ShowWindow_(TRUE);
+// 			}
+
 		}
 		else
 		{
@@ -2191,6 +2154,12 @@ void CTelephoneDlg::OnTimer(UINT nIDEvent)
 	{
 		KillTimer(5);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pFSM->fireEvent(CMultimediaPhoneDlg::teConnect, NULL);
+	}
+	else if (SHOW_10CONTACTINFO_TIMER == nIDEvent)
+	{	
+		KillTimer(SHOW_10CONTACTINFO_TIMER);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->m_p10ContactInfoDlg->Show10ContactInfo();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->m_bMayReturn = true ;
 	}
 
 	extern BOOL _test_call;
@@ -2344,18 +2313,15 @@ void CTelephoneDlg::SaveWavHead(void)
 	m_fWav.Close();
 }
 
-LRESULT CTelephoneDlg::OnMM_WIM_OPEN(UINT wParam, LONG lParam) 
+void CTelephoneDlg::OnMM_WIM_OPEN(UINT wParam, LONG lParam) 
 {
-    LRESULT result = 0;
 	// TODO: Add your message handler code here and/or call default
 	Dprintf("OnMM_WIM_OPEN\n");
 //	PlayStart();
-    return result;
 }
 
-LRESULT CTelephoneDlg::OnMM_WIM_DATA(UINT wParam, LONG lParam) 
+void CTelephoneDlg::OnMM_WIM_DATA(UINT wParam, LONG lParam) 
 {
-    LRESULT result = 0;
 //	Dprintf("OnMM_WIM_DATA\n");
 //	Dprintf("OnMM_WIM_DATA = %d\n", ((PWAVEHDR) lParam)->dwBytesRecorded);
 
@@ -2426,18 +2392,16 @@ LRESULT CTelephoneDlg::OnMM_WIM_DATA(UINT wParam, LONG lParam)
 		Dprintf("waveInClose\n");
 		//waveInReset(m_hWaveIn);
 		waveInClose(m_hWaveIn);
-		return result;
+		return;
 	}
 	
 	// Send out a new buffer	
 	waveInAddBuffer (m_hWaveIn, (PWAVEHDR) lParam, sizeof (WAVEHDR));
 //	Dprintf("OnMM_WIM_DATA 3\r\n");
-    return result;
 }
 
-LRESULT CTelephoneDlg::OnMM_WIM_CLOSE(UINT wParam, LONG lParam) 
+void CTelephoneDlg::OnMM_WIM_CLOSE(UINT wParam, LONG lParam) 
 {
-    LRESULT result = 0;
 	// TODO: Add your message handler code here and/or call default
 	Dprintf("OnMM_WIM_CLOSE\n");
 	
@@ -2488,7 +2452,6 @@ LRESULT CTelephoneDlg::OnMM_WIM_CLOSE(UINT wParam, LONG lParam)
 //	Sleep(500);
 
 //	PlayStop();
-    return result;
 }
 
 bool CTelephoneDlg::PlayStart(void)
@@ -2525,17 +2488,14 @@ bool CTelephoneDlg::PlayStop(void)
 	return true;
 }
 
-LRESULT CTelephoneDlg::OnMM_WOM_OPEN(UINT wParam,LONG lParam)
+void CTelephoneDlg::OnMM_WOM_OPEN(UINT wParam,LONG lParam)
 {
-    LRESULT result = 0;
 	Dprintf("OnMM_WOM_OPEN\n");	
 	m_bPlaying = TRUE ;
-    return result;
 }
 
-LRESULT CTelephoneDlg::OnMM_WOM_DONE(UINT wParam,LONG lParam)
+void CTelephoneDlg::OnMM_WOM_DONE(UINT wParam,LONG lParam)
 {
-    LRESULT result = 0;
  	Dprintf("OnMM_WOM_DONE\n");
 
 	waveOutUnprepareHeader (m_hWaveOut, (PWAVEHDR) lParam, sizeof (WAVEHDR));
@@ -2550,12 +2510,10 @@ LRESULT CTelephoneDlg::OnMM_WOM_DONE(UINT wParam,LONG lParam)
 // 		free(m_pOutBuffer);
 // 		m_pOutBuffer = NULL;
 // 	}
-    return result;
 }
 
-LRESULT CTelephoneDlg::OnMM_WOM_CLOSE(UINT wParam,LONG lParam)
+void CTelephoneDlg::OnMM_WOM_CLOSE(UINT wParam,LONG lParam)
 {
-    LRESULT result = 0;
  	Dprintf("OnMM_WOM_CLOSE\n");
  	m_bPlaying = FALSE ;	
 // 	if (m_pOutBuffer != NULL)
@@ -2563,5 +2521,77 @@ LRESULT CTelephoneDlg::OnMM_WOM_CLOSE(UINT wParam,LONG lParam)
 // 		free(m_pOutBuffer);
 // 		m_pOutBuffer = NULL;
 // 	}
-    return result;
+}
+
+void CTelephoneDlg::FromTelDial(boost::shared_ptr<Data::ContactInfo> pContactInfo,std::string tel)
+{	
+	m_spContactInfo		= pContactInfo ;
+	m_sTelephoneNumber	= tel	;
+	m_bTelUsing			= TRUE	;
+	
+	CString s = Util::StringOp::ToCString(m_sTelephoneNumber);
+	m_MJPGList.SetUnitText(100,s,true);
+	
+}
+void CTelephoneDlg::VolumeSwitch()
+{	
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	static bool on = false;
+
+	if (!on)
+	{
+		on = true;
+		main->phone_->Mute(true);
+//		main->phone_->Volume(0);
+	}
+	else
+	{	
+		on = false ;
+		main->phone_->Mute(false);
+//		main->phone_->Volume(2);
+	}
+
+	m_MJPGList.SetUnitIsDownStatus(50,!on);
+	m_MJPGList.SetUnitIsShow(50,true,true);
+
+// 	for (int i = 0 ; i < 5 ;i++)
+// 	{
+// 		m_MJPGList.SetUnitIsDownStatus(40+i,false);
+// 	}
+// 	m_MJPGList.Invalidate();
+
+}
+void CTelephoneDlg::SetVolume(unsigned int level)
+{
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
+	main->phone_->Volume(level);
+	for (int i = 0 ; i < 5; i++)
+	{
+		m_MJPGList.SetUnitIsDownStatus(40+i,true);
+	}
+
+	for (i = 0 ; i < level;i++)
+	{
+		m_MJPGList.SetUnitIsDownStatus(40+i,false);	
+	}
+	m_MJPGList.Invalidate();
+
+}
+
+void CTelephoneDlg::Dialback(std::string telnum)
+{
+	CMultimediaPhoneDlg *pMainDlg = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
+	CString icon ;
+	//拨号
+	if(!telnum.empty())
+	{	
+		//添加图标
+		icon = Allicon[0];
+		pMainDlg->AddIcon(icon);
+		
+		Data::TelephoneNumber telphonenumber ;
+		telphonenumber.number(telnum);
+		DialContact(telphonenumber);
+	}
+
 }

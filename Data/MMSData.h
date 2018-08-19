@@ -12,7 +12,7 @@
             static std::vector<boost::shared_ptr<MMSData> > GetFromDatabaseByTypeOffsetLength(std::string type, int const offset, int const pageSize);
 			static boost::shared_ptr<MMSData> GetDataById(int id);
             void Update() const; //sync to database
-            void Insert(); //insert new instance to database
+            bool Insert(); //insert new instance to database
             void Remove() const; //delete self from database
             static void Remove(std::string const& filter); //delete from database
             static MMSData const Parse(std::string const& content);

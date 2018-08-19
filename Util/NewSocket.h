@@ -7,12 +7,12 @@
 // NewSocket.h : header file
 //
 
-#include <afxsock.h>
+#include   "afxsock.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CNewSocket command target
 
-class CNewSocket : public CSocket/*CCeSocket*/
+class CNewSocket : public CCeSocket
 {
 // Attributes
 public:

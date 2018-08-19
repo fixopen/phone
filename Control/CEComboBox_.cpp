@@ -25,6 +25,45 @@ CCEComboBox_::~CCEComboBox_()
 {
 }
 
+BOOL CCEComboBox_::CreateEx(int style, CRect &rect, CWnd *pParentWnd, int nCtrlID, int fontSize, int btnWidth, int btnHeight, int bitmapType)
+{
+	CRect rt = rect;
+	rt = CRect(0, 0, rt.Width(), rt.Height()); 
+
+	CRect rt1 = CRect(rt.left, rt.top, rt.right, rt.top+btnHeight);
+	CStatic::Create(L"", style, CRect(rect.left, rect.top, rect.right, rect.top+btnHeight), pParentWnd);
+	m_Static.Create(L"", WS_CHILD, CRect(rt1.left, rt1.top, rt1.right-btnWidth+1, rt1.bottom), this);
+	if(bitmapType > 0)
+	{
+		m_Btn.Create(L"", IDB_BITMAP_COMBOX1_FORE, IDB_BITMAP_COMBOX1_BACK, WS_CHILD|WS_VISIBLE, CRect(rt1.right-btnWidth, rt1.top, rt1.right, rt1.bottom), this, IDC_COMBO_BTN);
+	}
+	else
+	{
+		m_Btn.Create(L"", IDB_BITMAP_COMBOX_FORE, IDB_BITMAP_COMBOX_BACK, WS_CHILD|WS_VISIBLE, CRect(rt1.right-btnWidth, rt1.top, rt1.right, rt1.bottom), this, IDC_COMBO_BTN);
+	}
+	m_Combo.Create(WS_CHILD|WS_VSCROLL|CBS_DROPDOWNLIST, rt, this, IDC_COMBO_COMBO);
+	m_nCtrlID = nCtrlID;
+	VERIFY(m_font.CreateFont(
+		fontSize,                        // nHeight
+		0,                         // nWidth
+		0,                         // nEscapement
+		0,                         // nOrientation
+		FW_NORMAL,                 // nWeight
+		FALSE,                     // bItalic
+		FALSE,                     // bUnderline
+		0,                         // cStrikeOut
+		ANSI_CHARSET,              // nCharSet
+		OUT_DEFAULT_PRECIS,        // nOutPrecision
+		CLIP_DEFAULT_PRECIS,       // nClipPrecision
+		DEFAULT_QUALITY,           // nQuality
+		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
+		_T("ËÎÌו")));                 // lpszFacename
+	SetFont(&m_font);
+	m_Combo.SetFont(&m_font);
+	
+	return TRUE;
+}
+
 BOOL CCEComboBox_::Create(int style, CRect &rect, CWnd *pParentWnd, int nCtrlID)
 {
 	CRect rt = rect;
@@ -46,8 +85,7 @@ BOOL CCEComboBox_::Create(int style, CRect &rect, CWnd *pParentWnd, int nCtrlID)
 	m_Static.Create(L"", WS_CHILD, CRect(rt1.left, rt1.top, rt1.right-57, rt1.bottom), this);
 	m_Btn.Create(L"", Data::g_comboxBMPID[0][Data::g_skinstyle], Data::g_comboxBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(rt1.right-58, rt1.top, rt1.right, rt1.bottom), this, IDC_COMBO_BTN);
 	m_Combo.Create(WS_CHILD|WS_VSCROLL|CBS_DROPDOWNLIST, rt, this, IDC_COMBO_COMBO);
-	m_Combo.SetDroppedWidth(28);
-//	m_Combo.SetHorizontalExtent(120);
+//	m_Combo.SetDroppedWidth(100);
 	m_nCtrlID = nCtrlID;
 	VERIFY(m_font.CreateFont(
 		m_nFontHeight,                        // nHeight

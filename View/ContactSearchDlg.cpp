@@ -48,9 +48,8 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CContactSearchDlg message handlers
-LRESULT CContactSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CContactSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -60,7 +59,6 @@ LRESULT CContactSearchDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonSearchContactCancel();
 		break;
 	}
-    return result;
 }
 
 BOOL CContactSearchDlg::OnInitDialog() 

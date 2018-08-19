@@ -8,7 +8,6 @@
 //
 #include "../Control/CEListCtrl.h"
 #include "../Control/CEStatic.h"
-#include "../Control/CeBtnST.h"
 #include "../Data/ContactData.h"
 #include "../Util/SmartPtr.h"
 #include "PlaySoundDlg.h"
@@ -45,84 +44,103 @@ public:
 
 // Implementation
 protected:
-
+	void OnClickPageDown(int currentPage);
+	void OnClickPageUP(int currentPage);
+	void OnButtonCheck( int UnitNO);
+	void FindSelectPage();
 	// Generated message map functions
 	//{{AFX_MSG(CContactInfoDlg)
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
-	afx_msg void OnClickListType(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnClickListList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnButtonDial();
 	afx_msg void OnButtonSound();
 	afx_msg void OnButtonNote();
 	afx_msg void OnButtonNew();
 	afx_msg void OnButtonSearch();
 	afx_msg void OnButtonDelete();
-	afx_msg void OnButtonClose();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 
 private:
-	
+
 	CMJPGStatic		m_MJPGList;
-	CFont m_NewListFont;
-	/*
-	CCEStatic	m_sticTypeTitle;
-	CCEStatic	m_sticNameNO;
-	CCEStatic	m_sticTime;
-	CCEStatic	m_sticDuration;
-	CCEStatic	m_sticSound;
-	CCEStatic	m_sticOperation;
-	CCEStatic	m_sticSepLine1;
-	CCEStatic	m_sticSepLine2;
+	CFont			m_NewListFont;	
+	CCEListCtrl		m_lsList;
+	CCERectEdit		*m_rEditInput;
+	CMJPGStatic		m_MJPGData_key;//数字键盘
+ 	CMJPGStatic		m_MJPGLetter_key;//字母键盘
 
-
-	CCEListCtrl	m_lsType;
-	*/
-	CCEListCtrl	m_lsList;
-
-	CImageList* m_pImageList;
-	CCEBmpButton m_btnNewContact;
-	/*
-	CCEBmpButton m_btnDial;
-	CCEBmpButton m_btnSound;
-	CCEBmpButton m_btnNote;
-	
-	CCEBmpButton m_btnSearch;
-	CCEBmpButton m_btnDelete;
-	CCEBmpButton m_btnClose;
-	CCEStatic  m_sticPanel;
-	CCEFrameStatic m_sticBackground;
-	*/
 	void SetButtonDefaultColor(CCEButtonST* button);
 	void SetButtonSelectedColor(CCEButtonST* button);
 
-	CContactInfoSearchDlg* m_pSearchContactInfoDlg;
-// 	CNoteDlg* m_pNoteDlg;
-	CPasswordDlg*  m_pPasswordDlg;
-	bool m_bTelephoneInUse;
+	CPasswordDlg*		m_pPasswordDlg;
+	bool				m_bTelephoneInUse;
+	const unsigned int  ContactInfoTotal;
+	const unsigned int  PageSize;
 
-	const int ContactInfoTotal;
-	const int PageSize;
-	unsigned int m_uiSelectIndex;
-	unsigned int m_uiType;
-
+	
 	std::string m_sListFilter;
 	std::string m_sListSearchFilter;
 	std::vector<boost::shared_ptr<Data::ContactInfo> > m_vCurrentResult;
-	void ShowArrayInList(std::vector<boost::shared_ptr<Data::ContactInfo> > array);
 	std::string GetName(std::string number);
  	void DeleteSelectedItem(void);
-	void ScrollItemsInList(int step, int nPos);
 
 public:
 	CPlaySoundDlg* m_pPlaySoundDlg;
-	void ShowItemsInList(int type);
+
+	std::string GetPYIndex(CString content);
 	void SaveContactInfo(boost::shared_ptr<Data::ContactInfo> ci);
 	void Search(std::string filter);
 	void ShowUnconnectItems(void);
+
+private:
+	enum Action{
+			up_page,
+			down_page,
+		};
+
+	std::vector<int>				m_vClick;//联系人是否被勾选
+	std::vector<int>				m_vContactID;//保存联系人的ID
+	int								m_iCurrentPage;//当前的页
+	int								m_iTotalPages;//一个多少页
+	int								m_uiType ;
+	int								m_iTabs;//页签
+	bool							m_bSelectAll;//是否全选
+	bool							m_bSearch;//是否查找
+	int								m_nType;//
+	std::string						m_sAddtion;//查询条件
+	
+public:
+	void SetUpBtn(int ID);//设置上面一排按钮的状态
+	void PageSwitch(Action action);//下翻一页
+	void ClearCurrentPage();//清空当前页
+	void ClickedOneItem(int unitID,int item);//这行被点击之后，重新设置这行的信息
+	void SeeOneItem(int item);
+	void DeleteItems();
+	void SetPageFont();//设置界面的字体和颜色
+	void SelectAll();//全部勾选
+	void Clear();//数据重新分配
+	void Add(CString ch);
+
+	void SetUpPages();//设置上面的页数
+	void SetUnitStatus();//设置unit的状态
+	int  GetVectorPages();//得到容器的页数
+	void ShowTypeInfo();//显示每组的信息
+	void ResetTypeInfo();//重新界面信息
+	void SetContactInfoFilter(int index);//设置查询条件
+	void FromContactInfoDataBase();//从联系人里获得数据
+	
+	bool OnBtnSMS();//短消息
+	std::string GetType(std::string number);//通过号码获得组名
+	bool HaveClicked();
+	void ShowWindow_();
+	void ShowRightBtn(bool bshow);
+	void SetType(int type);//设置类型
+	void OnBtnOK();//确定
+	void GetNumName(std::vector<CString> &vname,std::vector<CString> &vnumber);//得到名字和号码
+
+
+
 };
 
 //{{AFX_INSERT_LOCATION}}

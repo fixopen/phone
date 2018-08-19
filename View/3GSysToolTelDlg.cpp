@@ -71,9 +71,8 @@ BOOL C3GSysToolDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-LRESULT C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
@@ -87,8 +86,6 @@ LRESULT C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 3:			//电子日历
 		SYSTEMTIME curtime;
 		GetLocalTime(&curtime);
-		pMainDlg->m_pMainDlg->m_pHuangLiDlg_->SetData(curtime.wYear, curtime.wMonth, curtime.wDay, TRUE);
-		pMainDlg->m_pMainDlg->m_pHuangLiDlg_->ShowWindow(SW_SHOW);    //老黄历
 		break;
 	case 4:			//日程提醒
 		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnLunarderBtn();
@@ -110,5 +107,4 @@ LRESULT C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
-    return result;
 }

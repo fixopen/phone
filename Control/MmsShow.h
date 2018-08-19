@@ -2,6 +2,7 @@
 #define IMAGESHOW_H
 //////GIFShow.h////////
 
+
 #include "../util/MMSWarp.h"
 #include "CELineEdit.h"
 #include "CEListCtrl.h"
@@ -9,7 +10,7 @@
 #include "CEStatic.h"
 #include "CERadioButton.h"
 #include "../Resource.h"
-#include "../inc/ximage.h"
+#include "ximage.h"
 
 
 #define		DISPOSAL_NO 0
@@ -37,8 +38,8 @@
 
 #define		IDC_BTN_PIC1		0x2000
 #define		IDC_BTN_PIC2		0x2001
-#define		IDC_BTN_OK			0x2002
-#define		IDC_BTN_CANCEL		0x2003
+#define		MMS_BTN_OK			0x2002
+#define		MMS_BTN_CANCEL		0x2003
 #define		IDC_LIST_CONTRAL	0x2004
 #define		IDC_BTN_MUSIC		0x2005
 #define		IDC_BTN_PICTURE		0x2006
@@ -47,7 +48,12 @@
 #define		IDC_BTN_UP_PAGE		0x2009
 #define     IDC_BTN_SAVE		0x200A
 
-
+#ifndef IDC_BTN_OK
+#define IDC_BTN_OK	0x2010
+#endif
+#ifndef IDC_BTN_CANCEL
+#define IDC_BTN_CANCEL	0x2011
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CPicPathSet dialog
@@ -84,7 +90,7 @@ public:
 protected:
 	afx_msg void OnbtnOk();
 	afx_msg void OnbtnCancel();
-	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
 	
 protected:
 	
@@ -331,7 +337,7 @@ protected:
 
 	std::vector<TFrame> m_arrFrames;
 
-	int		FindType(const CString& ext);
+	int		FindType(const CString ext);
 	BOOL	DrawBitmap();
 	BOOL	Load(int nImgType);
 	void	ThreadAnimation();
@@ -400,10 +406,11 @@ public:
 	MmsShow();
 	virtual ~MmsShow();
 public:
-	void FromListName(CString const& allpath);
+	void FromListName(CString const allpath);
 	void SetImageFileName(std::wstring const& filename);//设置图片路径
 	void SetImageRegion(CPoint const& origin, CSize const& size);//截取图片固定的大小。
 	void SetImageShow(BOOL show = true);//
+	
 	void SetTextContent(std::wstring const& text);//设置文本的内容
 	void SetTextFont(const LOGFONT &font);//文本字体
 	void SetTextColor(COLORREF bkclor,COLORREF txtclor);//设置背景色 和 文本色
@@ -413,12 +420,14 @@ public:
 	void SetImagePos(CRect &rct);
 	void SetMmsEdit();//设置文本可编辑，以及按钮性质
 	void SetMmsRead();//设置文本为可读状态,
+	
 	BOOL LoadTextBMP(UINT bmpID);
-	BOOL FindFileSmil(std::wstring const& filename);
+	BOOL FindFileSmil(std::wstring const filename);
 	void InitialDefRegion();
 	void InitialDefPar();
 	void InitialRegion();
 	void InitialPar();
+	
 	void Clear();
 	void GetMmsRegionInfo();
 	void GetDefRegionInfo();
@@ -427,11 +436,14 @@ public:
 	void InsertPicture();
 	void ClosePicture();
 	void GetAllFileInfo(std::wstring &image,std::wstring &text,std::wstring &aduio,std::wstring &vedio);//获得所有文件的信息
+	
 	BOOL GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp::MMS_LAYOUT &mmsLayout,std::wstring &title);//获得par里的内容
 	void SaveParInfo();
 	void AddParInfo();//往par里添加一条par
 	void SetTitle(std::wstring const title);
+	void SetTransit(std::wstring const filename);//设置转移
 	CString	GetFileName(CString const allpath);
+
 public:
 
 protected:
@@ -471,12 +483,14 @@ private:
 	int										m_uDefTxtItem	;//正在
 	int										m_uDefImageItem	;//显示的时间
 	BOOL									m_bFindSiml		;
+	
 	CCEButtonST								m_btnPicture	;//保存图片
 	CCEButtonST								m_btnMusic		;//保存音频
 	CCEButtonST								m_btnVedio		;//保存视频
 	CCEButtonST								m_btnNextPage	;//下一页
 	CCEButtonST								m_btnUpPage		;//上一页
 	CCEButtonST								m_btnSave		;//保存
+	
 	UINT									m_uState		;//1,readonly,2,edit
 	std::vector<CString>					m_cInsertList	;//插入图片的列表
 	std::vector<CString>					m_cInsertAudio	;//音乐

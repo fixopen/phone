@@ -1,5 +1,5 @@
-#if !defined(AFX_ALARMSHOWDLG_H__12A8AE91_FA94_4D46_862D_22225F439F9968__INCLUDED_)
-#define AFX_ALARMSHOWDLG_H__12A8AE91_FA94_4D46_862D_22225F439F9968__INCLUDED_
+#if !defined(CWARNNINGN0FLASHDLG)
+#define CWARNNINGN0FLASHDLG
 
 #if _MSC_VER > 1000
 #pragma once
@@ -17,13 +17,18 @@ class CWarningNoFlashDlg : public CCEDialog
 // Construction
 public:
 	CMJPGStatic		m_MJPGList;
+	HWND			m_handle;
 	CWarningNoFlashDlg(CWnd* pParent = NULL);   // standard constructor
 	void SetType(int type);
+	void SetTitle(CString title);
+	void SetHWnd(HWND handle);
 	int m_nType;
 	CCEProcessBar m_procbarSound;
 
 	static void RemoveThread(void *type);
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnClickOK();
+	afx_msg void OnClickCancel();
 
 // Dialog Data
 	//{{AFX_DATA(CWarningNoFlashDlg)

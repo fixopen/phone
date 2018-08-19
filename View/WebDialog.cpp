@@ -69,17 +69,14 @@ BEGIN_MESSAGE_MAP(CWebDialog, CDialog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-LRESULT CWebDialog::OnIEClick(WPARAM w, LPARAM l)
+void CWebDialog::OnIEClick(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	main->ReStoreBackLight();
-    return result;
 }
 
-LRESULT CWebDialog::OnSelectURL(WPARAM w, LPARAM l)
+void CWebDialog::OnSelectURL(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(w == IDC_COMBOBOX_SETTING_RINGTIMES)
 	{
 		CString s;
@@ -92,23 +89,19 @@ LRESULT CWebDialog::OnSelectURL(WPARAM w, LPARAM l)
 			m_MJPGList.Invalidate();
 		}
 	}
-    return result;
 }
 
-LRESULT CWebDialog::OnEnter(WPARAM w, LPARAM l)
+void CWebDialog::OnEnter(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	SendtoWebMessage(WM_BROW_STOP, 0, 0);
 
 	CString s;
 	m_edit.GetWindowText(s);
 	SetURL(s);
-    return result;
 }
 
-LRESULT CWebDialog::OnClickMJPG(WPARAM w, LPARAM l)
+void CWebDialog::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 //	if(!browser_)
 //		return;
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->CancelBalckLightSaveTimer();
@@ -196,26 +189,22 @@ LRESULT CWebDialog::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
  		break;
  	}
-    return result;
 }
  
-// LRESULT CWebDialog::OnListCltrlClick(WPARAM w, LPARAM l)
+// void CWebDialog::OnListCltrlClick(WPARAM w, LPARAM l)
 // {
 // 	LRESULT ret;
 // 	if(w == IDC_LIST_MP3LIST)
 // 		OnClickPlayList(NULL, &ret);
-//  return ret;
 // }
 // 
 // /////////////////////////////////////////////////////////////////////////////
 // // CWebDialog message handlers
-// LRESULT CWebDialog::OnUrlSelect(WPARAM w, LPARAM l)
+// void CWebDialog::OnUrlSelect(WPARAM w, LPARAM l)
 // {
-//      LRESULT result = 0;
 // // 	CString s;
 // // 	m_cmbURL.GetWindowText(s);
 // // 	m_edit.SetWindowText(s);
-//      return result;
 // }
 
 // void CWebDialog::OnButtonClose()
@@ -572,9 +561,8 @@ void CWebDialog::SetURL(CString url)
 	//send url;
 }
 
-LRESULT CWebDialog::OnSetLink(WPARAM w, LPARAM l)
+void CWebDialog::OnSetLink(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	COPYDATASTRUCT *ldata;
 
 	/*
@@ -592,7 +580,7 @@ LRESULT CWebDialog::OnSetLink(WPARAM w, LPARAM l)
 	if(ldata->lpData)
 		m_edit.SetWindowText((TCHAR *)ldata->lpData);
 		*/
-    return result;
+
 }
 
 void CWebDialog::OnTimer(UINT nIDEvent)
@@ -625,9 +613,8 @@ void CWebDialog::OnTimer(UINT nIDEvent)
 	CDialog::OnTimer(nIDEvent);
 }
 
-LRESULT CWebDialog::OnKillWEBShow(WPARAM w, LPARAM l)
+void CWebDialog::OnKillWEBShow(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(IsWindowVisible())
 	{
 		if(m_hIEWnd)
@@ -636,13 +623,12 @@ LRESULT CWebDialog::OnKillWEBShow(WPARAM w, LPARAM l)
 				KillTimer(3);
 			else
 			{
-				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pNetStatusDlg->IsWindowVisible() || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_AlarmShowDlg->IsWindowVisible() || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->IsWindowVisible())
-					return result;
+				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_AlarmShowDlg->IsWindowVisible() || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->IsWindowVisible())
+					return;
 				SetTimer(3, 30, NULL);
 			}
 		}
 	}
-    return result;
 }
 
 void CWebDialog::ShowWindow_(BOOL bShow)

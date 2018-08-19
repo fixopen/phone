@@ -21,8 +21,8 @@
 
 #define  IDC_BTN_SELECTALL 1000
 #define  IDC_BTN_CANCELALL 1001
-#define  IDC_BTN_OK		   1002
-#define  IDC_BTN_CANCEL	   1003
+//#define  IDC_BTN_OK		   1002
+//#define  IDC_BTN_CANCEL	   1003
 
 #define  MAX_SEND_CONTACT  50
 
@@ -64,7 +64,7 @@ protected:
 	afx_msg void OnButtonContactEdittype();
 	afx_msg void OnButtonContactSearch();
 	afx_msg void OnButtonContactClose();
-	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
+	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnBtnSelectAll();

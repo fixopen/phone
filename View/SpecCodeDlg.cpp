@@ -24,6 +24,7 @@ CSpecCodeDlg::CSpecCodeDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CSpecCodeDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	m_Data = NULL;
 }
 
 
@@ -46,9 +47,8 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CSpecCodeDlg message handlers
-LRESULT CSpecCodeDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CSpecCodeDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	switch(w)
 	{
 	case 100:
@@ -58,7 +58,6 @@ LRESULT CSpecCodeDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonFastDialsCancel();
 		break;
 	}
-    return result;
 }
 
 BOOL CSpecCodeDlg::OnInitDialog() 

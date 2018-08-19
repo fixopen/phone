@@ -84,16 +84,16 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CWebDialog)
 	virtual BOOL OnInitDialog();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnEnter(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnKillWEBShow(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnSetLink(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnEnter(WPARAM w, LPARAM l);
+	afx_msg void OnKillWEBShow(WPARAM w, LPARAM l);
+	afx_msg void OnSetLink(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg LRESULT OnSelectURL(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnIEClick(WPARAM w, LPARAM l);
-//	afx_msg LRESULT OnUrlSelect(WPARAM w, LPARAM l);
+	afx_msg void OnSelectURL(WPARAM w, LPARAM l);
+	afx_msg void OnIEClick(WPARAM w, LPARAM l);
+//	afx_msg void OnUrlSelect(WPARAM w, LPARAM l);
 //	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
-//	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
+//	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

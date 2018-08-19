@@ -117,11 +117,11 @@ void CAlarmShowDlg::ShowWindow_(int cmdshow)
 		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 		
 //		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbContrlBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	}
 	else
 	{
@@ -131,9 +131,8 @@ void CAlarmShowDlg::ShowWindow_(int cmdshow)
 	
 }
 
-LRESULT CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	switch(w)
 	{
@@ -151,7 +150,6 @@ LRESULT CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
 		break;
 	}
-    return result;
 }
 
 void CAlarmShowDlg::OnTimer(UINT nIDEvent) 
@@ -170,4 +168,5 @@ void CAlarmShowDlg::OnTimer(UINT nIDEvent)
 		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
 	}
 	CCEDialog::OnTimer(nIDEvent);
+
 }

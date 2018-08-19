@@ -39,6 +39,8 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -55,7 +57,9 @@ protected:
 	afx_msg void OnButtonContactNewDialMobile2();
 	afx_msg void OnButtonContactNewDialTelephone1();
 	afx_msg void OnButtonContactNewDialTelephone2();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnComboSelect(WPARAM w, LPARAM l);
+
 	DECLARE_MESSAGE_MAP()
 private:
 	CMJPGStatic		m_MJPGList;
@@ -92,6 +96,9 @@ private:
 	CCERectEdit m_edtDepartment;
 	CCERectEdit m_edtDuty;
 	CCERectEdit m_edtMemo;
+	
+//	CCEComboBox_ m_comStorage;//add by qi 2009_09_28,存储来至组别
+
 /*
 	CCEBmpButton m_btnDialMobile1;
 	CCEBmpButton m_btnDialMobile2;
@@ -102,6 +109,7 @@ private:
 	CCEBmpButton m_btnCancel;
 	CCEBmpButton m_btnDelete;
 */
+
 //	CCEFrameStatic m_backGround;
 
 	CImageList* m_pImageList;
@@ -116,10 +124,19 @@ private:
 	char* LoadPinYinIndex(void);
 	std::string ReplaceSingleQuotation(std::string& field);
 
+private:
+	std::vector<int>	m_vSimID;
+	bool				m_bSIMGroup;//是否是sim卡组	
+
 public:
 	char* m_pPinYinIndex;
 	void SetContact(boost::shared_ptr<Data::Contact> contact);
 	std::string GetAlias(std::string name);
+
+	// add by qi 2009_09_28
+	void ClearEdit();//选中SIM卡组，除了前三个控件可编辑，其它不可编辑
+	void SetSim(bool btrue);//设置SIM卡的编辑环境
+	void ShowWindow_();
 };
 
 //{{AFX_INSERT_LOCATION}}

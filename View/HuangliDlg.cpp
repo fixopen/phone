@@ -46,11 +46,9 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CHuangliDlg message handlers
-LRESULT CHuangliDlg::OnMJPGMOVE(WPARAM w, LPARAM l)
+void CHuangliDlg::OnMJPGMOVE(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	m_MJPGList.Invalidate();
-    return result;
 }
 
 BOOL CHuangliDlg::OnInitDialog() 
@@ -116,9 +114,8 @@ void CHuangliDlg::OnExit()
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
 }
 
-LRESULT CHuangliDlg ::OnClickMJPG(WPARAM w, LPARAM l)
+void CHuangliDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	switch(w)
 	{
 		case 1:				//иор╩тб
@@ -166,7 +163,6 @@ LRESULT CHuangliDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 			}
 			break;
 	}
-    return result;
 }
 
 extern const char *month[];

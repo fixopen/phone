@@ -108,59 +108,9 @@ BOOL CMainDlg::OnInitDialog()
 	
 	// TODO: Add extra initialization here
 	
-//	m_LineStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(247-MAIN_MARGIN_OFFSET,9, 248-MAIN_MARGIN_OFFSET, 195), this, IDC_STATIC_LINE);
-//	m_LineStatic.SetColor(RGB(0, 0, 0), DIVIDEDLINE_RGB);
-	
-//	m_TodayStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(252-MAIN_MARGIN_OFFSET,9, 471-MAIN_MARGIN_OFFSET, 29), this, IDC_STATIC_TODAY);
-//	m_TodayStatic.SetColor(RGB(0, 0, 0), STATIC_RGB1);
-//	CString s = Data::LanguageResource::Get(Data::RI_MAIN_TODAYSTC).c_str();
-//	m_TodayStatic.SetWindowText(s);
-
 	m_pWebDialog = new CWebDialog;
 	m_pWebDialog->Create(CWebDialog::IDD);
 	m_pWebDialog->ShowWindow_(SW_HIDE);
-
-	
-/*
-//	m_TelStatusStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(263, 111, 263+203-1, 111+23-1), this, IDC_STATIC_TELSTATUS);
-	m_TelStatusStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(278+3, 110+2, 278+3+158-1, 110+21-1), this, IDC_STATIC_TELSTATUS);
-	m_TelStatusStatic.SetColor(Data::g_mainTxtColor[0][Data::g_skinstyle], RGB(0, 0, 0));
-//	m_TelStatusStatic.SetUnderLine(TRUE);
-	m_TelStatusStatic.SetBitmapID(IDB_BITMAP_WHSTATIC Data::g_mainTxtBmpID[Data::g_skinstyle] );
-	m_TelStatusStatic.SetAlign(DT_CENTER);
-	m_TelStatusStatic.SetClicked(TRUE);
-
-//	m_CallWallStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(263, 141, 263+203-1, 141+23-1), this, IDC_STATIC_CALLWALL);
-	m_CallWallStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(278+3, 140+2, 278+3+158-1, 140+21-1), this, IDC_STATIC_CALLWALL);
-	m_CallWallStatic.SetColor(Data::g_mainTxtColor[1][Data::g_skinstyle], RGB(0, 0, 0));
-	m_CallWallStatic.SetBitmapID(IDB_BITMAP_WHSTATIC Data::g_mainTxtBmpID[Data::g_skinstyle] );
-	m_CallWallStatic.SetAlign(DT_CENTER);
-	m_CallWallStatic.SetClicked(TRUE);
-
-	//m_TodayNoteStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(263, 170, 263+203-1, 170+23-1), this, IDC_STATIC_NOTETATUS);
-	m_TodayNoteStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(278+3, 168+2, 278+3+158-1, 168+21-1), this, IDC_STATIC_NOTETATUS);
-	m_TodayNoteStatic.SetBitmapID(IDB_BITMAP_WHSTATIC  Data::g_mainTxtBmpID[Data::g_skinstyle]);
-	m_TodayNoteStatic.SetAlign(DT_CENTER);
-	m_TodayNoteStatic.SetColor(Data::g_mainTxtColor[2][Data::g_skinstyle], RGB(0, 0, 0));
-
-	m_TodayNoteStatic.SetClicked(TRUE);
-
-	m_TimeStatic.Create(L"", WS_CHILD|WS_VISIBLE, CRect(262, 25, 262+194, 25+84), this, IDC_STATIC_TIME);
-	*/
-
-//	m_TimeStatic.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
-
-	//	m_TimeStatic.SetBackRGB(RGB(8, 150, 198));  blue
-	//	m_TimeStatic.SetBackRGB(RGB(255, 255, 255));  //white
-/*
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	if(main->n_StyleMain == 0)
-		m_TimeStatic.SetBackRGB(RGB(255, 255, 255)); 
-	else if(main->n_StyleMain == 1)
-		m_TimeStatic.SetBackRGB(RGB(174, 179, 185));  //gray
-	else if(main->n_StyleMain == 2)
-		m_TimeStatic.SetBackRGB(RGB(8, 150, 198));  //blue
-*/
 
 	m_mainmenuDlg_ = new CMainMenuDlg;
 	m_mainmenuDlg_->Create(CMainMenuDlg::IDD, this);
@@ -196,18 +146,6 @@ BOOL CMainDlg::OnInitDialog()
 	m_firewalDlg_->Create(CFireWallDlg::IDD, this);
 	m_firewalDlg_->ShowWindow(SW_HIDE);
 
-	m_pHuangLiDlg_ = new CHuangliDlg;
-	m_pHuangLiDlg_->Create(CHuangliDlg::IDD, this);
-	m_pHuangLiDlg_->ShowWindow(SW_HIDE);
-
-	m_p3GTelDlg = new C3GTelDlg();
-	m_p3GTelDlg->Create(C3GTelDlg::IDD, this);
-	m_p3GTelDlg->ShowWindow(SW_HIDE);
-
-	m_p3GSysToolDlg = new C3GSysToolDlg();
-	m_p3GSysToolDlg->Create(C3GSysToolDlg::IDD, this);
-	m_p3GSysToolDlg->ShowWindow(SW_HIDE);
-
 	m_p3GHomePicDlg = new C3GHomePicDlg();
 	m_p3GHomePicDlg->Create(C3GHomePicDlg::IDD, this);
 	m_p3GHomePicDlg->ShowWindow(SW_HIDE);
@@ -216,19 +154,31 @@ BOOL CMainDlg::OnInitDialog()
 	m_p3GHomeJoyDlg->Create(C3GHomeJoyDlg::IDD, this);
 	m_p3GHomeJoyDlg->ShowWindow(SW_HIDE);
 
-	m_p3GSMSDlg = new C3GSMSDlg();
-	m_p3GSMSDlg->Create(C3GSMSDlg::IDD, this);
+	m_p3GHomeMovieDlg = new C3GHomeMovieDlg();
+	m_p3GHomeMovieDlg->Create(C3GHomeJoyDlg::IDD, this);
+	m_p3GHomeMovieDlg->ShowWindow(SW_HIDE);
+
+	m_p3GSMSDlg = new CSMSDlg();
+	m_p3GSMSDlg->Create(CSMSDlg::IDD, this);
 	m_p3GSMSDlg->ShowWindow(SW_HIDE);
 
-	m_p3GDetailDlg = new C3GDetailDlg();
-	m_p3GDetailDlg->Create(C3GDetailDlg::IDD, this);
-	m_p3GDetailDlg->ShowWindow(SW_HIDE);
+	
+// add by qi 2009_09_14
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_桌面.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
+//  change by qi 2009_09_14
+//	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
+//	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\3g_桌面.xml");
+//	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
+	// add by qi 2009_09_14
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\3g_桌面.xml");
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
+
+
+	// change by qi 2009_09_15
 	SetDateTime(FALSE);
+
 	SetTimer(1, 1000, NULL);
 	SetTimer(2, 5000, NULL);
 	SetTimer(4, 1000, NULL);
@@ -237,14 +187,16 @@ BOOL CMainDlg::OnInitDialog()
 	OnShowCallWallStatic();
 	OnShowTelStatusStatic(0, 0);
 	OnShowTelStatusStatic(3, 0);
+
 //	OnTimer(2);
 
 	SetPhotoList();
 	SetWeather();
-	SetRightInfo();
+	SetUpInfo();
+
 
 //	for(int i = 12; i < 20; i++)
-//		m_MJPGList.SetUnitIsTranslate(i, TRUE);
+//	m_MJPGList.SetUnitIsTranslate(i, TRUE);
 
 //	m_FrameStatic.Create(CRect(0, 0, 480, 204), this, 0);
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -254,46 +206,48 @@ void CMainDlg::doReadWeather()			//天气预报
 {
 	int type = 0;
 	std::string spCode = " DISTINCT datetime ";
-	m_p3GDetailDlg->m_p3GDetailReadDlg->initmenu(type, spCode, 0);
-	m_p3GDetailDlg->m_p3GDetailReadDlg->ShowWindow(SW_SHOW);
 }
 
 void CMainDlg::doReadRss()
 {
-	C3GDetailDlg *pWnd_ = m_p3GDetailDlg;
 	if(m_nRssCount > 0)
 	{
 		std::string spCode = "spCode = '";
 		spCode += rssFileresult[0]->multimediaInfos.spCode;
 		spCode += "'";
 		int type = 1;
-		m_p3GDetailDlg->m_p3GDetailReadDlg->initmenu(1, spCode, 0);
-		m_p3GDetailDlg->m_p3GDetailReadDlg->ShowWindow(SW_SHOW);
 	}
-	else
-	{
-//		m_p3GDetailDlg->initmenu(4);
-//		m_p3GDetailDlg->ShowWindow(SW_SHOW);
-	}
+
 }
 
 void CMainDlg::doReadSMS()
 {
-	C3GSMSDlg *pWnd_ = m_p3GSMSDlg;
+	CSMSDlg *pWnd_ = m_p3GSMSDlg;
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
 	
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);    //暂停视频   重复发送了暂停信息
+
 	if(m_nMMSCount > 0)
-	{
-		pWnd_->m_pSMSDetailDlg->initDataBase(MMS_READ, mmsFileresult[0]->id(), FALSE);
-		mmsFileresult[0]->isRead = TRUE;
-		mmsFileresult[0]->Update();
-		pWnd_->m_pSMSDetailDlg->ShowWindow(SW_SHOW);
+	{	
+		//  change by qi 2009_11_16
+		
+		main->m_pSMSListDlg->m_pMmsReadDlg->SetMMSInfo(mmsFileresult[0]->id(),RECV_TYPE);
+//		mmsFileresult[0]->isRead = TRUE;
+//		mmsFileresult[0]->Update();
+		main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
+
+		main->AddIcon(Allicon[1]);
+
 	}
 	else if(m_nSMSCount > 0)
 	{
-		pWnd_->m_pSMSDetailDlg->initDataBase(SMS_READ, smsFileresult[0]->id(), FALSE);
-		smsFileresult[0]->state = Data::Message::sReaded;
-		smsFileresult[0]->Update();
-		pWnd_->m_pSMSDetailDlg->ShowWindow(SW_SHOW);
+		main->m_pSMSListDlg->m_pSmsReadDlg->SetSMSInfo(smsFileresult[0]->id(),RECV_TYPE);
+	//	smsFileresult[0]->state = Data::Message::sReaded;
+	//	smsFileresult[0]->Update();
+		main->m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
+
+		main->AddIcon(Allicon[1]);
+
 	}
 	else
 	{
@@ -304,7 +258,7 @@ void CMainDlg::doReadSMS()
 
 void CMainDlg::doReadLeaveHome()
 {
-	C3GSMSDlg *pWnd_ = m_p3GSMSDlg;
+	CSMSDlg *pWnd_ = m_p3GSMSDlg;
 	if(m_nSMSLeaveCount > 0)
 	{
 		pWnd_->m_pSMSDetailDlg->initDataBase(SMS_READ, smsLeaveresult[0]->id(), FALSE);
@@ -319,8 +273,11 @@ void CMainDlg::doReadLeaveHome()
 	}
 }
 
-void CMainDlg::SetRightInfo(BOOL isDraw)
+void CMainDlg::SetUpInfo(BOOL isDraw)
 {
+	//add by qi 2009_09_15
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+
 	std::string filter = "isRead = 0";
 	rssFileresult = Data::MultimediaDownload::GetFromDatabase(filter, Data::dNull, 0, 1); 
 	m_nRssCount = rssFileresult.size();
@@ -337,74 +294,44 @@ void CMainDlg::SetRightInfo(BOOL isDraw)
 	mmsFileresult = Data::MMSData::GetFromDatabase(filter, Data::dNull, 0, 1);
 	m_nMMSCount = mmsFileresult.size();
 
-	filter = "[group] = " + Util::StringOp::FromInt(Data::Message::gReMoteSMS);
-//	filter += " AND state = ";
-//	filter += Util::StringOp::FromInt(Data::Message::sNoRead);
-    smsLeaveresult = Data::Message::GetFromDatabase(filter, Data::dNull, 0, 1);
-	m_nSMSLeaveCount = smsLeaveresult.size();
 
 	static int nFresh = 0;
-	CString sRss = ".\\adv\\mjpg\\k1\\common\\3g\\我的订阅.bmp";
-	CString sTel = ".\\adv\\mjpg\\k1\\common\\3g\\未接电话.bmp";
-	CString sSms = ".\\adv\\mjpg\\k1\\common\\3g\\未读留言.bmp";
+
+	CString sRss = ".\\adv\\mjpg\\k5\\common\\png\\我的订阅.bmp";
+	CString sTel = ".\\adv\\mjpg\\k5\\common\\png\\电话小标.png";
+	CString sTel1 = ".\\adv\\mjpg\\k5\\common\\png\\电话小标1.png";
+
+	CString sSms = ".\\adv\\mjpg\\k5\\common\\png\\未读留言.png";
+	CString sSms1 = ".\\adv\\mjpg\\k5\\common\\png\\未读留言1.png";
+
 	if(nFresh++ % 2)
 	{
 		if(m_nRssCount > 0)
 			sRss = "";
 		if(m_nSMSCount > 0 || m_nMMSCount > 0)
-			sSms = "";
+			sSms1 = "";
 		if(m_nUnTel)
-			sTel = "";
+			sTel1 = "";
 	}
 	
 	static CString gsTel = "";
-	static CString gsRss = "";
 	static CString gsSMS = "";
 	static CString gsFireWall = "";
 	
-	if(gsTel != sTel)
-	{
-		m_MJPGList.SetUnitBitmap(400, sTel, "", isDraw);
-		gsTel = sTel;
-	}
-	if(gsRss != sRss)
-	{
-		m_MJPGList.SetUnitBitmap(303, sRss, "", isDraw);
-		gsRss = sRss;
-	}
-	if(gsSMS != sSms)
-	{
-		m_MJPGList.SetUnitBitmap(402, sSms, "", isDraw);
-		gsSMS = sSms;
+	if(gsTel != sTel1)
+	{	
+		//add by qi 2009_09_16
+		main->m_MJPGList.SetUnitBitmap(4,sTel1,"",isDraw);
+		gsTel = sTel1;
 	}
 
-	CString sRssContent = "工信部：7月1日起新售电脑将预装上网过滤软件";
-	CString sLeaveContent = "无家庭留言";
-	static CString gsRssContent = "";
-	static CString gsLeaveContent = "";
+	if(gsSMS != sSms1)
+	{			
+		//add by qi 2009_09_16
+		main->m_MJPGList.SetUnitBitmap(5, sSms1, "", isDraw);
+		gsSMS = sSms1;
+	}
 
-	if(m_nRssCount > 0)		//有rss消息
-	{
-		sRssContent = rssFileresult[0]->multimediaInfos.content.c_str();
-		if(sRssContent == "")
-		{
-			sRssContent = "信息提示区：无定制信息";
-		}
-	}
-	if(m_nSMSLeaveCount > 0)     //有留言
-	{
-		sLeaveContent = smsLeaveresult[0]->unicodeData.c_str();
-	}
-	if(sRssContent != gsRssContent)
-	{
-		gsRssContent = sRssContent;
-		m_MJPGList.SetUnitText(301, sRssContent, isDraw);
-	}
-	if(sLeaveContent != gsLeaveContent)
-	{
-		gsLeaveContent = sLeaveContent;
-		m_MJPGList.SetUnitText(404, sLeaveContent, isDraw);
-	}
 }
 
 void CMainDlg::SetWeather()
@@ -493,6 +420,7 @@ void CMainDlg::SetWeather()
 		s1 += "天气\r\n无定制";
 	}
 	m_MJPGList.SetUnitText(204, s1, TRUE);
+
 }
 
 BOOL CMainDlg::ShowTodayAlarm()
@@ -583,185 +511,75 @@ BOOL CMainDlg::FindTodayAlarm()
 void CMainDlg::SetStatusAll(BOOL flag)
 {
 	  
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	main->m_MJPGList.SetUnitIsDownStatus(2, FALSE);
-	main->m_MJPGList.SetUnitIsDownStatus(3, FALSE);
-	main->m_MJPGList.SetUnitIsDownStatus(4, FALSE);
-	main->m_MJPGList.SetUnitIsDownStatus(5, FALSE);
-	main->m_MJPGList.SetUnitIsDownStatus(6, FALSE);
-	main->m_MJPGList.SetUnitIsDownStatus(7, FALSE);
-	if(!flag)
-		main->m_MJPGList.SetUnitIsDownStatus(2, TRUE);
-	main->m_MJPGList.Invalidate();
+// 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+// 	main->m_MJPGList.SetUnitIsDownStatus(2, FALSE);
+// 	main->m_MJPGList.SetUnitIsDownStatus(3, FALSE);
+// 	main->m_MJPGList.SetUnitIsDownStatus(4, FALSE);
+// 	main->m_MJPGList.SetUnitIsDownStatus(5, FALSE);
+// 	main->m_MJPGList.SetUnitIsDownStatus(6, FALSE);
+// 	main->m_MJPGList.SetUnitIsDownStatus(7, FALSE);
+
+//	if(!flag)
+	//  change by qi 2009_09_16
+	//	main->m_MJPGList.SetUnitIsDownStatus(2, TRUE);
+//	main->m_MJPGList.Invalidate();
+}
+
+void CMainDlg::HideAllWindow()
+{
+	m_pWebDialog->ShowWindow(SW_HIDE);	
+	m_mainmenuDlg_->ShowWindow(SW_HIDE);	
+
+	m_mainVideoDlg_->ShowWindow(SW_HIDE);	
+	m_mainPhotoDlg_->ShowWindow(SW_HIDE);	
+
+	m_mainMp3Dlg_->ShowWindow(SW_HIDE);	
+	m_mainScreenSaveDlg_->ShowWindow(SW_HIDE);	
+
+	m_mainCalucaterDlg_->ShowWindow(SW_HIDE);	
+	m_firewalDlg_->ShowWindow(SW_HIDE);	
+
+	m_mainLunarderDlg_->ShowWindow(SW_HIDE);	
+		
+	m_p3GHomePicDlg->ShowWindow(SW_HIDE);	
+	m_p3GHomeJoyDlg->ShowWindow(SW_HIDE);
+	
+	m_p3GHomeMovieDlg->ShowWindow(SW_HIDE);	
+	m_p3GSMSDlg->ShowWindow(SW_HIDE);
+	
+	
 }
 
 void CMainDlg::SetDateTime(BOOL isDraw)
 {
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+
 	CString sTime;
 	SYSTEMTIME curtime;
 	GetLocalTime(&curtime);
-	static int gHour1, gHour2, gMinute1, gMinute2, gSecond1, gSecond2;
-	gHour1=gHour2=gMinute1=gMinute2=gSecond1=gSecond2 = -1;
-	CString sFile;
-	char filename[64];
-	if(gHour1 != curtime.wHour/10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wHour/10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(103, filename, "", isDraw);
-		gHour1 = curtime.wHour/10;
-	}
-	if(gHour2 != curtime.wHour%10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wHour%10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(104, filename, "", isDraw);
-		gHour2 = curtime.wHour%10;
-	}
-	if(gMinute1 != curtime.wMinute/10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wMinute/10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(105, filename, "", isDraw);
-		gMinute1 = curtime.wMinute/10;
-	}
-	if(gMinute2 !=curtime.wMinute%10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wMinute%10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(106, filename, "", isDraw);
-		gMinute2 =curtime.wMinute%10;
-	}
-	
-	if(gSecond1 != curtime.wSecond/10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wSecond/10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(107, filename, "", isDraw);
-		gSecond1 = curtime.wSecond/10;
-	}
-	
-	sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wSecond%10);
-	sFile = filename;
-	m_MJPGList.SetUnitBitmap(108, filename, "", isDraw);
+	char time[40];
+	sprintf(time,"%02d:%02d:%02d",curtime.wHour,curtime.wMinute,curtime.wSecond);
+	sTime = time ;
+	main->m_MJPGList.SetUnitText(2,sTime,isDraw);
+	main->m_MJPGList.SetUnitFont(2,font_18);
+	main->m_MJPGList.SetUnitColor(2,font_white,isDraw);
 
 	int nWeekDay = Logical::LunarderDate::WeekDay(curtime.wYear, curtime.wMonth, curtime.wDay);
 	char txt[64];
 	sprintf(txt, "%04d-%02d-%02d", curtime.wYear, curtime.wMonth, curtime.wDay);
 	sTime = txt;
 	static CString oldTime = "";
-
-	m_MJPGList.SetUnitText(100, sTime, isDraw);
+	
+	main->m_MJPGList.SetUnitText(1, sTime, isDraw);//年月日
+	main->m_MJPGList.SetUnitFont(1,font_18);
+	main->m_MJPGList.SetUnitColor(1,font_white,isDraw);
 	oldTime = sTime;
 	sprintf(txt, "%s", Data::LanguageResource::Get(Data::RI_COMN_SUNSTC+nWeekDay).c_str());
-	m_MJPGList.SetUnitText(101, txt, isDraw);
+	main->m_MJPGList.SetUnitText(3, txt, isDraw);//星期几
+	main->m_MJPGList.SetUnitFont(3,font_18);
+	main->m_MJPGList.SetUnitColor(3,font_white,isDraw);
 	sTime = txt;
-	return;
-
-	/*
-	CString sTime;
-	SYSTEMTIME curtime;
-	GetLocalTime(&curtime);
-	static int gHour1, gHour2, gMinute1, gMinute2, gSecond1, gSecond2;
-	gHour1=gHour2=gMinute1=gMinute2=gSecond1=gSecond2 = -1;
-	CString sFile;
-	char filename[64];
-	if(gHour1 != curtime.wHour/10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wHour/10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(12, filename, "", isDraw);
-		gHour1 = curtime.wHour/10;
-	}
-	if(gHour2 != curtime.wHour%10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wHour%10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(13, filename, "", isDraw);
-		gHour2 = curtime.wHour%10;
-	}
-	if(gMinute1 != curtime.wMinute/10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wMinute/10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(15, filename, "", isDraw);
-		gMinute1 = curtime.wMinute/10;
-	}
-	if(gMinute2 !=curtime.wMinute%10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wMinute%10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(16, filename, "", isDraw);
-		gMinute2 =curtime.wMinute%10;
-	}
-
-	if(gSecond1 != curtime.wSecond/10)
-	{
-		sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wSecond/10);
-		sFile = filename;
-		m_MJPGList.SetUnitBitmap(18, filename, "", isDraw);
-		gSecond1 = curtime.wSecond/10;
-	}
 	
-	sprintf(filename, ".\\adv\\mjpg\\k1\\common\\%d.bmp", curtime.wSecond%10);
-	sFile = filename;
-	m_MJPGList.SetUnitBitmap(19, filename, "", isDraw);
-	*/
-
-	static int nFresh = 0;
-	CString sTel = ".\\adv\\mjpg\\k1\\common\\未接电话1.bmp";
-	CString sRecorde = ".\\adv\\mjpg\\k1\\common\\未听留言1.bmp";
-	CString sAlarm = ".\\adv\\mjpg\\k1\\common\\未看闹铃1.bmp";
-	CString sFireWall = ".\\adv\\mjpg\\k1\\common\\防火墙设置1.bmp";
-	m_bIsFireWall = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall();
-	if(nFresh++ % 2)
-	{
-		if(m_nUnTel > 0)
-			sTel = ".\\adv\\mjpg\\k1\\common\\未接电话.bmp";
-		if(m_nLeaveSound > 0)
-			sRecorde = ".\\adv\\mjpg\\k1\\common\\未听留言.bmp";
-		if(m_bIsFireWall)
-			sFireWall = ".\\adv\\mjpg\\k1\\common\\防火墙设置.bmp";
-		if(m_bIsAlarm)
-			sAlarm = ".\\adv\\mjpg\\k1\\common\\未看闹铃.bmp";
-	}
-
-	static CString gsTel = "";
-	static CString gsRecorde = "";
-	static CString gsAlarm = "";
-	static CString gsFireWall = "";
-
-	if(gsTel != sTel)
-	{
-		m_MJPGList.SetUnitBitmap(9, sTel, "", isDraw);
-		gsTel = sTel;
-	}
-	if(gsRecorde != sRecorde)
-	{
-		m_MJPGList.SetUnitBitmap(8, sRecorde, "", isDraw);
-		gsRecorde = sRecorde;
-	}
-	if(gsAlarm != sAlarm)
-	{
-		m_MJPGList.SetUnitBitmap(59, sAlarm, "", isDraw);
-		gsAlarm = sAlarm;
-	}
-	if(gsFireWall != sFireWall)
-	{
-		m_MJPGList.SetUnitBitmap(58, sFireWall, "", isDraw);
-		gsFireWall = sFireWall;
-	}
-	/*
-	int nWeekDay = Logical::LunarderDate::WeekDay(curtime.wYear, curtime.wMonth, curtime.wDay);
-	char txt[64];
-	sprintf(txt, "%s %04d-%02d-%02d", Data::LanguageResource::Get(Data::RI_COMN_SUNSTC+nWeekDay).c_str(), curtime.wYear, curtime.wMonth, curtime.wDay);
-	sTime = txt;
-	static CString oldTime = "";
-	//if(oldTime != sTime)    //2008
-	{
-		m_MJPGList.SetUnitText(10, sTime, isDraw);
-		oldTime = sTime;
-	}*/
 }
 
 //add function
@@ -857,8 +675,7 @@ int CMainDlg::SetPhotoList()
 }
 
 void CMainDlg::OnTimer(UINT nIDEvent)
-{
-	
+{	
 #ifdef _DEBUG
 	
 #else
@@ -875,33 +692,24 @@ void CMainDlg::OnTimer(UINT nIDEvent)
 // 	extern BOOL g_bAdjustPanel;
 // 	if(g_bAdjustPanel)
 //		g_bAdjustPanel = FALSE;
-	if(IsWindowVisible() && !((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->IsWindowVisible())
+
+	
+	if(nIDEvent == 1)
 	{
-		if(nIDEvent == 1)
-		{
-			SetDateTime(TRUE);
-			SetRightInfo(TRUE);
-		}
-		else if(nIDEvent == 2)				//右边的广告区
-		{
-			/*
-			int size = m_PhotoList.size();
-			if(size > 0)
-			{
-				static int nAdvIndex = 0; 
-				CString sFile;
-				m_MJPGList.SetUnitBitmap(20, m_PhotoList[nAdvIndex%size], "", TRUE);
-				nAdvIndex++;
-			}
-			*/
-		}
+		SetDateTime(TRUE);
+		SetUpInfo(TRUE);
 	}
+	else if(nIDEvent == 2)//右边的广告区
+	{
+
+	}
+
+	
 	CDialog::OnTimer(nIDEvent);
 }
 
-LRESULT CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
+void CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(l == SW_HIDE)
 	{
 		if((CWnd *)w != m_mainmenuDlg_)
@@ -958,19 +766,25 @@ LRESULT CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 		m_mainmenuDlg_->ShowWindow_(SW_HIDE);
 		if(w == 0)	//显示桌面影院
 		{
-			m_mainVideoDlg_->SetVideo("/flashdrv/my_video/playlist.pls");
+			//m_mainVideoDlg_->SetVideo("/flashdrv/my_video/playlist.pls");
+			//m_mainVideoDlg_->ShowWindow(SW_SHOW);
+			//m_currentWnd = (CWnd *)m_mainVideoDlg_ ;
+
 			m_mainVideoDlg_->ShowWindow(SW_SHOW);
-			m_currentWnd = (CWnd *)m_mainVideoDlg_ ;
+			m_currentWnd = (CWnd *)m_mainVideoDlg_;
+
 		}
 		else if(w == 1)	//显示Photo
 		{
-			m_mainPhotoDlg_->SetPhoto();
+			//	m_mainPhotoDlg_->SetPhoto();
+			//	m_mainPhotoDlg_->ShowWindow(SW_SHOW);
+			
+			//wangzhenxing20091011
 			m_mainPhotoDlg_->ShowWindow(SW_SHOW);
 			m_currentWnd = (CWnd *)m_mainPhotoDlg_ ;
 		}
 		else if(w == 2)	//显示Mp3
 		{
-			m_mainMp3Dlg_->SetMP3("");
 			m_mainMp3Dlg_->ShowWindow(SW_SHOW);
 			m_currentWnd = (CWnd *)m_mainMp3Dlg_ ;
 		}
@@ -981,16 +795,16 @@ LRESULT CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 		}
 		else if(w == 4)
 		{
-			m_mainCalucaterDlg_->ShowWindow(SW_SHOW);
+			m_mainCalucaterDlg_->ShowWindow_(SW_SHOW);
 			m_currentWnd = (CWnd *)m_mainCalucaterDlg_ ;
 		}
 		else if(w == 5)	//显示屏保
 		{
 			//0530 lxz
-		//	m_pWebDialog->SetPlayList(_T("\\storagecard\\"), 1);
-		//	m_pWebDialog->ShowWindow(SW_SHOW);
-		//	m_mainScreenSaveDlg_->ShowWindow(SW_SHOW);
-		//	StartWeb();
+			//	m_pWebDialog->SetPlayList(_T("\\storagecard\\"), 1);
+			//	m_pWebDialog->ShowWindow(SW_SHOW);
+			//	m_mainScreenSaveDlg_->ShowWindow(SW_SHOW);
+			//	StartWeb();
 		}
 		else if(w == 6) //显示屏保
 		{
@@ -1003,12 +817,10 @@ LRESULT CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
 			m_mainScreenSaveDlg_->ShowWindow(SW_SHOW);
 		}
 	}
-    return result;
 }
 
-LRESULT CMainDlg::OnPlayPhoto(WPARAM w, LPARAM l)
+void CMainDlg::OnPlayPhoto(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	if(m_mainPhotoDlg_->IsWindowVisible())
 	{	
@@ -1040,7 +852,6 @@ LRESULT CMainDlg::OnPlayPhoto(WPARAM w, LPARAM l)
 			}
 		}
 	}
-    return result;
 }
 
 void CMainDlg::SetTimer_(BOOL flag)
@@ -1057,13 +868,12 @@ void CMainDlg::SetTimer_(BOOL flag)
 		KillTimer(2);
 	}
 }
-LRESULT CMainDlg::OnPlayVideo(WPARAM w, LPARAM l)
+void CMainDlg::OnPlayVideo(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	{
 
-		if(w == 0  )	//暂停视频
+		if(w == 0  )//暂停视频
 		{
 			//视频暂停
 			if(main->playervideo_->isPlaying_)
@@ -1125,12 +935,10 @@ LRESULT CMainDlg::OnPlayVideo(WPARAM w, LPARAM l)
 			*/
 		}
 	}
-    return result;
 }
 
-LRESULT CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
+void CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(w == IDC_STATIC_CALLWALL)		//防火墙
 	{
 		m_firewalDlg_->OnStart();
@@ -1153,7 +961,7 @@ LRESULT CMainDlg::OnStaticClick(WPARAM w, LPARAM l)
 //		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_mainLunarderDlg1_->SetData(curtime.wYear, curtime.wMonth, curtime.wDay);
 //		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAINNOTE);
 	}
-    return result;
+
 }
 
 void CMainDlg::OnShowNoteStatic()
@@ -1196,15 +1004,15 @@ void CMainDlg::OnShowCallWallStatic()
 	*/
 }
 
-LRESULT CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
+void CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
 {
-    LRESULT result = 0;
 	//todo: 获取未接电话条数
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	if(wParam == 0)
 	{
 		m_nUnTel = main->m_pTelephoneDlg->GetUnconnectCount();
 		m_nLeaveSound = main->m_pTelephoneDlg->GetRecordCount();
+
 	}
 	else if(wParam == 1)    //通话记录
 	{
@@ -1259,16 +1067,6 @@ LRESULT CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
 		m_nUnSMS = m_nSMSCount + m_nMMSCount;
 	}
 	
-	CString s;
-//	s.Format(_T("%d"), m_nLeaveSound);
-//	m_MJPGList.SetUnitText(302, s, TRUE);
-
-	s.Format(_T("%d"), m_nUnTel);
-	m_MJPGList.SetUnitText(401, s, TRUE);
-
-	s.Format(_T("%d"), m_nUnSMS);
-	m_MJPGList.SetUnitText(403, s, TRUE);
-    return result;
 }
 
 LRESULT CMainDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
@@ -1319,8 +1117,6 @@ void CMainDlg::ShowWindow_(int nCmdShow)
 		
 	ShowWindow(nCmdShow);
 
-	DWORD offset = GetTickCount() - dwStart; 
-	Dprintf("Main show %d\n", offset);
 
 	//显示 MJPG
 	if(nCmdShow == SW_SHOW)
@@ -1344,7 +1140,6 @@ void CMainDlg::SetMainMenu()
 {
 	((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pNotebookDlg->ShowWindow(SW_HIDE);
 	m_firewalDlg_->ShowWindow(SW_HIDE);
-	m_pHuangLiDlg_->ShowWindow(SW_HIDE);
 	if(m_currentWnd == m_mainVideoDlg_)
 		m_mainVideoDlg_->OnExit_();
 	else if(m_currentWnd == m_mainMp3Dlg_)
@@ -1364,172 +1159,111 @@ void CMainDlg::SetMainMenu()
 //	}
 	else if(m_MJPGList.IsWindowVisible())
 	{
-	//	CString s = ".\\adv\\mjpg\\k1\\中文\\桌面.xml";
-	//	m_MJPGList.SetCurrentLinkFile(s);
-		SetDateTime(FALSE);
-		Invalidate();
+		//	CString s = ".\\adv\\mjpg\\k1\\中文\\桌面.xml";
+		//	m_MJPGList.SetCurrentLinkFile(s);
+		//	SetDateTime(FALSE);
+		//	Invalidate();
 		//m_MJPGList.DrawMJPGPage_HDC(s);
 	}
 }
 
-LRESULT CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
+void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
-	/*
-	void OnVideoBtn();
-	void OnPhotoBtn();
-	void OnMp3Btn();
-	void OnScreenSaveBtn();
-	void OnCalculBtn();
-	void OnLunarderBtn();
-	*/
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-//	m_MJPGList.ShowWindow(SW_HIDE);   //lxz 20080602
+	CString icon;
 	switch (w)
 	{
-	case 1:					//视频电话
-		{
-			m_p3GTelDlg->ShowWindow(SW_SHOW);
-		}
-		break;
-	case 2:					//家庭留言								
-		m_p3GSMSDlg->ShowWindow(SW_SHOW);
-		break;
-	case 3:					//家庭相册
-	//	m_mainPhotoDlg_->OnOpenFile();
-	//	m_mainmenuDlg_->OnPhotoBtn();
-		m_p3GHomePicDlg->ShowWindow(SW_SHOW);
-		break;
-	case 4:			//家庭百事通
-		/*
-		m_firewalDlg_->SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(),
-			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType(),
-			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration().GetTotalSeconds());
+	case 1:	//电话
+			if(main->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff)
+			{
+				main->m_pTelephoneDlg->ShowWindow_(TRUE);
+				icon = Allicon[0];
+			}
+			else
+			{	
 		
-		m_firewalDlg_->ShowWindow(SW_SHOW);
-		*/
-		m_p3GDetailDlg->initmenu(4);
-		m_p3GDetailDlg->ShowWindow(SW_SHOW);
-		break;
-	case 5:						//家庭影院	
-	//	m_mainmenuDlg_->OnMp3Btn();	
-		m_p3GHomeJoyDlg->ShowWindow(SW_SHOW);
-	//	m_mainmenuDlg_->OnVideoBtn();
-		break;
-	case 6:					    //系统工具		//
-		//main->OnButtonSetting();  设置
-		m_p3GSysToolDlg->ShowWindow(SW_SHOW);
-	    break;
-	case 7:						//电子日历
-		{
-		//StartWeb();    //20081112  	//上网
-		SYSTEMTIME curtime;
-		GetLocalTime(&curtime);
-		m_pHuangLiDlg_->SetData(curtime.wYear, curtime.wMonth, curtime.wDay, TRUE);
-		m_pHuangLiDlg_->ShowWindow(SW_SHOW);    //老黄历
-		}
-		break;
-	case 8:						//日程
-		{
-			m_mainmenuDlg_->OnLunarderBtn();
-			//((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pNotebookDlg->ShowWindow(SW_SHOW);   //便笺
-		}
-		break;
-	case 9:				      //计算器				
-		{
-			m_mainmenuDlg_->OnCalculBtn();	
-		}
-		/*
-		m_currentWnd = m_pWebDialog;
-		m_pWebDialog->SetPlayList(_T("\\storagecard\\"), 1);
-		m_pWebDialog->ShowWindow(SW_SHOW);			//文档
-		*/
-		//	StartWeb();
-		break;
+		//		extern void GNotifyDial(BOOL isDial);
+		//		GNotifyDial(1);
+				main->m_pTelphoneDialDlg->m_bSoftware = true ;
+				main->SendMessage(WM_TEL_HUNGON);
 
-		/*
-	case 6:
-		m_currentWnd = m_pWebDialog;
-		m_pWebDialog->SetPlayList(_T("\\storagecard\\"), 1);
-		m_pWebDialog->ShowWindow(SW_SHOW);			//上网
-	//	StartWeb();
-		break;
-		
-	case 7:											//名片
-		main->OnMainSoftKey(5, 0);
-		break;
-	case 8:											//录音	
-		main->OnMainSoftKey(7, 0);
-		break;
-		*/
-	case 10:										//显示未接电话
-		{
-			CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-			//todo: 进入未读电话记录
-			main->m_pContactInfoDlg->ShowUnconnectItems();
-			main->m_pContactInfoDlg->ShowWindow(SW_SHOW);
-		}
-		break;
-	case 11:										//显示录音电话
-		{
-			CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-			main->m_pSoundDlg->ShowItemsInList(0);
-			main->OnMainSoftKey(7, 0);
-		}
-		break;
-	case 30:		//闹铃
-		{
-			if(m_bIsAlarm)
+			}
+			//icon = L".\\adv\\mjpg\\k5\\common\\电话\\电话图标.bmp";
+			break;
+
+	case 2:	//信息
+			m_p3GSMSDlg->ShowWindow_(SW_SHOW);
+			icon = Allicon[1];
+			break;
+
+	case 3:	//通讯录
+			main->m_pContactDlg->ShowRightBtn(true);
+			main->m_pContactDlg->ShowWindow_();
+			icon = Allicon[2];
+
+			break;
+
+	case 4:	//通话记录
+			main->m_pContactInfoDlg->ShowRightBtn(true);
+			main->m_pContactInfoDlg->ShowWindow_();
+			icon = Allicon[3];
+			break;
+
+	case 5:	//音乐
+			m_p3GHomeJoyDlg->ShowWindow_(SW_SHOW);
+			icon = Allicon[4];
+			break;
+
+	case 6:	//家庭影院								
+			m_p3GHomeMovieDlg->ShowWindow_(SW_SHOW);			
+			icon = Allicon[5];
+			break;
+
+	case 7:	//家庭相册
+			m_p3GHomePicDlg->ShowWindow_(SW_SHOW);
+			icon = Allicon[6];
+			break;
+
+	case 8:	//计算器
+			m_mainmenuDlg_->OnCalculBtn();	//发消息
+			icon = Allicon[7];
+			break;
+
+	case 9:	//日程提醒
+			//	m_mainmenuDlg_->OnLunarderBtn();
+			m_mainLunarderDlg_->ShowWindow_(SW_SHOW);
+			icon = Allicon[8];
+			break;
+
+	case 10: //设置
+			main->m_pSettingDlg->ShowWindow_(SW_SHOW);
+			icon = Allicon[9];		
+			break;
+
+	case 11: 
 			{
-				SetMainMenu();
-				ShowTodayAlarm();
+				m_mainmenuDlg_->OnCalculBtn();
 			}
 			break;
-		}
-	case 31:	//防火墙
-		{
-			if(m_bIsFireWall)
+
+	case 12:
 			{
-				SetMainMenu();
-				OnClickMJPGToApp(4, 0);
+			main->m_pSettingDlg->ShowWindow(SW_SHOW);
 			}
 			break;
-		}
-	case 200:
-	case 201:
-		doReadWeather();
-		break;
-	case 303:
-	case 300:
-	case 301:
-		doReadRss();
-		break;
-	case 400:
-	case 401:
-		{
-			CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-			//todo: 进入未读电话记录
-			main->m_pContactInfoDlg->ShowUnconnectItems();
-			main->m_pContactInfoDlg->ShowWindow(SW_SHOW);
-		}	
-		break;
-	case 402:
-	case 403:
-		doReadSMS();
-		break;
-	case 404:
-		doReadLeaveHome();
-		break;
 
 	default:
 		break;
 	}
 
-	if(w >= 1 && w <= 9)
-		SetStatusAll(TRUE);
+	if (!icon.IsEmpty())
+	{
+		main->AddDesktopBtn();
+		main->AddIcon(icon);//添加图标	
+	}
 
 	m_MJPGList.m_nIndexSelectUnit = -1;
-    return result;
+
 }
 
 void CMainDlg::ShowRightCtrl(int nCmdShow)
@@ -1542,35 +1276,30 @@ void CMainDlg::ShowRightCtrl(int nCmdShow)
 	*/
 }
 
-LRESULT CMainDlg::OnMJPGShowHalf(WPARAM w, LPARAM l)
+void CMainDlg::OnMJPGShowHalf(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(w == 0)
 		ShowRightCtrl(SW_HIDE);
 	else
 		ShowRightCtrl(SW_SHOW);
-    return result;
+
 }
 
-LRESULT CMainDlg::OnSetAdmin(WPARAM w, LPARAM l)
+void CMainDlg::OnSetAdmin(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(w == 1)
 	{
 		m_MJPGList.SetUnitIsDownStatus(170, TRUE);
 		SetStatusAll(FALSE);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin = TRUE;
 	}
-    return result;
 }
 
-LRESULT CMainDlg::OnUnSetAdmin(WPARAM w, LPARAM l)
+void CMainDlg::OnUnSetAdmin(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	m_MJPGList.SetUnitIsDownStatus(170, FALSE);
 	SetStatusAll(FALSE);
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin = FALSE;
-    return result;
 }
 
 void  CMainDlg::StartWeb()

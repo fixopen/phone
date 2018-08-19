@@ -32,37 +32,13 @@ public:
 	BOOL m_bIsHaveNote;
 	int m_type;
 
-//	CCEScrollBar_ m_scollbar;
-
-	/*
-	CCEStatic	m_StcYear, m_StcMonth;
-	CCEBmpButton m_BtnYleft, m_BtnYright, m_BtnMleft, m_BtnMright, m_BtnUleft, m_BtnDright;
-	CCEBmpButton m_btnExit;
-	CCEBmpButton m_btnOk;
-	CCEBmpButton m_btnCancel;
-	CCEBmpButton m_btnDelete;
-
-	CCELunarder m_lunarder;
-
-	CCEStatic	m_Line1Static;
-	CCEStatic	m_Line2Static;
-	CCEStatic	m_Line3Static;
-	CCEStatic	m_Line4Static;
-	CCEStatic	m_Line5Static;
-	CCEStatic	m_Line6Static;
-	CCELineEdit m_Edit;
-	CCEStatic   m_titleStatic;
-
-	CCEFrameStatic m_backStatic;
-	*/
-
-	CCERadioButton m_rdoIsAlarm;
-	CCERadioButton m_rdoIsNoAlarm;
-
 	CFont m_font;
-	CDateCtrl m_dtTime;
-	CDateCtrl m_dtDate;
+	CDateCtrl	m_dtTime;
+	CDateCtrl	m_dtDate;
+	CDateCtrl	m_dtDateShow;
+	CDateCtrl	m_dtTimeShow;
 	CCELineEdit m_alarmEdit;
+	CCELineEdit m_editTaboo;
 	BOOL        m_bIsNewAlarm;
 	int			m_nAlarmCount;
 	int			m_nAlarmCurrent;
@@ -75,7 +51,9 @@ public:
 	void DeleteCurrentAlarm();
 	void ShowAlarmDlg(BOOL isNew);
 	void ShowLunarderDlg();
-
+	void ShowTaboo();		//“Àº…
+	void OnAlarmDateUp();
+	void OnAlarmDateDown();
 	BOOL IsHaveAlarm(int y, int m ,int d);
 
 	//—°‘Ò¡Â…˘
@@ -87,8 +65,9 @@ public:
 	int             m_curIndex;
 	boost::shared_ptr<Data::Scheduler> m_pScheduler;
 
-	void SetCtrlIsShow(BOOL isShow);
-
+	void SetCtrlHide();
+	void ShowControl();
+	void ShowWindow_(int nCmdShow);
 	void SetData(int y, int m, int d, BOOL flag = TRUE);
 	BOOL m_maindeskIn;
 	void SetIn(BOOL isMainDeskIn = TRUE){m_maindeskIn = isMainDeskIn;}
@@ -103,8 +82,10 @@ public:
 	enum { IDD = IDD_DIALOG_CACULATER };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
+	
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 
-	afx_msg LRESULT OnStopTryRing(WPARAM w, LPARAM l);
+	afx_msg void OnStopTryRing(WPARAM w, LPARAM l);
 	void StopTryRing();
 
 // Overrides
@@ -113,6 +94,7 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	afx_msg void OnExit();
+	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_VIRTUAL
 	
 // Implementation
@@ -121,18 +103,15 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CLunarderDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnYleft();
-	afx_msg void OnYright();
-	afx_msg void OnMleft();
-	afx_msg void OnMright();
-	afx_msg void OnUp();
-	afx_msg void OnDown();
-	afx_msg LRESULT OnLunarClick(WPARAM w, LPARAM l);
+	afx_msg void OnDateUp();
+	afx_msg void OnDateDown();
+	afx_msg void OnTimeUp();
+	afx_msg void OnTimeDown();
+	afx_msg void OnLunarClick(WPARAM w, LPARAM l);
 	afx_msg void OnOk();
 	afx_msg void OnCancel();
 	afx_msg void OnDelete();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnDeleteItem(WPARAM w, LPARAM l);
+	afx_msg void OnDeleteItem(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

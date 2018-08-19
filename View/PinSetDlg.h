@@ -29,10 +29,9 @@ public:
 	CPasswordDlg*  m_pPasswordDlg;
 	BOOL m_bPin;
 	void SetButtonDefaultColor(CCEButtonST* button);
-	CCEButtonST m_chbPIN;
-
-	boost::shared_ptr<Data::Setting>  m_Data;
-	void SetCallSetParam(boost::shared_ptr<Data::Setting> data);
+	CCERectEdit m_edtPinNumber;
+	
+	void SetCallSetParam();
 	CPinSetDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -58,8 +57,8 @@ protected:
 	//}}AFX_MSG
 	afx_msg void OnButtonFastDialsOk();
 	afx_msg void OnButtonFastDialsCancel();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg LRESULT OnCheckPIN(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnCheckPIN(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 		
 private:

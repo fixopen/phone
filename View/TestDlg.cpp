@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "../MultimediaPhone.h"
+#include "MultimediaPhone.h"
 #include "TestDlg.h"
 
 #include "../MultimediaPhoneDlg.h"
@@ -64,9 +64,8 @@ void CTestDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-LRESULT CTestDlg::OnTelData(WPARAM w, LPARAM l)
+void CTestDlg::OnTelData(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	unsigned char *data = (unsigned char *)w;
 	int len = l;
 	CString s;
@@ -80,7 +79,6 @@ LRESULT CTestDlg::OnTelData(WPARAM w, LPARAM l)
 	s.Format(_T("\r\n"), len); 
 	m_listBoxMem.AddString(s);
 //	m_listBoxMem.SendMessage(WM_VSCROLL, SB_BOTTOM, 0);
-    return result;
 }
 
 BEGIN_MESSAGE_MAP(CTestDlg, CDialog)
@@ -150,7 +148,7 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 
 	CTelephoneDlg *PhoneDlg = reinterpret_cast<CTelephoneDlg*>(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg);
 	CSettingDlg *pSetDlg = reinterpret_cast<CSettingDlg*>(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg);
-	std::map<char, std::string> ms =pSetDlg->m_pSetting->speedDials();
+	std::vector<std::pair<std::string, std::string> > ms =pSetDlg->m_pSetting->speedDials();
 	pDlg->m_listBox.AddString(_T("开始拨打电话测试:"));
 
 	//log
@@ -185,7 +183,7 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 
 		PhoneDlg->HandleOn();
 		Sleep(1500);
-		PhoneDlg->DialContact(ms[1]);
+		PhoneDlg->DialContact(ms[1].second);
 
 		pDlg->SetTimer(1, 1000, NULL);
 	//	Sleep(5000);
@@ -360,9 +358,8 @@ void CTestDlg::OnBtnTestExit()
 	m_bExit = TRUE;
 }
 
-LRESULT CTestDlg::OnExit(WPARAM w, LPARAM l)
+void CTestDlg::OnExit(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if (!m_bFlagCall && !m_bFlagTestDb)
 	{
 		KillTimer(1);
@@ -371,7 +368,6 @@ LRESULT CTestDlg::OnExit(WPARAM w, LPARAM l)
 		m_bExit = FALSE;
 		ShowWindow(SW_HIDE);
 	}
-    return result;
 }
 
 BOOL CTestDlg::OnInitDialog() 

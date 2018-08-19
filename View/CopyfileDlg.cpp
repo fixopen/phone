@@ -47,9 +47,8 @@ void copyfileDlg::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-LRESULT copyfileDlg::OnDeviceChange(WPARAM w, LPARAM l)
+void copyfileDlg::OnDeviceChange(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if (w == 0x8000) 
 	{
 				
@@ -87,7 +86,6 @@ LRESULT copyfileDlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 	
 	//GetLogicalDrives()
-    return result;
 }
 
 BEGIN_MESSAGE_MAP(copyfileDlg, CCEDialog)
@@ -100,9 +98,8 @@ BEGIN_MESSAGE_MAP(copyfileDlg, CCEDialog)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 END_MESSAGE_MAP()
 
-LRESULT copyfileDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void copyfileDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	// 	switch(w)
 	// 	{
 	// 	case 1:
@@ -130,7 +127,7 @@ LRESULT copyfileDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		Import(FALSE);
 		break;		
 	}
-	return result;
+	
 }
 BOOL copyfileDlg::OnInitDialog()
 {
@@ -522,7 +519,8 @@ void copyfileDlg::CopyFileProc(void)
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->SetTypeListSelected(0);
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->ShowItemsInList(-1);
-				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
+			//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ResetTypeInfo();
 
 				pDlg->KillTimer(IDT_COPYFILE_TIMER);
 				pDlg->m_procbarSound.SetPos(4);

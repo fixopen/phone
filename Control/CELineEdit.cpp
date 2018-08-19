@@ -89,6 +89,7 @@ void CCELineEdit::OnChange()
 	}
 	::SelectObject(pdc, old);
 	::ReleaseDC(m_hWnd, pdc);
+
 // 	extern void GlobelSetEditFocus(); //mhq 新建名片切换到桌面
 // 	GlobelSetEditFocus();
 	

@@ -65,7 +65,7 @@ protected:
 	//{{AFX_MSG(CMainMenuDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
-	afx_msg LRESULT OnAppSoftKey(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnAppSoftKey(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnTimer(UINT nIDTimer);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

@@ -205,6 +205,7 @@ void CFireWallDlg::OnButtonFireWallOk()
 	OnStart(FALSE);
 	::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SetStatusAll(FALSE);
+
 }
 
 void CFireWallDlg::OnButtonFireWallCancel()
@@ -248,11 +249,8 @@ void CFireWallDlg::SetParameters(bool enable, int type, int duration)
 	default:
 		break;
 	}
-	//m_cmbTime.SelectString(0, (LPCTSTR)CString(duration / 3600));
 
-    CString v;
-    v.Format(L"%d", duration / 3600);
-	m_cmbTime.SelectString(0, (LPCTSTR)v);
+	m_cmbTime.SelectString(0, (LPCTSTR)CString(duration / 3600));
 }
 
 void CFireWallDlg::OnTimer(UINT nIDEvent) 
@@ -278,9 +276,8 @@ void CFireWallDlg::OnStart(BOOL isStart)
 //	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, !isStart);
 }
 
-LRESULT CFireWallDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CFireWallDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -292,5 +289,4 @@ LRESULT CFireWallDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
-    return result;
 }

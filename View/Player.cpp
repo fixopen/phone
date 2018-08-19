@@ -28,6 +28,8 @@ Player::Player(CWnd* owner, MediaType mt)
 	index_ = 0;
 	isActiveMode_ = TRUE;
 	isPlayerRun = FALSE;
+	zoom_ = ZOOM_FIT_SCREEN;
+	rotate_ = ROTATE_0;
 }
 
 Player::~Player()
@@ -45,8 +47,7 @@ bool Player::InitPlayer()
 		{
 			RETAILMSG(1, (TEXT("plyCreate ok-----\r\n")));
 			//Dprintf("plyCreate ok\n");
-            int i;
-			for (i = 0; i < 100; ++i)
+			for (int i = 0; i < 100; ++i)
 			{
 				if (plyInit(playerOwner_->m_hWnd, mt_) == 0)
 				{
@@ -67,29 +68,13 @@ bool Player::InitPlayer()
 			plySetRepeat(TRUE, mt_);
 			plySetAutoPreRotate(FALSE, mt_);
 			if(mt_ == mtImage)
-			//	plySetZoom(ZOOM_FILL_SCREEN, mt_);
-					plySetZoom(ZOOM_FIT_SCREEN, mt_);
+				plySetZoom(ZOOM_FIT_SCREEN, mt_);
 			else
 				plySetZoom(/*ZOOM_FIT_SCREEN*/ZOOM_100, mt_);
 
 			SetVolume(gVoiceVolume);
 			Sleep(10);
 
-/*
-			HWND hWnd;
-			if(mt_ == mtVideo)
-			{
-				hWnd =::FindWindow(L"csplayer_win", L"csplayer window"); //
-				if(hWnd)
-					PostMessage(hWnd, WM_MOUSEMOVE, 0, 0);
-			}
-			else if(mt_ == mtImage)
-			{
-				hWnd = ::FindWindow(L"csplayer_win2", L"csplayer window2"); //
-				if(hWnd)
-					PostMessage(hWnd, WM_MOUSEMOVE, 0, 0);
-			}
-*/
 			RETAILMSG(1, (TEXT("playinit ok-----\r\n")));
 			return true;
 		}
@@ -232,21 +217,11 @@ bool Player::PlayerFile(char *filename)
 			CRect rt;
 			owner_->GetWindowRect(&rt);
 			plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
-
-// 			if(mt_ == mtImage)
-// 			{
-// 				HWND hWnd = ::FindWindow(L"csplayer_win2", L"csplayer window2"); 
-// 				Dprintf("mtImage Hwnd %x\r\n", hWnd);
-// 				if(hWnd)
-// 				{
-// 					::SetWindowPos(hWnd, HWND_BOTTOM, rt.left, rt.top, rt.Width(), rt.Height(), 0);
-// 				}
-// 			}
 		}
 		if (plyOpen((LPTSTR)(LPCTSTR)s/*.GetBuffer(256)*/, mt_) == 0)
 		{
 			m_curFilename[0] = L'\0';
-		//	plySetZoom(ZOOM_FIT_SCREEN, mt_);
+			//	plySetZoom(ZOOM_FIT_SCREEN, mt_);
 			//Dprintf("plyOpen(filepath) ok\n");
 			return true;
 		}
@@ -266,17 +241,6 @@ bool Player::PlayerFile(CString filename)
 			CRect rt;
 			owner_->GetWindowRect(&rt);
 			plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
-
-// 			if(mt_ == mtImage)
-// 			{
-// 				HWND hWnd = ::FindWindow(L"csplayer_win2", L"csplayer window2"); 
-// 				Dprintf("mtImage Hwnd %x\r\n", hWnd);
-// 				if(hWnd)
-// 				{
-// 					::SetWindowPos(hWnd, HWND_BOTTOM, rt.left, rt.top, rt.Width(), rt.Height(), 0);
-// 				}
-// 			}
-
 		}
 
 		if (plyOpen(/*filename.GetBuffer(256)*/(LPTSTR)(LPCTSTR)filename, mt_) == 0)
@@ -318,170 +282,10 @@ bool Player::PlayerImage()
 	if(files_.size() == 0)
 		return false;
 	CString filename = files_[index_];
-	DWORD t, a;
-//	int ret1 = DMemprintf("LoadImage 0", t, a);
 	DrawImage_((LPCTSTR)filename);
 	
-//	int ret2 = DMemprintf("LoadImage 1", t, a);
-	/*
-	if(ret1 != ret2)
-	{
-		Dprintf("ret1 - ret2 = %d\r\n",  (ret1-ret2));
-		
-		FILE *file;
-		//static BOOL isStart = TRUE;
-		file = fopen("/flashdrv/my_photo/list.txt", "a");
-		
-		if(file)
-		{
-			SYSTEMTIME curtime;
-			GetLocalTime(&curtime);
-			char txt[128];
-			static int nTotal = 0;
-			nTotal += (ret1 -ret2);
-			sprintf(txt, "(Timer: %d-%d-%d %d:%d:%d) (T:A %x:%x) (%d %d)\r\n", curtime.wYear, curtime.wMonth, curtime.wDay, curtime.wHour, curtime.wMinute, curtime.wSecond, t, a, ret1-ret2, nTotal);
-			fwrite(txt, sizeof(char), strlen(txt), file);
-			fclose(file);
-		}
-	}
-*/
 	return result;
 }
-/*
-#define CXIMAGE_JPG  1
-
-bool Player::PlayerImage()
-{
-	bool result = false;
-	isPlaying_ = 2;
-
-	if(files_.size() == 0)
-		return false;
-	CString filename = files_[index_];
-
-	bool ret;
-	Dprintf("\r\n");
-	int ret1 = DMemprintf("LoadImage 0");
-	CxImage* image_;
-	image_ = new CxImage();
-	int nJPG = filename.Find(_T(".jpg"));
-	int nJPG1 = filename.Find(_T(".JPG"));
-	int nBMP = filename.Find(_T(".bmp"));
-	int nBMP1 = filename.Find(_T(".BMP"));
-	int nTGA = filename.Find(_T(".tga"));
-	char *file_;
-	BYTE *ptr = NULL;
-	UINT32 wFile, hFile;
-	if(nJPG1 >= 0 || nJPG >= 0)
-	{
-		ret = image_->Load((LPCTSTR)filename, CXIMAGE_FORMAT_JPG);
-	}
-	else if(nBMP1 >= 0 || nBMP >= 0)
-	{
-		ret = image_->Load((LPCTSTR)filename, CXIMAGE_FORMAT_BMP);
-	}
-	else if(nTGA >= 0)
-	{
-		ret = image_->Load((LPCTSTR)filename, CXIMAGE_FORMAT_TGA);
-	}
-	else
-	{
-		image_->Destroy();
-		delete image_;
-		return false;
-	}
-
-	if(owner_ && ret)
-	{
-		CDC* hdc = owner_->GetDC();
-		CRect rt;
-		owner_->GetClientRect(rt);
-		int x = 0;
-		int y = 0;
-		int h = image_->GetHeight();//hFile;//image_->GetHeight(); 
-		int w = image_->GetWidth();//wFile;//image_->GetWidth();
-
-		double hp = 234/(double)h;
-		double wp = 480/(double)w;
-
-		if(hp<1.0 || wp<1.0)
-		{
-			if(hp < wp)
-			{
-				w = (w*hp);
-			}
-			else
-			{
-				h = (h*wp);
-			}
-		}
-		if(h>rt.Height())
-		{
-			h = rt.Height();
-		}
-		else
-		{
-			y = (rt.Height() - h)/2;
-		}
-		if(w>rt.Width())
-		{
-			w = rt.Width();
-		}
-		else
-		{
-			x = (rt.Width() - w)/2;
-		}
-
-		DMemprintf("Draw 0");
-		//临时加上相框 20071217 by lxz
-		if(w >= 479 && h >= 233)
-			image_->Draw(hdc->m_hDC, 24, 24, 454-24+1, 210-24+1);//, 0, TRUE);	
-		else
-			image_->Draw(hdc->m_hDC, rt.left+x, rt.top+y, w, h);//, 0, TRUE);
-
-		DMemprintf("Draw 2");
-
-		if(w < rt.Width())
-		{
-			CBrush brsh = RGB(0, 0, 0);
-			CRect rt1 = CRect(rt.left, rt.top, rt.left+x, rt.bottom);
-			CRect rt2 = CRect(rt.left+x+w-1, rt.top, rt.right, rt.bottom);
-			hdc->FillRect(&rt1, &brsh);
-			hdc->FillRect(&rt2, &brsh);
-		}
-	
-		owner_->ReleaseDC(hdc);
-	}
-	image_->Destroy();   
-	delete image_;
-	
-	int ret2 = DMemprintf("LoadImage 1");
-	
-//	Dprintf("result : %d\r\n", ret1-ret2);
-	static int nTotal = 0;
-	if((ret1 -ret2) > 0)
-	{
-		FILE *file;
-		//static BOOL isStart = TRUE;
-		file = fopen("/flashdrv/my_photo/list.txt", "a");
-		
-		if(file)
-		{
-			int length = wcstombs(0, filename, filename.GetLength() * 2);
-			char file_[64];
-			memset(file_, 0, 64);
-			int convLength = wcstombs(file_, filename, filename.GetLength() * 2);
-			char txt[128];
-			nTotal += (ret1 -ret2);
-			sprintf(txt, "file:%s , error: %d %d\r\n", file_, ret1-ret2, nTotal);
-			fwrite(txt, sizeof(char), strlen(txt), file);
-			fclose(file);
-		}
-	}
-
-	return result;
-}
-*/
 
 bool Player::StopImage()
 {
@@ -507,6 +311,104 @@ int Player::Cur()
 	return index_;
 }
 
+bool Player::RotatePicture(CString filename)
+{
+	if (owner_)
+	{
+		CRect rt;
+		owner_->GetWindowRect(&rt);
+		plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+	}
+	if (plyOpen((LPTSTR)(LPCTSTR)filename, mt_) == 0)
+	{
+		if (rotate_ < 270)
+		{
+			rotate_ += 90;
+		}
+		else
+		{
+			rotate_ = 0;
+		}
+		plySetRotate(rotate_, mt_);
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+bool Player::ZoomPlay(CString filename)
+{
+	if(owner_)
+	{
+		CRect rt;
+		owner_->GetWindowRect(&rt);
+		plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+	}
+	if (plyOpen((LPTSTR)(LPCTSTR)filename, mt_) == 0)
+	{
+		if (zoom_ < ZOOM_200)
+		{
+			zoom_ += 50;
+		}
+		plySetZoom(zoom_, mt_);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool Player::NarrowPlay(CString filename)
+{
+	if(owner_)
+	{
+		CRect rt;
+		owner_->GetWindowRect(&rt);
+		plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+	}
+	if (plyOpen((LPTSTR)(LPCTSTR)filename, mt_) == 0)
+	{
+		if (zoom_ > ZOOM_50)
+		{
+			zoom_ -= 50;
+		}
+		plySetZoom(zoom_, mt_);
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+int Player::First()
+{
+	if (files_.size() == 0)
+	{
+		return 0;
+	}
+	
+	index_ = 0;
+	if(mt_ == mtImage)
+		PlayerImage();
+	else
+		PlayerFile(files_[index_]);
+
+	return index_;
+}
+
+int Player::Last()
+{
+	if (files_.size() == 0)
+	{
+		return 0;
+	}
+	
+	index_ = files_.size() - 1;
+	if(mt_ == mtImage)
+		PlayerImage();
+	else
+		PlayerFile(files_[index_]);
+	
+	return index_;
+}
 
 int Player::Up()
 {
@@ -543,7 +445,6 @@ int Player::Down()
 
 bool Player::StopPlayer()
 {
-	isPlayerRun = 0;
 	if( plyStop(mt_) == 0)
 		return true;
 	return false;
@@ -554,8 +455,10 @@ bool Player::PausePlayer(BOOL isPause)
 	if(isPlayerRun)
 	{
 		plyPlay(!isPause, mt_);
+		isPlayerRun = 1;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool Player::ResumePlayer()
@@ -701,11 +604,11 @@ void   Player::DrawImage_(LPCTSTR szFileImage)
 // 				}
 // 			}
 		}
-		if (plyOpen((LPTSTR)(LPCTSTR)s/*.GetBuffer(256)*/, mt_) == 0)
+		if (plyOpen((LPTSTR)(LPCTSTR)s, mt_) == 0)
 		{
 			m_curFilename[0] = L'\0';
-			//plySetZoom(ZOOM_FIT_SCREEN, mt_);
-			//Dprintf("plyOpen(filepath) ok\n");
+			zoom_ = ZOOM_FIT_SCREEN;
+			plySetZoom(zoom_, mt_);
 			return;
 		}
 		return;

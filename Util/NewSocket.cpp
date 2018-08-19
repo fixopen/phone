@@ -37,8 +37,7 @@ void CNewSocket::OnAccept(int nErrorCode)
 {
 	// TODO: Add your specialized code here and/or call the base class
 	
-	//CCeSocket::OnAccept(nErrorCode);
-	CSocket::OnAccept(nErrorCode);
+	CCeSocket::OnAccept(nErrorCode);
 }
 
 void CNewSocket::OnReceive(int nErrorCode) 
@@ -55,22 +54,19 @@ void CNewSocket::OnReceive(int nErrorCode)
 		fclose(fl);
 	}
 */
-	//CCeSocket::OnReceive(nErrorCode);
-	CSocket::OnReceive(nErrorCode);
+	CCeSocket::OnReceive(nErrorCode);
 }
 
 int CNewSocket::Receive(void* lpBuf, int nBufLen, int nFlags) 
 {
 	// TODO: Add your specialized code here and/or call the base class
 	
-	//return CCeSocket::Receive(lpBuf, nBufLen, nFlags);
-	return CSocket::Receive(lpBuf, nBufLen, nFlags);
+	return CCeSocket::Receive(lpBuf, nBufLen, nFlags);
 }
 
 int CNewSocket::Send(const void* lpBuf, int nBufLen, int nFlags) 
 {
 	// TODO: Add your specialized code here and/or call the base class
 	
-	//return CCeSocket::Send(lpBuf, nBufLen, nFlags);
-	return CSocket::Send(lpBuf, nBufLen, nFlags);
+	return CCeSocket::Send(lpBuf, nBufLen, nFlags);
 }

@@ -67,11 +67,11 @@ void CScreenSaveDlg::SetSaveScreenType(int type, BOOL Redraw)
 	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 	
 //	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbContrlBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+//	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+	::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 
 	if(type > 1 || type < 0)
 		type = 1;
@@ -404,9 +404,8 @@ void CScreenSaveDlg::OnChangeEdit1()
 	SetTimer(IDT_SCREENSAVE_INPUTTIME, 30*1000, NULL);
 }
 
-LRESULT CScreenSaveDlg::OnOutEvent(WPARAM w, LPARAM l)
+void CScreenSaveDlg::OnOutEvent(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if(l == 0)
 	{
 		if(playerDlg_->player_->isPlaying_ && playerDlg_->player_->owner_ == playerDlg_)
@@ -422,5 +421,4 @@ LRESULT CScreenSaveDlg::OnOutEvent(WPARAM w, LPARAM l)
 		else if(IsWindowVisible())
 			OnExit();
 	}
-    return result;
 }

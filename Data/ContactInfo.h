@@ -139,12 +139,14 @@ namespace Data
 		~ContactInfo(); //destroy
 		static std::vector<boost::shared_ptr<ContactInfo> > GetFromDatabase(std::string filter, Direction const dir = dNull, int const id = 0, int const pageSize = 0); //get from database
 		static std::vector<boost::shared_ptr<ContactInfo> > GetFromDatabaseByTypeOffsetLength(std::string type, int const offset, int const pageSize);
+		static std::vector<int> GetIdByFilter(std::string const filter, Direction const dir = dNull, std::vector<int>& itemId = std::vector<int>(), int const pageSize = 0);
 		void Update() const; //sync to database
 		void Insert(); //insert new instance to database
         void Remove() const; //delete self from database
 		static void Remove(std::string filter); //delete from database
 	private:
 		static void modifyFieldByDB_(int argc, char** argv, char** columnName, boost::shared_ptr<ContactInfo> item);
+		static std::vector<int> modifyFieldByDb_(int argc, char** argv, char** columnName, int itemId);
 	};
 
     class ContactInfoSoundSegmentMap : public DataAccess<ContactInfoSoundSegmentMap>

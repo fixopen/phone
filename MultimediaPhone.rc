@@ -179,7 +179,7 @@ FONT 10, "System"
 BEGIN
 END
 
-IDD_DIALOG_CONTACTGROUP DIALOG DISCARDABLE  0, 0, 460, 240
+IDD_DIALOG_CONTACTGROUP DIALOG DISCARDABLE  0, 0, 459, 239
 STYLE WS_POPUP
 FONT 10, "System"
 BEGIN
@@ -305,7 +305,7 @@ BEGIN
 END
 
 IDD_DIALOG_CACULATER DIALOG DISCARDABLE  0, 0, 343, 240
-STYLE WS_CHILD
+STYLE WS_POPUP | WS_BORDER
 FONT 10, "System"
 BEGIN
 END
@@ -391,6 +391,18 @@ END
 
 IDD_PIC_SELECT_DLG DIALOG DISCARDABLE  0, 0, 187, 98
 STYLE DS_MODALFRAME | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_MMS DIALOG DISCARDABLE  0, 0, 343, 240
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DLG_MOVIE DIALOG DISCARDABLE  0, 0, 460, 240
+STYLE WS_POPUP
 FONT 10, "System"
 BEGIN
 END
@@ -526,6 +538,11 @@ IDB_BITMAP_RIGHTARROW   BITMAP  DISCARDABLE     "Control\\res\\cdatetime\\rihtar
 IDB_BITMAP_RIGHTARROWD  BITMAP  DISCARDABLE     "Control\\res\\cdatetime\\rihtarrow_d.bmp"
 IDB_BITMAP_LEFTARROWD   BITMAP  DISCARDABLE     "Control\\res\\cdatetime\\leftarrow_d.bmp"
 IDB_PROGRESS_VOLUME2    BITMAP  DISCARDABLE     "Control\\res\\progressbar\\pro_volume.bmp"
+IDB_BITMAP34            BITMAP  DISCARDABLE     "res\\bitmap\\bitmap34.bmp"
+IDB_BITMAP_COMBOX1_FORE BITMAP  DISCARDABLE     "res\\下拉1_fore.bmp"
+IDB_BITMAP_COMBOX1_BACK BITMAP  DISCARDABLE     "res\\下拉1_back.bmp"
+IDB_BITMAP_COMBOX_FORE  BITMAP  DISCARDABLE     "res\\下拉_fore.bmp"
+IDB_BITMAP_COMBOX_BACK  BITMAP  DISCARDABLE     "res\\下拉_back.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -769,6 +786,19 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 91
     END
+
+    IDD_DIALOG_MMS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 336
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 233
+    END
+
+    IDD_DLG_MOVIE, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 155
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -870,7 +900,7 @@ LANGUAGE 9, 1
 #endif //_WIN32
 #include "res\MultimediaPhone.rc2"  // non-Microsoft eMbedded Visual C++ edited resources
 #include "afxres.rc"         // Standard components
-//#include "wceres.rc"         // WCE-specific components
+#include "wceres.rc"         // WCE-specific components
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

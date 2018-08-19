@@ -16,7 +16,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CPasswordDlg dialog
-enum PASSWORD_TYPE{CHECK_PLAYPASSWORD, CHECK_SUPPERPASSWORD, CHECK_CLEARPASSWORD,CHECK_PINPASSWORD,CHECK_PUKPASSWORD, CHECK_LOCKPINPASSWORD, CHECK_UNLOCKPINPASSWORD, SETTINGPLAY_PASSWORD, SETTINGSUPPER_PASSWORD, SETTINGPIN_PASSWORD, PASSWORD_CHECKERROR, PASSWORD_OLDERROR, PASSWORD_NEWERROR};
+enum PASSWORD_TYPE{CHECK_PLAYPASSWORD, CHECK_SUPPERPASSWORD, CHECK_SCREENPASSWORD, CHECK_CLEARPASSWORD,CHECK_PINPASSWORD,CHECK_PUKPASSWORD, CHECK_LOCKPINPASSWORD, CHECK_UNLOCKPINPASSWORD, SETTINGPLAY_PASSWORD, SETTINGSUPPER_PASSWORD,SETTINGSCREEN_PASSWORD, SETTINGPIN_PASSWORD, PASSWORD_CHECKERROR, PASSWORD_OLDERROR, PASSWORD_NEWERROR};
 
 class CPasswordDlg : public CCEDialog
 {
@@ -37,6 +37,7 @@ public:
 	//{{AFX_VIRTUAL(CPasswordDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -45,28 +46,14 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CPasswordDlg)
 	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	afx_msg void OnButtonPasswordOk();
 	afx_msg void OnButtonPasswordCancel();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 private:
 	CMJPGStatic		m_MJPGList;
-/*
-	CCEStatic m_sticTitle;
-	CCEStatic m_sticTip;
-	CCEStatic m_sticOldPassword;
-	CCEStatic m_sticNewPassword1;
-	CCEStatic m_sticNewPassword2;
-
-	CCERectEdit m_edtOldPassword;
-	CCERectEdit m_edtNewPassword1;
-	CCERectEdit m_edtNewPassword2;
-	
-	CCEBmpButton m_btnOk;
-	CCEBmpButton m_btnCancel;
-	CCEFramePartStatic m_sticBackground;
-*/
 
 	CCERectEdit m_edtOldPassword;
 	CCERectEdit m_edtNewPassword1;
@@ -74,6 +61,7 @@ private:
 	
 	PASSWORD_TYPE m_passwordType;
 	CString		  m_password;
+	const char		  *m_tempPassword;
 	int			  m_nStep;
 	HWND		  m_Owner;
 
@@ -82,6 +70,8 @@ public:
 	void	SetType(PASSWORD_TYPE nType, int nCtrl = 0);
 	void    SetOldPassWord(char *pPassWord);
 	void    SetHWnd(HWND handle){m_Owner = handle;}
+	void    SettingType(PASSWORD_TYPE nType, int nCtrl = 0);
+	void    SettingOK();
 };
 
 //{{AFX_INSERT_LOCATION}}

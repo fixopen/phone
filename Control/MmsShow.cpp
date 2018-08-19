@@ -2,22 +2,8 @@
 //
 
 #include "stdafx.h"
-//#include "stdafx.h"
-//#include "MmsView.h"
-//#include "TextViewer.h"
-//#include "stdafx.h"
 #include "MmsShow.h"
-//#include "ImageViewer.h"
-
 #include "../Util/stringOp.h"
-
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 
 // ImageShow
 
@@ -272,25 +258,19 @@ int MmsShow::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
+	int titleHeight = 29;
+	int titleWidth	= 60 ;
+	int textHeight  = 210;
+	int textWidth   = 200 ;
+
 	m_cPic.Create(L"my static", WS_CHILD|WS_VISIBLE|SS_CENTER, 
-		CRect(0,0,200,200), this,0xFFFF);
+		CRect(0,titleHeight,textWidth,titleHeight+textHeight), this,0xFFFF);
 
-
-	//m_cPic.SetImageFilename(L"\\Program Files\\VIEW\\4.jpg");//1.bmp,3.png,4.jpg,5.gif	
-	//m_cPic.SetImageRegion(CPoint(100,100),CSize(100,100));
-	
-	//SetImageFileName(L"\\Program Files\\VIEW\\4.jpg");
-	//SetImageRegion(CPoint(30,30),CSize(90,90));//截取图片
-
-
-//	m_cTextView.Create(L"text", WS_CHILD|WS_VISIBLE|SS_CENTER, 
-//	CRect(200,0,300,200), this,0xFFFF); 
-
-	m_cTextView.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN, 
-		CRect(200,0,300,178), this,0xFFFF); 
+	m_cTextView.Create(WS_CHILD|WS_VISIBLE|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN, 
+		CRect(textWidth,titleHeight,textWidth+219,titleHeight+210), this,0xFFFF); 
 
 	m_cMmsTitle.Create(WS_CHILD|WS_VISIBLE|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN,
-		CRect(60,0,590,29),this,0xFFFF);
+		CRect(titleWidth,0,590,titleHeight),this,0xFFFF);
 
 /*	LOGFONT lf;
 	memset(&lf, 0, sizeof(LOGFONT));	// zero out structure
@@ -301,7 +281,7 @@ int MmsShow::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetTextSize(CPoint(100,100),CSize(400,400));
 	Invalidate(false);
 */
-	m_btnPicture.Create(L"保存图片",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(25,BTN_HEITHT,25+BTN_WIDTH,BTN_HEITHT+40),this,IDC_BTN_PICTURE);
+/*	m_btnPicture.Create(L"保存图片",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(25,BTN_HEITHT,25+BTN_WIDTH,BTN_HEITHT+40),this,IDC_BTN_PICTURE);
 	m_btnPicture.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
 	m_btnPicture.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
 	m_btnPicture.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
@@ -336,9 +316,10 @@ int MmsShow::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_btnSave.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
 	m_btnSave.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
 	m_btnSave.DrawBorder();
-	
+	*/
+
 	COLORREF m_bkRGB = ::GetSysColor(COLOR_STATIC);//背景色是STATIC
-	m_cstcTitle.Create(L"标题:",WS_CHILD|WS_VISIBLE,CRect(0,0,60,29),this);
+	m_cstcTitle.Create(L"标题:",WS_CHILD|WS_VISIBLE,CRect(0,0,titleWidth,titleHeight),this);
 	m_cstcTitle.SetColor(RGB(0, 0, 0), m_bkRGB);
 	
 	m_picPathDlg.Create(IDD_PIC_SELECT_DLG,this);
@@ -381,8 +362,7 @@ BOOL MmsShow::Create(DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID
 	}
 		
 	BOOL b =  CWnd::CreateEx(WS_EX_STATICEDGE, (LPCTSTR)strMyClass, NULL, dwStyle|WS_CHILD, rect, pParentWnd, nID);
-//	SetImageShow(true);
-//	SetTextShow(true);
+
 	return b ;
 }
 
@@ -448,23 +428,29 @@ void MmsShow::SetTextUpdate()
 //	m_cTextView.Update();
 }
 
-void MmsShow::FromListName(CString const& allpath)
+void MmsShow::FromListName(CString const allpath)
 { 
-	CFile file;
-	if (file.Open(allpath,CFile::modeRead,NULL))
-	{
-		ULONGLONG dwLength = file.GetLength();
-		if (dwLength <= 48 * 1024)//文件小于48K
-		{
-			m_cImagePath = allpath ;
-		}
-		else
-		{
-			m_picPathDlg.SetClue(L"图片太大,不能插入!");
-			m_picPathDlg.SetTimer(PIC_SAVE_TIMER,1000,NULL);
-		}
-	}
-	
+// 	CFile file;
+// 	if (file.Open(allpath,CFile::modeRead,NULL))
+// 	{
+// 		ULONGLONG dwLength = file.GetLength();
+// 		if (dwLength <= 48 * 1024)//文件小于48K
+// 		{
+// 			m_cImagePath = allpath ;
+// 		}
+// 		else
+// 		{
+// 			m_picPathDlg.SetClue(L"图片太大,不能插入!");
+// 			m_picPathDlg.SetTimer(PIC_SAVE_TIMER,1000,NULL);
+// 			return;
+// 
+// 		}
+// 	}
+
+	m_cImagePath = allpath ;
+
+	InitialDefRegion();//设置缺省的区域
+	InsertPicture();//插入图片
 }
 	
 void MmsShow::SetTextShow(BOOL show /* = true */)
@@ -485,8 +471,9 @@ void MmsShow::SetTextShow(BOOL show /* = true */)
 		m_cTextView.SetWindowText(ws.c_str());
 	}
 	m_cTextView.ShowWindow(show);
+
 }
-BOOL MmsShow::FindFileSmil(std::wstring const& filename)
+BOOL MmsShow::FindFileSmil(std::wstring const filename)
 {  
 	Clear();
 	SetMmsRead();
@@ -525,19 +512,10 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 					
 					if (m_cMmsPar.size() > 1)//有两个以上par,显示上下页
 					{
-						m_btnNextPage.ShowWindow(TRUE);
-						m_btnUpPage.ShowWindow(TRUE);
+//						m_btnNextPage.ShowWindow(TRUE);
+//						m_btnUpPage.ShowWindow(TRUE);
 					}
 					
-					//这页的内容全是空的，清除该页
-				/*	int b = m_cMmsPar.size() ;
-					std::vector<MMS::MMSWarp::MMS_PAR>::iterator it;
-					for(it=m_cMmsPar.begin();it!= m_cMmsPar.end();it++)
-					{
-						int a ;
-						a  = 0 ;
-					}*/
-
 					m_bFindSiml	= TRUE ;
 					GetMmsRegionInfo();
 					InitialRegion();
@@ -552,6 +530,7 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 					return	TRUE ;
 
 				}
+
 				if(strfl.Find(L".txt") > 0)
 				{						
 					CFile f;
@@ -611,9 +590,10 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 	{  	
 		if (m_cDefImagePath.size() > 1 || m_cDefTxtContent.size() > 1)
 		{
-			m_btnNextPage.ShowWindow(TRUE);//有两个以上par,显示上下页
-			m_btnUpPage.ShowWindow(TRUE);	
+//			m_btnNextPage.ShowWindow(TRUE);//有两个以上par,显示上下页
+//			m_btnUpPage.ShowWindow(TRUE);	
 		}
+
 		m_bFindSiml	= FALSE;
 		GetDefRegionInfo();
 		InitialDefRegion();
@@ -626,6 +606,184 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 	return TRUE	;
 
 }
+void MmsShow::SetTransit(std::wstring const filename)
+{
+	Clear();
+
+	m_uState  =		2 ;
+	m_cMmsTitle.SetReadOnly(FALSE);
+	m_cTextView.SetReadOnly(FALSE);
+
+	CString	str = filename.c_str();
+	CString str1 = str ;//保存全路径
+	m_cSmilPath	 = str ;
+	if (str.Find(L"\\",str.GetLength() - 1) <= 0 && str.Find(L"/",str.GetLength() - 1) <= 0 )
+	{	
+		return  ;
+	}
+	
+	str = str + L"*" ;
+	WIN32_FIND_DATA fd;
+	HANDLE hfind;
+	hfind	  =	 FindFirstFile(str,&fd);
+	if(hfind !=	 INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			if(fd.dwFileAttributes==FILE_ATTRIBUTE_DIRECTORY)
+			{ 
+				//如果是文件夹
+			}
+			else
+			{ 
+				//如果是文件
+				CString strfl = fd.cFileName ;
+
+				if ( strfl.Find(L".smil") > 0 || strfl.Find(L".smi") > 0 || strfl.Find(L".SMIL") > 0 || strfl.Find(L".SMI") > 0)
+				{
+					//解析smil	
+					std::wstring	wr		= str1 + strfl	;
+					std::string		file	= Util::StringOp::FromCString(wr.c_str())	;//ToUTF8
+					MMS::MMSWarp::GetMMSWarp()->DecodeSmil(file, m_cMmsPar, m_cMmsLayOut);
+					
+					m_bFindSiml	= TRUE ;
+					GetMmsRegionInfo();
+					InitialRegion();
+					SetImageShow(true);
+					SetTextShow(true);
+					
+					return ;
+
+				}
+
+				if(strfl.Find(L".txt") > 0)
+				{						
+					CFile f;
+					CFileException e;
+					if( f.Open(str1 +strfl, CFile::modeRead, &e ) )
+					{
+						char *wr ;
+						wr = new CHAR[1024*10];//10k
+						memset(wr,0,1024*10);
+
+						wchar_t *uicode = NULL ;//转化成uicode
+						uicode = new wchar_t[1024*10];//10k
+						memset(uicode,0,1024*10);
+						
+						int length = f.GetLength() ;
+						f.Read(wr,length);
+						wr[length] = '\0';
+
+						int index = 0 ;
+						int count = strlen(wr);//
+						int iNum =0 ;
+						int offset =0 ;
+						while( offset!= -1 && index < count)
+						{
+							offset  = utf82unicode((unsigned char *)wr,index,count,uicode[iNum]);
+							index += offset;
+							iNum++;					
+						}
+						m_cTxtContent = uicode ;
+						m_cDefTxtContent.push_back(m_cTxtContent);
+						delete []wr ;
+						delete []uicode ;
+						f.Close();
+					}
+
+				}
+				if(strfl.Find(L".jpg") > 0 || strfl.Find(L".bmp") > 0 || strfl.Find(L".png") > 0 || strfl.Find(L".gif") > 0)
+				{
+					m_cImagePath		= str1 + strfl;
+					m_cDefImagePath.push_back(str1 + strfl);
+				}
+			}
+		}
+		while(FindNextFile(hfind,&fd));
+	}
+	
+	if(!m_bFindSiml)//没有smil文件
+	{  	
+		int length = 0;
+		MMS::MMSWarp::MMS_PAR par;
+		MMS::MMSWarp::MMS_SRC src ;
+		
+		if (m_cDefImagePath.size() > m_cDefTxtContent.size())
+		{
+			length = m_cDefTxtContent.size();
+		}
+		else
+		{
+			length = m_cDefImagePath.size();
+		}
+
+		for (int i = 0  ; i < length ;i++)
+		{
+			src.type	= MMS::MMSWarp::stText ;
+			src.name	= Util::StringOp::FromCString(m_cDefTxtContent[i]);
+			src.alt		= "";
+			src.dur		= 5;
+			src.end		= 5;
+			src.region	= "";
+			src.begin	= 0 ;
+			
+			par.srcs.push_back(src);
+			
+			src.type	= MMS::MMSWarp::stImge ;
+			src.name	= Util::StringOp::FromCString(m_cDefImagePath[i]);
+			src.alt		= "";
+			src.dur		= 5;
+			src.end		= 5;
+			src.region	= "";
+			src.begin	= 0 ;
+			
+			par.srcs.push_back(src);
+
+			m_cMmsPar.push_back(par);
+			par.srcs.clear();
+
+		}
+
+		for (;i < m_cDefImagePath.size() ;i++)
+		{
+			src.type	= MMS::MMSWarp::stImge ;
+			src.name	= Util::StringOp::FromCString(m_cDefImagePath[i]);
+			src.alt		= "";
+			src.dur		= 5;
+			src.end		= 5;
+			src.region	= "";
+			src.begin	= 0 ;
+			
+			par.srcs.push_back(src);
+			m_cMmsPar.push_back(par);
+			par.srcs.clear();
+
+		}
+
+		for (;i < m_cDefTxtContent.size() ;i++)
+		{
+			src.type	= MMS::MMSWarp::stText ;
+			src.name	= Util::StringOp::FromCString(m_cDefTxtContent[i]);
+			src.alt		= "";
+			src.dur		= 5;
+			src.end		= 5;
+			src.region	= "";
+			src.begin	= 0 ;
+			
+			par.srcs.push_back(src);
+			m_cMmsPar.push_back(par);
+			par.srcs.clear();
+
+		}
+		
+		GetMmsRegionInfo();
+		InitialRegion();
+		SetImageShow(true);
+		SetTextShow(true);
+	}
+
+}
+
 void MmsShow::InsertPicture()
 {
 	SetImageShow();
@@ -634,7 +792,7 @@ void MmsShow::InsertPicture()
 		m_cImagePath.Find(L".GIF") >0 ||m_cImagePath.Find(L".gif") >0 ||
 		m_cImagePath.Find(L".BMP") >0 ||m_cImagePath.Find(L".bmp") >0)
 	{
-		m_btnPicture.SetWindowText(L"删除图片");
+//		m_btnPicture.SetWindowText(L"删除图片");
 		m_uState = 3;
 	}
 	
@@ -732,6 +890,11 @@ void MmsShow::InitialDefPar()
 void MmsShow::InitialRegion()
 {
 	//
+	if (m_cMmsPar.size() == 0)
+	{
+		return ;
+	}
+
 	MMS::MMSWarp::MMS_REGION		region			;//文本
 	MMS::MMSWarp::MMS_REGION		region1			;//图片
 
@@ -751,8 +914,7 @@ void MmsShow::InitialRegion()
 	region1.top		= TEXT_TOP								;
 
 	// 目前只能显示一张图片，一个文本
-    int j;
-	for (j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
+	for (int j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
 	{   
 		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("image") == 0 )
 		{
@@ -771,8 +933,6 @@ void MmsShow::InitialRegion()
 			region1.left	= 0		;
 			region1.top		= TEXT_TOP		;
 
-		//	region1.left	= m_cMmsLayOut.regions["Image"].left		;
-		//	region1.top		= m_cMmsLayOut.regions["Image"].top			;
 		}
 	
 		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("text") == 0 )
@@ -788,8 +948,6 @@ void MmsShow::InitialRegion()
 			{
 				region.width	= TEXT_REGION_WIDTH						;
 				region.height	= TEXT_REGION_HEIGHT					;
-			//	region.width	= m_cMmsLayOut.regions["text"].width	;
-			//	region.height	= m_cMmsLayOut.regions["text"].height	;								 
 
 			}
 			region.id			= "text"								;
@@ -797,8 +955,6 @@ void MmsShow::InitialRegion()
 			region.left			= IMAGE_REGION_WIDTH					;							
 			region.top			= TEXT_TOP										;		
 
-//			region.left			= m_cMmsLayOut.regions["Text"].left		;							
-// 			region.top			= m_cMmsLayOut.regions["Text"].top		;
 
 		}
 		
@@ -926,7 +1082,7 @@ void MmsShow::SaveParInfo()
 			if (m_cImagePath !=L"")//再次保存
 			{
 				wr = m_cImagePath								;
-				sr = Util::StringOp::FromCString(wr.c_str())									;
+				sr = Util::StringOp::FromCString(wr.c_str())	;
 				m_cMmsPar[m_uMmsParPlay].srcs[i].name = sr		;  
 			}
 			else
@@ -1138,17 +1294,7 @@ BOOL MmsShow::GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp
 		mmsPar.push_back(m_cMmsPar[i]);
 	}
 
-	/*
-		if (m_cMmsLayOut.regions.size() > 0)
-		{
-			mmsLayout.regions.clear();
-		}
-		mmsLayout.root_layout.height = m_cMmsLayOut.root_layout.height;
-		mmsLayout.root_layout.width = m_cMmsLayOut.root_layout.width;
-		mmsLayout.regions["image"] = m_cMmsLayOut.regions["image"];
-		mmsLayout.regions["text"] = m_cMmsLayOut.regions["text"];
-		title = m_cTitleName ;
-	*/
+
     if (mmsPar.size() > 0)
     {
 		set = TRUE ;
@@ -1174,10 +1320,12 @@ CString MmsShow::GetFileName(CString const allpath)
 }
 void MmsShow::GetMmsRegionInfo()
 {
-	if (m_cMmsPar.size() > 0)
+	if ( m_cMmsPar.size() == 0)
 	{
-		m_uParDur	= m_cMmsPar[m_uMmsParPlay].duration ;//一个par的显示时间
+		return ;
 	}
+
+	m_uParDur	= m_cMmsPar[m_uMmsParPlay].duration ;//一个par的显示时间
 	m_cTxtContent	= L"";
 	m_cImagePath	= L"";
 	for (int j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
@@ -1267,11 +1415,11 @@ void MmsShow::GetMmsRegionInfo()
 	{
 		if (m_cImagePath != L"")//每次检查按钮是否可用
 		{
-			m_btnPicture.ShowWindow(TRUE);
+//			m_btnPicture.ShowWindow(TRUE);
 		}
 		else
 		{
-			m_btnPicture.ShowWindow(FALSE);
+//			m_btnPicture.ShowWindow(FALSE);
 		}
 	}
 }
@@ -1294,14 +1442,16 @@ void MmsShow::GetDefRegionInfo()
 void MmsShow::SetMmsEdit()
 {
 	Clear();
-	m_uState  =		2 ;
+	m_uState  =	2 ;
 	m_cMmsTitle.SetReadOnly(FALSE);
 	m_cTextView.SetReadOnly(FALSE);
-	m_btnPicture.SetWindowText(L"插入图片");
-	m_btnMusic.SetWindowText(L"插入音乐");
-	m_btnVedio.SetWindowText(L"插入视频");
-	m_btnNextPage.ShowWindow(TRUE);
-	m_btnUpPage.ShowWindow(TRUE);
+
+// 	m_btnPicture.SetWindowText(L"插入图片");
+// 	m_btnMusic.SetWindowText(L"插入音乐");
+// 	m_btnVedio.SetWindowText(L"插入视频");
+// 	m_btnNextPage.ShowWindow(TRUE);
+// 	m_btnUpPage.ShowWindow(TRUE);
+	
 	InitialDefRegion();
 	SetImageShow();
 	SetTextShow();
@@ -1312,11 +1462,13 @@ void MmsShow::SetMmsRead()
 	m_uState	=    1;
 	m_cTextView.SetReadOnly(TRUE);
 	m_cMmsTitle.SetReadOnly(TRUE);
-	m_btnPicture.SetWindowText(L"保存图片");
-	m_btnMusic.SetWindowText(L"保存音乐");
-	m_btnVedio.SetWindowText(L"保存视频");
-	m_btnNextPage.ShowWindow(FALSE);
-	m_btnUpPage.ShowWindow(FALSE);
+	
+// 	m_btnPicture.SetWindowText(L"保存图片");
+// 	m_btnMusic.SetWindowText(L"保存音乐");
+// 	m_btnVedio.SetWindowText(L"保存视频");
+// 	m_btnNextPage.ShowWindow(FALSE);
+// 	m_btnUpPage.ShowWindow(FALSE);
+
 }
 
 void MmsShow::OnTimer(UINT nIDEvent) 
@@ -1505,7 +1657,7 @@ void MmsShow::OnBtnPicture()
 	else if (3 == m_uState)//删除
 	{
 		ClosePicture();
-		m_btnPicture.SetWindowText(L"插入图片");
+//		m_btnPicture.SetWindowText(L"插入图片");
 		m_uState = 2;
 
 	}
@@ -1585,7 +1737,7 @@ void MmsShow::OnBtnUp()
 		m_iPageNum-- ;
 		if (m_iPageNum < 0 )
 		{	
-			m_btnUpPage.EnableWindow(FALSE);
+//			m_btnUpPage.EnableWindow(FALSE);
 			m_iPageNum = 0;
 			return ;
 		}
@@ -1608,12 +1760,12 @@ void MmsShow::OnBtnUp()
 		SetTextShow();
 		if (m_cImagePath != L"")
 		{
-			m_btnPicture.SetWindowText(L"删除图片")	;
+//			m_btnPicture.SetWindowText(L"删除图片")	;
 			m_uState = 3;
 		}
 		else
 		{
-			m_btnPicture.SetWindowText(L"插入图片")	;
+//			m_btnPicture.SetWindowText(L"插入图片")	;
 			m_uState = 2;
 		}
 		
@@ -1679,7 +1831,7 @@ void MmsShow::OnBtnNext()
 	if (2 == m_uState || 3 == m_uState)
 	{
 		//如果当前页数小于PAR,PAR就不添加
-		m_btnUpPage.EnableWindow(TRUE);
+//		m_btnUpPage.EnableWindow(TRUE);
 		m_iPageNum++ ;
 		m_uMmsParPlay = m_iPageNum -1 ;
 
@@ -1694,6 +1846,8 @@ void MmsShow::OnBtnNext()
 			if (m_cImagePath.IsEmpty() && m_cTxtContent.IsEmpty())//内容为空不新建
 			{
 				m_iPageNum--;
+
+				m_uMmsParPlay--;
 			}			
 			//如果下一页有内容就显示
 			m_uMmsParPlay += 1 ;
@@ -1704,12 +1858,12 @@ void MmsShow::OnBtnNext()
 				SetTextShow();
 				if (m_cImagePath != L"")
 				{
-					m_btnPicture.SetWindowText(L"删除图片")	;
+//					m_btnPicture.SetWindowText(L"删除图片")	;
 					m_uState = 3;
 				}
 				else
 				{
-					m_btnPicture.SetWindowText(L"插入图片")	;
+//					m_btnPicture.SetWindowText(L"插入图片")	;
 					m_uState = 2;
 				}
 			}
@@ -1720,7 +1874,7 @@ void MmsShow::OnBtnNext()
 				SetTextShow();
 				m_cTextView.Invalidate(FALSE);
 				m_uState = 2 ;//插入图片
-				m_btnPicture.SetWindowText(L"插入图片");
+//				m_btnPicture.SetWindowText(L"插入图片");
 			}
 			
 		}
@@ -1737,7 +1891,7 @@ void MmsShow::OnBtnNext()
 			SetTextShow();
 			m_cTextView.Invalidate(FALSE);
 			m_uState = 2 ;//插入图片
-			m_btnPicture.SetWindowText(L"插入图片");			
+//			m_btnPicture.SetWindowText(L"插入图片");			
 			
 		}
 
@@ -1804,6 +1958,17 @@ HBRUSH MmsShow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hbr = CWnd::OnCtlColor(pDC, pWnd, nCtlColor);	
 	return hbr;
 }
+
+
+#include "stdafx.h"
+//#include "ImageViewer.h"
+
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[]=__FILE__;
+#define new DEBUG_NEW
+#endif
 
 
 BEGIN_MESSAGE_MAP(CImageViewer, CStatic)
@@ -2030,6 +2195,7 @@ BOOL CImageViewer::SetBitmap(LPCTSTR lpszFileName, EImageSize Emode)
 	if (nDotPos != -1)
 		csExt = csExt.Mid(++nDotPos);
 
+	csExt.MakeLower();
 	int nImgType = FindType(csExt);
 	if (nImgType == 2)
 	{
@@ -2083,6 +2249,7 @@ BOOL CImageViewer::SetBitmap(const CByteArray& ImgBuffer, CString csFileName, EI
 	if (nDotPos != -1)
 		csExt = csExt.Mid(++nDotPos);
 
+	csExt.MakeLower();
 	int nImgType = FindType(csExt);
 	if (nImgType == 2)
 		m_bIsGIF = TRUE;
@@ -2388,9 +2555,10 @@ BOOL CImageViewer::GetPaintRect(RECT *lpRect)
 	return CopyRect(lpRect, &m_PaintRect);
 }
 
-int CImageViewer::FindType(const CString& ext)
+int CImageViewer::FindType(const CString ext)
 {
 //	return CxImage::GetTypeIdFromName(ext);
+
 	if(ext.Compare(L"gif") == 0)
 	{
 		return 2;
@@ -2447,6 +2615,14 @@ void CImageViewer::GifStop()
 	}
 
 }
+
+// TextViewer.cpp : implementation file
+//
+
+#include "stdafx.h"
+//#include "MmsView.h"
+//#include "TextViewer.h"
+
 
 // CTextViewer
 
@@ -2578,6 +2754,10 @@ HBRUSH CTextViewer::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 }
 // CTextViewer message handlers
 
+
+#include "stdafx.h"
+//#include "GifShow.h"
+
 DWORD WINAPI ThreadFunc(CGIFShow* ptr)
 {
 	ptr->Play1();
@@ -2699,6 +2879,8 @@ BOOL CGIFShow::Play1(void)
 	CRect rect;
 	m_pwnd->GetClientRect(&rect);
 	
+	Sleep(800);
+
 	hDC = m_hWndHDC;
 	hMemDC = ::CreateCompatibleDC(hDC);
 	hMemDC1 = ::CreateCompatibleDC(hDC);
@@ -3292,8 +3474,8 @@ BEGIN_MESSAGE_MAP(CPicPathSet, CDialog)
 	//{{AFX_MSG_MAP(CPicPathSet)
 	ON_BN_CLICKED(IDC_BTN_PIC1,OnbtnPic1)
 	ON_BN_CLICKED(IDC_BTN_PIC2,OnbtnPic2)
-	ON_BN_CLICKED(IDC_BTN_OK,OnbtnOk)
-	ON_BN_CLICKED(IDC_BTN_CANCEL,OnbtnCancel)
+	ON_BN_CLICKED(MMS_BTN_OK,OnbtnOk)
+	ON_BN_CLICKED(MMS_BTN_CANCEL,OnbtnCancel)
 	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -3304,20 +3486,22 @@ END_MESSAGE_MAP()
 BOOL CPicPathSet::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
-		
+	
+	COLORREF m_bkRGB = ::GetSysColor(COLOR_STATIC);//背景色是STATIC
+	
 	m_btnPicSet1.Create(L"我的照片", WS_CHILD|WS_VISIBLE, CRect(20,PIC_BTN_HEIGHT,150,PIC_BTN_HEIGHT+34), this, IDC_BTN_PIC1);
-	m_btnPicSet1.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
+	m_btnPicSet1.SetColor(RGB(0, 0, 0), m_bkRGB);
 
 	m_btnPicSet2.Create(L"我的彩信", WS_CHILD|WS_VISIBLE, CRect(20,PIC_BTN_HEIGHT+34+8,150,PIC_BTN_HEIGHT+34+8+34), this, IDC_BTN_PIC2);
-	m_btnPicSet2.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
-	
+	m_btnPicSet2.SetColor(RGB(0, 0, 0), m_bkRGB);
+//	m_btnPicSet2.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
+
 	CButton *pButton[2];
 	pButton[0] = &m_btnPicSet1;
 	pButton[1] = &m_btnPicSet2;	
 	m_btnPicSet1.SetGroupButton(pButton, 2);
 	m_btnPicSet2.SetGroupButton(pButton, 2);
 	
-	COLORREF m_bkRGB = ::GetSysColor(COLOR_STATIC);//背景色是STATIC
 	m_cImageName.Create(L"", WS_CHILD, CRect(20,10,300,40), this);//显示文本内容
 	m_cImageName.SetColor(RGB(0, 0, 0), m_bkRGB);
 	
@@ -3327,13 +3511,13 @@ BOOL CPicPathSet::OnInitDialog()
 	m_cSaveClue.Create(L"", WS_CHILD, CRect(0,70,140,110), this);//显示文本内容
 	m_cSaveClue.SetColor(RGB(0, 0, 0), m_bkRGB);
 
-	m_btnOK.Create(L"确定",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(200,PIC_BTN_HEIGHT,200+PIC_BTN_WIDTH,PIC_BTN_HEIGHT+34),this,IDC_BTN_OK);
+	m_btnOK.Create(L"确定",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(200,PIC_BTN_HEIGHT,200+PIC_BTN_WIDTH,PIC_BTN_HEIGHT+34),this,MMS_BTN_OK);
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
 	m_btnOK.DrawBorder();
 
-	m_btnCancel.Create(L"取消",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(200,PIC_BTN_HEIGHT + 32 + 8,200+PIC_BTN_WIDTH,PIC_BTN_HEIGHT+34*2+8),this,IDC_BTN_CANCEL);
+	m_btnCancel.Create(L"取消",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(200,PIC_BTN_HEIGHT + 32 + 8,200+PIC_BTN_WIDTH,PIC_BTN_HEIGHT+34*2+8),this,MMS_BTN_CANCEL);
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
@@ -3577,8 +3761,8 @@ void CListContral::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CListContral, CDialog)
 	//{{AFX_MSG_MAP(CListContral)
-	ON_BN_CLICKED(IDC_BTN_OK,OnbtnOk)
-	ON_BN_CLICKED(IDC_BTN_CANCEL,OnbtnCancel)
+	ON_BN_CLICKED(MMS_BTN_OK,OnbtnOk)
+	ON_BN_CLICKED(MMS_BTN_CANCEL,OnbtnCancel)
 	ON_MESSAGE(WM_LISTCTRL_CLICK,OnListCltrlClick)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -3591,13 +3775,13 @@ BOOL CListContral::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-	m_btnOK.Create(L"确定",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(100,330,100+100,330+52),this,IDC_BTN_OK);
+	m_btnOK.Create(L"确定",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(100,330,100+100,330+52),this,MMS_BTN_OK);
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
 	m_btnOK.DrawBorder();
 	
-	m_btnCancel.Create(L"取消",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(304,330 ,304+100,330+52),this,IDC_BTN_CANCEL);
+	m_btnCancel.Create(L"取消",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(304,330 ,304+100,330+52),this,MMS_BTN_CANCEL);
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(248,214,147));
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(248,214,147));
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
@@ -3686,16 +3870,14 @@ void CListContral::SetMwnd(CWnd *pwnd)
 }
 
 void CListContral::OnbtnOk()
-{
+{	
+	ShowWindow(FALSE);
 	m_callpath = GetPath() + m_callpath ;
 	if (m_callpath != L"")//
 	{		 
 		 ((MmsShow*)m_pWnd)->FromListName(m_callpath);
-		 ((MmsShow*)m_pWnd)->InitialDefRegion();//设置缺省的区域
-		 ((MmsShow*)m_pWnd)->InsertPicture();//插入图片
 	}
 	Clear();
-	ShowWindow(FALSE);
 	//没选择的情况		
 }
 void CListContral::OnbtnCancel()
@@ -3725,9 +3907,8 @@ CString CListContral::GetPath()
 	return allpath;
 } 
 
-LRESULT CListContral::OnListCltrlClick(WPARAM w, LPARAM l)
+void CListContral::OnListCltrlClick(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	if ( IDC_LIST_CONTRAL== (UINT)w)//得到当前哪项被点击
 	{
 		POSITION pos = m_lslist.GetFirstSelectedItemPosition();
@@ -3791,5 +3972,4 @@ LRESULT CListContral::OnListCltrlClick(WPARAM w, LPARAM l)
 			}
 		}
 	}
-    return result;
 }

@@ -71,9 +71,8 @@ BOOL C3GTelDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-LRESULT C3GTelDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void C3GTelDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
@@ -118,5 +117,4 @@ LRESULT C3GTelDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
-    return result;
 }

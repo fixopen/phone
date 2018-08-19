@@ -54,20 +54,19 @@ BEGIN_MESSAGE_MAP(CCardSelectDlg, CDialog)
 	
 	ON_BN_CLICKED(IDC_BTN_SELECTALL,OnBtnSelectAll)
 	ON_BN_CLICKED(IDC_BTN_CANCELALL,OnBtnCancelAll)
-	ON_BN_CLICKED(IDC_BTN_OK,OnBtnOk)
-	ON_BN_CLICKED(IDC_BTN_CANCEL,OnBtnCancel)
+	ON_BN_CLICKED(MMS_BTN_OK,OnBtnOk)
+	ON_BN_CLICKED(MMS_BTN_CANCEL,OnBtnCancel)
 
 	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
-LRESULT CCardSelectDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+void CCardSelectDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 {
 	LRESULT ret;
 	if(w == IDC_LIST_CONTACT_TYPE)
 		OnClickListType(NULL, &ret);
 	else if(w == IDC_LIST_CONTRAL_CARDSELECT)
 		OnClickListList(NULL, &ret);
-    return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -104,6 +103,9 @@ BOOL CCardSelectDlg::OnInitDialog()
 	m_lsList.SetExtendedStyle(m_lsList.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
 	m_lsList.InsertColumn(0, _T("姓名"), LVCFMT_LEFT, 250);
 	m_lsList.InsertColumn(1, _T("电话号码"), LVCFMT_LEFT, 180+60);
+
+	m_lsList.ShowWindow(false);
+	m_lsType.ShowWindow(false);
 //	m_lsList.InsertColumn(2, _T("Duty"), LVCFMT_LEFT, 150-22+26);
 //	m_lsList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(115, 45, 115+572, 45+303), this, IDC_LIST_CONTRAL_CARDSELECT, TRUE, 0, FALSE);
 
@@ -139,7 +141,7 @@ BOOL CCardSelectDlg::OnInitDialog()
 	
 	//xbegin += btnwidth + space ;
 	ybegin += btnheight + space ;
-	m_btnOK.Create(L"确定",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(xbegin,ybegin,xbegin+btnwidth,ybegin+btnheight),this,IDC_BTN_OK);
+	m_btnOK.Create(L"确定",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(xbegin,ybegin,xbegin+btnwidth,ybegin+btnheight),this,MMS_BTN_OK);
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(189, 206, 239));
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(189, 206, 239));
 	m_btnOK.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(189, 206, 239));
@@ -147,7 +149,7 @@ BOOL CCardSelectDlg::OnInitDialog()
 	
 	//xbegin += btnwidth + space ; 
 	ybegin += btnheight + space ;
-	m_btnCancel.Create(L"取消",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(xbegin,ybegin,xbegin+btnwidth,ybegin+btnheight),this,IDC_BTN_CANCEL);
+	m_btnCancel.Create(L"取消",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,CRect(xbegin,ybegin,xbegin+btnwidth,ybegin+btnheight),this,MMS_BTN_CANCEL);
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(189, 206, 239));
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(189, 206, 239));
 	m_btnCancel.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(189, 206, 239));
@@ -325,8 +327,7 @@ void CCardSelectDlg::ShowArrayInList(std::vector<boost::shared_ptr<Data::Contact
 		}
 		else
 		{
-            int j;
-			for (j = 0 ; j < m_vContact.size();j++)
+			for (int j = 0 ; j < m_vContact.size();j++)
 			{
 				if (0 == m_vContact[j].name.compare(name) && 0 == m_vContact[j].telnum.compare(telnum))
 				{	
@@ -574,8 +575,7 @@ void CCardSelectDlg::OnBtnSelectAll()
 		Util::ATCommandWarp::SIM_FORMAT vc ;
 		vc.name		= name	;	
 		vc.telnum   = mobilephone ;
-        int j;
-		for (j = 0 ; j < m_vContact.size() ; j++)
+		for (int j = 0 ; j < m_vContact.size() ; j++)
 		{
 			if ( 0 == m_vContact[j].name.compare(name) && 0 == m_vContact[j].telnum.compare(mobilephone))
 			{

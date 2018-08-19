@@ -46,7 +46,7 @@ void CopyDirFiles(TCHAR *src, TCHAR *des, BOOL bOverflow)
 	g_bAdjustPanel = TRUE;
 	int nFileCount = CountFolderSize(src);
 	int nFileIndex = 0;
-
+	
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetParam(0, 0, nFileCount, 1);
 
 	CString SrcDir = src;
@@ -85,7 +85,83 @@ void CopyDirFiles(TCHAR *src, TCHAR *des, BOOL bOverflow)
 				}
 				nFileIndex++;
 				((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetPos(nFileIndex);
-			//	wprintf(_T("copy %s to %s\n"), wideFromName, wideToName);
+			}
+			
+			if (!FindNextFile(hFind, &FindFileData))
+			{
+				DWORD d = GetLastError();
+				if (d == ERROR_NO_MORE_FILES)
+				{
+					Dprintf("find end.\n");
+					finished = true;
+				}
+				else
+				{
+					Dprintf("Couldn't find next file.\n");
+				}
+			}
+			::Sleep(10);
+		} while (!finished);
+		FindClose(hFind);
+	}
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetPos(nFileCount);
+	g_bAdjustPanel = FALSE;
+}
+
+void CopyDirectoryFiles(TCHAR *src, TCHAR *des, DWORD &freeBytes, BOOL bOverflow)
+{
+	g_bAdjustPanel = TRUE;
+	int nFileCount = CountFolderSize(src);
+	int nFileIndex = 0;
+	
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetParam(0, 0, nFileCount, 1);
+
+	CString SrcDir = src;
+	CString DesDir = des;
+	CString findFilename = SrcDir + "/*.*";
+	WIN32_FIND_DATA FindFileData;
+	HANDLE hFind = FindFirstFile((LPCTSTR)findFilename, &FindFileData);
+	if (hFind == INVALID_HANDLE_VALUE)
+	{
+//		Dprintf("not find file\n");
+	}
+	else
+	{
+		bool finished = false;
+		do
+		{
+			wchar_t wideToName[256];
+			//	wchar_t root[256] = {0};
+			//	mbstowcs(root, rootPath.c_str(), rootPath.length());
+			wsprintf(wideToName, _T("%s/%s"), DesDir, (LPCTSTR)FindFileData.cFileName); //findFileName
+			//	wideToName =  
+			wchar_t wideFromName[256] = {0};
+			//	wchar_t usb[256] = {0};
+			wsprintf(wideFromName, _T("%s/%s"), SrcDir, (LPCTSTR)FindFileData.cFileName); //findFileName
+			
+			if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			{
+				//wprintf(_T("create dir %s to %s\n"), wideFromName, wideToName);
+				//CopyDirFiles(wideFromName, wideToName);
+			}
+			else
+			{
+				DWORD fileBytes = GetFileSize(wideFromName);
+				if(freeBytes > fileBytes)
+				{
+					freeBytes -= fileBytes;
+					if (!::CopyFile(wideFromName, wideToName, !bOverflow))
+					{
+						Dprintf("current error is %d.", GetLastError());
+					}
+					nFileIndex++;
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_copyfileDlg->m_procbarSound.SetPos(nFileIndex);
+				}
+				else
+				{
+					freeBytes = 0;
+					return;
+				}
 			}
 			
 			if (!FindNextFile(hFind, &FindFileData))
@@ -172,6 +248,66 @@ int CopyDirFilesEx(LPCTSTR strSrc, LPCTSTR strDes, UINT nNums)
 	return nRes;
 }
 
+float GetFileSize(TCHAR *sFile)
+{
+	float dwSize = 0;
+	if(DetectFile(sFile))
+	{
+		CFile cfile;
+		if (cfile.Open(sFile, CFile::modeRead))
+		{
+			dwSize = cfile.GetLength();
+		}
+	}
+	return dwSize;
+}
+
+float GetDirSize(TCHAR *sDir, float &fSize)
+{
+	WIN32_FIND_DATA  fileInfo;   
+	HANDLE           hFind;   
+	CString srcPath = sDir;
+	CString path = srcPath + "/*.*";
+	hFind = FindFirstFile(path, &fileInfo);
+	if(hFind == INVALID_HANDLE_VALUE)
+	{
+		return 0;
+	}
+	else
+	{
+		bool finished = false;
+		do
+		{
+			wchar_t pathName[256];
+			wsprintf(pathName, _T("%s/%s"), srcPath, (LPCTSTR)fileInfo.cFileName);
+			if((fileInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			{
+				GetDirSize(pathName, fSize);
+			}
+			else
+			{
+				fSize += fileInfo.nFileSizeHigh * (MAXDWORD+1) + fileInfo.nFileSizeLow;
+			}
+			
+			if (!FindNextFile(hFind, &fileInfo))
+			{
+				DWORD d = GetLastError();
+				if (d == ERROR_NO_MORE_FILES)
+				{
+					Dprintf("find end.\n");
+					finished = true;
+				}
+				else
+				{
+					Dprintf("Couldn't find next file.\n");
+				}
+			}
+			::Sleep(10);
+		}while(!finished);
+		FindClose(hFind);
+	}
+	return fSize;
+}
 
 BOOL DeleteFiles(TCHAR* sDir)
 {
@@ -291,9 +427,8 @@ DWORD CountFolderSize(CString strPath)
 }
 
 CString GetFileName(CString pathname) 
-{
-    int i;
-	for(i=pathname.GetLength()-1; i>=0; i-- ) 
+{ 
+	for( int i=pathname.GetLength()-1; i>=0; i-- ) 
 	{ 
 		if(pathname[i]== '/') 
 			break; 
@@ -651,9 +786,75 @@ int dowith_Parse(char *ptr, int type)
 		return result.result;
 	}
 	
-	//Dprintf(L"解析完成\r\n");
-	Dprintf("解析完成\r\n");
+	Dprintf(L"解析完成\r\n");
 	return 0;
+}
+
+BOOL FindHttpEnd(char *pBuf, int &status, int pLen, int &nOffLen)
+{
+	static int zLength = 0;
+	int len = 0;
+	if(status == 0)
+	{
+		char *ptr = strstr(pBuf, "\r\n\r\n");
+		
+		int len = 0;
+		if(ptr)
+		{
+			char *lPtr;
+
+			lPtr = strstr(pBuf, "Content-Length:");
+			len = strlen("Content-Length:");
+			if(!lPtr)
+			{
+				lPtr = strstr(pBuf, "content-length:");
+				len = strlen("content-length:");
+				if(!lPtr)
+				{
+					lPtr = strstr(pBuf, "Content-length:");
+					len = strlen("Content-length:");
+					if(!ptr)
+					{
+						lPtr = strstr(pBuf, "Content-Length :");
+						len = strlen("Content-Length :");
+						if(!lPtr)
+						{
+							lPtr = strstr(pBuf, "content-length :");
+							len = strlen("content-length :");
+							if(!lPtr)
+							{
+								lPtr = strstr(pBuf, "Content-length :");
+								len = strlen("Content-length :");
+							}
+						}
+					}
+				}	
+			}
+
+			if(lPtr)
+			{
+				char *ePtr = strstr(lPtr+len, "\r\n");
+				if(ePtr)
+				{
+					char txt[12] = {0};
+					memcpy(txt, lPtr+len, (ePtr - lPtr - len));
+					CString s = txt;
+					s.TrimLeft();
+					s.TrimRight();
+					int length1 = Util::StringOp::ToInt(s);
+					zLength = length1 + ptr - pBuf + 4;
+					status = 1;
+					nOffLen = ptr - pBuf + 4;
+				}
+			}
+		}
+	}
+	else if(status == 1)
+	{
+		if(pLen >= zLength)
+			return TRUE;
+	}
+	return FALSE;
 }
 
 //release dialed   20090619
@@ -807,22 +1008,29 @@ int HttpProcesse(void *pParam)
 			memset(pBuf, 0, 1024*1024*2);
 			int size = 0;
 			int nCount = 1;
+
+			int status = 0;
+			int nOffLength = 0;
 		
 			while(nCount != 0)
 			{
 				nCount = Transport.Recv(pBuf+size, 128);
 				size += nCount;
-				if(size > (1024*1204*2-256))
+				
+				if(FindHttpEnd((char *)pBuf, status, size, nOffLength))
+					break;
+				
+				else if(size > (1024*1204*2-256))
 					break;
 			} 
 			
 	//		Dprintf((char *)pBuf);
 			if(pHttpParam->dwType < 10)
-				ret = dowith_Parse((char *)pBuf, pHttpParam->dwType);
+				ret = dowith_Parse((char *)(pBuf+nOffLength), pHttpParam->dwType);
 			else if(pHttpParam->dwType == 10)			//彩信
 			{
 				extern VOID WriteLog_(char *ptr, int size);
-			//	WriteLog_((char *)pBuf, size);
+				WriteLog_((char *)pBuf, size);
 
 				Data::MMSData* pMMsData = MMS::MMSWarp::GetMMSWarp()->DecodeMessage(pBuf, size);
 				pMMsData->Insert();

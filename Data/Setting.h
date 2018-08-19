@@ -147,11 +147,11 @@ namespace Data
         {
             autoReplyRingCount_ = autoReplyRingCount;
         }
-        std::map<char, std::string> const speedDials() const
+        std::vector<std::pair<std::string, std::string> > const speedDials() const
         {
             return speedDials_;
         }
-        void speedDials(std::map<char, std::string> speedDials)
+        void speedDials(std::vector<std::pair<std::string, std::string> > const& speedDials)
         {
             speedDials_ = speedDials;
         }
@@ -621,21 +621,20 @@ namespace Data
 		{
 			isNightControlBlackLight_ = isNightControlBlackLight;
 		}
-		
-		Util::Timestamp const nightControlBlackLightStartTime() const
+		int const nightControlBlackLightStartTime() const
         {
             return nightControlBlackLightStartTime_;
         }
-        void nightControlBlackLightStartTime(Util::Timestamp const nightControlBlackLightStartTime)
+        void nightControlBlackLightStartTime(int const nightControlBlackLightStartTime)
         {
             nightControlBlackLightStartTime_ = nightControlBlackLightStartTime;
         }
-
-		Util::Timestamp const nightControlBlackLightEndTime() const
+		
+		int const nightControlBlackLightEndTime() const
         {
             return nightControlBlackLightEndTime_;
         }
-        void nightControlBlackLightEndTime(Util::Timestamp const nightControlBlackLightEndTime)
+        void nightControlBlackLightEndTime(int const nightControlBlackLightEndTime)
         {
             nightControlBlackLightEndTime_ = nightControlBlackLightEndTime;
         }
@@ -655,7 +654,7 @@ namespace Data
 		bool isAutoReply_;
 		int autoReplyRingCount_;
 		std::string defaultTipFilename_;
-		std::map<char, std::string> speedDials_; //12
+		std::vector<std::pair<std::string, std::string> > speedDials_; //12
 
 		//protect
 		bool isAdmin_;
@@ -730,8 +729,10 @@ namespace Data
 		bool isContrlBlackLight_;
 		int  contrlBlackLightWaitTime_;
 		bool  isNightControlBlackLight_;
-		Util::Timestamp nightControlBlackLightStartTime_;
-		Util::Timestamp nightControlBlackLightEndTime_;
+//		Util::Timestamp nightControlBlackLightStartTime_;
+//		Util::Timestamp nightControlBlackLightEndTime_;
+		int nightControlBlackLightStartTime_;
+		int nightControlBlackLightEndTime_;
 
 		//∫ÙΩ–…Ë÷√
 		int	callRecall_;
@@ -746,13 +747,17 @@ namespace Data
 		std::string	speCode5_;
 		std::string	speCode6_;
 		std::string	speCode7_;
+		std::string	speCode8_;
 		std::string	speCode9_;
 		std::string	speCode10_;
 		std::string	speCode11_;
-		std::string	speCode8_;
 		std::string	speCode12_;
 
 		//¡Â…˘…Ë÷√
+		int isPhoneCallRing_;
+		std::string phoneCallRingFilename_;
+		int phoneCallRingVolume_;
+
 		int isSmsRing_;
 		std::string smsRingFilename_;
 		int smsRingVolume_;

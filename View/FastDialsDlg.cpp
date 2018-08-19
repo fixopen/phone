@@ -24,6 +24,7 @@ CFastDialsDlg::CFastDialsDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CFastDialsDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	m_Data = NULL;
 }
 
 
@@ -46,9 +47,8 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CFastDialsDlg message handlers
-LRESULT CFastDialsDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CFastDialsDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-    LRESULT result = 0;
 	switch(w)
 	{
 	case 1:
@@ -58,7 +58,6 @@ LRESULT CFastDialsDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnButtonFastDialsCancel();
 		break;
 	}
-    return result;
 }
 
 BOOL CFastDialsDlg::OnInitDialog() 
@@ -225,12 +224,12 @@ BOOL CFastDialsDlg::OnInitDialog()
 
 void CFastDialsDlg::OnButtonFastDialsOk()
 {
-	std::map<char, std::string> diallist;
+	std::vector<std::pair<std::string, std::string> > diallist;
 	for (int i = 0; i < 12; i++)
 	{
 		CString s;
 		m_edtNumber[i].GetWindowText(s);
-		diallist[i+1] = Util::StringOp::FromCString(s);
+//		diallist[i+1] = Util::StringOp::FromCString(s);
 	}
 	if(m_Data)
 	{
@@ -254,9 +253,9 @@ void CFastDialsDlg::OnButtonFastDialsCancel()
 void CFastDialsDlg::SetFastDialParam(boost::shared_ptr<Data::Setting> data)
 {
 	m_Data = data;
-	std::map<char, std::string>  diallist = m_Data->speedDials();
+	std::vector<std::pair<std::string, std::string> >  diallist = m_Data->speedDials();
 	int idx = 0;
-	for (std::map<char, std::string>::const_iterator i = diallist.begin(); i != diallist.end(); ++i)
+	for (std::vector<std::pair<std::string, std::string> >::const_iterator i = diallist.begin(); i != diallist.end(); ++i)
 	{
 		std::string str = i->second;
 		m_edtNumber[idx++].SetWindowText(Util::StringOp::ToCString(str));

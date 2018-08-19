@@ -16,36 +16,34 @@
 /////////////////////////////////////////////////////////////////////////////
 // CSIMImportDlg dialog
 
+enum Destination{
+	SIMtoLocal,
+	LocaltoSIM,
+	};
 class CSIMImportDlg : public CCEDialog
 {
 private:
-	CEdit			m_Edit1;
-	CStatic			m_Static1;
+	int				m_iMaxPos;
+	Destination		m_enumDes;
+	HWND			m_handle;
 	CMJPGStatic		m_MJPGList;
-	CCEProcessBar m_procbar;
-	BOOL		  m_bIsSIM;
-
-	int				m_nSIMID;
+	CCEProcessBar	m_procbar;
 	void WriteSIMTelPhoneBOOK(CString name, CString telcode);
 
 	boost::shared_ptr<Data::Contact> m_pContact;
-// Construction
+
 public:
-	CCEComboBox_ m_cmbGroup;
 
 	CSIMImportDlg(CWnd* pParent = NULL);   // standard constructor
-
-	//
-	CString gEditList;
-	int gIndex;
-	int gCmdIndex;
-	int gRecordCount;
-	int gValidRecordCount;
-	int	m_nRecordeSize;
-
+	
+	void SetHWnd(HWND handle);
 	void InitSIM();
 	void SendCMDSIM(int nIndex);
+	void OnBtnOK();	
+	void SetUnit(Destination des);
 
+	void SetProcessMax(int max );
+	void SetProcessPos(int npos);
 
 // Dialog Data
 	//{{AFX_DATA(CSIMImportDlg)

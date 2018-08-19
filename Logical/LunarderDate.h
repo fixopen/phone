@@ -21,7 +21,6 @@ namespace Logical
 {
 	class LunarderDate
 	{
-    public:
 		 //判断iYear是不是闰年
 		static BOOL IsLeapYear(UINT16 iYear)
 		{return !(iYear%4)&&(iYear%100) || !(iYear%400);}

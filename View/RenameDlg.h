@@ -1,5 +1,5 @@
-#if !defined(AFX_RENAMEDLG_H__0A17544A_9F8E_4C81_ADA6_0A95FF826E02__INCLUDED_)
-#define AFX_RENAMEDLG_H__0A17544A_9F8E_4C81_ADA6_0A95FF826E02__INCLUDED_
+#if !defined(CRENAMEDLG_)
+#define CRENAMEDLG_
 
 #if _MSC_VER > 1000
 #pragma once
@@ -18,6 +18,7 @@ class CRenameDlg : public CCEDialog
 {
 public:
 	CCERectEdit     m_edtName;
+	CCERectEdit     m_edtNewName;
 	CMJPGStatic		m_MJPGList;
 	CWnd			*m_pOwner;
 	CString         m_oldName;
@@ -48,7 +49,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CRenameDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

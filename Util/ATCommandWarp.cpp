@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ATCommandWarp.h"
 
-#include "../resource.h"
+#include "resource.h"
 #include "../Multimediaphone.h"
 
 using Util::ATCommandWarp;
@@ -78,6 +78,7 @@ struct Converter {
 ATCommandWarp::ATCommandWarp()
 {
 	m_pCom = NULL;
+	m_strPhoneNumber = "";
 	InitializeCriticalSection(&m_csAT);   
 }
 
@@ -129,7 +130,7 @@ int ATCommandWarp::Connect(char* pin)
 	return 1;
 }
 
-bool ATCommandWarp::Command(char* cmd, int len, char* out, int count)
+bool ATCommandWarp::Command(char* cmd, int len, char* out /* = NULL */, int count /* = 5 */,BOOL isWating /* = FALSE */)
 {
 	if(!m_pCom)
 		return false;
@@ -147,6 +148,9 @@ bool ATCommandWarp::Command(char* cmd, int len, char* out, int count)
 			m_pCom->WriteComm(cmd, len);  
 		//	if(count != 1)              //lxz 20090825
 		//	    Sleep(i * 1000);
+			if(isWating)
+				Sleep(1000);
+			memset(ans, 0, 1024);
 			int len = m_pCom->ReadComm(ans, 1024);     
 			
 			if (out != NULL)
@@ -154,8 +158,6 @@ bool ATCommandWarp::Command(char* cmd, int len, char* out, int count)
 				memcpy(out, ans, len);     
 				out[len] = '\0';
 			}
-// 			Sleep(1000);
-// 			Transaction(cmd, len, ans, ansLen);
 		}
 		else
 		{
@@ -164,6 +166,26 @@ bool ATCommandWarp::Command(char* cmd, int len, char* out, int count)
 		}
 	}
 	return result;
+}
+
+void ATCommandWarp::Command_2(char *cmd,int len,char *out,int outlen ,char *stop)
+{
+	m_pCom->WriteComm(cmd,len);
+
+	char ans[1024] = {0};
+	int	 anslen = 1024;
+	int  dread = 0 ; 
+
+	do 
+	{	
+		memset(ans,0,1024);
+		dread = m_pCom->ReadComm(ans,anslen);
+		if (dread)
+		{
+			strcat(out,ans);
+		}
+	} while (!strstr(ans,stop));
+
 }
 
 bool ATCommandWarp::Command_1(char* cmd, int len)
@@ -176,7 +198,7 @@ bool ATCommandWarp::Command_1(char* cmd, int len)
 	return result;
 }
 
-int ATCommandWarp::Transaction(char* req, int reqLen, char* res, int resLen)
+int ATCommandWarp::Transaction(char* req, int reqLen, char* res, int resLen,int nCount,bool bwait)
 {
 	if(!m_pCom)
 		return false;
@@ -187,6 +209,29 @@ int ATCommandWarp::Transaction(char* req, int reqLen, char* res, int resLen)
 	{
 		dwNumWrite += m_pCom->WriteComm(req + dwNumWrite, reqLen - dwNumWrite);
 	}
+	
+	// add by qi 2009_12_04
+	if (bwait)
+	{	
+		char ans[1024] = {0};
+		int	 anslen = 1024;
+		int  dread = 0 ; 
+		do 
+		{	
+			memset(ans,0,1024);
+			dread = m_pCom->ReadComm(ans,anslen);
+			if (dread)
+			{
+				strcat(res,ans);
+			}
+
+		} while (!strstr(res,"OK"));
+		
+		LeaveCriticalSection(&m_csAT);  
+
+		return 1;
+	}
+	//
 
 	int dwNumRead = 0;
 	int nnCount = 0;
@@ -194,15 +239,16 @@ int ATCommandWarp::Transaction(char* req, int reqLen, char* res, int resLen)
 	{
 		int count = m_pCom->ReadComm(res + dwNumRead, resLen - dwNumRead);
 		dwNumRead += count;
-		if ((nnCount > 10) ||((dwNumRead > 0) && (count == 0)) || (strstr(res, "OK") != NULL) || (strstr(res, "ERROR") != NULL) || (strstr(res, "\r\n") != NULL))    //
+		if ((nnCount > nCount) ||((dwNumRead > 0) && (count == 0)) || (strstr(res, "OK") != NULL) || (strstr(res, "ERROR") != NULL) || (strstr(res, "\r\n") != NULL))    //
 		{
-			if(nnCount > 10)
+			if(nnCount > nCount)
 				Dprintf("CountOut %d\r", nnCount);
 			break;
 		}
 		nnCount++;
 	}
 	LeaveCriticalSection(&m_csAT);  
+
 	return dwNumRead;
 }
 
@@ -238,7 +284,7 @@ int ATCommandWarp::Init(void)
 	char DAUDSCE0[] = "AT^DAUDSCE=0\r";
 	char DAUDSCE1[] = "AT^DAUDSCE=1\r";
 	char DAUDSCS[] = "AT^DAUDSCS?\r";
-
+	
 	bool result = true;
 	char ans[1024] = {0};      // 应答串    
 
@@ -246,8 +292,9 @@ int ATCommandWarp::Init(void)
 	{
 		return 0;
 	}
-
+	
 	Command(ATZ, strlen(ATZ));
+
 	
 	if (Command(ATE, strlen(ATE))
 		&& Command(CGMR, strlen(CGMR))
@@ -274,11 +321,11 @@ int ATCommandWarp::Init(void)
 // 		&& Command(CMNI, strlen(CMNI))
 //		&& Command(DSLP, strlen(DSLP))
 //		&& Command(DAUDSCE, strlen(DAUDSCE))
-// 		&& Command(DAUDSCE0, strlen(DAUDSCE0))
+ //		&& Command(DAUDSCE0, strlen(DAUDSCE0))
 //		&& Command(DAUDSCE1, strlen(DAUDSCE1))
 //		&& Command(DAUDSCS, strlen(DAUDSCS))
 		)
-	{
+	{	
 		return 1;
 	}
 	return 0;
@@ -311,39 +358,48 @@ int ATCommandWarp::On(char* pin)
 
 	bool result = true;
 	char ans[1024] = {0};      // 应答串    
-	
+		
 	if (!Command(CREG1, strlen(CREG1)))
 	{
 		return 0;
 	}
+	
+//	PhoneVolume(3);
 
 //	Command(CMER, strlen(CMER));
 	memset(ans, 0, 1024);
-
-//	if (!Command(CFUN5, strlen(CFUN5), ans)) // old
+	BOOL bIsUnSIM = FALSE;
+	static bool bsim = true ;
+//	if (!Command(CFUN5, strlen(CFUN5), ans)) // old	
 	if (!CommandFun5(CFUN5, strlen(CFUN5), ans))//add by qi 2009_08_28
 	{	
 		if (strstr(ans, "+CME ERROR: 11") != NULL || strstr(ans, "+CME ERROR: 12") != NULL )//在设置开机PIN 码时，APP端输入“AT+CFUN=5”，激活USIM 卡，返回的“＋CME		ERROR：11”表示“SIM PIN Required”；此时APP 端会弹出提示输入pin码的提示，		APP端输入PIN 码后，再执行激活协议栈的指令。
 		{
-			CheckPin();
-			//	test
-			//	TestCommand();
-
-			/*	char cmd[128] = {0};
-				sprintf(cmd, "AT+CPIN=\"%s\"\r", pin);
-				if (!Command(cmd, strlen(cmd)))
-				{
-					return 2;
-				}
-			*/
-
+			if (!CheckPin())
+			{
+				return 0 ;
+			}
+	
+		}
+		else if(strstr(ans, "+CME ERROR: 10") != NULL )	//未检测SIM卡
+		{	
+			HandleSIM(false);
+			bIsUnSIM = TRUE;
+			bsim = false ;
 		}
 		else
-		{
+		{	
+			Command(CFUN1, strlen(CFUN1));
+			Command(COPS, strlen(COPS));
 			return 3;
 		}
 	}
 	
+	if (bsim)
+	{
+		HandleSIM(true);
+	}
+
 	// 6311  lxz 20090807
 #define TD6311 1
 #if(TD6311 == 1)
@@ -362,10 +418,11 @@ int ATCommandWarp::On(char* pin)
 	m_pCom->ReadComm(ans, 1024);
  	while ((strstr(ans, "+CREG: 1") == NULL) && (strstr(ans, "+CREG: 5") == NULL))
 	{
+		if(bIsUnSIM && strstr(ans, "+CREG: 3"))
+			return 3;
 		m_pCom->ReadComm(ans, 1024);
 	}
 
-	PhoneVolume(3);
 
 	if (!(Command(CREG0, strlen(CREG0))
 		&& Command(CMGF, strlen(CMGF))
@@ -375,6 +432,14 @@ int ATCommandWarp::On(char* pin)
 	{
 		return 0;
 	}
+
+	char cmd_[16];// 命令串
+	sprintf(cmd_, "AT+VTD=%d\r", 4); // 生成命令
+    Command(cmd_,strlen(cmd_));
+//	m_pCom->WriteComm(cmd_, strlen(cmd_));
+	
+//	PhoneVolume(1);
+
 	memset(ans, 0, 1024);
 	if (Command(CSCA, strlen(CSCA), ans))
 	{
@@ -437,13 +502,36 @@ bool ATCommandWarp::Off(void)
 	return false;
 }
 
-bool ATCommandWarp::PhoneDial(char * number)
+extern BOOL gIsHandSet;
+bool ATCommandWarp::PhoneDial(char * number, BOOL isVideo)
 {
+	Sleep(50);
+	PhoneDialTone(0, NULL);
+	if(!gIsHandSet)
+	{
+		extern void GNotifyDial(BOOL isDial);
+		GNotifyDial(TRUE);
+	}
+	gIsHandSet = FALSE;
+
+	
 	char ATD[] = "ATD";
 	char CMD[1024];
 	strcpy(CMD, ATD);
 	strcat(CMD, number);
-	strcat(CMD, ";\r");
+	if(isVideo)
+	{
+		char temp[] = "AT^DUSBPOWER=1\r";
+		char r[64] = {0}; 
+		Transaction(temp, strlen(temp), r, 64);
+
+		memset(CMD, 0, 1024);
+		strcpy(CMD, "AT^DVTDIAL=");
+		strcat(CMD, number);
+		strcat(CMD, "\r");
+	}
+	else
+		strcat(CMD, ";\r");
 	bool result = true;
 	char ans[1024] = {0};      // 应答串 
 	int ansLen = 1024;
@@ -633,9 +721,12 @@ bool ATCommandWarp::PhoneRing(char * number, int * type)
 
 bool ATCommandWarp::PhoneHangup(void)
 {
+	extern void GNotifyDial(BOOL isDial);
+	GNotifyDial(FALSE);
+
 	char ATH[] = "ATH\r";//对于挂断AT指令，AT＋CHUP（挂断当前激活CS链路）和AT＋CHLD 也可作为可选AT指令。被动挂断，则LC6311 会给APP 上报“3\r”，3 表示“NO CARRIER”,为对端主动挂断
 	bool result = true;
-	char ans[1024] = {0};      // 应答串 
+	char ans[1024] = {0};// 应答串 
 	int ansLen = 1024;
 // 	m_pCom->WriteComm(ATH, strlen(ATH));
 // 	m_pCom->ReadComm(ans, 1024);
@@ -674,66 +765,311 @@ bool ATCommandWarp::PhoneSubDial(char number)
 //电话功能
 bool ATCommandWarp::PhoneSetTrans(PhoneCallTRans calltrans)     //设置呼叫转移
 {
-	return true;
-}
-
-bool ATCommandWarp::PhoneGetTrans(PhoneCallTRans &calltrans)	 //获取呼叫转移设置
-{
-	char cmd[16];       // 命令串    
-	for(int i = 0; i < 4; i++)
+	char CCFC[100];
+	char ans[1024];
+	memset(CCFC,0,100);
+	
+	//注册释放
+	for (int i = 0 ; i < 4 ;i++)
 	{
-		sprintf(cmd, "AT+CCFC=%d,2?\r", i); // 生成命令    
-		char ans[1024] = {0};      // 应答串 
-		int ansLen = 1024;
-
-		extern Util::ATCommandWarp* GetATCommandWarp();
-		ATCommandWarp *pATCommanWarp = GetATCommandWarp();
-		pATCommanWarp->Transaction(cmd, strlen(cmd), ans, ansLen);
-		if(strstr(ans, "OK\r\n") != NULL)   
-		{
-			;
-		}
-
+		memset(CCFC,0,100);
+		memset(ans,0,1024);
+		sprintf(CCFC,"AT+CCFC=%d,4\r",i);
+		Transaction(CCFC,strlen(CCFC),ans,1024);
 	}
 	
-	return false;
-}
-
-bool ATCommandWarp::PhoneSetCallLimit(PhoneCallLimit calllimit)    //设置呼叫受限
-{
+	//注册
+	if ( 1 == calltrans.isUncondify)//注册无条件转移
+	{
+		//开通或者取消功能
+		sprintf(CCFC,"AT+CCFC=%d,3,\"%s\"\r",0,calltrans.teccode);
+		Transaction(CCFC,strlen(CCFC),ans,1024);
+		if (strstr(ans,"ERROR") != NULL)
+		{
+			return false ;
+		}
+		return true  ;
+	}
+	else
+	{
+		for (int i = 1 ; i < 4; i++)
+		{
+			memset(CCFC,0,100);
+			memset(ans,0,1024);
+			if (2 == i)// 无应答转移，默认时间是20秒
+			{			
+				sprintf(CCFC,"AT+CCFC=%d,3,\"%s\",,,,%d\r",i,calltrans.teccode,20);	
+				if ( 1 == calltrans.isNoAswer)
+				{
+					Transaction(CCFC,strlen(CCFC),ans,1024);
+				}
+			}
+			else
+			{
+				sprintf(CCFC,"AT+CCFC=%d,3,\"%s\"\r",i,calltrans.teccode);
+				if (1 == i)//遇忙
+				{
+					if (1 == calltrans.isBusy)
+					{
+						Transaction(CCFC,strlen(CCFC),ans,1024);
+					}
+				}
+				
+				if (3 == i)//不能接通
+				{
+					if (1 == calltrans.isNoTel)
+					{
+						Transaction(CCFC,strlen(CCFC),ans,1024);
+					}
+				}
+			}
+			
+			if (strstr(ans,"ERROR") != NULL)
+			{
+				return false ;
+			}
+		}
+	}
 	return true;
 }
 
-bool ATCommandWarp::PhoneGetCallLimit(PhoneCallLimit &calllimit)    //获取呼叫受限设置
+void ATCommandWarp::PhoneGetTrans(PhoneCallTRans &calltrans)	 //获取呼叫转移设置
 {
-	return true;
+	char CCFC[100];
+	char ans[1024];
+	for (int i = 0 ; i < 4 ;i++)
+	{
+		memset(CCFC,0,100);
+		sprintf(CCFC,"AT+CCFC=%d,2\r",i);
+		Transaction(CCFC,strlen(CCFC),ans,1024);
+		if (strstr(ans,"OK") != NULL)
+		{
+			std::string s = ans ;
+			int l ;
+			l = s.find("+CCFC:");
+			s = s.substr(l+7);
+			if ( 0 == i)
+			{
+				calltrans.isUncondify = atoi(s.c_str());
+				if (calltrans.isUncondify)
+				{
+					if (calltrans.teccode.empty())
+					{
+						size_t phone = s.find('"');
+						if (phone != std::string::npos)
+						{
+							s = s.substr(phone+1);
+							phone = s.find('"');
+							if (phone !=std::string::npos)
+							{
+								s = s.substr(0,phone);
+								if (s.substr(0,2) == "86")
+								{
+									s = s.substr(2);
+								}					
+								calltrans.teccode = s;						
+							}
+						}
+					}
+					return ;
+				}
+			}
+			if ( 1 == i)
+			{
+				calltrans.isBusy = atoi(s.c_str());	
+			}
+			
+			if ( 2 == i)
+			{
+				calltrans.isNoAswer = atoi(s.c_str());	
+			}
+			
+			if ( 3 == i)
+			{
+				calltrans.isNoTel = atoi(s.c_str());	//无法接通
+			}
+			
+			// 查找号码
+			if (calltrans.teccode.empty())
+			{
+				size_t phone = s.find('"');
+				if (phone != std::string::npos)
+				{
+					s = s.substr(phone+1);
+					phone = s.find('"');
+					if (phone !=std::string::npos)
+					{
+						s = s.substr(0,phone);
+						if (s.substr(0,2) == "86")
+						{
+							s = s.substr(2);
+						}					
+						calltrans.teccode = s;						
+					}
+				}
+			}
+			
+			//是否有号码注册
+			if (!calltrans.teccode.empty())
+			{
+//				calltrans.isOn = true ;	
+			}
+			else
+			{
+//				calltrans.isOn = false ;
+			}
+			
+		}
+	}
+}
+bool ATCommandWarp::CallLimit(const char *fac,bool able)
+{
+	char CLCK[100];//SIM上锁
+	char ans[1024];
+	memset(CLCK,0,100);
+	memset(ans,0,1024);
+	if (able)
+	{
+		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",5\r",fac,1);
+	}
+	else
+	{
+		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",5\r",fac,0);
+	}
+	Transaction(CLCK,strlen(CLCK),ans,1024, 0xFF);
+	if (strstr(ans,"ERROR") != NULL)
+	{	
+		return false ;
+	}
+	return true ;
+}
+void ATCommandWarp::PhoneSetCallLimit(PhoneCallLimit calllimit)    //设置呼叫受限
+{
+	CallLimit("AI",calllimit.isCallin);//呼入限制
+	CallLimit("AO",calllimit.isCallout);//呼出限制	
 }
 
-bool ATCommandWarp::PhoneSetCallWaiting(PhoneCallWaiting callwaiting)		//设置呼叫等待
-{
-	return true;
+void ATCommandWarp::PhoneGetCallLimit(PhoneCallLimit &calllimit)    //获取呼叫受限设置
+{	
+	char CLCK[100];
+	memset(CLCK,0,100);
+	char ans[1024];
+	char fac[][5]={{"AI"},{"AO"}};
+	for (int i = 0 ; i < 2;i++)
+	{
+		memset(ans,0,1024);
+		sprintf(CLCK,"AT+CLCK=\"%s\",2\r",fac[i]);		
+		Transaction(CLCK,strlen(CLCK),ans,1024,0xFF);
+		if (strstr(ans,"OK") != NULL)
+		{
+			std::string s = ans ;
+			int l ;
+			l = s.find("+CLCK:");
+			s = s.substr(l+7);
+			if ( 0 == i)
+			{
+				calllimit.isCallin = atoi(s.c_str());
+			}
+			if ( 1 == i)
+			{
+				calllimit.isCallout = atoi(s.c_str());
+			}			
+		}	
+	}
 }
 
-bool ATCommandWarp::PhoneGetCallWaiting(PhoneCallWaiting &callwaiting)		//获取呼叫等待设置
+bool ATCommandWarp::PhoneSetCallWaiting(bool able)//设置呼叫等待
 {
-	return true;
+	char CCWA[100];
+	memset(CCWA,0,100);
+	char ans[1024];
+	if (able)
+	{
+		sprintf(CCWA,"AT+CCWA=1,%d\r",1);		
+	}
+	else
+	{
+		sprintf(CCWA,"AT+CCWA=1,%d\r",0);		
+	}
+	Transaction(CCWA,strlen(CCWA),ans,1024);
+	if (strstr(ans,"ERROR") != NULL)
+	{
+		return false ;
+	}	
+	return true ;
 }
 
+bool ATCommandWarp::PhoneGetCallWaiting(int &status)//获取呼叫等待设置
+{
+	char CCWA[] = "AT+CCWA=1,2\r";
+	char ans[1024];
+	memset(ans,0,1024);
+	Transaction(CCWA,strlen(CCWA),ans,1024);
+	if (strstr(ans,"OK") != NULL)
+	{	
+		std::string s = ans;
+		size_t t = s.find("+CCWA:");
+		s = s.substr(t+7);
+		status = atoi(s.c_str());
+		return  true ;
+	}
+	return false ;
+}
+
+bool ATCommandWarp::PhoneCallSwitch(int n)
+{
+	/*  n = 2,呼叫切换，n = 3,添加一个呼叫，以前是两个人通话，现在变成三个。
+		其它的功能参照LC6311文档	
+	*/
+	char CHLD[100];
+	memset(CHLD,0,100);
+	char ans[1024];
+	sprintf(CHLD,"AT+CHLD=%d\r",n);
+	Transaction(CHLD,strlen(CHLD),ans,1024);
+	if (strstr(ans,"ERROR") != NULL)
+	{
+		return false ;
+	}	
+	return true ;
+}
+
+int ATCommandWarp::ReportSCE()
+{
+	char DAUDSCS[] = "AT^DAUDO?\r";
+	char ans[1024] = {0};      // 应答串 
+	int ansLen = 1024;
+	Transaction(DAUDSCS, strlen(DAUDSCS), ans, ansLen);
+	if(strstr(ans, "DAUDO: 1") != NULL)   
+	{
+		return 1;
+	}
+	
+	return 2;
+}
+
+int gTelVolume = 3;
 bool ATCommandWarp::PhoneVolume(unsigned int level)
 {
+	gTelVolume = level;
 	char cmd1[16];       // 命令串    
-	char cmd2[16];       // 命令串    
-	char cmd3[16];       // 命令串    
+	char cmd2[16];       // 命令串  
+	
+	char DAUDSCS1[] = "AT^DAUDSCS=0\r" ;
+
 	sprintf(cmd1, "AT^DAUDO=1,%d\r", level); // 生成命令 
-	sprintf(cmd2, "AT^DAUDO=2,%d\r", level); // 生成命令 
-	sprintf(cmd3, "AT^DAUDO=3,%d\r", level); // 生成命令 
+	sprintf(cmd2, "AT^DADDO=2,%d\r", level); // 生成命令 
 	
 	char ans[1024] = {0};      // 应答串 
 	int ansLen = 1024;
-	// 	m_pCom->WriteComm(cmd, strlen(cmd));
-	// 	//m_pCom->ReadComm(ans, 1024);
-	Transaction(cmd1, strlen(cmd1), ans, ansLen);
-	Transaction(cmd2, strlen(cmd2), ans, ansLen);
+	
+	Transaction(DAUDSCS1,strlen(DAUDSCS1),ans,ansLen);
+	memset(ans,0,1024);
+
+	if(ReportSCE() == 1)
+		Transaction(cmd1, strlen(cmd1), ans, ansLen);
+	else
+		Transaction(cmd2, strlen(cmd2), ans, ansLen);
+
 	//if(strstr(ans, "OK\r\n") != NULL)   
 	{
 		return true;
@@ -783,7 +1119,7 @@ bool ATCommandWarp::PhoneAutoAnswer(unsigned int second)
 unsigned int ATCommandWarp::PhoneNettype(void)			//LC6211
 {
 	char cmd[] = "AT^DACTI?\r";       // 命令串    
-	unsigned int result = 0;
+	unsigned int result = 0xF;
 	char ans[1024] = {0};      // 应答串 
 	int ansLen = 1024;
 	// 	m_pCom->WriteComm(cmd, strlen(cmd));
@@ -810,6 +1146,8 @@ unsigned int ATCommandWarp::PhoneNettype(void)			//LC6211
 	return result;
 }
 
+extern void GPlayDialTone(char *dialtone);
+extern void GIsOpenMix(BOOL isOn);
 void ATCommandWarp::PhoneDialTone(BOOL isOn, char *tone)
 {
 	char AT[64] = {0};
@@ -818,26 +1156,29 @@ void ATCommandWarp::PhoneDialTone(BOOL isOn, char *tone)
 	int ansLen = 1024;
 	if(!isOn)
 	{
-		strcpy(AT, "AT^DAUDCTRL=0\r");
-		Command_1(AT, strlen(AT));
+		//strcpy(AT, "AT^DAUDCTRL=0\r");
+		//Command_1(AT, strlen(AT));
+		GIsOpenMix(0);
 	}
 	else
 	{
 	//	if(strlen(tone) < 2)
 		{
-			PhoneDialTone(0, NULL);
+//			PhoneDialTone(0, NULL);
 		}
-		strcpy(AT, "AT^DAUDCTRL=1,\"");
-		strcat(AT, tone);
-		strcat(AT, "\"\r");
-		Command_1(AT, strlen(AT));
+//		strcpy(AT, "AT^DAUDCTRL=1,\"");
+//		strcat(AT, tone);
+//		Command_1(AT, strlen(AT));
+		
+		 GIsOpenMix(1);
+		 GPlayDialTone(tone);
 	}
 }
 
 unsigned int ATCommandWarp::PhoneSignalQuality(void)
 {
 	char cmd[] = "AT+CSQ\r";       // 命令串    
-	unsigned int result = 0;
+	unsigned int result = 0xFF;
 	char ans[1024] = {0};      // 应答串 
 	int ansLen = 1024;
 // 	m_pCom->WriteComm(cmd, strlen(cmd));
@@ -885,9 +1226,14 @@ bool ATCommandWarp::PhoneHandFree(bool isHandFree)
 	}
 	else
 	{
-		hf = 0;
+		hf = 1;
+// 		char cmd1[16];       // 命令串   
+// 		sprintf(cmd1, "AT^DAUDAECON=0\r"); // 生成命令    
+// 		char ans[1024] = {0};      // 应答串 
+// 		int ansLen = 1024;
+// 		Transaction(cmd1, strlen(cmd1), ans, ansLen);
 	}
-	char cmd[16];       // 命令串    
+	char cmd[16];       // 命令串   
 	sprintf(cmd, "AT^DAUDSCS=%d\r", hf); // 生成命令    
 	char ans[1024] = {0};      // 应答串 
 	int ansLen = 1024;
@@ -915,7 +1261,7 @@ bool ATCommandWarp::SmsSend(int dataLength)
 	int ansLen = 1024;
 // 	m_pCom->WriteComm(cmd, strlen(cmd));
 // 	nLength = m_pCom->ReadComm(ans, 1024);
-	nLength = Transaction(cmd, strlen(cmd), ans, ansLen);
+	nLength = Transaction(cmd, strlen(cmd), ans, ansLen, 0xFFFF);
 // 	if(nLength == 4 && strncmp(ans, "\r\n> ", 4) == 0)   
 //	if ((strncmp(ans, "\r\n> ", 4) == 0) || (strstr(ans, "OK\r\n") != NULL))
 	{
@@ -926,7 +1272,7 @@ bool ATCommandWarp::SmsSend(int dataLength)
 int ATCommandWarp::SmsSend(char* pdu, int pduLength, char* ans, int ansLength)
 {
 	//return m_pCom->WriteComm(pdu, pduLength);
-	return Transaction(pdu, pduLength, ans, ansLength);
+	return Transaction(pdu, pduLength, ans, ansLength, 0xFFFF);
 }
 int ATCommandWarp::SmsDelete(int index, char* ans, int ansLength)
 {
@@ -965,8 +1311,9 @@ bool ATCommandWarp::SmsCenterAddress(std::string sca)
 }
 
 // add by qi 2009_07_22
-void ATCommandWarp::CheckPin()
-{
+bool ATCommandWarp::CheckPin()
+{	
+	bool result = false ;
 	char PIN[] = "AT+CPIN?\r" ;//查询sim卡状态
 	char answer[1024];
 	memset(answer,0,1024);
@@ -974,22 +1321,22 @@ void ATCommandWarp::CheckPin()
 	{
 		if (strstr(answer,"+CPIN: SIM PIN") !=NULL)//需要pin1码
 		{	
-			HandlePin();
+			result = HandlePin();
 		}
 		else if (strstr(answer,"+CPIN: SIM PUK") !=NULL)//需要PUK1码
 		{	
-			HandlePuk();
+			result = HandlePuk();
 		}
 	}
+	return result ;
 }
-void ATCommandWarp::HandlePin()
+bool  ATCommandWarp::HandlePin()
 {
 	char ans[1024];//应答消息
 	memset(ans,0,1024);
 	PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PIN_INPUT,0,0);
 	while (strstr(ans,"+CME ERROR: 12") == NULL)//连续三次pin码输入错误，sim将被锁住
-	{	
-		
+	{			
 		while(strstr(ans,"OK") == NULL && strstr(ans,"ERROR") == NULL )//等待用户输入pin码
 		{	
 			Sleep(100);
@@ -997,8 +1344,7 @@ void ATCommandWarp::HandlePin()
 		}		
 		if (strstr(ans,"OK") != NULL)//输入pin码正确
 		{	
-//			PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PIN_INPUT,PIN_OK,0);
-			return ;	
+			return true;	
 		}
 		
 		if ( strstr(ans,"ERROR") != NULL)//输入pin码错误
@@ -1013,12 +1359,12 @@ void ATCommandWarp::HandlePin()
 	}
 	
 	if (strstr(ans,"+CME ERROR: 12")!= NULL)//需要输入PUK码
-	{
-		HandlePuk();
+	{	
+		return false ;
+	//	HandlePuk();
 	}		
-	
 }
-void ATCommandWarp::HandlePuk()
+bool ATCommandWarp::HandlePuk()
 {
 	int num = 0 ;
 	PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PIN_INPUT,PIN_PUK,0);	
@@ -1033,8 +1379,7 @@ void ATCommandWarp::HandlePuk()
 		}		
 		if (strstr(ans,"OK") != NULL)//输入PUK码正确
 		{	
-		//	PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PIN_INPUT,PIN_OK,0);
-			return ;	
+			return true;	
 		}		
 		if ( strstr(ans,"ERROR") != NULL)//输入PUK码错误
 		{
@@ -1051,8 +1396,15 @@ void ATCommandWarp::HandlePuk()
 	{			
 		PostMessage(theApp.m_pMainWnd->m_hWnd,WM_PIN_INPUT,PIN_FUK_LOCKED,0);		
 	}
+	return false ;
 
 }
+
+void ATCommandWarp::HandleSIM(bool binsert)
+{
+	::PostMessage(theApp.m_pMainWnd->m_hWnd,WM_SIM_MESSAGE,binsert,0);
+}
+
 bool ATCommandWarp::CommandFun5(char* cmd, int len, char* out /* = NULL */, int count /* = 5 */)
 {
 	char ans[1024] = {0};// 应答串 
@@ -1081,6 +1433,11 @@ bool ATCommandWarp::CommandFun5(char* cmd, int len, char* out /* = NULL */, int 
 			result = false ;
 			break;
 		}
+		else if (strstr(ans,"+CME ERROR: 10") != NULL && strstr(ans,"OK") != NULL)//未检测到SIM卡
+		{
+			result = false ;
+			break;
+		}
 		else if (strstr(ans,"OK") != NULL)
 		{
 			result = true;
@@ -1090,7 +1447,48 @@ bool ATCommandWarp::CommandFun5(char* cmd, int len, char* out /* = NULL */, int 
 	return result;
 }
 
-bool ATCommandWarp::UnconditionalTransfer(const char *destphone,bool able)
+bool ATCommandWarp::CommandFun5_(char* cmd, int len,char* out)
+{
+	char ans[1024] = {0};// 应答串 
+	int ansLen = 1024;
+	bool result = false;
+	
+	m_pCom->WriteComm(cmd, len); 
+	
+	while (1)
+	{
+		m_pCom->ReadComm(ans, 1024);     	
+		if (strstr(ans,"+CME ERROR: 11") != NULL )//需要PIN码
+		{
+			result = false ;
+			break;
+		}
+		else if (strstr(ans,"+CME ERROR: 12") != NULL )//需要输入PUK码
+		{
+			result = false ;
+			break;
+		}
+		else if (strstr(ans,"+CME ERROR: 10") != NULL )//未检测到SIM卡
+		{
+			result = false ;
+			break;
+		}
+		else if (strstr(ans,"OK") != NULL)
+		{
+			result = true;
+			break;
+		}
+	}
+	
+	if ( out != NULL)
+	{
+		strcpy(out,ans);
+	}
+
+	return result ;
+}
+
+bool ATCommandWarp::UnconditionalTransfer(bool able)
 {
 	char CCFC[100];
 	char ans[1024];
@@ -1110,7 +1508,7 @@ bool ATCommandWarp::UnconditionalTransfer(const char *destphone,bool able)
 	}
 	return false ;
 }
-bool ATCommandWarp::BusyTransfer(const char *destphone,bool able)
+bool ATCommandWarp::BusyTransfer(bool able)
 {
 	char CCFC[100];
 	char ans[1024];
@@ -1130,7 +1528,7 @@ bool ATCommandWarp::BusyTransfer(const char *destphone,bool able)
 	}
 	return false ;
 }
-bool ATCommandWarp::NoReplyTransfer(const char *destphone,bool able)
+bool ATCommandWarp::NoReplyTransfer(bool able)
 {
 	char CCFC[100];
 	char ans[1024];
@@ -1150,7 +1548,7 @@ bool ATCommandWarp::NoReplyTransfer(const char *destphone,bool able)
 	}
 	return false ;
 }
-bool ATCommandWarp::NoReachTranfer(const char *destphone,bool able)
+bool ATCommandWarp::NoReachTranfer(bool able)
 {
 	char CCFC[100];
 	char ans[1024];
@@ -1213,73 +1611,7 @@ bool ATCommandWarp::InputPuk2(const char *puk2,const char *newpin)
 	}
 	return true ;
 }
-void ATCommandWarp::TestCommand()
-{
 
-// 	char CLCK[100];//SIM上锁
- 	char ans[1024];
-//	memset(CLCK,0,100);
-	memset(ans,0,1024);
-//	sprintf(CLCK,"AT+CLCK=\"SC\",1,\"%s\"\r","5678");
-//	Command(CLCK,strlen(CLCK),ans);	
-	
-// 	char CPIN[] = "AT+CPIN?\r"; //PIN 鉴定 此处用来判断是否插入SIM卡
-// 	char ans[1024];
-// 	memset(ans,0,100);
-// 	Command(CPIN,strlen(CPIN),ans);	
-
-// 	char FUK[100];
-// 	memset(FUK,0,100);
-// 	sprintf(FUK,"AT+CPIN=\"%s\",\"%s\"\r","04002585","5678");
-// 	Command(FUK,strlen(FUK),ans);
-
-//	输入pin码
-// 	char PIN[100];
-// 	memset(PIN,0,100);
-// 	memset(ans,0,100);
-// 	sprintf(PIN,"AT+CPIN=\"%s\"\r","5678");
-// 	Command(PIN,strlen(PIN),ans);
-
-//  char CLCK[100];//sim解锁
-//  memset(CLCK,0,100);
-// 	memset(ans,0,1024);
-//  sprintf(CLCK,"AT+CLCK=\"SC\",0,\"%s\"\r","5678");
-//  Command(CLCK,strlen(CLCK),ans);
-
-// 	memset(ans,0,100);
-// 	Command(CPIN,strlen(CPIN),ans);	
-
-// 	sprintf(FUK,"AT+CPIN=\"%s\",\"%s\"\r","04002585","5678");
-//  Command(FUK,strlen(FUK),ans);
-
-//  修改pin码
-//	char PASSWORD[100];
-//	memset(ans,0,1024);
-//	memset(PASSWORD,0,100);
-//	sprintf(PASSWORD,"AT+CPWD=\"SC\",\"%s\",\"%s\"\r","5678","1234");
-//	Command(PASSWORD,strlen(PASSWORD),ans);
-
-//	无条件转移，开通无条件转移
-//  	char CCFC[100];
-//  	memset(CCFC,0,100);
-//  	sprintf(CCFC,"AT+CCFC=0,3,\"%s\",129\r","13601371701");	
-//  	Command(CCFC,strlen(CCFC),ans);
-
-	char CCFC[100];
-	memset(CCFC,0,100);
-	sprintf(CCFC,"AT+CCFC=0,1,\"%s\",129\r","13601371701");	
-	Command(CCFC,strlen(CCFC),ans);
-
-
-//	std::string s;
-//	GetOperator(s);
-
-//	char COPN[] = "AT+COPN\r";
-//	memset(ans,0,100);
-//	Command(COPN,strlen(COPN),ans);
-
-
-}
 
 bool ATCommandWarp::LockSim(const char *password)
 {
@@ -1359,24 +1691,75 @@ bool ATCommandWarp::ChangePin2(const char *pin,const char *newpin)
 }
 bool ATCommandWarp::GetOperator(std::string &opeator)
 {
-	char CPOL[] = "AT+CPOL?\r"; //AT+WOPN读取操作员名字
+	char CPOL[] = "AT+COPS?\r"; //AT+WOPN读取操作员名字,AT+CPOL
 	char ans[1024];
 	Transaction(CPOL,strlen(CPOL),ans,1024);
 	if (strstr(ans,"OK") != NULL)
 	{
 		std::string str = ans ;
 		int l ;
-		l = str.find(',');
-		str.substr(l+1);
-		l = str.find(',');
-		str.substr(l+2);
-		l = str.find('\"');
+		l	= str.find(',');
+		str = str.substr(l+1);
+		l	= str.find(',');
+		str = str.substr(l+2);
+		l = str.find('"');
 		opeator = str.substr(0,l);
 		return true ;
 	}
 	return false ;
 }
 
+int ATCommandWarp::GetSimCapacity()
+{	
+	int l = 0;
+	char ans[1024] = {0}; // 应答串
+	int ansLen = 1024;
+	char cmd[]	= "AT+CPBS?\r";//查询SIM状态
+	memset(ans,0,1024);
+	Transaction(cmd, strlen(cmd), ans, ansLen,0,true);
+	if (strstr(ans, "OK") != NULL)
+	{
+		std::string s = ans;
+		l = s.find("\"SM\"");
+		s = s.substr(l);
+		l = s.find(',');
+		s = s.substr(l+1);
+		l = s.find(',');
+		s = s.substr(l+1);
+		l = atoi(s.c_str());//SIM中已经存的数目
+	}
+	return l;
+}
+
+bool ATCommandWarp::CheckCSCS(char *code)
+{	
+	int num = 0 ;
+	size_t pos ;
+	std::string s = code ;
+	pos = s.find("+CPBR:");
+	if (pos != std::string::npos)
+	{	
+		s = s.substr(pos);
+		while (num != 3)
+		{	
+			pos = s.find(',');
+			if (pos != std::string::npos)
+			{
+				s.substr(pos+1);
+			}
+			num++;
+		}
+			
+		if ( s.find('?') != std::string::npos )
+		{
+			return true ;
+		}
+		
+	}
+
+	return false ;
+
+}
 
 bool ATCommandWarp::ReadSimPhoneInfo(std::vector<SIM_FORMAT> &vsim)
 {
@@ -1384,13 +1767,13 @@ bool ATCommandWarp::ReadSimPhoneInfo(std::vector<SIM_FORMAT> &vsim)
 	int ansLen = 1024;
 	char cmd1[]	= "AT+CPBS = \"SM\"\r";//选择SIM存贮器
 	memset(ans,0,1024);
-	Transaction(cmd1, strlen(cmd1), ans, ansLen);
+	Transaction(cmd1, strlen(cmd1), ans, ansLen, 255);
 	if (strstr(ans, "OK") == NULL)
 	{
 		Dprintf("SM NOT FOUND!");
 		return false;
 	}
-	
+
 	int l;//SIM 中已经存在的电话的数目
 	char cmd2[]	= "AT+CPBS?\r";//查询SIM状态
 	memset(ans,0,1024);
@@ -1415,24 +1798,46 @@ bool ATCommandWarp::ReadSimPhoneInfo(std::vector<SIM_FORMAT> &vsim)
 	if (l == 0)
 	{
 		siminfo = new char[1024];
+		memset(siminfo,0,1024);
 	}
 	else
 	{
-		siminfo = new char[200*l];
+		siminfo = new char[60*l];
+		memset(siminfo,0,60*l);
+	}
+	
+	sprintf(cmd3,"AT+CPBR=0,%d\r",l); 
+	Transaction(cmd3, strlen(cmd3), siminfo, 60*l,0,true);
+	m_bgsm = true;
+
+	if (CheckCSCS(siminfo))
+	{
+		 char UCS2[] = "AT+CSCS = \"UCS2\"\r";
+		 memset(ans,0,1024);
+		 Transaction(UCS2, strlen(UCS2), ans, ansLen);
+		 memset(siminfo,0,60*l);
+		// Command_2(cmd3,strlen(cmd3),siminfo,60*l,"OK");
+		 Transaction(cmd3, strlen(cmd3), siminfo, 60*l,0,true);
+
+		 m_bgsm = false;
 	}
 
-	sprintf(cmd3,"AT+CPBR=0,%d\r",l); 
-	Transaction(cmd3, strlen(cmd3), siminfo, 200*l);
 	if (strstr(siminfo, "OK") != NULL)
 	{
 		// 分析返回的信息
-		ParseAnswerData(siminfo,vsim);
+		ParseAnswerData(siminfo,vsim,m_bgsm);
 	}
 
 	if (siminfo !=NULL)
 	{
 		delete []siminfo ;
 	}
+	
+	//恢复编码集
+	 char UCS2[] = "AT+CSCS = \"GSM\"\r";
+	 memset(ans,0,1024);
+	 Transaction(UCS2, strlen(UCS2), ans, ansLen);
+
 	return true;
 }
 
@@ -1447,37 +1852,65 @@ bool ATCommandWarp::Save2Sim(std::vector<SIM_FORMAT> vsim)
 	char ans[1024] = {0}; // 应答串 
 	int ansLen = 1024;
 
-	char HEX[] = "AT+CSCS= \"GSM\"\r";//选择编码集GSM,也就是7_bit
-	Transaction(HEX, strlen(HEX), ans, ansLen);
-	if (strstr(ans, "OK") == NULL)
-	{
-		return false;
-	}
+// 	char HEX[] = "AT+CSCS= \"GSM\"\r";//选择编码集GSM,也就是7_bit
+// 	Transaction(HEX, strlen(HEX), ans, ansLen);
+// 	if (strstr(ans, "OK") == NULL)
+// 	{
+// 		return false;
+// 	}
 
 	char cmd2[1024]; //向电话本中添加或删除条目
 	int length = 0 ;
 	for (int i = 0 ; i < vsim.size(); i++)
 	{   
-		int  size;
-		char *pname = new char[200];//名字这么大空间足够了
-		unsigned char *desname = new unsigned char[200];//
+		char *pname = new char[100];//名字这么大空间足够了
+		unsigned char *desname = new unsigned char[100];//
 		memset(cmd2,0,1024);
 		memset(pname,0,200);
 		memset(desname,0,200);	
+		
+		if (!m_bgsm)
+		{
+			char UCS2[] = "AT+CSCS = \"UCS2\"\r";
+			memset(ans,0,1024);
+			Transaction(UCS2, strlen(UCS2), ans, ansLen);
 
-	//	GB2312toUSC2(vsim[i].name.c_str(),pname,strlen(vsim[i].name.c_str()));//将名字转换成USC2格式
-		int dlength = EncodeGsm(vsim[i].name.c_str(),desname,strlen(vsim[i].name.c_str()));
-		gsmBytes2String(desname,pname,dlength);
+			GB2312toUSC2(vsim[i].name.c_str(),pname,strlen(vsim[i].name.c_str()));//将名字转换成USC2格式
+		}
+		else
+		{
+			int dlength = EncodeGsm(vsim[i].name.c_str(),desname,strlen(vsim[i].name.c_str()));
+			gsmBytes2String(desname,pname,dlength);	
+		}
+
 		sprintf(cmd2,"AT+CPBW=%d,\"%s\",129,\"%s\"\r",0,vsim[i].telnum.c_str(),pname);		
-	//	sprintf(cmd2,"AT+CPBW=%d\r",13);		
 		Transaction(cmd2, strlen(cmd2), ans, ansLen);
+		
+		if (!m_bgsm)//恢复下编码集
+		{
+			char HEX[] = "AT+CSCS= \"GSM\"\r";
+			Transaction(HEX, strlen(HEX), ans, ansLen);
+			if (strstr(ans, "OK") == NULL)
+			{
+			 	return false;
+			}
+		}
+		
 		delete[]pname;
 		delete[]desname;
-		Sleep(100);
 	}
 	
 }
-void ATCommandWarp::ParseAnswerData(char *src,std::vector<SIM_FORMAT> &vsim)
+void ATCommandWarp::DeleteSim(int id)
+{
+	char ans[1024] = {0}; // 应答串 
+	int ansLen = 1024;
+	char cmd2[1024]; //向电话本中添加或删除条目
+	sprintf(cmd2,"AT+CPBW=%d\r",id);
+	Transaction(cmd2, strlen(cmd2), ans, ansLen);
+
+}
+void ATCommandWarp::ParseAnswerData(char *src,std::vector<SIM_FORMAT> &vsim,bool bgsm)
 {	
 	//反馈的信息的格式
 	/*
@@ -1490,11 +1923,14 @@ void ATCommandWarp::ParseAnswerData(char *src,std::vector<SIM_FORMAT> &vsim)
 	std::string name ;
 	std::string phone ;
 	int l = 0 ;
+	
 	while ((l = s.find("+CPBR:"))!= -1)
 	{	
 		SIM_FORMAT sim ;
 		s = s.substr(l+1);
 		l = s.find(',');
+		sim.id = s.substr(6,l-6);//卡的序号
+
 		s = s.substr(l+1);	
 		l = s.find(',');//找电话号码
 		phone = s.substr(1,l-2);
@@ -1506,19 +1942,27 @@ void ATCommandWarp::ParseAnswerData(char *src,std::vector<SIM_FORMAT> &vsim)
 		name = s.substr(1,l-2);
 		
 		//转化GB2312
-		char *des = new char[200];
+		char *des = new char[150];
 		unsigned char *temp = new unsigned char[200]; 
-		memset(temp,0,200);
+		memset(temp,0,150);
 		memset(des,0,200);
-		int tlength = gsmString2Bytes(name.c_str(),temp,strlen(name.c_str()));
-		DecodeGsm(temp,des,tlength);
-		//USC2toGB2312((char*)name.c_str(),des,strlen(name.c_str()));
+		if(bgsm)
+		{
+			int tlength = gsmString2Bytes(name.c_str(),temp,strlen(name.c_str()));
+			DecodeGsm(temp,des,tlength);
+		}
+		else
+		{
+			USC2toGB2312((char*)name.c_str(),des,strlen(name.c_str()));		
+		}
+
 		sim.telnum = phone;
 		sim.name = des ;
 		vsim.push_back(sim);
 		delete []des;
 		delete []temp; 
 	}
+
 }
 
 // 可打印字符串转换为字节数据    
@@ -1682,7 +2126,7 @@ void ATCommandWarp::GB2312toUSC2(const char *src,char *des,int srclength)
 	memset(wh,0,128*2);
 	memset(pdst,0,256);
 	nDstlength = ::MultiByteToWideChar(CP_ACP, 0, src, srclength, wh, srclength +1);
-	for(int i=0; i<nDstlength; i++) 
+	for(int i = 0; i < nDstlength; i++) 
 	{
 		// 先输出高位字节
 		pdst[it++] = wh[i] >> 8;
@@ -1691,7 +2135,7 @@ void ATCommandWarp::GB2312toUSC2(const char *src,char *des,int srclength)
 	}
 	pdst[it] = '\n';//结束标志，自己加的
 	
-	int i = 0 ;
+	i = 0 ;
 	while (pdst[i] !='\n')//把值转成相应的字符串
 	{
 		sprintf(des+num*2,"%02x",pdst[i]);
@@ -1718,8 +2162,9 @@ void ATCommandWarp::USC2toGB2312(char *src,char *des,int length)
 	}
 	
 	hex[it] = '\n' ;//标志,判断该hex是否结束
+	
 	it = 0 ;
-	int i = 0 ;
+	i = 0 ;
 	while (hex[i] !='\n')//组成unicode
 	{
 		wh[it++] = (hex[i]<< 8) | (unsigned char)hex[i+1] ;
@@ -1735,4 +2180,68 @@ void ATCommandWarp::USC2toGB2312(char *src,char *des,int length)
 		NULL, NULL);
 	// 输出字符串加个结束符
 	des[nDstLength] = '\0';	
+}
+
+struct VideoThreadParam 
+{
+	Util::ComWarp * pVideoComm;
+	BOOL			*pIsRunThread;
+	BOOL            *pIsExitThread;
+	pGetVideoData   GetVideoData; 
+};
+
+VideoThreadParam   gVideaoParam;
+
+void GetVideoDataProc(void *pParam)
+{
+	VideoThreadParam *pVideoParam = (VideoThreadParam *)pParam;
+	char data[1024];
+	while(pVideoParam->pIsRunThread)
+	{
+		int len = pVideoParam->pVideoComm->ReadComm(data, 1024);
+		pVideoParam->GetVideoData(data, len);
+	}
+	*pVideoParam->pIsExitThread = TRUE;
+}
+
+//开始视频
+bool ATCommandWarp::StartVideoPhone(Util::ComWarp *pVideoCom)
+{
+	pVideoCom->OpenComm(L"COM4:");
+	char *cmd = "AT^DVTCHL=1\r";
+	pVideoCom->WriteComm(cmd, strlen(cmd));
+	m_bIsVideoRun = TRUE;
+	m_bIsVideoExit = FALSE;
+	
+	gVideaoParam.pVideoComm = pVideoCom;
+	gVideaoParam.pIsRunThread = &m_bIsVideoRun;
+	gVideaoParam.pIsExitThread = &m_bIsVideoExit;
+	
+	DWORD d;
+	HANDLE pThread = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)GetVideoDataProc, (void *)&gVideaoParam, 0, &d );
+
+	return TRUE;
+}
+
+//结束视频
+bool ATCommandWarp::EndVideoPhone(Util::ComWarp *pVideoCom)
+{
+	m_bIsVideoRun = FALSE;
+	while(!m_bIsVideoExit)
+	{
+		Sleep(5);
+	}
+	pVideoCom->CloseComm();
+	return TRUE;
+}
+
+int ATCommandWarp::GetVideoData(void *pData, int length)
+{
+	return 0;
+}
+
+int ATCommandWarp::SendVideoData(void *pData, int length)
+{
+	int ret = gVideaoParam.pVideoComm->WriteComm(pData, length);
+	return ret;
 }
