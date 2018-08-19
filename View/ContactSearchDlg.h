@@ -18,54 +18,54 @@
 
 class CContactSearchDlg : public CCEDialog
 {
-// Construction
+    // Construction
 public:
-	CContactSearchDlg(CWnd* pParent = NULL);   // standard constructor
+    CContactSearchDlg(CWnd* pParent = NULL);   // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CContactSearchDlg)
-	enum { IDD = IDD_DIALOG_CONTACTSEARCH };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CContactSearchDlg)
+    enum { IDD = IDD_DIALOG_CONTACTSEARCH };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CContactSearchDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CContactSearchDlg)
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CContactSearchDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	afx_msg void OnButtonSearchContactCancel();
-	afx_msg void OnButtonSearchContactSearch();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	DECLARE_MESSAGE_MAP()
-		
-private:
-	CMJPGStatic		m_MJPGList;
-/*
-	CCEStatic m_sticTitle;
-	CCEStatic m_sticTip;
-	CCEStatic m_sticName;
-	CCEStatic m_sticNumber;
-	CCEStatic m_sticCompany;
-	CCEStatic m_sticDuty;
-	*/
-	CCERectEdit m_edtName;
-	CCERectEdit m_edtNumber;
-	CCERectEdit m_edtCompany;
-	CCERectEdit m_edtDuty;
+    // Generated message map functions
+    //{{AFX_MSG(CContactSearchDlg)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    afx_msg void OnButtonSearchContactCancel();
+    afx_msg void OnButtonSearchContactSearch();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    DECLARE_MESSAGE_MAP()
 
-//	CCEBmpButton m_btnSearch;
-//	CCEBmpButton m_btnCancel;
-//	CCEFramePartStatic m_sticBackground;
+private:
+    CMJPGStatic		m_MJPGList;
+    /*
+    CCEStatic m_sticTitle;
+    CCEStatic m_sticTip;
+    CCEStatic m_sticName;
+    CCEStatic m_sticNumber;
+    CCEStatic m_sticCompany;
+    CCEStatic m_sticDuty;
+    */
+    CCERectEdit m_edtName;
+    CCERectEdit m_edtNumber;
+    CCERectEdit m_edtCompany;
+    CCERectEdit m_edtDuty;
+
+    //	CCEBmpButton m_btnSearch;
+    //	CCEBmpButton m_btnCancel;
+    //	CCEFramePartStatic m_sticBackground;
 };
 
 //{{AFX_INSERT_LOCATION}}

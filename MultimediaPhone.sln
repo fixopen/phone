@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultimediaPhone", "MultimediaPhone.vcproj", "{D871D853-1E03-495D-A24B-D314FC3DCC51}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Idea6410_SDK (ARMV4I) = Debug|Idea6410_SDK (ARMV4I)
+		Debug|IngenicMedia (MIPSII) = Debug|IngenicMedia (MIPSII)
+		Release|Idea6410_SDK (ARMV4I) = Release|Idea6410_SDK (ARMV4I)
+		Release|IngenicMedia (MIPSII) = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Debug|Idea6410_SDK (ARMV4I).ActiveCfg = Debug|Idea6410_SDK (ARMV4I)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Debug|Idea6410_SDK (ARMV4I).Build.0 = Debug|Idea6410_SDK (ARMV4I)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Debug|Idea6410_SDK (ARMV4I).Deploy.0 = Debug|Idea6410_SDK (ARMV4I)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Debug|IngenicMedia (MIPSII).ActiveCfg = Debug|IngenicMedia (MIPSII)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Debug|IngenicMedia (MIPSII).Build.0 = Debug|IngenicMedia (MIPSII)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Debug|IngenicMedia (MIPSII).Deploy.0 = Debug|IngenicMedia (MIPSII)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Release|Idea6410_SDK (ARMV4I).ActiveCfg = Release|Idea6410_SDK (ARMV4I)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Release|Idea6410_SDK (ARMV4I).Build.0 = Release|Idea6410_SDK (ARMV4I)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Release|Idea6410_SDK (ARMV4I).Deploy.0 = Release|Idea6410_SDK (ARMV4I)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Release|IngenicMedia (MIPSII).ActiveCfg = Release|IngenicMedia (MIPSII)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Release|IngenicMedia (MIPSII).Build.0 = Release|IngenicMedia (MIPSII)
+		{D871D853-1E03-495D-A24B-D314FC3DCC51}.Release|IngenicMedia (MIPSII).Deploy.0 = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

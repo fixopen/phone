@@ -12,47 +12,46 @@
 /////////////////////////////////////////////////////////////////////////////
 // CWarningNoFlashDlg dialog
 
-class CWarningNoFlashDlg : public CCEDialog
-{
-// Construction
+class CWarningNoFlashDlg : public CCEDialog {
+    // Construction
 public:
-	CMJPGStatic		m_MJPGList;
-	HWND			m_handle;
-	CWarningNoFlashDlg(CWnd* pParent = NULL);   // standard constructor
-	void SetType(int type);
-	void SetTitle(CString title);
-	void SetHWnd(HWND handle);
-	int m_nType;
-	CCEProcessBar m_procbarSound;
+    CMJPGStatic m_MJPGList;
+    HWND m_handle;
+    CWarningNoFlashDlg(CWnd* pParent = NULL);   // standard constructor
+    void SetType(int type);
+    void SetTitle(CString title);
+    void SetHWnd(HWND handle);
+    int m_nType;
+    CCEProcessBar m_procbarSound;
 
-	static void RemoveThread(void *type);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnClickOK();
-	afx_msg void OnClickCancel();
+    static void RemoveThread(void* type);
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg void OnClickOK();
+    afx_msg void OnClickCancel();
 
-// Dialog Data
-	//{{AFX_DATA(CWarningNoFlashDlg)
-	enum { IDD = IDD_DIALOG_NOFLASH };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CWarningNoFlashDlg)
+    enum { IDD = IDD_DIALOG_NOFLASH };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CWarningNoFlashDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CWarningNoFlashDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CWarningNoFlashDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnTimer(UINT nIDEvent);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CWarningNoFlashDlg)
+    virtual BOOL OnInitDialog();
+    afx_msg void OnTimer(UINT nIDEvent);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

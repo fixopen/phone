@@ -6,8 +6,8 @@
 
 namespace Util
 {
-	typedef CTime Timestamp;
-	typedef CTimeSpan TimeSpan;
+    typedef CTime Timestamp;
+    typedef CTimeSpan TimeSpan;
 }
 
 #endif //__UTIL_DATETIME_H__

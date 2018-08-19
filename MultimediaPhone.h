@@ -9,12 +9,12 @@
 #endif // _MSC_VER >= 1000
 
 #ifndef __AFXWIN_H__
-	#error include 'stdafx.h' before including this file for PCH
+#error include 'stdafx.h' before including this file for PCH
 #endif
 
-#define WM_SOFTKEY		(WM_USER+200)
+#define WM_SOFTKEY      (WM_USER+200)
 
-#include "resource.h"		// main symbols
+#include "resource.h"       // main symbols
 #include "./Control/Inputdlg.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -22,30 +22,29 @@
 // See MultimediaPhone.cpp for the implementation of this class
 //
 
-class CMultimediaPhoneApp : public CWinApp
-{
+class CMultimediaPhoneApp : public CWinApp {
 public:
-//	CInputDlg	*inputDlg_; 
-	
+    //  CInputDlg   *inputDlg_; 
+
 
 public:
-	CMultimediaPhoneApp();
+    CMultimediaPhoneApp();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CMultimediaPhoneApp)
-	public:
-	virtual BOOL InitInstance();
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CMultimediaPhoneApp)
+    public:
+    virtual BOOL InitInstance();
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 
-	//{{AFX_MSG(CMultimediaPhoneApp)
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CMultimediaPhoneApp)
+    // NOTE - the ClassWizard will add and remove member functions here.
+    //    DO NOT EDIT what you see in these blocks of generated code !
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 extern CMultimediaPhoneApp theApp;

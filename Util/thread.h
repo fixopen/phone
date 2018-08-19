@@ -5,11 +5,9 @@
 
 namespace Util
 {
-    class Thread
-    {
+    class Thread {
     public:
-        enum Status
-        {
+        enum Status {
             tsNull,
             tsCreated,
             tsRunning,

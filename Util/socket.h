@@ -88,8 +88,8 @@ namespace Util
             return theSocket_;
         }
 
-		void (*onError)(int errorCode);
-		void (*onReceived)(int errorCode);
+        void (*onError)(int errorCode);
+        void (*onReceived)(int errorCode);
 
         void close(void);
     protected:
@@ -138,29 +138,29 @@ namespace Util
         }
 
         void bind(int const ipAddr, unsigned short const port)
-		{
-			Socket::bind(ipAddr, port);
-		}
+        {
+            Socket::bind(ipAddr, port);
+        }
 
         void bind(char const* const ipAddr, unsigned short const port)
-		{
-			Socket::bind(ipAddr, port);
-		}
+        {
+            Socket::bind(ipAddr, port);
+        }
 
         void bindLocal(unsigned short const port)
-		{
-			Socket::bindLocal(port);
-		}
+        {
+            Socket::bindLocal(port);
+        }
 
         void receiveFrom(char* const buffer, int const bufferLength, int* const length, char* const ipAddr, unsigned short* const port)
-		{
-			Socket::receiveFrom(buffer, bufferLength, length, ipAddr, port);
-		}
+        {
+            Socket::receiveFrom(buffer, bufferLength, length, ipAddr, port);
+        }
 
         void sendTo(char const* const buffer, int const length, char const* const ipAddr, unsigned short const port)
-		{
-			Socket::sendTo(buffer, length, ipAddr, port);
-		}
+        {
+            Socket::sendTo(buffer, length, ipAddr, port);
+        }
         //using Socket::bind;
         //using Socket::bindLocal;
         //using Socket::receiveFrom;

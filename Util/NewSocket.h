@@ -7,38 +7,37 @@
 // NewSocket.h : header file
 //
 
-#include   "afxsock.h"
-
+//#include <wcesock.h>
+#include <afxsock.h>
 /////////////////////////////////////////////////////////////////////////////
 // CNewSocket command target
 
-class CNewSocket : public CCeSocket
-{
-// Attributes
+class CNewSocket : public CSocket/*CCeSocket*/ {
+    // Attributes
 public:
 
-// Operations
+    // Operations
 public:
-	CNewSocket();
-	virtual ~CNewSocket();
+    CNewSocket();
+    virtual ~CNewSocket();
 
-// Overrides
+    // Overrides
 public:
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CNewSocket)
-	public:
-	virtual void OnAccept(int nErrorCode);
-	virtual void OnReceive(int nErrorCode);
-	virtual int Receive(void* lpBuf, int nBufLen, int nFlags = 0);
-	virtual int Send(const void* lpBuf, int nBufLen, int nFlags = 0);
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CNewSocket)
+    public:
+    virtual void OnAccept(int nErrorCode);
+    virtual void OnReceive(int nErrorCode);
+    virtual int Receive(void* lpBuf, int nBufLen, int nFlags = 0);
+    virtual int Send(const void* lpBuf, int nBufLen, int nFlags = 0);
+    //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CNewSocket)
-		// NOTE - the ClassWizard will add and remove member functions here.
-	//}}AFX_MSG
+    // Generated message map functions
+    //{{AFX_MSG(CNewSocket)
+    // NOTE - the ClassWizard will add and remove member functions here.
+    //}}AFX_MSG
 
-// Implementation
+    // Implementation
 protected:
 };
 

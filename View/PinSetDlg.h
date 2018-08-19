@@ -24,45 +24,45 @@
 
 class CPinSetDlg : public CCEDialog
 {
-// Construction
+    // Construction
 public:
-	CPasswordDlg*  m_pPasswordDlg;
-	BOOL m_bPin;
-	void SetButtonDefaultColor(CCEButtonST* button);
-	CCERectEdit m_edtPinNumber;
-	
-	void SetCallSetParam();
-	CPinSetDlg(CWnd* pParent = NULL);   // standard constructor
+    CPasswordDlg*  m_pPasswordDlg;
+    BOOL m_bPin;
+    void SetButtonDefaultColor(CCEButtonST* button);
+    CCERectEdit m_edtPinNumber;
 
-// Dialog Data
-	//{{AFX_DATA(CPinSetDlg)
-	enum { IDD = IDD_DIALOG_FASTDIALS };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    void SetCallSetParam();
+    CPinSetDlg(CWnd* pParent = NULL);   // standard constructor
+
+    // Dialog Data
+    //{{AFX_DATA(CPinSetDlg)
+    enum { IDD = IDD_DIALOG_FASTDIALS };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CPinSetDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CPinSetDlg)
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CPinSetDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	afx_msg void OnButtonFastDialsOk();
-	afx_msg void OnButtonFastDialsCancel();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnCheckPIN(WPARAM w, LPARAM l);
-	DECLARE_MESSAGE_MAP()
-		
+    // Generated message map functions
+    //{{AFX_MSG(CPinSetDlg)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    afx_msg void OnButtonFastDialsOk();
+    afx_msg void OnButtonFastDialsCancel();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg LRESULT OnCheckPIN(WPARAM w, LPARAM l);
+    DECLARE_MESSAGE_MAP()
+
 private:
-	CMJPGStatic		m_MJPGList;
+    CMJPGStatic		m_MJPGList;
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -12,42 +12,41 @@
 /////////////////////////////////////////////////////////////////////////////
 // CAlarmShowDlg dialog
 
-class CAlarmShowDlg : public CCEDialog
-{
-// Construction
+class CAlarmShowDlg : public CCEDialog {
+    // Construction
 public:
-	int				m_nAlarmID;
+    int m_nAlarmID;
 
-	CMJPGStatic		m_MJPGList;
-	void            SetTxt(int nAlarmID, CString sTime, CString sTitle, CString sContent, std::string sRing, BOOL isADDList = TRUE);
+    CMJPGStatic m_MJPGList;
+    void SetTxt(int nAlarmID, CString sTime, CString sTitle, CString sContent, std::string sRing, BOOL isADDList = TRUE);
 
-	CAlarmShowDlg(CWnd* pParent = NULL);   // standard constructor
-	void ShowWindow_(int cmdshow);
+    CAlarmShowDlg(CWnd* pParent = NULL);   // standard constructor
+    void ShowWindow_(int cmdshow);
 
-// Dialog Data
-	//{{AFX_DATA(CAlarmShowDlg)
-	enum { IDD = IDD_DIALOG_ALARM };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CAlarmShowDlg)
+    enum { IDD = IDD_DIALOG_ALARM };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAlarmShowDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CAlarmShowDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CAlarmShowDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnTimer(UINT nIDEvent);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CAlarmShowDlg)
+    virtual BOOL OnInitDialog();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg void OnTimer(UINT nIDEvent);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

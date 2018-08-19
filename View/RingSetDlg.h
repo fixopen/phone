@@ -21,58 +21,58 @@
 
 class CRingSetDlg : public CCEDialog
 {
-// Construction
+    // Construction
 public:
-	boost::shared_ptr<Data::Setting>  m_Data;
-	void SetRingSetParam(	boost::shared_ptr<Data::Setting> data);
-	void SetRingLst(TCHAR *dir);
-	CRingSetDlg(CWnd* pParent = NULL);   // standard constructor
+    boost::shared_ptr<Data::Setting>  m_Data;
+    void SetRingSetParam(	boost::shared_ptr<Data::Setting> data);
+    void SetRingLst(TCHAR *dir);
+    CRingSetDlg(CWnd* pParent = NULL);   // standard constructor
 
-	CCEButtonST m_chbEnableRing;
-	CCEComboBox_ m_cmbRing;
-	CCEComboBox_ m_cmbRingVolume;
+    CCEButtonST m_chbEnableRing;
+    CCEComboBox_ m_cmbRing;
+    CCEComboBox_ m_cmbRingVolume;
 
-	CCEButtonST m_chbEnableSMSRing;
-	CCEComboBox_ m_cmbSMSRing;
-	CCEComboBox_ m_cmbSMSRingVolume;
+    CCEButtonST m_chbEnableSMSRing;
+    CCEComboBox_ m_cmbSMSRing;
+    CCEComboBox_ m_cmbSMSRingVolume;
 
-	CCEButtonST m_chbEnableSpecRing;
-	CCEComboBox_ m_cmbSpecRing;
-	CCEComboBox_ m_cmbSpecRingVolume;
+    CCEButtonST m_chbEnableSpecRing;
+    CCEComboBox_ m_cmbSpecRing;
+    CCEComboBox_ m_cmbSpecRingVolume;
 
-// Dialog Data
-	//{{AFX_DATA(CRingSetDlg)
-	enum { IDD = IDD_DIALOG_FASTDIALS };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CRingSetDlg)
+    enum { IDD = IDD_DIALOG_FASTDIALS };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CRingSetDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CRingSetDlg)
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CRingSetDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	afx_msg void OnButtonFastDialsOk();
-	afx_msg void OnButtonFastDialsCancel();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnComboSelect(WPARAM w, LPARAM l);
-	DECLARE_MESSAGE_MAP()
-		
+    // Generated message map functions
+    //{{AFX_MSG(CRingSetDlg)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    afx_msg void OnButtonFastDialsOk();
+    afx_msg void OnButtonFastDialsCancel();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg LRESULT OnComboSelect(WPARAM w, LPARAM l);
+    DECLARE_MESSAGE_MAP()
+
 private:
-	CMJPGStatic		m_MJPGList;
-	CCERectEdit m_edtNumber[3];
-	
-//	CCEBmpButton m_btnOk;
-//	CCEBmpButton m_btnCancel;
+    CMJPGStatic		m_MJPGList;
+    CCERectEdit m_edtNumber[3];
+
+    //	CCEBmpButton m_btnOk;
+    //	CCEBmpButton m_btnCancel;
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -19,124 +19,124 @@
 
 class CContactNewDlg : public CDialog
 {
-// Construction
+    // Construction
 public:
-	CCEComboBox_ m_cmbType;
-	CCEComboBox_ m_cmbGroup;
-	
-	CContactNewDlg(CWnd* pParent = NULL);   // standard constructor
+    CCEComboBox_ m_cmbType;
+    CCEComboBox_ m_cmbGroup;
 
-// Dialog Data
-	//{{AFX_DATA(CContactNewDlg)
-	enum { IDD = IDD_DIALOG_CONTACTNEW };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    CContactNewDlg(CWnd* pParent = NULL);   // standard constructor
+
+    // Dialog Data
+    //{{AFX_DATA(CContactNewDlg)
+    enum { IDD = IDD_DIALOG_CONTACTNEW };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CContactNewDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CContactNewDlg)
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-	//}}AFX_VIRTUAL
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CContactNewDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	afx_msg void OnButtonContactNewOk();
-	afx_msg void OnButtonContactNewCancel();
-	afx_msg void OnButtonContactNewDelete();
-	afx_msg void OnButtonContactNewDialMobile1();
-	afx_msg void OnButtonContactNewDialMobile2();
-	afx_msg void OnButtonContactNewDialTelephone1();
-	afx_msg void OnButtonContactNewDialTelephone2();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnComboSelect(WPARAM w, LPARAM l);
+    // Generated message map functions
+    //{{AFX_MSG(CContactNewDlg)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    afx_msg void OnButtonContactNewOk();
+    afx_msg void OnButtonContactNewCancel();
+    afx_msg void OnButtonContactNewDelete();
+    afx_msg void OnButtonContactNewDialMobile1();
+    afx_msg void OnButtonContactNewDialMobile2();
+    afx_msg void OnButtonContactNewDialTelephone1();
+    afx_msg void OnButtonContactNewDialTelephone2();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg LRESULT OnComboSelect(WPARAM w, LPARAM l);
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 private:
-	CMJPGStatic		m_MJPGList;
-/*
-	CCEStatic m_sticTitle;
-	CCEStatic m_sticName;
-	CCEStatic m_sticMobile1;
-	CCEStatic m_sticMobile2;
-	CCEStatic m_sticTelephone1;
-	CCEStatic m_sticTelephone2;
-	CCEStatic m_sticEmail;
-	CCEStatic m_sticSite;
-	CCEStatic m_sticGroup;
-	CCEStatic m_sticCompany;
-	CCEStatic m_sticCompanyAddress;
-	CCEStatic m_sticPostCode;
-	CCEStatic m_sticDepartment;
-	CCEStatic m_sticDuty;
-	CCEStatic m_sticMemo;
-	CCEStatic m_sticOperation;
-	CCEStatic m_sticSepLine1;
-	CCEStatic m_sticSepLine2;
-*/
-	CCERectEdit m_edtName;
-	CCERectEdit m_edtMobile1;
-	CCERectEdit m_edtMobile2;
-	CCERectEdit m_edtTelephone1;
-	CCERectEdit m_edtTelephone2;
-	CCERectEdit m_edtEmail;
-	CCERectEdit m_edtSite;
-	CCERectEdit m_edtCompany;
-	CCERectEdit m_edtCompanyAddress;
-	CCERectEdit m_edtPostCode;
-	CCERectEdit m_edtDepartment;
-	CCERectEdit m_edtDuty;
-	CCERectEdit m_edtMemo;
-	
-//	CCEComboBox_ m_comStorage;//add by qi 2009_09_28,存储来至组别
+    CMJPGStatic		m_MJPGList;
+    /*
+    CCEStatic m_sticTitle;
+    CCEStatic m_sticName;
+    CCEStatic m_sticMobile1;
+    CCEStatic m_sticMobile2;
+    CCEStatic m_sticTelephone1;
+    CCEStatic m_sticTelephone2;
+    CCEStatic m_sticEmail;
+    CCEStatic m_sticSite;
+    CCEStatic m_sticGroup;
+    CCEStatic m_sticCompany;
+    CCEStatic m_sticCompanyAddress;
+    CCEStatic m_sticPostCode;
+    CCEStatic m_sticDepartment;
+    CCEStatic m_sticDuty;
+    CCEStatic m_sticMemo;
+    CCEStatic m_sticOperation;
+    CCEStatic m_sticSepLine1;
+    CCEStatic m_sticSepLine2;
+    */
+    CCERectEdit m_edtName;
+    CCERectEdit m_edtMobile1;
+    CCERectEdit m_edtMobile2;
+    CCERectEdit m_edtTelephone1;
+    CCERectEdit m_edtTelephone2;
+    CCERectEdit m_edtEmail;
+    CCERectEdit m_edtSite;
+    CCERectEdit m_edtCompany;
+    CCERectEdit m_edtCompanyAddress;
+    CCERectEdit m_edtPostCode;
+    CCERectEdit m_edtDepartment;
+    CCERectEdit m_edtDuty;
+    CCERectEdit m_edtMemo;
 
-/*
-	CCEBmpButton m_btnDialMobile1;
-	CCEBmpButton m_btnDialMobile2;
-	CCEBmpButton m_btnDialTelephone1;
-	CCEBmpButton m_btnDialTelephone2;
+    //	CCEComboBox_ m_comStorage;//add by qi 2009_09_28,存储来至组别
 
-	CCEBmpButton m_btnOk;
-	CCEBmpButton m_btnCancel;
-	CCEBmpButton m_btnDelete;
-*/
+    /*
+    CCEBmpButton m_btnDialMobile1;
+    CCEBmpButton m_btnDialMobile2;
+    CCEBmpButton m_btnDialTelephone1;
+    CCEBmpButton m_btnDialTelephone2;
 
-//	CCEFrameStatic m_backGround;
+    CCEBmpButton m_btnOk;
+    CCEBmpButton m_btnCancel;
+    CCEBmpButton m_btnDelete;
+    */
 
-	CImageList* m_pImageList;
-//	CCEFrameStatic m_sticBackground;
-	
-	void SetButtonDefaultColor(CCEButtonST* button);
-	void SetButtonSelectedColor(CCEButtonST* button);
+    //	CCEFrameStatic m_backGround;
 
-	boost::shared_ptr<Data::Contact> m_pContact;
+    CImageList* m_pImageList;
+    //	CCEFrameStatic m_sticBackground;
 
-	void AddGroupItems(void);
-	char* LoadPinYinIndex(void);
-	std::string ReplaceSingleQuotation(std::string& field);
+    void SetButtonDefaultColor(CCEButtonST* button);
+    void SetButtonSelectedColor(CCEButtonST* button);
+
+    boost::shared_ptr<Data::Contact> m_pContact;
+
+    void AddGroupItems(void);
+    char* LoadPinYinIndex(void);
+    std::string ReplaceSingleQuotation(std::string& field);
 
 private:
-	std::vector<int>	m_vSimID;
-	bool				m_bSIMGroup;//是否是sim卡组	
+    std::vector<int>	m_vSimID;
+    bool				m_bSIMGroup;//是否是sim卡组	
 
 public:
-	char* m_pPinYinIndex;
-	void SetContact(boost::shared_ptr<Data::Contact> contact);
-	std::string GetAlias(std::string name);
+    char* m_pPinYinIndex;
+    void SetContact(boost::shared_ptr<Data::Contact> contact);
+    std::string GetAlias(std::string name);
 
-	// add by qi 2009_09_28
-	void ClearEdit();//选中SIM卡组，除了前三个控件可编辑，其它不可编辑
-	void SetSim(bool btrue);//设置SIM卡的编辑环境
-	void ShowWindow_();
+    // add by qi 2009_09_28
+    void ClearEdit();//选中SIM卡组，除了前三个控件可编辑，其它不可编辑
+    void SetSim(bool btrue);//设置SIM卡的编辑环境
+    void ShowWindow_();
 };
 
 //{{AFX_INSERT_LOCATION}}

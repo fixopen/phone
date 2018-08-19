@@ -20,58 +20,58 @@ enum PASSWORD_TYPE{CHECK_PLAYPASSWORD, CHECK_SUPPERPASSWORD, CHECK_SCREENPASSWOR
 
 class CPasswordDlg : public CCEDialog
 {
-// Construction
+    // Construction
 public:
-	int m_nCtrl;
-	CPasswordDlg(CWnd* pParent = NULL);   // standard constructor
+    int m_nCtrl;
+    CPasswordDlg(CWnd* pParent = NULL);   // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CPasswordDlg)
-	enum { IDD = IDD_DIALOG_PASSWORD };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CPasswordDlg)
+    enum { IDD = IDD_DIALOG_PASSWORD };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CPasswordDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CPasswordDlg)
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CPasswordDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnTimer(UINT nIDEvent);
-	//}}AFX_MSG
-	afx_msg void OnButtonPasswordOk();
-	afx_msg void OnButtonPasswordCancel();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CPasswordDlg)
+    virtual BOOL OnInitDialog();
+    afx_msg void OnTimer(UINT nIDEvent);
+    //}}AFX_MSG
+    afx_msg void OnButtonPasswordOk();
+    afx_msg void OnButtonPasswordCancel();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    DECLARE_MESSAGE_MAP()
 private:
-	CMJPGStatic		m_MJPGList;
+    CMJPGStatic		m_MJPGList;
 
-	CCERectEdit m_edtOldPassword;
-	CCERectEdit m_edtNewPassword1;
-	CCERectEdit m_edtNewPassword2;
-	
-	PASSWORD_TYPE m_passwordType;
-	CString		  m_password;
-	const char		  *m_tempPassword;
-	int			  m_nStep;
-	HWND		  m_Owner;
+    CCERectEdit m_edtOldPassword;
+    CCERectEdit m_edtNewPassword1;
+    CCERectEdit m_edtNewPassword2;
 
-	void SetStaticDefaultColor(CCEStatic* cestatic);
+    PASSWORD_TYPE m_passwordType;
+    CString		  m_password;
+    const char		  *m_tempPassword;
+    int			  m_nStep;
+    HWND		  m_Owner;
+
+    void SetStaticDefaultColor(CCEStatic* cestatic);
 public:
-	void	SetType(PASSWORD_TYPE nType, int nCtrl = 0);
-	void    SetOldPassWord(char *pPassWord);
-	void    SetHWnd(HWND handle){m_Owner = handle;}
-	void    SettingType(PASSWORD_TYPE nType, int nCtrl = 0);
-	void    SettingOK();
+    void	SetType(PASSWORD_TYPE nType, int nCtrl = 0);
+    void    SetOldPassWord(char *pPassWord);
+    void    SetHWnd(HWND handle){m_Owner = handle;}
+    void    SettingType(PASSWORD_TYPE nType, int nCtrl = 0);
+    void    SettingOK();
 };
 
 //{{AFX_INSERT_LOCATION}}

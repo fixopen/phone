@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "TelephoneWarp.h"
 #include "../multimediaphone.h"
 #include "../multimediaphoneDlg.h"
@@ -88,7 +88,8 @@ int TelephoneWarp::DetectTestStatus(unsigned char c)
 					}
 				}
 
-				for(int i = 0; i < 5; i++)
+                int i;
+				for(i = 0; i < 5; i++)
 				{
 					if(n >= gBatteryLevel[i])
 					{
@@ -152,7 +153,7 @@ BOOL gIsHandSet = FALSE;
 void ParseTelephoneData(unsigned char const* const data, unsigned int const length)
 {
 	Sleep(10);
-	int i;
+	size_t i;
 	static BOOL isRingTelCode = FALSE;
 	static CALLID_INFO	CallID;
 	static UINT8   CallIDbuff[128];
@@ -636,7 +637,7 @@ bool TelephoneWarp::Dial(char* number, BOOL isVideo)
 {
 	TEL_NUM num;
 	memset(&num, 0, sizeof(TEL_NUM));
-	strcpy(num.NUM, number);
+	strcpy_s(num.NUM, 16, number);
 	num.TYPE = isVideo;
 	PutSendMessage(&num);
 	return true;
@@ -686,7 +687,7 @@ void TelephoneWarp::Incoming(char* num)
 {
 	static CALLID_INFO CallID;
 	memset(&CallID, 0, sizeof(CALLID_INFO));
-	strcpy(CallID.number, num);
+	strcpy_s(CallID.number, 32, num);
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_CALLIDEND, (WPARAM)&CallID, 0);
 //	TRACE(CallID);
 }

@@ -20,162 +20,137 @@ static char THIS_FILE[] = __FILE__;
 
 
 CDeleteTipDlg::CDeleteTipDlg(CWnd* pParent /*=NULL*/)
-	: CCEDialog(CDeleteTipDlg::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CDeleteTipDlg)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
-	m_ntype = 0;
+: CCEDialog(CDeleteTipDlg::IDD, pParent) {
+    //{{AFX_DATA_INIT(CDeleteTipDlg)
+    // NOTE: the ClassWizard will add member initialization here
+    //}}AFX_DATA_INIT
+    m_ntype = 0;
 }
 
 
-void CDeleteTipDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDeleteTipDlg)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
-	//}}AFX_DATA_MAP
+void CDeleteTipDlg::DoDataExchange(CDataExchange* pDX) {
+    CDialog::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CDeleteTipDlg)
+    // NOTE: the ClassWizard will add DDX and DDV calls here
+    //}}AFX_DATA_MAP
+
 }
 
 
 BEGIN_MESSAGE_MAP(CDeleteTipDlg, CCEDialog)
-	//{{AFX_MSG_MAP(CDeleteTipDlg)
-	ON_WM_TIMER()
-	//}}AFX_MSG_MAP
-	ON_BN_CLICKED(IDC_BUTTON_DELETETIP_OK, OnButtonDeleteTipOk)
-	ON_BN_CLICKED(IDC_BUTTON_DELETETIP_CANCEL, OnButtonDeleteTipCancel)
-	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
+    //{{AFX_MSG_MAP(CDeleteTipDlg)
+    ON_WM_TIMER()
+    //}}AFX_MSG_MAP
+    ON_BN_CLICKED(IDC_BUTTON_DELETETIP_OK, OnButtonDeleteTipOk)
+    ON_BN_CLICKED(IDC_BUTTON_DELETETIP_CANCEL, OnButtonDeleteTipCancel)
+    ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CDeleteTipDlg message handlers
-void CDeleteTipDlg::OnClickMJPG(WPARAM w, LPARAM l)
-{
-	switch(w)
-	{
-	case 1001:
-		OnButtonDeleteTipOk();
-		break;
-	case 1000:
-		OnButtonDeleteTipCancel();
-		break;
-	default:
-		break;
-	}
+LRESULT CDeleteTipDlg::OnClickMJPG(WPARAM w, LPARAM l) {
+    LRESULT result = 0;
+    switch (w) {
+    case 1001:
+        OnButtonDeleteTipOk();
+        break;
+    case 1000:
+        OnButtonDeleteTipCancel();
+        break;
+    default:
+        break;
+    }
+    return result;
 }
-BOOL CDeleteTipDlg::OnInitDialog() 
-{
-	CDialog::OnInitDialog();
-	
-	m_procbarSound.Create(WS_CHILD, CRect(190+20 , 105+202, 190+20 + 400, 105+202 + 32), this, 0xFF10);
+BOOL CDeleteTipDlg::OnInitDialog() {
+    CDialog::OnInitDialog();
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(190, 105, 190+440,105+270), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\删除确认.xml");
-	m_MJPGList.SetMJPGRect(CRect(190, 105, 190+440, 105+270));
+    m_procbarSound.Create(WS_CHILD, CRect(190 + 20, 105 + 202, 190 + 20 + 400, 105 + 202 + 32), this, 0xFF10);
 
-//	MoveWindow(180,105,440,270);
+    m_MJPGList.Create(L"", WS_VISIBLE | WS_CHILD, CRect(190, 105, 190 + 440, 105 + 270), this);
+    m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\删除确认.xml");
+    m_MJPGList.SetMJPGRect(CRect(190, 105, 190 + 440, 105 + 270));
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
-}
+    //  MoveWindow(180,105,440,270);
 
-void CDeleteTipDlg::OnButtonDeleteTipOk()
-{	
-
-	if (m_iMaxPos)
-	{	
-		m_MJPGList.SetUnitIsShow(1001,false,true);
-		m_procbarSound.ShowWindow(true);
-	}
-	else
-	{
-		ShowWindow_(SW_HIDE);
-	}
-
-	::PostMessage(m_handle, WM_DELETESELITEM, m_ntype, 0);
-	KillTimer(100);
-	m_ntype = 0 ;
-
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CDeleteTipDlg::OnButtonDeleteTipCancel()
-{	
-	ShowWindow_(SW_HIDE);
-	KillTimer(100);
-//	ShowWindow(SW_HIDE);
+void CDeleteTipDlg::OnButtonDeleteTipOk() {
+    if (m_iMaxPos) {
+        m_MJPGList.SetUnitIsShow(1001, false, true);
+        m_procbarSound.ShowWindow(true);
+    } else {
+        ShowWindow_(SW_HIDE);
+    }
+
+    ::PostMessage(m_handle, WM_DELETESELITEM, m_ntype, 0);
+    KillTimer(100);
+    m_ntype = 0 ;
 }
 
-void CDeleteTipDlg::SetHWnd(HWND handle)
-{
-	m_handle = handle;
+void CDeleteTipDlg::OnButtonDeleteTipCancel() {
+    ShowWindow_(SW_HIDE);
+    KillTimer(100);
+    //  ShowWindow(SW_HIDE);
 }
 
-void CDeleteTipDlg::OnTimer(UINT nIDEvent) 
-{
-	// TODO: Add your message handler code here and/or call default
-	
-	if(nIDEvent == 100)
-	{
-		OnButtonDeleteTipCancel();
-	}
-	else if ( 1 == nIDEvent)
-	{
-		KillTimer(1);
-		m_procbarSound.ShowWindow(SW_HIDE);
-		ShowWindow_(SW_HIDE);
-	}
-	else 
-	{
-		KillTimer(nIDEvent);
-	}
-
-	CCEDialog::OnTimer(nIDEvent);
+void CDeleteTipDlg::SetHWnd(HWND handle) {
+    m_handle = handle;
 }
 
-void CDeleteTipDlg::SetPasswordModel(bool b)
-{
+void CDeleteTipDlg::OnTimer(UINT nIDEvent) {
+    // TODO: Add your message handler code here and/or call default
 
+    if (nIDEvent == 100) {
+        OnButtonDeleteTipCancel();
+    } else if (1 == nIDEvent) {
+        KillTimer(1);
+        m_procbarSound.ShowWindow(SW_HIDE);
+        ShowWindow_(SW_HIDE);
+    } else {
+        KillTimer(nIDEvent);
+    }
+
+    CCEDialog::OnTimer(nIDEvent);
 }
 
-void CDeleteTipDlg::SetPassword(CString password)
-{
-	//	m_sPassword = password;
+void CDeleteTipDlg::SetPasswordModel(bool b) {
 }
 
-void CDeleteTipDlg::SetDelTip(CString tips)
-{
-	//m_MJPGList.SetUnitText(100, "", TRUE);
-	//m_MJPGList.SetUnitBitmap(100, tips, "", TRUE);
-	//m_sticTip.SetWindowText(tips);
+void CDeleteTipDlg::SetPassword(CString password) {
+    //  m_sPassword = password;
 }
 
-void CDeleteTipDlg::SetTitle(CString title,int isTime )
-{	
-	m_iMaxPos = 0;
-	m_MJPGList.SetUnitText(1,title,true);
-	
-	if(isTime > 0)	
-	{
-		SetTimer(100, isTime, NULL);
-	}
-	
-	m_MJPGList.SetUnitIsShow(1001,true,true);
-	m_procbarSound.ShowWindow(SW_HIDE);
+void CDeleteTipDlg::SetDelTip(CString tips) {
+    //m_MJPGList.SetUnitText(100, "", TRUE);
+    //m_MJPGList.SetUnitBitmap(100, tips, "", TRUE);
+    //m_sticTip.SetWindowText(tips);
 }
 
-void CDeleteTipDlg::SetProcessMax(int max )
-{
-	m_procbarSound.SetParam(0,0,max,1);
-	m_procbarSound.SetPos(0);
-	m_iMaxPos = max;
+void CDeleteTipDlg::SetTitle(CString title, int isTime) {
+    m_iMaxPos = 0;
+    m_MJPGList.SetUnitText(1, title, true);
+
+    if (isTime > 0) {
+        SetTimer(100, isTime, NULL);
+    }
+
+    m_MJPGList.SetUnitIsShow(1001, true, true);
+    m_procbarSound.ShowWindow(SW_HIDE);
 }
 
-void CDeleteTipDlg::SetProcessPos(int npos)
-{
-	m_procbarSound.SetPos(npos);
-	if (npos == m_iMaxPos)
-	{
-		SetTimer(1,100,NULL);
-		m_iMaxPos = 0;
-	}
+void CDeleteTipDlg::SetProcessMax(int max) {
+    m_procbarSound.SetParam(0, 0, max, 1);
+    m_procbarSound.SetPos(0);
+    m_iMaxPos = max;
+}
+
+void CDeleteTipDlg::SetProcessPos(int npos) {
+    m_procbarSound.SetPos(npos);
+    if (npos == m_iMaxPos) {
+        SetTimer(1, 100, NULL);
+        m_iMaxPos = 0;
+    }
 }

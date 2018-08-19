@@ -16,46 +16,46 @@
 
 class CTelephoneRingDlg : public CCEDialog
 {
-// Construction
+    // Construction
 public:
-	CTelephoneRingDlg(CWnd* pParent = NULL);   // standard constructor
+    CTelephoneRingDlg(CWnd* pParent = NULL);   // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CTelephoneDialDlg)
-	enum { IDD = IDD_DIALOG_TELEPHONE };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CTelephoneDialDlg)
+    enum { IDD = IDD_DIALOG_TELEPHONE };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTelephoneDialDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CTelephoneDialDlg)
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CTelephoneDialDlg)
-		// NOTE: the ClassWizard will add member functions here
-	//}}AFX_MSG
-	virtual BOOL OnInitDialog();
+    // Generated message map functions
+    //{{AFX_MSG(CTelephoneDialDlg)
+    // NOTE: the ClassWizard will add member functions here
+    //}}AFX_MSG
+    virtual BOOL OnInitDialog();
 
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnTimer(UINT nIDEvent);
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg void OnTimer(UINT nIDEvent);
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 private:
-	std::string		m_sTelephoneNumber;
+    std::string		m_sTelephoneNumber;
 
 public:
-	CMJPGStatic		m_MJPGList;
+    CMJPGStatic		m_MJPGList;
 
-	void	HangOff_();
-	void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number);
-	void	HandleOn();  
+    void	HangOff_();
+    void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number);
+    void	HandleOn();  
 };
 
 //{{AFX_INSERT_LOCATION}}

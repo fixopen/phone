@@ -11,36 +11,35 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTipDlg dialog
 
-class CTipDlg : public CDialog
-{
-// Construction
+class CTipDlg : public CDialog {
+    // Construction
 public:
-	CTipDlg(CWnd* pParent = NULL);   // standard constructor
-	CMJPGStatic   m_MJPGList;
+    CTipDlg(CWnd* pParent = NULL);   // standard constructor
+    CMJPGStatic m_MJPGList;
 
-// Dialog Data
-	//{{AFX_DATA(CTipDlg)
-	enum { IDD = IDD_DIALOG_DELETETIP };
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CTipDlg)
+    enum { IDD = IDD_DIALOG_DELETETIP };
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTipDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CTipDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CTipDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnClickOK();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CTipDlg)
+    virtual BOOL OnInitDialog();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg void OnClickOK();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

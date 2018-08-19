@@ -1,9 +1,10 @@
 #include "Base64.h"
 
-namespace Util {
+namespace Util
+{
     char* Base64::ConvertTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    std::string const Base64::Encode(std::string const& content) {
+    std::string const Base64::Encode(std::string const & content) {
         std::string result;
         Convert c;
         //not process padding and CRLF
@@ -19,10 +20,10 @@ namespace Util {
         return result;
     }
 
-    std::string const Base64::Decode(std::string const& content) {
+    std::string const Base64::Decode(std::string const & content) {
         std::string result;
         Convert c;
-        for (size_t i = 0; i < content.length(); ) {
+        for (size_t i = 0; i < content.length();) {
             while (content[i] == '\x13' || content[i] == '\x10') {
                 ++i;
             }
@@ -47,7 +48,7 @@ namespace Util {
                     ++i;
                 } else {
                     result += c.octetBits[2];
-					result += c.octetBits[1];
+                    result += c.octetBits[1];
                     break;
                 }
             } else {
@@ -55,9 +56,9 @@ namespace Util {
                 break;
             }
             result += c.octetBits[2];
-			result += c.octetBits[1];
-			result += c.octetBits[0];
-       }
+            result += c.octetBits[1];
+            result += c.octetBits[0];
+        }
         return result;
     }
 

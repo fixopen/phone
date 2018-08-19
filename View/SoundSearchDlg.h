@@ -19,56 +19,56 @@
 
 class CSoundSearchDlg : public CCEDialog
 {
-// Construction
+    // Construction
 public:
-	CSoundSearchDlg(CWnd* pParent = NULL);   // standard constructor
+    CSoundSearchDlg(CWnd* pParent = NULL);   // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CSoundSearchDlg)
-	enum { IDD = IDD_DIALOG_SOUNDSEARCH };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CSoundSearchDlg)
+    enum { IDD = IDD_DIALOG_SOUNDSEARCH };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CSoundSearchDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CSoundSearchDlg)
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CSoundSearchDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	afx_msg void OnButtonSearchSoundCancel();
-	afx_msg void OnButtonSearchSoundSearch();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CSoundSearchDlg)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    afx_msg void OnButtonSearchSoundCancel();
+    afx_msg void OnButtonSearchSoundSearch();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    DECLARE_MESSAGE_MAP()
 private:
-	CMJPGStatic		m_MJPGList;
-	CFont m_Font;
-/*
-	CCEStatic m_sticTitle;
-	CCEStatic m_sticTip;
-	CCEStatic m_sticTimeRange;
-	CCEStatic m_sticFrom;
-	CCEStatic m_sticTo;
-	CCEStatic m_sticName;
-	CCEStatic m_sticNumber;
-	*/
-	CCERectEdit m_edtName;
-	CCERectEdit m_edtNumber;
-	CDateCtrl m_dtFrom;
-	CDateCtrl m_dtTo;
-/*
-	CCEBmpButton m_btnSearch;
-	CCEBmpButton m_btnCancel;
-	CCEFramePartStatic m_sticBackground;
-	*/
+    CMJPGStatic		m_MJPGList;
+    CFont m_Font;
+    /*
+    CCEStatic m_sticTitle;
+    CCEStatic m_sticTip;
+    CCEStatic m_sticTimeRange;
+    CCEStatic m_sticFrom;
+    CCEStatic m_sticTo;
+    CCEStatic m_sticName;
+    CCEStatic m_sticNumber;
+    */
+    CCERectEdit m_edtName;
+    CCERectEdit m_edtNumber;
+    CDateCtrl m_dtFrom;
+    CDateCtrl m_dtTo;
+    /*
+    CCEBmpButton m_btnSearch;
+    CCEBmpButton m_btnCancel;
+    CCEFramePartStatic m_sticBackground;
+    */
 };
 
 //{{AFX_INSERT_LOCATION}}

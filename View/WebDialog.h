@@ -18,84 +18,81 @@
 /////////////////////////////////////////////////////////////////////////////
 // CWebDialog dialog
 
-class CWebDialog : public CDialog
-{
-// Construction
+class CWebDialog : public CDialog {
+    // Construction
 public:
-	CWebDialog(CWnd* pParent = NULL);   // standard constructor
+    CWebDialog(CWnd* pParent = NULL);   // standard constructor
 
 public:
 
-// 	CWnd browserContainer_;
-// 	IWebBrowser2* browser_;
-	BOOL	m_bPlaying;
-	HWND    m_hIEWnd;
-	CRect   m_IERect;
-	CString url_;
-	void SendtoWebMessage(UINT message, WPARAM w, LPARAM l);
-	void ExitWeb();
-	char m_sUrlList[10][128];
-	int m_nUrlCount;
-	void SetHistoryList();
-	void AddHistory(CString s);
+    //  CWnd browserContainer_;
+    //  IWebBrowser2* browser_;
+    BOOL m_bPlaying;
+    HWND m_hIEWnd;
+    CRect m_IERect;
+    CString url_;
+    void SendtoWebMessage(UINT message, WPARAM w, LPARAM l);
+    void ExitWeb();
+    char m_sUrlList[10][128];
+    int m_nUrlCount;
+    void SetHistoryList();
+    void AddHistory(CString s);
 
-	//BOOL    m_bIsExitThread;
-	
-	CMJPGStatic		m_MJPGList;
+    //BOOL    m_bIsExitThread;
 
-	void ShowWindow_(BOOL bShow);
+    CMJPGStatic m_MJPGList;
 
-	CCEComboBox_ m_cmbURL;
-//	CCEBmpButton m_btn;
-	CCERectEdit	m_edit;
-//	CCEBmpButton m_btnClose;
-/*	
-	CCEStatic m_sticOperation;
-	CCEStatic m_sticPanel;
-	CCEStatic m_sticBack;
-	CCEFrameStatic m_sticBackground;
+    void ShowWindow_(BOOL bShow);
 
-	CCEListCtrl m_lstPlayList;
-	CImageList *m_pImageList;
-	TCHAR		m_chDir[128];
-
-	void SetPlayList(TCHAR *dir, int local);
-*/
-	void SetURL(CString url);
+    CCEComboBox_ m_cmbURL;
+    //  CCEBmpButton m_btn;
+    CCERectEdit m_edit;
+    //  CCEBmpButton m_btnClose;
+    /*  
+    CCEStatic m_sticOperation;
+    CCEStatic m_sticPanel;
+    CCEStatic m_sticBack;
+    CCEFrameStatic m_sticBackground;
+    CCEListCtrl m_lstPlayList;
+    CImageList *m_pImageList;
+    TCHAR       m_chDir[128];
+    void SetPlayList(TCHAR *dir, int local);
+    */
+    void SetURL(CString url);
 
 
-// Dialog Data
-	//{{AFX_DATA(CWebDialog)
-	enum { IDD = IDD_DIALOG_WEB };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CWebDialog)
+    enum { IDD = IDD_DIALOG_WEB };
+    // NOTE: the ClassWizard will add data members here
+    //}}AFX_DATA
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CWebDialog)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // Overrides
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CWebDialog)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
-// Implementation
+    // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CWebDialog)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnEnter(WPARAM w, LPARAM l);
-	afx_msg void OnKillWEBShow(WPARAM w, LPARAM l);
-	afx_msg void OnSetLink(WPARAM w, LPARAM l);
-	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnSelectURL(WPARAM w, LPARAM l);
-	afx_msg void OnIEClick(WPARAM w, LPARAM l);
-//	afx_msg void OnUrlSelect(WPARAM w, LPARAM l);
-//	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
-//	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CWebDialog)
+    virtual BOOL OnInitDialog();
+    afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
+    afx_msg LRESULT OnEnter(WPARAM w, LPARAM l);
+    afx_msg LRESULT OnKillWEBShow(WPARAM w, LPARAM l);
+    afx_msg LRESULT OnSetLink(WPARAM w, LPARAM l);
+    afx_msg void OnTimer(UINT nIDEvent);
+    afx_msg LRESULT OnSelectURL(WPARAM w, LPARAM l);
+    afx_msg LRESULT OnIEClick(WPARAM w, LPARAM l);
+    //  afx_msg LRESULT OnUrlSelect(WPARAM w, LPARAM l);
+    //  afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
+    //  afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}
