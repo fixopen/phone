@@ -95,17 +95,13 @@ namespace View {
     {
         CDialog::OnInitDialog();
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\日历.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU));
-
-        m_dtDate.Create(WS_CHILD|DTS_SHORTDATEFORMAT, CRect(125*X_XISHU, 67*Y_XISHU, (125+184)*X_XISHU, (67+32)*Y_XISHU), &m_MJPGList, IDC_SETTING_DATE, 28, CDateCtrl::modeDate);
-        m_dtTime.Create(WS_CHILD/*|DTS_TIMEFORMAT*/, CRect(346*X_XISHU, 67*Y_XISHU, (346+154)*X_XISHU, (67+32)*Y_XISHU), &m_MJPGList, IDC_SETTING_TIME, 28, CDateCtrl::modeTime);
+        m_dtDate.Create(WS_CHILD|DTS_SHORTDATEFORMAT, CRect(125, 67, 125+184, 67+32), this, IDC_SETTING_DATE, 28, CDateCtrl::modeDate);
+        m_dtTime.Create(WS_CHILD|DTS_TIMEFORMAT, CRect(346, 67, 346+154, 67+32), this, IDC_SETTING_TIME, 28, CDateCtrl::modeTime);
 
 
-        m_rdoIsAlarm.Create(L"", WS_CHILD, CRect(128*X_XISHU, 124*Y_XISHU, (128+36)*X_XISHU, (124+36)*Y_XISHU), &m_MJPGList, IDC_RADIO_SETTING_STATIC);
+        m_rdoIsAlarm.Create(L"", WS_CHILD, CRect(128, 124, 128+36, 124+36), this, IDC_RADIO_SETTING_STATIC);
         m_rdoIsAlarm.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
-        m_rdoIsNoAlarm.Create(L"", WS_CHILD, CRect(215*X_XISHU, 124*Y_XISHU, (215+36)*X_XISHU, (124+36)*Y_XISHU), &m_MJPGList, IDC_RADIO_SETTING_STATIC);
+        m_rdoIsNoAlarm.Create(L"", WS_CHILD, CRect(215, 124, 215+36, 124+36), this, IDC_RADIO_SETTING_STATIC);
         m_rdoIsNoAlarm.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
 
         CButton *pButton[2];
@@ -115,15 +111,18 @@ namespace View {
         m_rdoIsAlarm.SetGroupButton(pButton, 2);
         m_rdoIsNoAlarm.SetGroupButton(pButton, 2);
 
-        m_cmbRing.Create(WS_CHILD, CRect(131*X_XISHU, 182*Y_XISHU, 457*X_XISHU, 410*Y_XISHU), &m_MJPGList, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
+        m_cmbRing.Create(WS_CHILD, CRect(131, 182, 457, 410), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
 
         SetRingLst();
 
-        m_alarmEdit.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(131*X_XISHU, 253*Y_XISHU, 450*X_XISHU, 395*Y_XISHU), &m_MJPGList, 0xFFFF);
+        m_alarmEdit.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(131, 253, 450, 395), this, 0xFFFF);
         m_alarmEdit.SetLimitText(768);
         //	m_scollbar.Create(L"", WS_CHILD|WS_VISIBLE|WS_GROUP, CRect(451, 253, 451+SCROLL_ARROW_WIDTH+1, 395), this, 0);
         //	m_scollbar.SetParam(0, 0, 0, 5, this);
 
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\日历.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100));
         m_bIsMainLunder = TRUE;
         SYSTEMTIME curtime;
         GetLocalTime(&curtime);
@@ -645,8 +644,7 @@ namespace View {
             m_dtDate.SetTime(&tm);
 
             std::string s = m_pScheduler->ring();
-            //@@m_cmbRing.m_edit.SetWindowText(Util::StringOp::ToCString(s));
-            m_cmbRing.SetWindowText(Util::StringOp::ToCString(s));
+            m_cmbRing.SetWindowText_(Util::StringOp::ToCString(s));
             m_cmbRing.Invalidate();
             s = m_pScheduler->what();
             m_alarmEdit.SetWindowText(Util::StringOp::ToCString(s));

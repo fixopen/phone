@@ -215,7 +215,6 @@ namespace View {
         //	CCEStatic     m_stcTime;
         CDateCtrl m_dtTime;
         CDateCtrl m_dtDate;
-
         SYSTEMTIME m_curtime;
 
         //info

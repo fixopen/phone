@@ -5,9 +5,7 @@
 #include "PlayerDlg.h"
 #include "../MultimediaPhoneDlg.h"
 #include "../MultimediaPhone.h"
-#include "../Util/ScanDir.h"
-
-#include <algorithm>
+#include<algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,9 +26,9 @@ namespace View {
         memset(m_chVideoFilename, 0, 128);
         isActiveMode_ = 0;
         player_ = player;
-        player_->SetOwner(this);
         //}}AFX_DATA_INIT
     }
+
 
     void CPlayerDlg::DoDataExchange(CDataExchange* pDX)
     {
@@ -39,6 +37,7 @@ namespace View {
         // NOTE: the ClassWizard will add DDX and DDV calls here
         //}}AFX_DATA_MAP
     }
+
 
     BEGIN_MESSAGE_MAP(CPlayerDlg, CDialog)
         //{{AFX_MSG_MAP(CPlayerDlg)
@@ -103,6 +102,75 @@ namespace View {
     LRESULT CPlayerDlg::OnReceiveMsg(WPARAM w, LPARAM l)
     {
         LRESULT result = 0;
+        /*
+        HWND hWnd;
+        CCheckDlg* main = (CCheckDlg*)theApp.m_pMainWnd;
+        if (main->player_->isActiveMode_ == false)
+        {
+        if(main->player_->type_ == 0)
+        main->player_->StopImage();
+        else
+        {
+        main->player_->ExitPlayer();
+        hWnd = ::FindWindow(L"csplayer_win", L"csplayer window"); //
+        ::ShowWindow(hWnd, SW_HIDE);
+        main->settingDlg_->ShowWindow(SW_SHOW);
+        }
+        //		::ShowCursor(TRUE);
+        EndDialog(0);
+        }
+        else
+        {
+        UINT nChar = w;
+        switch (nChar)
+        {
+        case Phone::UP:
+        if(main->player_->type_ == 0)
+        main->player_->Up();
+        else
+        {
+        main->player_->ExitPlayer();
+        hWnd = ::FindWindow(L"csplayer_win", L"csplayer window"); //
+        ::ShowWindow(hWnd, SW_HIDE);
+        main->settingDlg_->ShowWindow(SW_SHOW);
+        //				::ShowCursor(TRUE);
+        EndDialog(0);
+        }
+
+        break;
+        case Phone::DOWN:
+        if(main->player_->type_ == 0)
+        {
+        main->player_->Down();
+        }
+        else
+        {
+        main->player_->ExitPlayer();
+        //				::ShowCursor(TRUE);
+        EndDialog(0);
+        hWnd = ::FindWindow(L"csplayer_win", L"csplayer window"); //
+        ::ShowWindow(hWnd, SW_HIDE);
+        main->settingDlg_->ShowWindow(SW_SHOW);
+        }
+        break;
+        case Phone::BS:
+        if(main->player_->type_ == 0)
+        main->player_->StopImage();
+        else
+        {
+        main->player_->ExitPlayer();
+        ////			::ShowCursor(TRUE);
+        EndDialog(0);
+        hWnd = ::FindWindow(L"csplayer_win", L"csplayer window"); //
+        ::ShowWindow(hWnd, SW_HIDE);
+        main->settingDlg_->ShowWindow(SW_SHOW);
+        }
+        break;
+        default:
+        break;
+        }
+        }
+        */
         return result;
     }
 
@@ -113,6 +181,46 @@ namespace View {
     void CPlayerDlg::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) 
     {
         HWND hWnd;
+        /*
+        // TODO: Add your message handler code here and/or call default
+        CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+        if (main->player_->isActiveMode_ == false)
+        {
+        if(main->player_->type_ == 0)
+        main->player_->StopImage();
+        else
+        {
+        main->player_->ExitPlayer();
+        hWnd = ::FindWindow(L"csplayer_win", L"csplayer window"); //
+        ::ShowWindow(hWnd, SW_HIDE);
+        main->settingDlg_->ShowWindow(SW_SHOW);
+        }
+        //		::ShowCursor(TRUE);
+        EndDialog(0);
+        }
+        else
+        {
+        switch (nChar)
+        {
+        case Phone::BS:
+        if(main->player_->type_ == 0)
+        main->player_->StopImage();
+        else
+        {
+        main->player_->ExitPlayer();
+        hWnd = ::FindWindow(L"csplayer_win", L"csplayer window"); //
+        ::ShowWindow(hWnd, SW_HIDE);
+        main->settingDlg_->ShowWindow(SW_SHOW);
+        }
+
+        //			::ShowCursor(TRUE);
+        EndDialog(0);
+        break;
+        default:
+        break;
+        }
+        }
+        */
         CDialog::OnChar(nChar, nRepCnt, nFlags);
     }
 
@@ -171,33 +279,6 @@ namespace View {
         player_->SetImageList(SetImageList_(DIR));
     }
 
-    class ImageFileLister : public Util::ProcessFileProcedure
-    {
-    public:
-        ImageFileLister(CString const directoryName, std::vector<CString>& result)
-        : ProcessFileProcedure(directoryName)
-        , result_(result)
-        {
-        }
-
-        void operator()(WIN32_FIND_DATA const& FindFileData)
-        {
-            CString file = directoryName_ + _T("/") + FindFileData.cFileName;
-            result_.push_back(file);
-        }
-    private:
-        std::vector<CString>& result_;
-    };
-
-    std::vector<CString> CPlayerDlg::SetImageList_(char* DIR)
-    {
-        std::vector<CString> result;
-        ImageFileLister fl(Util::StringOp::ToCString(DIR), result);
-        ProcessFiles(_T("*.jpg"), fl);
-        ProcessFiles(_T("*.bmp"), fl);
-        return result;
-    }
-#if 0
     std::vector<CString> CPlayerDlg::SetImageList_(char *DIR)
     {
         std::vector<CString> filelist;
@@ -220,12 +301,12 @@ namespace View {
         else 
         {
             char filename[128];
-            //printf ("First file name is %s\n", FindFileData.cFileName);
+            //		printf ("First file name is %s\n", FindFileData.cFileName);
             int i = wcstombs( filename, FindFileData.cFileName, /*wcslen(FindFileData.cFileName)*/128);
             filename[i] = '\0';
-            if (strstr(filename, ".jpg")||strstr(filename, ".JPG")/*||strstr(filename, ".bmp")||strstr(filename, ".BMP")*/)
+            if(strstr(filename, ".jpg")||strstr(filename, ".JPG")/*||strstr(filename, ".bmp")||strstr(filename, ".BMP")*/)
             {
-                sprintf(totalfilename, "%s/%s", DIR, filename);
+                sprintf(totalfilename, "%s%s", DIR, filename);
                 CString sf = Util::StringOp::ToCString(totalfilename);
                 filelist.push_back(sf);
             }
@@ -233,12 +314,12 @@ namespace View {
             //以下是循环使用FindNextFile函数来查找文件
             while (FindNextFile(hFind, &FindFileData) != 0) 
             {
-                //printf ("Next file name is %s\n", FindFileData.cFileName);
+                //			printf ("Next file name is %s\n", FindFileData.cFileName);
                 i = wcstombs( filename, FindFileData.cFileName, /*wcslen(FindFileData.cFileName)*/128);
                 filename[i] = '\0';
-                if (strstr(filename, ".jpg")||strstr(filename, ".JPG")/*||strstr(filename, ".bmp")||strstr(filename, ".BMP")*/)
+                if(strstr(filename, ".jpg")||strstr(filename, ".JPG")/*||strstr(filename, ".bmp")||strstr(filename, ".BMP")*/)
                 {
-                    sprintf(totalfilename, "%s/%s", DIR, filename);
+                    sprintf(totalfilename, "%s%s", DIR, filename);
                     CString sf = Util::StringOp::ToCString(totalfilename);
                     filelist.push_back(sf);
                 }
@@ -253,17 +334,17 @@ namespace View {
             } 
             else 
             {
-                //printf ("FindNextFile error. Error is %u\n", dwError);
+                //			printf ("FindNextFile error. Error is %u\n", dwError);
                 return filelist;
             }
         }
 
         return filelist;
     }
-#endif
+
     void CPlayerDlg::OnPaint() 
     {
-        CPaintDC dc(this); // device context for painting
+        //	CPaintDC dc(this); // device context for painting
         CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
         if(player_->mt_ == mtImage)
         {
@@ -272,20 +353,56 @@ namespace View {
             player_->PlayerImage();
         }
 
-        //CDialog::OnPaint();
+        CDialog::OnPaint();
+        /*
+        //临时加上相框 20071217 by lxz
+        CRect rt;
+        GetClientRect(&rt);
+        if(rt.Width() >= 799 && rt.Height() >= 479)
+        {
+        CxImage *pImage = new CxImage();
+        if(pImage)
+        {
+        bool ret = pImage->Load(TEXT("/flashdrv/a4.jpg"), CXIMAGE_FORMAT_JPG);
+        if(ret)
+        {
+        CDC *pdc = GetDC();
+        pImage->Draw(pdc->m_hDC, 0, 0, 800 * 125 / 100, 480 * 125 / 100, 0, TRUE);
+        ReleaseDC(pdc);
+        }
+        }
+        delete pImage;
+        }
+        //
+
+        CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+        if(!main->player_->type_)
+        {
+        main->player_->PlayerImage();
+        }
+        */	
+
+
+        // TODO: Add your message handler code here
+
+        // Do not call CDialog::OnPaint() for painting messages
     }
 
     void CPlayerDlg::OnTimer(UINT nIDEvent) 
     {
         // TODO: Add your message handler code here and/or call default
 
-        if (nIDEvent == 0x10002 && IsWindowVisible())
+        if(nIDEvent == 0x10002 && IsWindowVisible())
         {
             CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
             //lxz 20080710
-            if ((player_->mt_ == mtImage) && IsWindowVisible() && player_->owner_ == this)
+            if((player_->mt_ == mtImage) && IsWindowVisible() && player_->owner_ == this)
             {
+                //lxz test memory 20071109
+                //	DMemprintf("PlayerDlg Image OnTimer0");
                 player_->Down();
+                //		DMemprintf("PlayerDlg Image OnTimer1");
+                //end
             }
         }
         else if(nIDEvent == 0x1003 && IsWindowVisible())
@@ -311,14 +428,20 @@ namespace View {
         player_->isActiveMode_ = !isSaveScreen;
         player_->mt_ = isVideo;
 
+        // 	if(isVideo == mtVideo)
+        // 	{
+        // 		//如果进入视频，则需要停止播放MP3音乐
+        // 		main->playeraudio_->ExitPlayer(TRUE);   
+        // 	}
+
         isActiveMode_ = !isSaveScreen;
         player_->SetOwner(this);
-        if (strlen(videoFile) != 0)
+        if(strlen(videoFile) != 0)
             strcpy(m_chVideoFilename, videoFile);
 
-        if (!isActiveMode_)  //屏保
+        if(!isActiveMode_)  //屏保
         {
-            if (player_->mt_ == mtImage)	//图片
+            if(player_->mt_ == mtImage)	//图片
                 SetTimer(0x10002, PHOTOSHOW_TIME, NULL);
         }
     }
@@ -326,6 +449,26 @@ namespace View {
     void CPlayerDlg::ReSetWindowsRect(CRect rt)
     {
         MoveWindow(&rt, FALSE);
+        /*
+        //临时加上相框 20071217 by lxz
+        CRect rt1;
+        GetClientRect(&rt1);
+        if(rt1.Width() >= 799 && rt1.Height() >= 479)
+        {
+        CxImage *pImage = new CxImage();
+        if(pImage)
+        {
+        bool ret = pImage->Load(TEXT("/flashdrv/a4.jpg"), CXIMAGE_FORMAT_JPG);
+        if(ret)
+        {
+        CDC *pdc = GetDC();
+        pImage->Draw(pdc->m_hDC, 0, 0, 800 * 125 / 100, 480 * 125 / 100, 0, TRUE);
+        ReleaseDC(pdc);
+        }
+        }
+        delete pImage;
+        }
+        */
     }
 
     void CPlayerDlg::Show()
@@ -334,17 +477,18 @@ namespace View {
         player_->SetOwner(this);
         ShowWindow(SW_SHOW);
 
-        //if(player_->mt_ == mtVideo)
+        if(player_->mt_ == mtVideo)
         {
             player_->InitPlayer();
             player_->PlayerFile(m_chVideoFilename);
         }
     }
 
-    void CPlayerDlg::Hide()
+    void CPlayerDlg:: Hide()
     {
         CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
         ShowWindow(SW_HIDE);
+
     }
 
     void CPlayerDlg::OnShowWindow(BOOL bShow, UINT nStatus)
@@ -362,6 +506,11 @@ namespace View {
     void CPlayerDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
     {
         CDialog::OnActivate(nState, pWndOther, bMinimized);
+
+        // if( nState == WA_ACTIVE || nState == WA_CLICKACTIVE)
+        //     Show();
+        // else if(nState == WA_INACTIVE)
+        //   int i = 0;
     }
 
     void CPlayerDlg::SetResumeTimer()

@@ -124,7 +124,7 @@ namespace View {
         m_sticPanel.SetColor(RGB(0, 0, 0), Data::g_allFrameInFrameLine1RGB[0][Data::g_skinstyle]);
 
         //	runstocks();
-        m_sticBackground.Create(CRect(0, 0, 480, 204), this, 2);
+        m_sticBackground.Create(CRect(0, 0, 480 * 125 / 100, 204), this, 2);
 
         TextStruct ts[1];
         memset(ts, 0, sizeof(TextStruct) * 1);

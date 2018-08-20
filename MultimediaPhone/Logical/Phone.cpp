@@ -257,7 +257,7 @@ namespace Logical//scan html text fire follow event
 
     void MyPhone::Dial(Data::TelephoneNumber number)
     {
-        //contactInfo_ = Util::shared_ptr<Data::ContactInfo>(new Data::ContactInfo());
+        //         contactInfo_ = Util::shared_ptr<Data::ContactInfo>(new Data::ContactInfo());
         contactInfo_->telephoneNumber(number);
         //reallyDial_();
     }

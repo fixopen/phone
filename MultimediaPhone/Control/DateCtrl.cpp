@@ -46,12 +46,12 @@ namespace Control {
     /////////////////////////////////////////////////////////////////////////////
     // CDateCtrl message handlers
 
-    BOOL CDateCtrl::Create(DWORD dwStyle, const RECT& rect_1, CWnd* pParentWnd, UINT nID, UINT uFontHeight, em_mode mode) 
+    BOOL CDateCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, UINT uFontHeight, em_mode mode) 
     {
         // TODO: Add your specialized code here and/or call the base class
 
-        dwStyle |= /*ES_READONLY|*/ES_NOHIDESEL|ES_LEFT|ES_NUMBER;
-        BOOL bRes = CEdit::Create(dwStyle, rect_1, pParentWnd, nID);
+        dwStyle |= /*ES_READONLY|*/ES_NOHIDESEL|ES_CENTER|ES_LEFT|ES_NUMBER;
+        BOOL bRes = CEdit::Create(dwStyle, rect, pParentWnd, nID);
         if (bRes)
         {
             CRect rect;
@@ -66,7 +66,7 @@ namespace Control {
             if (!m_btnUp.Create(_T(""), IDB_BITMAP_LEFTARROW, IDB_BITMAP_LEFTARROWD, WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, rcButton, this, ID_BUTTON_UP)) return FALSE;
 
             m_font.CreateFont(
-                22,				// nHeight
+                uFontHeight,				// nHeight
                 0,                         // nWidth
                 0,                         // nEscapement
                 0,                         // nOrientation
@@ -106,7 +106,6 @@ namespace Control {
             if (modeDate == m_mode)
             {
                 FormatDateOrTime(strTemp, m_nYear, m_nMonth, m_nDay, m_mode);
-                SetLimitText(10);
                 SetWindowText(strTemp);
                 SetSel(0, 4);
                 m_curSel = esel_year;
@@ -114,7 +113,6 @@ namespace Control {
             else
             {
                 FormatDateOrTime(strTemp, m_nHour, m_nMinute, m_nSecond, modeTime);
-                SetLimitText(8);
                 SetWindowText(strTemp);
                 SetSel(0, 2);
                 m_curSel = esel_hour;
@@ -216,7 +214,6 @@ namespace Control {
 
         ReleaseDC(pDC);
         SetFocus();
-        Invalidate();
 
         //	CEdit::OnLButtonDown(nFlags, point);
     }
@@ -323,7 +320,6 @@ namespace Control {
         default:
             break;
         }
-        Invalidate();
     }
 
     void CDateCtrl::OnButtonDown()
@@ -412,7 +408,6 @@ namespace Control {
         default:
             break;
         }
-        Invalidate();
     }
 
     UINT16 CDateCtrl::MonthDays(UINT16 iYear, UINT16 iMonth)

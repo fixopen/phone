@@ -37,7 +37,9 @@ namespace View {
         m_bPlaying = FALSE;
         m_hIEWnd = NULL;
         url_ = "";
+
     }
+
 
     void CWebDialog::DoDataExchange(CDataExchange* pDX)
     {
@@ -47,6 +49,7 @@ namespace View {
         DDX_Control(pDX, IDC_EXPLORER_BROWSER, browser_);
         //}}AFX_DATA_MAP
     }
+
 
     BEGIN_MESSAGE_MAP(CWebDialog, CDialog)
         //{{AFX_MSG_MAP(CWebDialog)
@@ -102,35 +105,54 @@ namespace View {
     LRESULT CWebDialog::OnClickMJPG(WPARAM w, LPARAM l)
     {
         LRESULT result = 0;
-        //if(!browser_)
-        //  return;
+        //	if(!browser_)
+        //		return;
         switch(w)
         {
         case 1:				//上一页
-            browser_.GoBack();
-            //SendtoWebMessage(WM_BROW_BACK, 0, 0);
+            //browser_->GoBack();
+            SendtoWebMessage(WM_BROW_BACK, 0, 0);
             m_MJPGList.Invalidate();
             break;
         case 2:				//下一页
-            //SendtoWebMessage(WM_BROW_FORWARD, 0, 0);
+            SendtoWebMessage(WM_BROW_FORWARD, 0, 0);
             m_MJPGList.Invalidate();
-            browser_.GoForward();
+            //browser_->GoForward();
             break;
         case 3:				//停止
-            //SendtoWebMessage(WM_BROW_STOP, 0, 0);
+            SendtoWebMessage(WM_BROW_STOP, 0, 0);
             m_MJPGList.Invalidate();
-            browser_.Stop();
+            //browser_->Stop();
             break;
         case 4:				//刷新
-            //SendtoWebMessage(WM_BROW_FRESH, 0, 0);
+            SendtoWebMessage(WM_BROW_FRESH, 0, 0);
             m_MJPGList.Invalidate();
-            browser_.Refresh();
+            //browser_->Refresh();
             break;
         case 5:				//主页
             SetURL(L"http://news.sina.com.cn/");   //http://www.wuhan.net.cn/
             m_MJPGList.Invalidate();
             break;
         case 6:				//查找
+            {
+                //CRect rt;
+                //GetWindowRect(&rt);
+                //if(rt.Height() > 420)
+                //{
+                //    MoveWindow(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
+                //    m_IERect = CRect(13, 55, 786, 419);  //CRect(7, 54, 7+776, 54+356+10);   
+                //    m_MJPGList.Invalidate();
+                //    //	Invalidate();
+                //}
+                //else
+                //{
+                //    MoveWindow(CRect(0, 0, 800 * 125 / 100, 480 * 125 / 100));
+                //    m_IERect = CRect(13, 55, 786, 474);
+                //    m_MJPGList.Invalidate();
+                //    //	Invalidate();
+                //}
+            }
+            //SetURL(L"www.baidu.com");
             break;
         case 7:				//关闭
             {
@@ -142,10 +164,12 @@ namespace View {
             break;
         case 8:				//确定
             {
+                /*
                 CString s;
-                m_cmbURL.GetWindowText(s);
+                m_edit.GetWindowText(s);
                 SetURL(s);
-             }
+                */
+            }
             break;
         case 9:
             {
@@ -172,6 +196,7 @@ namespace View {
                 {
                     if(memcmp(m_sUrlList[j], Util::StringOp::FromCString(s).c_str(), strlen(m_sUrlList[j])) == 0)
                     {
+                        //Dprintf("UrlList is isExit\r\n");
                         return;
                     }
                 }
@@ -245,7 +270,6 @@ namespace View {
         }
         else
         {
-            m_cmbURL.AddString(L"http://localhost/yd/main.php");
             m_cmbURL.AddString(L"www.sina.com.cn");
             m_cmbURL.AddString(L"www.sohu.com");
             m_cmbURL.AddString(L"www.baidu.com");
@@ -262,16 +286,22 @@ namespace View {
     {
         CDialog::OnInitDialog();
 
-        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\web.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU));
+        //MoveWindow(CRect(0, 0, 800 * 125 / 100, 480 * 125 / 100), FALSE);
 
-        m_cmbURL.Create(WS_CHILD|WS_VISIBLE, CRect((360-12)*X_XISHU, 1*Y_XISHU, (750-50)*X_XISHU, 400*Y_XISHU), &m_MJPGList, IDC_COMBOBOX_SETTING_RINGTIMES);
+        m_edit.Create(WS_CHILD|WS_VISIBLE, CRect(368, 1, 693, 42), this, 0xFFFF, 24);
+        m_edit.SetWindowText(L"");
+
+        m_cmbURL.Create(WS_CHILD|WS_VISIBLE, CRect(368, 1, 750, 400),  this, IDC_COMBOBOX_SETTING_RINGTIMES);
         memset(m_sUrlList, 0, 10*128);
         SetHistoryList();
 
-        m_IERect = CRect(13*X_XISHU, 55*Y_XISHU, 786*X_XISHU, 474*Y_XISHU);
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\web.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
 
+        m_IERect = CRect(13, 55, 786, 474);
+
+        //browser_.Create(_T("windowName"), WS_CHILD|WS_VISIBLE, m_IERect, this, IDC_EXPLORER_BROWSER);
         return TRUE;  // return TRUE unless you set the focus to a control
         // EXCEPTION: OCX Property Pages should return FALSE
     }
@@ -285,6 +315,57 @@ namespace View {
         if (url == "")
             url = _T("http://www.hxb.com.cn/");
         browser_.Navigate(url, 0, 0, 0, 0);
+        //if(!m_bPlaying)
+        //{
+        //    PROCESS_INFORMATION processInfo;
+        //    STARTUPINFO lpStartupInfo; // 用于在创建子进程时设置各种属性 
+
+        //    memset(&lpStartupInfo, 0, sizeof(lpStartupInfo));
+
+        //    lpStartupInfo.cb = sizeof(lpStartupInfo);
+
+        //    lpStartupInfo.dwX = 0;
+        //    lpStartupInfo.dwY = 0;
+        //    lpStartupInfo.dwXSize = 800;
+        //    lpStartupInfo.dwYSize = 420;
+        //    lpStartupInfo.wShowWindow= SW_SHOWNORMAL; 
+        //    lpStartupInfo.dwFlags= 1|2|4;
+
+        //    memset(&processInfo, 0, sizeof(processInfo));
+        //    CString s = _T("http://www.google.com");
+        //    if(strlen(m_sUrlList[0]) > 0)
+        //        s = m_sUrlList[0];
+        //    if (!CreateProcess(L"\\windows\\iesample.exe", (LPWSTR)(LPCTSTR)s, NULL, NULL, NULL, CREATE_NEW_CONSOLE, NULL, NULL, /*&lpStartupInfo*/ 0, &processInfo))
+        //    {
+
+        //    }
+        //    m_bPlaying = TRUE;
+
+        //    ::Sleep(50);
+
+        //    m_hIEWnd = ::FindWindow(TEXT("iExplore"), NULL);
+        //    SetTimer(2, 5, NULL);
+
+        //    ::MoveWindow(m_hIEWnd, m_IERect.left, m_IERect.top, m_IERect.Width(), m_IERect.Height(), TRUE);
+        //    //::MoveWindow(m_hIEWnd, 7, 54, 786, 480 * 125 / 100-54, TRUE);
+
+        //    m_edit.SetWindowText(s);
+
+        //    CloseHandle(processInfo.hThread);
+        //    CloseHandle(processInfo.hProcess);
+        //}
+
+        //if(url != "")
+        //{
+        //    url_ = url;
+        //    memset(tUrl, 0, 256*2);
+        //    wcscpy(tUrl, url_.GetBuffer(256));
+
+        //    gdata.dwData = 256;
+        //    gdata.cbData = wcslen(tUrl)*2;
+        //    gdata.lpData = (PVOID)tUrl;
+        //    SendtoWebMessage(WM_COPYDATA, WPARAM(m_hWnd), LPARAM(&gdata));
+        //}
     }
 
     LRESULT CWebDialog::OnSetLink(WPARAM w, LPARAM l)

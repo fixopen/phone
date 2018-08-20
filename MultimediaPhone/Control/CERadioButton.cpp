@@ -42,9 +42,7 @@ namespace Control {
     BOOL CCERadioButton::Create(LPCTSTR lpszCaption, DWORD dwStyle,
         const RECT& rect, CWnd* pParentWnd, UINT nID)
     {
-        CRect rt = rect;
-        rt.right += 2;
-        BOOL ret = CButton::Create(lpszCaption, dwStyle, rt, pParentWnd, nID);
+        BOOL ret = CButton::Create(lpszCaption, dwStyle, rect, pParentWnd, nID);
         VERIFY(m_font.CreateFont(
             28,                        // nHeight
             0,                         // nWidth

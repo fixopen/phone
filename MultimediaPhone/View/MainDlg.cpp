@@ -61,8 +61,7 @@ namespace View {
     {
         if(nState)
         {
-            /*
-            OnShowCallWallStatic();
+            /*	OnShowCallWallStatic();
             OnShowNoteStatic();
             OnShowTelStatusStatic();
             */
@@ -105,7 +104,7 @@ namespace View {
         m_mainLunarderDlg_->Create(CLunarderDlg::IDD, this);
         m_mainLunarderDlg_->ShowWindow(SW_HIDE);
 
-        m_pWebDialog = new CWebDialog(this);
+        m_pWebDialog = new CWebDialog;
         m_pWebDialog->Create(CWebDialog::IDD);
         m_pWebDialog->ShowWindow_(SW_HIDE);
 
@@ -146,9 +145,9 @@ namespace View {
         m_pHuangLiDlg_->Create(CHuangliDlg::IDD, this);
         m_pHuangLiDlg_->ShowWindow(SW_HIDE);
 
-        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\yh_金融.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU));
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\桌面.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
 
         SetDateTime(FALSE);
         SetTimer(1, 1000, NULL);
@@ -309,10 +308,10 @@ namespace View {
         m_MJPGList.SetUnitBitmap(19, sFile, _T(""), isDraw);
 
         static int nFresh = 0;
-        CString sTel;
-        CString sRecorde;
-        CString sAlarm;
-        CString sFireWall;
+        CString sTel = _T("");
+        CString sRecorde = _T("");
+        CString sAlarm = _T("");
+        CString sFireWall = _T("");
         m_bIsFireWall = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall();
         if(nFresh++ % 2)
         {
@@ -326,10 +325,10 @@ namespace View {
                 sAlarm = _T(".\\adv\\mjpg\\k1\\common\\未看闹铃.bmp");
         }
 
-        static CString gsTel;
-        static CString gsRecorde;
-        static CString gsAlarm;
-        static CString gsFireWall;
+        static CString gsTel = _T("");
+        static CString gsRecorde = _T("");
+        static CString gsAlarm = _T("");
+        static CString gsFireWall = _T("");
 
         if(gsTel != sTel)
         {
@@ -355,8 +354,8 @@ namespace View {
         int nWeekDay = Logical::LunarderDate::WeekDay(curtime.wYear, curtime.wMonth, curtime.wDay);
         char txt[64];
         sprintf(txt, "%s %04d-%02d-%02d", Data::LanguageResource::Get(Data::RI_COMN_SUNSTC+nWeekDay).c_str(), curtime.wYear, curtime.wMonth, curtime.wDay);
-        sTime = Util::StringOp::ToCString(txt);
-        static CString oldTime;
+        sTime = txt;
+        static CString oldTime = _T("");
         //if(oldTime != sTime)    //2008
         {
             m_MJPGList.SetUnitText(10, sTime, isDraw);
@@ -400,7 +399,7 @@ namespace View {
             , imageList_(imageList) {
         }
         virtual void operator()(WIN32_FIND_DATA const& FindFileData) {
-            imageList_.push_back(directoryName_ + _T("/") + FindFileData.cFileName);
+            imageList_.push_back(FindFileData.cFileName);
         }
     private:
         std::vector<CString>& imageList_;
@@ -415,22 +414,22 @@ namespace View {
     }
     void CMainDlg::OnTimer(UINT nIDEvent)
     {
-        if (IsWindowVisible())
+         if(IsWindowVisible())
         {
-            if (TIMER_MAINDLG == nIDEvent)
+            if(TIMER_MAINDLG == nIDEvent)
             {
 
             }
-            else if (nIDEvent == 1)
+            else if(nIDEvent == 1)
             {
                 SetDateTime(TRUE);
-                //CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-                //main->SetNetTelStatus();
+                // 			CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+                // 			main->SetNetTelStatus();
             }
-            else if (nIDEvent == 2)				//左边的广告区
+            else if(nIDEvent == 2)				//左边的广告区
             {
                 int size = m_PhotoList.size();
-                if (size > 0)
+                if(size > 0)
                 {
                     static int nAdvIndex = 0; 
                     CString sFile;
@@ -445,7 +444,7 @@ namespace View {
     LRESULT CMainDlg::OnChangeWindow(WPARAM w, LPARAM l)
     {
         LRESULT result = 0;
-        if (l == SW_HIDE)
+        if(l == SW_HIDE)
         {
             if((CWnd *)w != m_mainmenuDlg_)
             {
@@ -541,7 +540,7 @@ namespace View {
 
                 m_mainScreenSaveDlg_->ShowWindow(SW_SHOW);
             }
-            //::SetWindowPos(m_currentWnd->m_hWnd, HWND_TOP, 0, 0, 535, 420, SWP_NOMOVE);
+            //::SetWindowPos(m_currentWnd->m_hWnd, HWND_TOP, 0, 0, 535 * 125 / 100, 420 * 125 / 100, SWP_NOMOVE);
             //m_currentWnd->Invalidate();
             //m_MJPGList.ShowWindow(SW_SHOW);
         }
@@ -736,13 +735,13 @@ namespace View {
         SetTimer_(FALSE);
 
         //主界面来回切换 main不显示bug
-        if (m_currentWnd == m_mainmenuDlg_ /* && nCmdShow == SW_SHOW*/)
+        if(m_currentWnd == m_mainmenuDlg_ /* && nCmdShow == SW_SHOW*/)
         {
             //		m_mainmenuDlg_->ShowWindow_(nCmdShow);
         }
-        else if (m_currentWnd == m_mainVideoDlg_)
+        else if(m_currentWnd == m_mainVideoDlg_)
         {
-            HWND hWnd = ::FindWindow(L"csplayer_win0", L"csplayer window0");
+            HWND hWnd = ::FindWindow(L"csplayer_win", L"csplayer window");
             BOOL flag2 = ::IsWindowVisible(hWnd);
             if(flag2 && nCmdShow == SW_SHOW)
                 m_mainVideoDlg_->playerDlg_->ShowWindow(nCmdShow);
@@ -750,7 +749,7 @@ namespace View {
                 m_mainVideoDlg_->playerDlg_->ShowWindow(nCmdShow);
             m_mainVideoDlg_->ShowWindow(nCmdShow);
         }
-        else if (m_currentWnd == m_mainPhotoDlg_)
+        else if(m_currentWnd == m_mainPhotoDlg_)
         {
             m_mainPhotoDlg_->playerDlg_->ShowWindow(nCmdShow);
             m_mainPhotoDlg_->ShowWindow(nCmdShow);
@@ -763,7 +762,7 @@ namespace View {
         DWORD offset = GetTickCount() - dwStart; 
 
         //显示 MJPG
-        if (nCmdShow == SW_SHOW)
+        if(nCmdShow == SW_SHOW)
         {
             m_mainmenuDlg_->ShowWindow_(SW_HIDE);
             m_mainVideoDlg_->ShowWindow(SW_HIDE);

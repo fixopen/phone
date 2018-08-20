@@ -348,7 +348,7 @@ namespace Control {
             return -1;
 
         // TODO: Add your specialized creation code here
-        ModifyStyle(0, SS_NOTIFY);
+        //ModifyStyle(0, SS_NOTIFY);
         return 0;
     }
 
@@ -455,7 +455,6 @@ namespace Control {
             _T("ËÎÌו")));                 // lpszFacename
         SetFont(&m_font);
 
-        ModifyStyle(0, SS_NOTIFY);
         return TRUE;
     }
 
@@ -981,7 +980,7 @@ namespace Control {
         {
             r_ = rect;
         }
-        if(!pWnd->CWnd::Create(L"STATIC", L"", WS_CHILD|WS_VISIBLE|SS_NOTIFY|style, r_, pParent, nCtrlId))
+        if(!pWnd->CWnd::Create(L"STATIC", L"", WS_CHILD|WS_VISIBLE|style, r_, pParent, nCtrlId))
         {
             delete[] m_pKeys;
             return FALSE;

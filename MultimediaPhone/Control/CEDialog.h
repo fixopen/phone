@@ -7,7 +7,7 @@
 // CEDialog.h : header file
 //
 
-#include "../resource.h"
+//#include "../resource.h"
 /////////////////////////////////////////////////////////////////////////////
 // CCEDialog dialog
 namespace Control {
@@ -30,7 +30,7 @@ namespace Control {
 
         // Dialog Data
         //{{AFX_DATA(CCEDialog)
-        enum { IDD = IDD_DIALOG_CEDLG};
+        enum { IDD = 0};
         // NOTE: the ClassWizard will add data members here
         //}}AFX_DATA
 

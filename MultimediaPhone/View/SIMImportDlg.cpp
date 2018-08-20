@@ -104,14 +104,8 @@ namespace View {
 
         // TODO: Add extra initialization here
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54*X_XISHU, 62*Y_XISHU, 746*X_XISHU, 358*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\导入到类别.xml"));
-        m_MJPGList.SetMJPGRect(CRect(54*X_XISHU, 62, 746*X_XISHU, 358));
-        m_MJPGList.SetUnitText(2, L"", FALSE);
-        m_MJPGList.SetUnitIsShow(3, FALSE);
-
-        m_Edit1.Create(WS_CHILD | ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL, CRect(0*X_XISHU, 250*Y_XISHU, 800*X_XISHU, 400*Y_XISHU), &m_MJPGList, IDC_EDIT1);
-        m_Static1.Create(L"", WS_CHILD, CRect(180*X_XISHU, 240*Y_XISHU , (200+50)*X_XISHU, 270*Y_XISHU), this, IDC_STATIC_STATUS);
+        m_Edit1.Create(WS_CHILD | ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL, CRect(0, 250, 800 * 125 / 100, 400), this, IDC_EDIT1);
+        m_Static1.Create(L"", WS_CHILD, CRect(180, 240 , 200+50, 270), this, IDC_STATIC_STATUS);
         //m_Static1.SetFontSize(18);
         m_nSIMID = -1;
         /*
@@ -142,10 +136,16 @@ namespace View {
         m_cmbGroup.SetCurSel(0);
         */
 
-        m_procbar.Create(WS_CHILD|WS_VISIBLE, CRect((203)*X_XISHU, (180)*Y_XISHU , (459)*X_XISHU, (205)*Y_XISHU), &m_MJPGList, IDC_PBAR_SOUNDDLG_PROCESS);
+        m_procbar.Create(WS_CHILD|WS_VISIBLE, CRect(54+203, 62+180 , 54+459, 62+205), this, IDC_PBAR_SOUNDDLG_PROCESS);
         m_procbar.ShowWindow(SW_HIDE);
         //	m_procbarSound.SetParam(0, 0, 50, 1);
         m_procbar.SetPos(0);
+
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\导入到类别.xml"));
+        m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
+        m_MJPGList.SetUnitText(2, L"", FALSE);
+        m_MJPGList.SetUnitIsShow(3, FALSE);
 
         m_pContact = Util::shared_ptr<Data::Contact>(new Data::Contact);	
 
@@ -182,7 +182,7 @@ namespace View {
             }
             gEditList += "\r\n";
             SetDlgItemText(IDC_EDIT1, gEditList);
-            CEdit *pEdit = (CEdit *)m_MJPGList.GetDlgItem(IDC_EDIT1);
+            CEdit *pEdit = (CEdit *)GetDlgItem(IDC_EDIT1);
             pEdit->LineScroll(pEdit->GetLineCount());
 
             //判断卡是否被锁住

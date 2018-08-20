@@ -1245,9 +1245,8 @@ namespace Control {
     {
         m_nBitmapUp = nIDUp;
         m_nBitmapDown = nIDDown;
-        CRect rt = rect;
 
-        BOOL ret = CButton::Create(lpszCaption, dwStyle, rt, pParentWnd, nID);
+        BOOL ret = CButton::Create(lpszCaption, dwStyle, rect, pParentWnd, nID);
 
         VERIFY(m_font.CreateFont(
             m_nFontHeight,                        // nHeight
@@ -1388,7 +1387,7 @@ namespace Control {
             CBitmap cb;//位图类对象
             CRect rect;
             GetClientRect(&rect);
-          //pdc->FillSolidRect(rect, m_backRGB);
+            pdc->FillSolidRect(rect, m_backRGB);
             cb.LoadBitmap (nID);//载入资源
             memDC.CreateCompatibleDC (pdc);//创建内存设备上下文
             CBitmap *oldbitmap=NULL;

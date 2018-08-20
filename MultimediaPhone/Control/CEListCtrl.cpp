@@ -28,11 +28,11 @@ namespace Control {
     {
     }
 
-    void CCEListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+    void CCEListCtrl ::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
     {
-    }
 
-    void CCEListCtrl::OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult)
+    }
+    void CCEListCtrl ::OnCustomDraw(NMHDR *pNMHDR, LRESULT *pResult)
     {
         //类型安全转换   
         NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>(pNMHDR);   
@@ -51,12 +51,26 @@ namespace Control {
             //偶数行   
             else  
                 pLVCD->clrTextBk = m_RGB2;   
+            /*
+            POSITION pos = GetFirstSelectedItemPosition();
+            if (pos != NULL)
+            {
+            int index = GetNextSelectedItem (pos);
+            if(index   ==  pLVCD->nmcd.dwItemSpec)     //当重画的项为选中项时，重设文字和背景色 
+            { 
+            COLORREF crText   =   RGB(0,0,0); 
+            COLORREF crBkgnd   =   RGB(255, 0, 0); //RGB(49,106,197);     //高亮背景色 
+            pLVCD-> clrText   =   crText; 
+            pLVCD-> clrTextBk   =   crBkgnd; 
+            }
+            }
+            */
             *pResult = CDRF_DODEFAULT;   
         }   
 
     }
 
-    void CCEListCtrl::OnPaint()
+    void CCEListCtrl ::OnPaint()
     {
         CPaintDC dc(this); // device context for painting
     }
@@ -70,6 +84,12 @@ namespace Control {
     void CCEListCtrl::SetScrollPos(int pos, BOOL redraw)
     {
         m_scollbar_.SetPos(pos, redraw);
+
+        //
+        // 	EnsureVisible(pos,   TRUE);
+        // 	SetExtendedStyle(   LVS_EX_FULLROWSELECT   );     //设置高亮显示属性   
+        // 	SetFocus();     //set   list   focus   
+        //  	SetItemState(pos,   LVIS_SELECTED,   LVIS_SELECTED);   //选中行
     }
 
     void CCEListCtrl::SetScrollRagle(BOOL redraw)
@@ -87,7 +107,7 @@ namespace Control {
         }
     }
 
-    BOOL CCEListCtrl::Create(DWORD dwStyle, CRect &rect, CWnd *pParentWnd, UINT nID, BOOL bIsScroll, int Scroll_style, BOOL isSelfScroll)
+    BOOL CCEListCtrl ::Create(DWORD dwStyle, CRect &rect, CWnd *pParentWnd, UINT nID, BOOL bIsScroll, int Scroll_style, BOOL isSelfScroll)
     {
 
         m_bIsScroll = bIsScroll;
@@ -126,7 +146,7 @@ namespace Control {
             pParentWnd->ScreenToClient(&rt);
 
             rt.left = rt.right-SCROLL_ARROW_WIDTH+1;
-            m_scollbar_.Create(L"", WS_CHILD|WS_GROUP/*|WS_VISIBLE*/, /*rt*/ CRect(0, 0, 0, 0), pParentWnd, 0);
+            m_scollbar_.Create(L"", WS_CHILD|WS_VISIBLE|WS_GROUP, rt, pParentWnd, 0);
             if (isSelfScroll)
             {
                 m_scollbar_.SetParam(Scroll_style, 0, 0, m_nPage, this);
@@ -136,7 +156,7 @@ namespace Control {
                 m_scollbar_.SetParam(Scroll_style, 0, 0, m_nPage, pParentWnd);
             }
 
-          //  ::SetWindowPos(m_scollbar_.m_hWnd, HWND_TOPMOST, rt.left, rt.top, rt.Width(), rt.Height(), SWP_NOACTIVATE);
+            ::SetWindowPos(m_scollbar_.m_hWnd, HWND_TOP, rt.left, rt.top, rt.Width(), rt.Height(), SWP_NOACTIVATE);
         }
         else
         {
@@ -159,6 +179,21 @@ namespace Control {
         }
         return result;
     }
+    /*
+
+    BOOL CCEListCtrl::PreTranslateMessage(MSG* pMsg) 
+    {
+    BOOL ret = CListCtrl::PreTranslateMessage(pMsg);
+    if(pMsg->message == WM_LBUTTONDOWN)   
+    {    
+    if(m_bIsScroll)
+    {
+    //	SetTimer(IDT_CLICKLIST_TIMER, 100, NULL);
+    }
+    }
+    return ret;
+    }
+    */
 
     void CCEListCtrl::OnTimer(UINT nIDEvent) 
     {
@@ -186,13 +221,13 @@ namespace Control {
         //}}AFX_MSG_MAP
     END_MESSAGE_MAP()
 
-    void CCEListCtrl::ShowWindow_(int nCmdShow)
+    void CCEListCtrl ::ShowWindow_(int nCmdShow)
     {
         ShowWindow(nCmdShow);
         m_scollbar_.ShowWindow(nCmdShow);
     }
 
-    LRESULT CCEListCtrl::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+    LRESULT CCEListCtrl ::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
     {
         LRESULT ret =  CWnd::WindowProc(message, wParam, lParam);
         if(message == WM_LBUTTONDOWN)
@@ -252,7 +287,7 @@ namespace Control {
     BOOL CCEListCtrl::PreTranslateMessage(MSG* pMsg) 
     {
         // TODO: Add your specialized code here and/or call the base class
-        if (pMsg->message == WM_LBUTTONDOWN)
+        if(pMsg->message == WM_LBUTTONDOWN)
         {
             //Dprintf("ListCtrl pendown\r\n");
             m_nListIndex = -1;

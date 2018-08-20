@@ -59,11 +59,11 @@ namespace Util
 	CString StringOp::utf82Cstring(char *pBuff)
 	{
 		int length = strlen(pBuff);
-		CString s;
-		if (!pBuff)
+		CString s = _T("");
+		if(!pBuff)
 			return s;
 		char *pBuf = pBuff;
-		while (length)
+		while(length)
 		{
 			WCHAR wch;
 			int n = utf82unicode((unsigned char *)pBuf, 0, length, wch);
@@ -380,7 +380,7 @@ namespace Util
 	{
 #if 0
 		return CString(content.c_str());
-#else
+#endif
         //step1 : get converted length
 		//char* nullTermContent = new char[content.length() + 1];
 		//memset(nullTermContent, 0, content.length() + 1);
@@ -402,7 +402,6 @@ namespace Util
         CString result(wideContent);
         delete[] wideContent;
 		return result;
-#endif
 	}
 
 	std::string StringOp::FromInt(int const value)
@@ -456,26 +455,16 @@ namespace Util
 		std::string result = temp;
 		free(temp);
 		return result;
-#else
-        //step1 : get converted length
-		//LPCSTR defaultChar = 0;
-		BOOL usedDefaultChar = false;
-		//int convLength = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, value.GetLength(), content, defaultChar, &usedDefaultChar);
-        int length = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, -1, 0, 0, 0, &usedDefaultChar);
-		//int length = wcstombs(0, (LPCTSTR)value, value.GetLength() * 2);
-
-        //step2 : alloc converted space
+#endif
+		int length = wcstombs(0, (LPCTSTR)value, value.GetLength() * 2);
 		char* content = (char*)malloc(length + 1);
 		memset(content, 0, length + 1);
-        
-        //step2 : convert
-		//int convLength = wcstombs(content, (LPCTSTR)value, value.GetLength() * 2);
-        int convLength = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, -1, content, length + 1, 0, &usedDefaultChar);
-
-        //step4 : free converted space and return
+		//LPCSTR defaultChar = 0;
+		//BOOL usedDefaultChar = false;
+		//int convLength = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, value.GetLength(), content, defaultChar, &usedDefaultChar);
+		int convLength = wcstombs(content, (LPCTSTR)value, value.GetLength() * 2);
 		std::string result = content;
 		free(content);
 		return result;
-#endif
 	}
 }

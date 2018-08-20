@@ -10,13 +10,11 @@
 #include <objsafe.h>
 #include <objbase.h>
 #include <atlbase.h>
-#include <stdio.h>
-#include <assert.h>
 #include <string>
 #include <vector>
 #include <map>
-
-#include "../resource.h"
+#include <stdio.h>
+#include <assert.h>
 
 #include "DateTime.h"
 #include "config.h"
@@ -143,18 +141,19 @@ namespace Util
 			if(nodeName == "RECT")
 			{
 				Util::StringOp::ToRectangle(s, item->unitparam.m_Rect);
-				item->unitparam.m_Rect.left = item->unitparam.m_Rect.left*X_XISHU;
-				item->unitparam.m_Rect.top = item->unitparam.m_Rect.top*Y_XISHU;
-				item->unitparam.m_Rect.right = item->unitparam.m_Rect.right*X_XISHU;
-				item->unitparam.m_Rect.bottom = item->unitparam.m_Rect.bottom*Y_XISHU;
+                item->unitparam.m_Rect.bottom = item->unitparam.m_Rect.bottom * 125 / 100;
+                item->unitparam.m_Rect.right = item->unitparam.m_Rect.right * 125 / 100;
+                item->unitparam.m_Rect.top = item->unitparam.m_Rect.top * 125 / 100;
+                item->unitparam.m_Rect.left = item->unitparam.m_Rect.left * 125 / 100;
 			}
 			else if(nodeName == "PIC")
 			{
-				//item->unitparam.m_bgFilename = s.c_str();
-				//if(item->unitparam.m_bgFilename == "no")
-				//	item->unitparam.m_bgFilename = "";
-
-                BSTR bstrItemText;
+				/*
+				item->unitparam.m_bgFilename = s.c_str();
+				if(item->unitparam.m_bgFilename == "no")
+					item->unitparam.m_bgFilename = "";
+					*/
+				BSTR bstrItemText;
 				element->get_text(&bstrItemText);
 				item->unitparam.m_bgFilename = CString(bstrItemText);
 				SysFreeString(bstrItemText);
@@ -163,11 +162,12 @@ namespace Util
 			}
 			else if(nodeName == "TEXT")
 			{
-				//item->unitparam.m_sContent = s.c_str();
-				//if(item->unitparam.m_sContent == "no")
-				//	item->unitparam.m_sContent = "";
-
-                BSTR bstrItemText;
+				/*
+				item->unitparam.m_sContent = s.c_str();
+				if(item->unitparam.m_sContent == "no")
+					item->unitparam.m_sContent = "";
+					*/
+				BSTR bstrItemText;
 				element->get_text(&bstrItemText);
 				item->unitparam.m_sContent = CString(bstrItemText);
 				SysFreeString(bstrItemText);
@@ -221,11 +221,12 @@ namespace Util
 			}
 			else if(nodeName == "DOWITH")
 			{
-				//item->unitparam.m_UnitContent = s.c_str();
-				//if(item->unitparam.m_UnitContent == "no")
-				//	item->unitparam.m_UnitContent = "";
-
-                BSTR bstrItemText;
+				/*
+				item->unitparam.m_UnitContent = s.c_str();
+				if(item->unitparam.m_UnitContent == "no")
+					item->unitparam.m_UnitContent = "";
+				*/
+				BSTR bstrItemText;
 				element->get_text(&bstrItemText);
 				item->unitparam.m_UnitContent = CString(bstrItemText);
 				SysFreeString(bstrItemText);
@@ -387,7 +388,7 @@ public:
 				//分析文件
 				BOOL flag = TRUE;
 				PLAYCONFIGITEMTYPE itemtype;
-				CString sParentElementName;
+				CString sParentElementName = _T("");
 				while(flag)
 				{
 					int offset;
@@ -496,7 +497,7 @@ public:
 				//分析文件
 				BOOL flag = TRUE;
 				PLAYCONFIGITEMTYPE itemtype;
-				CString sParentElementName;
+				CString sParentElementName = _T("");
 				while(flag)
 				{
 					int offset;
@@ -681,7 +682,7 @@ public:
 				result->bgfilename = "";
 				result->bgfilename_down = "";
 				result->showtype = no_show;
-				result->m_Rect = CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 480*Y_XISHU);
+				result->m_Rect = CRect(0, 0, 480 * 125 / 100, 204);
 				
 				//读取文件
 				ULONGLONG mlength = file.GetLength();
@@ -757,11 +758,10 @@ public:
 							char *sChar = FindElementsContent(sXmlFile, sFindName);
 							CString s = Util::StringOp::utf82Cstring(sChar);
 							Util::StringOp::ToRectangle(s, result->m_Rect);
-							result->m_Rect.left = result->m_Rect.left*X_XISHU;
-							result->m_Rect.top = result->m_Rect.top*Y_XISHU;
-							result->m_Rect.right = result->m_Rect.right*X_XISHU;
-							result->m_Rect.bottom = result->m_Rect.bottom*Y_XISHU;
-
+                            result->m_Rect.bottom = result->m_Rect.bottom * 125 / 100;
+                            result->m_Rect.right = result->m_Rect.right * 125 / 100;
+                            result->m_Rect.top = result->m_Rect.top * 125 / 100;
+                            result->m_Rect.left = result->m_Rect.left * 125 / 100;
 							offset += (strlen(sFindName)+2)*2 + 1 + strlen(sChar);
 							if(sChar)
 								delete sChar;		
@@ -794,10 +794,10 @@ public:
 								char *sChar = FindElementsContent(sXmlFile, sFindName);
 								CString s = Util::StringOp::utf82Cstring(sChar);
 								Util::StringOp::ToRectangle(s, item->unitparam.m_Rect);
-								item->unitparam.m_Rect.left = item->unitparam.m_Rect.left*X_XISHU;
-								item->unitparam.m_Rect.top = item->unitparam.m_Rect.top*Y_XISHU;
-								item->unitparam.m_Rect.right = item->unitparam.m_Rect.right*X_XISHU;
-								item->unitparam.m_Rect.bottom = item->unitparam.m_Rect.bottom*Y_XISHU;
+                                item->unitparam.m_Rect.bottom = item->unitparam.m_Rect.bottom * 125 / 100;
+                                item->unitparam.m_Rect.right = item->unitparam.m_Rect.right * 125 / 100;
+                                item->unitparam.m_Rect.left = item->unitparam.m_Rect.left * 125 / 100;
+                                item->unitparam.m_Rect.top = item->unitparam.m_Rect.top * 125 / 100;
 								offset += (strlen(sFindName)+2)*2 + 1 + strlen(sChar);
 								if(sChar)
 									delete sChar;

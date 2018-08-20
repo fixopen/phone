@@ -204,7 +204,7 @@ namespace Control {
 
         for(int i = 0; i < 42; i++)
         {
-            CString s1;
+            CString s1 = _T("");
             m_StcDay[i].SetDateTxt(s1, s1);
             m_StcDay[i].SetColor(RGB(0, 0, 0), Data::g_lunarderBackRGB[Data::g_skinstyle]);
             m_StcDay[i].SetWindowText(L"");
@@ -219,6 +219,7 @@ namespace Control {
             //CString s = txt;
             CString s;
             s.Format(_T("%d"), i + 1);
+            //CString s1 = _T("");
             CString s1;
             //m_StcDay[nWeek+i].SetWindowText(s);
             UINT16 y, m, d, ret;

@@ -130,11 +130,6 @@ namespace View {
         // TODO: Add extra initialization here
         std::string strTemp;
         CString str;
-
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\新建类别.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU));
-
         /*	
         strTemp = Data::LanguageResource::Get(Data::RI_CARD_TYPENAME);
         str = strTemp.c_str();
@@ -154,16 +149,16 @@ namespace View {
         m_sticSoudTip.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
         m_sticSoudTip.SetAlign(SS_CENTER);
         */
-        m_edtName.Create(WS_CHILD|WS_VISIBLE, CRect(194*X_XISHU, 134*Y_XISHU, 446*X_XISHU, 172*Y_XISHU), &m_MJPGList, IDC_EDIT_CONTACTGROUP_NAME);
+        m_edtName.Create(WS_CHILD|WS_VISIBLE, CRect(194, 134, 446, 172), this, IDC_EDIT_CONTACTGROUP_NAME);
         m_edtName.SetLimitText(15);
 
         //m_cmbRing.Create(WS_CHILD|WS_VISIBLE, CRect(174, 90, 288, 200), this, IDC_COMBOBOX_CONTACTGROUP_RING);
-        m_ringEdit.Create(WS_CHILD|WS_VISIBLE, CRect(194*X_XISHU,195*Y_XISHU,449*X_XISHU,232*Y_XISHU), &m_MJPGList, 0xFFFF);
+        m_ringEdit.Create(WS_CHILD|WS_VISIBLE, CRect(194,195,449,232), this, 0xFFFF);
         m_ringEdit.SetIsAutoInput(FALSE);
-        m_ringButton.Create(L"", Data::g_comboxBMPID[0][Data::g_skinstyle], Data::g_comboxBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(450*X_XISHU,194*Y_XISHU,508*X_XISHU,233*Y_XISHU), &m_MJPGList, IDC_SETTING_RINGSELECT);
-        m_ringList.Create(WS_CHILD|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(194*X_XISHU,244*Y_XISHU,508*X_XISHU,410*Y_XISHU), &m_MJPGList, IDC_SETTING_LSTRING, TRUE, 1);
+        m_ringButton.Create(L"", Data::g_comboxBMPID[0][Data::g_skinstyle], Data::g_comboxBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(450,194,508,233), this, IDC_SETTING_RINGSELECT);
+        m_ringList.Create(WS_CHILD|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(194,244,508,410), this, IDC_SETTING_LSTRING, TRUE, 1);
         m_ringList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], Data::g_listctrlBackRGB2[Data::g_skinstyle]);
-        m_ringList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 280*X_XISHU);
+        m_ringList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 280);
         m_ringList.ShowWindow_(SW_HIDE);
 
         m_pImageList1 = new CImageList();
@@ -189,10 +184,10 @@ namespace View {
         bm.DeleteObject();
         m_ringList.SetImageList(m_pImageList1, LVSIL_SMALL);
 
-        m_ringStatic.Create(L"", WS_CHILD, CRect(192*X_XISHU,242*Y_XISHU,516*X_XISHU,412*Y_XISHU), &m_MJPGList);
+        m_ringStatic.Create(L"", WS_CHILD, CRect(192,242,516,412), this);
         m_ringStatic.SetBorder(TRUE);
 
-        m_cmbSoundTip.Create(WS_CHILD|WS_VISIBLE, CRect(194*X_XISHU, 255*Y_XISHU, 509*X_XISHU, 410*Y_XISHU), &m_MJPGList, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
+        m_cmbSoundTip.Create(WS_CHILD|WS_VISIBLE, CRect(194, 255, 509, 410), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
         /*
         strTemp = Data::LanguageResource::Get(Data::RI_COMN_OKBTN);
         str = strTemp.c_str();
@@ -209,9 +204,12 @@ namespace View {
         m_btnDelete.Create(str, Data::g_buttonArcBMPALLDIALOGID[0][Data::g_skinstyle], Data::g_buttonArcBMPALLDIALOGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(415, 91, 471, 111), this, IDC_BUTTON_CONTACTGROUP_DELETE);
         m_btnDelete.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
 
-        m_sticBackground.Create(CRect(0, 0, 480, 204), this, 1);
+        m_sticBackground.Create(CRect(0, 0, 480 * 125 / 100, 204), this, 1);
         */
-       
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\新建类别.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
+
         m_pContactGroup = Util::shared_ptr<Data::ContactGroup>();
         return TRUE;  // return TRUE unless you set the focus to a control
         // EXCEPTION: OCX Property Pages should return FALSE
@@ -558,7 +556,7 @@ namespace View {
         WIN32_FIND_DATA FindFileData;			//查找文件时要使用的数据结构
         HANDLE hFind = INVALID_HANDLE_VALUE;	//定义查找句柄
 
-        sDir += "/*.*";
+        sDir += "*.*";
         hFind = FindFirstFile(sDir, &FindFileData);//使用FindFirstFile函数来开始文件查找
 
         if (hFind == INVALID_HANDLE_VALUE) 

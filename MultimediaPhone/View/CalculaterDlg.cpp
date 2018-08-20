@@ -22,7 +22,7 @@ namespace View {
     {
         char buf[32];
         memset(buf, 0, 32);
-        int n = wcstombs( buf, (TCHAR*)(LPCTSTR)buffer, 30);
+        int n = wcstombs( buf, buffer.GetBuffer(30), 30);
         buf[n] = '\0';
         return atof(buf);
     }
@@ -159,12 +159,8 @@ namespace View {
         m_dtemp2 = 0;
         m_IsError = FALSE; //2005.5.19 zmy
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 535*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\计算器.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0, 0, 535*X_XISHU, 420*Y_XISHU));
-
-        CRect r(32*X_XISHU, 60*Y_XISHU, (32+470)*X_XISHU, (60+38)*Y_XISHU);
-        m_DialNumEdit.Create(WS_CHILD|WS_VISIBLE|ES_RIGHT|ES_NUMBER|ES_MULTILINE, r, &m_MJPGList, 0xFFFF);
+        CRect r(32, 60, 32+470, 60+38);
+        m_DialNumEdit.Create(WS_CHILD|WS_VISIBLE|ES_RIGHT|ES_NUMBER|ES_MULTILINE, r, this, 0xFFFF);
         m_DialNumEdit.SetIsAutoInput();
         /*	
         VERIFY(m_Font.CreateFont(
@@ -190,11 +186,15 @@ namespace View {
         //	m_DialNumEdit.SetFontSize(24);
         //	m_DialNumEdit.SetColor(RGB(0, 0, 0), RGB(255, 255, 255));
 
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\计算器.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100));
+
         return TRUE;  // return TRUE unless you set the focus to a control
         // EXCEPTION: OCX Property Pages should return FALSE
     }
 
-    LRESULT CCalculaterDlg::OnClickMJPG(WPARAM w, LPARAM l)
+    LRESULT CCalculaterDlg ::OnClickMJPG(WPARAM w, LPARAM l)
     {
         LRESULT result = 0;
         ::UINT16 keyV[] = {0x800, BACKSPACE_KEYV, CE_KEYV, C_KEYV,\
@@ -203,7 +203,7 @@ namespace View {
             MS_KEYV, '1', '2', '3', JIAN_KEYV, DAOSHU_KEYV,\
             MJ_KEYV, '0', FUHAO_KEYV, '.', JIA_KEYV, DENG_KEYV
         };
-        OnSoftKey(keyV[w - 1], 0);
+        OnSoftKey(keyV[w-1], 0);
         return result;
     }
     
@@ -215,14 +215,13 @@ namespace View {
     //软键盘的响应函数
     void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
     {
-        if (w == 0x800)   //退出
+        if(w == 0x800)   //退出
         {
             OnExit();
             return;
         }
 
-        if (m_IsError && w != C_KEYV)
-            return; //2005.5.19 zmy 错误，点击任何键都无反应		
+        if (m_IsError && w != C_KEYV)return; //2005.5.19 zmy 错误，点击任何键都无反应		
 
         //数字键的输入
         if (w < m_keynull)
@@ -232,19 +231,16 @@ namespace View {
                 WCHAR t_buffer[20];
                 //CString s;
                 int len = m_DialNumEdit.GetWindowText(t_buffer, 20);
-                if ((len == 0) && (w == '.'))
-                    return;
-                if ((len == 1) && (t_buffer[0] == '0') && (w == '0'))
-                    return;
+                if((len == 0) && (w == '.'))return;
+                if((len == 1) && (t_buffer[0] == '0') && (w == '0'))return;
                 for (int i = wcslen(t_buffer); i > 0; i --)
-                    if ((t_buffer[i-1] == '.') && (w == '.'))
-                        return;//小数点只能点击一次
+                    if ((t_buffer[i-1] == '.') && (w == '.')) return;//小数点只能点击一次
 
                 if (len < 9)
                 {
                     CString s;
                     m_DialNumEdit.GetWindowText(s);
-                    if (s == "0")
+                    if(s == "0")
                         s == "";
                     s += (char)w;
                     m_DialNumEdit.SetWindowText(s);
@@ -255,11 +251,10 @@ namespace View {
             else
             {
                 m_DialNumEdit.SetWindowText(L"");
-                if (w == '.')
-                    return;
+                if(w == '.')return;
                 CString s;
                 m_DialNumEdit.GetWindowText(s);
-                if (s == "0")
+                if(s == "0")
                     s == "";
                 s += (char)w;
                 m_DialNumEdit.SetWindowText(s);
@@ -286,8 +281,7 @@ namespace View {
             //2005.3.30-zmy 当输入框为空时，点击符号键（除了MS外），不显示
             WCHAR buff[20];
             int len = m_DialNumEdit.GetWindowText(buff, 20);
-            if ((len == 0) && (w != MR_KEYV))
-                return;
+            if ((len == 0) && (w != MR_KEYV)) return;
             WCHAR buffer[20];
             WCHAR buffer1[20];
             int i;
@@ -303,9 +297,9 @@ namespace View {
                     CString s;
                     m_DialNumEdit.GetWindowText(s);
                     int len = s.GetLength();
-                    if (len > 0)
+                    if(len > 0)
                     {
-                        s = s.Left(len - 1);
+                        s = s.Left(len-1);
                         m_DialNumEdit.SetWindowText(s);
 
                         m_dCurtemp = WTOF(s);		//wwf
@@ -320,11 +314,8 @@ namespace View {
                 m_keyvalue = m_keynull;
                 m_keyvalue1 = m_keynull;
                 m_IsError = FALSE;  //2005.5.19 zmy 出现错误时，只能点击清楚键，其他键无效
-                if (m_keyvalue2 == CHU_KEYV
-                    || m_keyvalue2 == CHENG_KEYV
-                    || m_keyvalue2 == JIAN_KEYV
-                    || m_keyvalue2 == JIA_KEYV
-                    || m_keyvalue2 == DENG_KEYV)
+                if (m_keyvalue2 == CHU_KEYV || m_keyvalue2 == CHENG_KEYV || m_keyvalue2 == JIAN_KEYV \
+                    ||m_keyvalue2 == JIA_KEYV || m_keyvalue2 == DENG_KEYV)
                 {
                     m_keyvalue2 = m_keynull;
                 }
@@ -337,10 +328,19 @@ namespace View {
                 m_DialNumEdit.SetWindowText(L"");
 
                 m_dCurtemp = 0;					//wwf
+                //	m_dtemp0 = 0;
+                /*
+                m_keyvalue = m_keynull;
+                m_keyvalue1 = m_keynull;
+                m_keyvalue2 = m_keynull;
+                */
                 break;
 
                 //当前数字和存储器中的数据相加并存到存储器中
             case MJ_KEYV :
+                // 				m_DialNumEdit.GetWindowText(buffer, 20);
+                // 				dtemp1 = WTOF(buffer);
+                // 				m_number1 = m_number1 + dtemp1;
                 m_number1 = m_number1 + m_dCurtemp;
                 m_keyvalue = MJ_KEYV;
                 break;
@@ -354,21 +354,14 @@ namespace View {
                 //调用存储器中的数值
             case MR_KEYV :
                 m_DialNumEdit.SetWindowText(L"");
-                {
-                char b[64] = {0};
-                sprintf(b, "%16.14f", m_number1);
-                CString buff = Util::StringOp::ToCString(b);
-                wcscpy(buffer, (LPCTSTR)buff);
-                }
-                //wsprintf(buffer, _T("%16.14f"), m_number1);
-                for (i = wcslen(buffer); i > 0; --i)
-                    if (buffer[i - 1] != '0')
-                        break;
-                if (buffer[i - 1] == '.')
+                wsprintf(buffer, _T("%16.14f"), m_number1);
+                for (i =  wcslen(buffer); i > 0; i --)
+                    if (buffer[i-1] != '0')break;
+                if (buffer[i-1] == '.')
                 {
                     i = i - 1;
                 }
-                memcpy(buffer1, buffer, i * 2);
+                memcpy(buffer1, buffer, i*2);
                 buffer1[i] = '\0';
                 m_DialNumEdit.SetWindowText(buffer1);
 
@@ -385,20 +378,13 @@ namespace View {
 
                 //当前数字取根号值
             case GENHAO_KEYV :
-                if (m_dCurtemp >= 0)
+                if(m_dCurtemp >= 0)
                 {
                     m_dCurtemp = std::sqrt(m_dCurtemp);		//lxz 2004.9.5			
-                    {
-                    char b[64] = {0};
-                    sprintf(b, "%16.14f", m_dCurtemp);
-                    CString buff = Util::StringOp::ToCString(b);
-                    wcscpy(buffer, (LPCTSTR)buff);
-                    }
-                    //wsprintf(buffer, _T("%16.14f"), m_dCurtemp);				
-                    for (i = wcslen(buffer); i > 0; --i)
-                        if (buffer[i - 1] != '0')
-                            break;
-                    if (buffer[i - 1] == '.')
+                    wsprintf(buffer, _T("%16.14f"),m_dCurtemp);				
+                    for (i =  wcslen(buffer); i > 0; i --)
+                        if (buffer[i-1] != '0')break;
+                    if (buffer[i-1] == '.')
                     {
                         i = i - 1;
                     }
@@ -423,14 +409,13 @@ namespace View {
                 {
                     m_dCurtemp = 1.0 / m_dCurtemp;
                     wsprintf(buffer, _T("%16.14f"), m_dCurtemp);
-                    for (i = wcslen(buffer); i > 0; --i)
-                        if (buffer[i - 1] != '0')
-                            break;
-                    if (buffer[i - 1] == '.')
+                    for (i =  wcslen(buffer); i > 0; i --)
+                        if (buffer[i-1] != '0')break;
+                    if (buffer[i-1] == '.')
                     {
                         i = i - 1;
                     }
-                    memcpy(buffer1, buffer, i * 2);
+                    memcpy(buffer1, buffer, i*2);
                     buffer1[i] = '\0';
                     m_DialNumEdit.SetWindowText(buffer1);
                 }
@@ -447,17 +432,10 @@ namespace View {
             case FUHAO_KEYV :
                 m_dCurtemp = -m_dCurtemp;
                 //sprintf_(buffer, "%.12f", temp2);
-                {
-                char b[64] = {0};
-                sprintf(b, "%16.14f", m_dCurtemp);
-                CString buff = Util::StringOp::ToCString(b);
-                wcscpy(buffer, (LPCTSTR)buff);
-                }
-                //wsprintf(buffer, _T("%16.16f"), m_dCurtemp);
-                for (i = wcslen(buffer); i > 0; --i)
-                    if (buffer[i - 1] != '0')
-                        break;
-                if (buffer[i - 1] == '.')
+                wsprintf(buffer, _T("%16.16f"), m_dCurtemp);
+                for (i =  wcslen(buffer); i > 0; i --)
+                    if (buffer[i-1] != '0')break;
+                if (buffer[i-1] == '.')
                 {
                     i = i - 1;
                 }
@@ -467,28 +445,20 @@ namespace View {
 
                 if (m_keyvalue != DAOSHU_KEYV && m_keyvalue != GENHAO_KEYV)
                 {
-                    j = wcslen(buffer1);
+                    j =  wcslen(buffer1);
                     m_keyvalue = m_keynull;
                 }
-                else
-                    m_keyvalue = FUHAO_KEYV;
+                else m_keyvalue = FUHAO_KEYV;
                 break;
 
                 //按百分比的形式显示乘积结果
             case BAIFENHAO_KEYV :
                 m_dCurtemp = m_dCurtemp / 100;
-                //sprintf_(buffer, "%.12f", dtemp1);
-                {
-                char b[64] = {0};
-                sprintf(b, "%16.14f", m_dCurtemp);
-                CString buff = Util::StringOp::ToCString(b);
-                wcscpy(buffer, (LPCTSTR)buff);
-                }
-                //wsprintf(buffer, _T("%16.14f"), m_dCurtemp);				
-                for (i = wcslen(buffer); i > 0; --i)
-                    if (buffer[i - 1] != '0')
-                        break;
-                if (buffer[i - 1] == '.')
+                //sprintf_(buffer, "%.12f", dtemp1);				
+                wsprintf(buffer, _T("%16.14f"),m_dCurtemp);				
+                for (i =  wcslen(buffer); i > 0; i --)
+                    if (buffer[i-1] != '0')break;
+                if (buffer[i-1] == '.')
                 {
                     i = i - 1;
                 }
@@ -501,13 +471,11 @@ namespace View {
                 //除号
             case CHU_KEYV :				
                 dtemp1 = m_dCurtemp;
-                if ((m_keyvalue1 != CHU_KEYV)
-                    || (dtemp1 != 0)
-                    || (m_keyvalue2 != m_keynull))
+                if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
                 {
                     if (m_keyvalue2 == m_keynull)
                     {
-                        switch (m_keyvalue1)
+                        switch ( m_keyvalue1 )
                         {
                         case CHU_KEYV :
                             dtemp1 = m_dtemp0 / dtemp1;
@@ -522,11 +490,12 @@ namespace View {
                             dtemp1 = m_dtemp0 + dtemp1;
                             break;
                         }
-                    } else if (m_keyvalue2 == DENG_KEYV) { //wwf
+                    }else if (m_keyvalue2 == DENG_KEYV)			//wwf
+                    {
                         dtemp1 = m_dtemp0;
                     }
                     //2005.1.24-zmy
-                    if (dtemp1 >= 99999999999999999 )
+                    if ( dtemp1 >= 99999999999999999 )
                     {
                         m_DialNumEdit.SetWindowText(L"Error");
                         m_dCurtemp = 0;
@@ -540,19 +509,14 @@ namespace View {
                     //if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 
                     m_dCurtemp = dtemp1;
-                    char b[64] = {0};
-                    sprintf(b, "%16.14f", dtemp1);
-                    //wsprintf(buffer, _T("%16.14f"), dtemp1);
-                    CString buff = Util::StringOp::ToCString(b);
-                    wcscpy(buffer, (LPCTSTR)buff);
-                    for (i = wcslen(buffer); i > 0; --i)
-                        if (buffer[i - 1] != '0')
-                            break;
-                    if (buffer[i - 1] == '.')
+                    wsprintf(buffer, _T("%16.14f"),dtemp1);
+                    for (i =  wcslen(buffer); i > 0; i --)
+                        if (buffer[i-1] != '0')break;
+                    if (buffer[i-1] == '.')
                     {
                         i = i - 1;
                     }
-                    memcpy(buffer1, buffer, i * 2);
+                    memcpy(buffer1, buffer, i*2);
                     buffer1[i] = '\0';
                     m_DialNumEdit.SetWindowText(buffer1);
                 }
@@ -574,9 +538,7 @@ namespace View {
                 //乘号
             case CHENG_KEYV :
                 dtemp1 = m_dCurtemp;
-                if ((m_keyvalue1 != CHU_KEYV)
-                    || (dtemp1 != 0)
-                    || (m_keyvalue2 != m_keynull))
+                if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
                 {
                     if (m_keyvalue2 == m_keynull)
                     {					
@@ -595,7 +557,8 @@ namespace View {
                             dtemp1 = m_dtemp0 + dtemp1;
                             break;
                         }
-                    } else if (m_keyvalue2 == DENG_KEYV)	{ //wwf
+                    }else if (m_keyvalue2 == DENG_KEYV)			//wwf
+                    {
                         dtemp1 = m_dtemp0;
                     }
 
@@ -614,15 +577,10 @@ namespace View {
                     //if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 
                     m_dCurtemp = dtemp1;
-                    char b[64] = {0};
-                    sprintf(b, "%16.14f", dtemp1);
-                    //wsprintf(buffer, _T("%16.14f"), dtemp1);
-                    CString buff = Util::StringOp::ToCString(b);
-                    wcscpy(buffer, (LPCTSTR)buff);
-                    for (i = wcslen(buffer); i > 0; --i)
-                        if (buffer[i - 1] != '0')
-                            break;
-                    if (buffer[i - 1] == '.')
+                    wsprintf(buffer, _T("%16.14f"),dtemp1);
+                    for (i =  wcslen(buffer); i > 0; i --)
+                        if (buffer[i-1] != '0')break;
+                    if(buffer[i-1] == '.')
                     {
                         i = i - 1;
                     }
@@ -648,13 +606,11 @@ namespace View {
                 //减号
             case JIAN_KEYV :
                 dtemp1 = m_dCurtemp;
-                if ((m_keyvalue1 != CHU_KEYV)
-                    || (dtemp1 != 0)
-                    || (m_keyvalue2 != m_keynull))
+                if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
                 {
                     if (m_keyvalue2 == m_keynull)
                     {
-                        switch (m_keyvalue1)
+                        switch ( m_keyvalue1 )
                         {
                         case CHU_KEYV :
                             dtemp1 = m_dtemp0 / dtemp1;
@@ -669,11 +625,12 @@ namespace View {
                             dtemp1 = m_dtemp0 + dtemp1;
                             break;
                         }
-                    } else if (m_keyvalue2 == DENG_KEYV) { //wwf
+                    }else if (m_keyvalue2 == DENG_KEYV)			//wwf
+                    {
                         dtemp1 = m_dtemp0;
                     }
                     //2005.1.24-zmy
-                    if (dtemp1 >= 99999999999999999)
+                    if ( dtemp1 >= 99999999999999999 )
                     {
                         m_DialNumEdit.SetWindowText(L"Error");
                         m_dCurtemp = 0;
@@ -687,12 +644,8 @@ namespace View {
                     //if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 
                     m_dCurtemp = dtemp1;
-                    char b[64] = {0};
-                    sprintf(b, "%16.14f", dtemp1);
-                    //wsprintf(buffer, _T("%16.14f"), dtemp1);
-                    CString buff = Util::StringOp::ToCString(b);
-                    wcscpy(buffer, (LPCTSTR)buff);
-                    for (i = wcslen(buffer); i > 0; --i)
+                    wsprintf(buffer, _T("%16.14f"),dtemp1);
+                    for (i =  wcslen(buffer); i > 0; i --)
                         if (buffer[i-1] != '0')break;
                     if (buffer[i-1] == '.')
                     {
@@ -720,13 +673,11 @@ namespace View {
                 //加号
             case JIA_KEYV :
                 dtemp1 = m_dCurtemp;
-                if ((m_keyvalue1 != CHU_KEYV)
-                    || (dtemp1 != 0)
-                    || (m_keyvalue2 != m_keynull))
+                if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
                 {
                     if (m_keyvalue2 == m_keynull)
                     {
-                        switch (m_keyvalue1)
+                        switch ( m_keyvalue1 )
                         {
                         case CHU_KEYV :
                             dtemp1 = m_dtemp0 / dtemp1;
@@ -741,11 +692,12 @@ namespace View {
                             dtemp1 = m_dtemp0 + dtemp1;
                             break;
                         }
-                    } else if (m_keyvalue2 == DENG_KEYV) { //wwf
+                    }else if (m_keyvalue2 == DENG_KEYV)			//wwf
+                    {
                         dtemp1 = m_dtemp0;
                     }
                     //2005.1.24-zmy
-                    if (dtemp1 >= 99999999999999999)
+                    if ( dtemp1 >= 99999999999999999 )
                     {
                         m_DialNumEdit.SetWindowText(L"Error");
                         m_dCurtemp = 0;
@@ -759,21 +711,17 @@ namespace View {
                     //if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 
                     m_dCurtemp = dtemp1;
-                    char b[64] = {0};
-                    sprintf(b, "%16.14f", dtemp1);
-                    //wsprintf(buffer, _T("%16.14f"), dtemp1);
-                    CString buff = Util::StringOp::ToCString(b);
-                    wcscpy(buffer, (LPCTSTR)buff);
-                    for (i = wcslen(buffer); i > 0; --i)
-                        if (buffer[i - 1] != '0')
-                            break;
-                    if (buffer[i - 1] == '.')
+                    wsprintf(buffer, _T("%16.14f"),dtemp1);
+                    for (i =  wcslen(buffer); i > 0; i --)
+                        if (buffer[i-1] != '0')break;
+                    if (buffer[i-1] == '.')
                     {
                         i = i - 1;
                     }
-                    memcpy(buffer1, buffer, i * 2);
+                    memcpy(buffer1, buffer, i*2);
                     buffer1[i] = '\0';
                     m_DialNumEdit.SetWindowText(buffer1);	
+
                 }
                 else if (m_keyvalue2 == m_keynull)
                 {
@@ -793,9 +741,7 @@ namespace View {
                 //等号
             case DENG_KEYV :
                 dtemp1 = m_dCurtemp;
-                if ((m_keyvalue1 != CHU_KEYV)
-                    || (dtemp1 != 0)
-                    || (m_keyvalue2 != m_keynull))
+                if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
                 {
                     switch ( m_keyvalue2 )	
                     {
@@ -822,10 +768,10 @@ namespace View {
                         break;
                         //等号前有运算符且为等时
                     case DENG_KEYV :
-                        switch (m_keyvalue3)
+                        switch ( m_keyvalue3 )
                         {
                         case m_keynull :						
-                            switch (m_keyvalue1)
+                            switch ( m_keyvalue1 )
                             {
                             case m_keynull :
                                 dtemp1 = dtemp1;
@@ -884,7 +830,7 @@ namespace View {
                         break;
                     }
                     //2005.1.24-zmy
-                    if (dtemp1 >= 99999999999999999 )
+                    if ( dtemp1 >= 99999999999999999 )
                     {
                         m_DialNumEdit.SetWindowText(L"Error");
                         m_dCurtemp = 0;
@@ -898,15 +844,10 @@ namespace View {
                     //if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 
                     m_dCurtemp = dtemp1;
-                    char b[64] = {0};
-                    sprintf(b, "%16.14f", dtemp1);
-                    //wsprintf(buffer, _T("%16.14f"), dtemp1);
-                    CString buff = Util::StringOp::ToCString(b);
-                    wcscpy(buffer, (LPCTSTR)buff);
-                    for (i = wcslen(buffer); i > 0; --i)
-                        if (buffer[i - 1] != '0')
-                            break;
-                    if (buffer[i - 1] == '.')
+                    wsprintf(buffer, _T("%16.14f"), dtemp1);
+                    for (i =  wcslen(buffer); i > 0; i --)
+                        if (buffer[i-1] != '0') break;
+                    if (buffer[i-1] == '.')
                     {
                         i = i - 1;
                     }
@@ -926,6 +867,7 @@ namespace View {
                 m_keyvalue = DENG_KEYV;
                 m_keyvalue2 = DENG_KEYV;
                 break;
+
             }	
         }
     }

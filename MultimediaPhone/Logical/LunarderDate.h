@@ -74,9 +74,9 @@ namespace Logical {
 
         static BOOL FindHuangDaoData(CTime time, char* data);
 
-        static char* FindYangLiJieri(int nM, int nD);
-        static char* FindNongLiJieri(int nY, int nM, int nD, int y, int m, int d);
-        static int FindWeekJieri(int nY, int nM, int *pDay, char *DayJieRi[]);
+        static char *LunarderDate::FindYangLiJieri(int nM, int nD);
+        static char *LunarderDate::FindNongLiJieri(int nY, int nM, int nD, int y, int m, int d);
+        static int LunarderDate::FindWeekJieri(int nY, int nM, int *pDay, char *DayJieRi[]);
     };
 }
 

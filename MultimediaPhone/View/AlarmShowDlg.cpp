@@ -86,7 +86,7 @@ namespace View {
         if(cmdshow > 0)
         {
             ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 1, 0);
-            //::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800, 480, 0);
+            ::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800 * 125 / 100, 480 * 125 / 100, 0);
         }
         else
         {

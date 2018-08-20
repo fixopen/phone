@@ -6,8 +6,6 @@
 #include "MultimediaPhone.h"
 #include "MultimediaPhoneDlg.h"
 
-#include <psapi.h>
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -96,30 +94,6 @@ BOOL CMultimediaPhoneApp::InitInstance()
 
 	InitPinYin();
 
-    //DWORD aProcesses[1024], cbNeeded;
-    //if ( ::EnumProcesses( aProcesses, sizeof(aProcesses), &cbNeeded ) ) {
-
-    //    // Calculate how many process identifiers were returned.
-
-    //    DWORD cProcesses = cbNeeded / sizeof(DWORD);
-
-    //    // Print the name and process identifier for each process.
-
-    //    for (unsigned int  i = 0; i < cProcesses; ++i ) {
-    //        if( aProcesses[i] != 0 ) {
-    //            HANDLE hProcess = OpenProcess( PROCESS_QUERY_INFORMATION |
-    //                                   PROCESS_VM_READ | PROCESS_ALL_ACCESS,
-    //                                   FALSE, aProcesses[i] );
-    //            TCHAR filename[512] = {0};
-    //            ::GetProcessImageFileName(hProcess, filename, 512);
-    //            if (wcsstr(filename, _T("explorer.exe")) != NULL) {
-    //                TerminateProcess(hProcess, 0);
-    //                break;
-    //            }
-    //            CloseHandle( hProcess );
-    //        }
-    //    }
-    //}
 	CMultimediaPhoneDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();

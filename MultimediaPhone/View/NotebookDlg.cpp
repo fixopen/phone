@@ -53,19 +53,80 @@ namespace View {
     BOOL CNotebookDlg::OnInitDialog() 
     {
         CDialog::OnInitDialog();
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\笔迹记事.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU));
 
-        m_WriteStatic.Create(L"", WS_VISIBLE|WS_CHILD, CRect(8*X_XISHU, 55*Y_XISHU, 791*X_XISHU, 409*Y_XISHU), &m_MJPGList, 8950);
+        /*
+        // TODO: Add extra initialization here
+        std::string strTemp;
+        CString str;
+
+        strTemp = Data::LanguageResource::Get(Data::RI_COMN_OKBTN);
+        str = strTemp.c_str();
+        m_btnOk.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 26, 472, 46), this, IDC_BUTTON_NOTE_OK);
+        //	m_btnOk.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_NOTE_BACKBTN);
+        str = strTemp.c_str();
+        m_btnPrev.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 46, 472, 66), this, IDC_BUTTON_NOTE_PREV);
+        //	m_btnPrev.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_NOTE_NEXTBTN);
+        str = strTemp.c_str();
+        m_btnNext.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 66, 472, 86), this, IDC_BUTTON_NOTE_NEXT);
+        //	m_btnNext.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_NOTE_CLEAR);
+        str = strTemp.c_str();
+        m_btnClear.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 86, 472, 106), this, IDC_BUTTON_NOTE_CLEAR);
+        //	m_btnClear.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_CLOSE);
+        str = strTemp.c_str();
+        m_btnClose.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 178, 471, 198), this, IDC_BUTTON_NOTE_CLOSE);
+        m_btnClose.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+        */
+
+        m_WriteStatic.Create(L"", WS_VISIBLE|WS_CHILD, CRect(8, 55, 791, 409), this, 8950);
         m_WriteStatic.SetWrite((TCHAR*)(LPCTSTR)(::notePath + "/1.bmp"));
 
-       
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\笔迹记事.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
+
+        /*
+        m_sticPanel.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(416, 26, 472, 198), this);
+        m_sticPanel.SetColor(RGB(0, 0, 0), Data::g_allFrameInFrameLine1RGB[0][Data::g_skinstyle]);
+
+        m_sticBackground.Create(CRect(0, 0, 480 * 125 / 100, 204), this, 2);
+        */
+
         m_nIndex = 0;
 
+        char txt[64];
+        //sprintf(txt, "%d/20 %s", m_nIndex+1, Data::LanguageResource::Get(Data::RI_NOTE_PAGE).c_str());
+        //CString s = txt;
         CString s;
-        s.Format(_T("%d/20 %s"), m_nIndex + 1, Util::StringOp::ToCString(Data::LanguageResource::Get(Data::RI_NOTE_PAGE)));
+        s.Format(_T("%d/20 %s"), m_nIndex+1, Data::LanguageResource::Get(Data::RI_NOTE_PAGE).c_str());
         m_MJPGList.SetUnitText(0, s, FALSE);
+
+        // 	m_sticPage.SetWindowText(s);
+        // 	m_sticTitle.SetWindowText(s);
+
+        // 	TextStruct ts[2];
+        // 	memset(ts, 0, sizeof(TextStruct) * 2);
+        // 	ts[0].txtRect = CRect(0, 0, 60, 20);
+        // 	ts[0].txtFontSize = 16;
+        // 	ts[0].sAlign = DT_BOTTOM;
+        // //	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_MAIN_STOCKINFOBTN).c_str(), Data::LanguageResource::Get(Data::RI_MAIN_STOCKINFOBTN).length());
+        // 	
+        // // 	ts[1].txtRect = CRect(220, 4, 300, 24);
+        // 	ts[1].txtRect = CRect(200, 0, 280, 20);
+        // 	memcpy(ts[1].sTxt, txt, 64);
+        // 	ts[1].txtFontSize = 16;
+        // 	ts[1].sAlign = DT_CENTER | DT_BOTTOM;
+        // 	
+        // 	m_sticBackground.SetTextStruct(ts, 2, FALSE);
+        //SetPageIndex();
+
 
         return TRUE;  // return TRUE unless you set the focus to a control
         // EXCEPTION: OCX Property Pages should return FALSE
@@ -99,19 +160,48 @@ namespace View {
 
     void CNotebookDlg::SetPageIndex()
     {
+        char txt[64];
+        //sprintf(txt, "%d/20 %s", m_nIndex+1, Data::LanguageResource::Get(Data::RI_NOTE_PAGE).c_str());
+        //CString s = txt;
         CString s;
-        s.Format(_T("%d/20 %s"), m_nIndex+1, Util::StringOp::ToCString(Data::LanguageResource::Get(Data::RI_NOTE_PAGE)));
+        s.Format(_T("%d/20 %s"), m_nIndex+1, Data::LanguageResource::Get(Data::RI_NOTE_PAGE).c_str());
 
         m_MJPGList.SetUnitText(0, s, TRUE);
+        // 	m_sticPage.SetWindowText(s);
+        // 	m_sticTitle.SetWindowText(s);
+
+        // 	TextStruct ts[2];
+        // 	memset(ts, 0, sizeof(TextStruct) * 2);
+        // 	ts[0].txtRect = CRect(0, 0, 60, 20);
+        // 	ts[0].txtFontSize = 16;
+        // 	ts[0].sAlign = DT_BOTTOM;
+        // 	//	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_MAIN_STOCKINFOBTN).c_str(), Data::LanguageResource::Get(Data::RI_MAIN_STOCKINFOBTN).length());
+        // 	
+        // 	// 	ts[1].txtRect = CRect(220, 4, 300, 24);
+        // 	ts[1].txtRect = CRect(200, 0, 280, 20);
+        // 	memcpy(ts[1].sTxt, txt, 64);
+        // 	ts[1].txtFontSize = 16;
+        // 	ts[1].sAlign = DT_CENTER | DT_BOTTOM;
+        // 
+        // 	m_sticBackground.ChangeTextStruct(2-1, ts[1], TRUE);
+        //m_sticBackground.SetTextStruct(ts, 2);
     }
 
     void CNotebookDlg::OnButtonNoteOk()
     {
+        // 	m_WriteStatic.GetWrite(filename[m_nIndex]);
         std::string filename = Util::StringOp::FromCString(::notePath);
         filename += "/" + Util::StringOp::FromInt(m_nIndex + 1);
         filename += ".bmp";
         m_WriteStatic.GetWrite((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(filename));
+        // 	ShowWindow(FALSE);
         ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
+
+        // 	if(m_WriteStatic.WRITE_TYPE == 1)
+        // 		m_WriteStatic.WRITE_TYPE = 0;
+        // 	else
+        // 		m_WriteStatic.WRITE_TYPE = 1;
+
     }
 
     void CNotebookDlg::OnButtonNotePrev()
@@ -120,9 +210,9 @@ namespace View {
         filename += "/" + Util::StringOp::FromInt(m_nIndex + 1);
         filename += ".bmp";
         m_WriteStatic.GetWrite((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(filename));
-        //m_WriteStatic.GetWrite(filename[m_nIndex]);
-        --m_nIndex;
-        if (m_nIndex < 0)
+        //	m_WriteStatic.GetWrite(filename[m_nIndex]);
+        m_nIndex--;
+        if(m_nIndex < 0)
             m_nIndex = 19;
 
         filename = Util::StringOp::FromCString(::notePath);
@@ -141,8 +231,8 @@ namespace View {
         filename += ".bmp";
         m_WriteStatic.GetWrite((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(filename));
         //	m_WriteStatic.GetWrite(filename[m_nIndex]);
-        ++m_nIndex;
-        if (m_nIndex > 19)
+        m_nIndex++;
+        if(m_nIndex > 19)
             m_nIndex = 0;
         filename = Util::StringOp::FromCString(::notePath);
         filename += "/" + Util::StringOp::FromInt(m_nIndex + 1);

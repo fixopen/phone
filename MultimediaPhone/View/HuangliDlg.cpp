@@ -57,9 +57,9 @@ namespace View {
         CDialog::OnInitDialog();
 
         // TODO: Add extra initialization here
-        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU), this);
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100), this);
         m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\老黄历.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
 
         SYSTEMTIME curtime;
         GetLocalTime(&curtime);
@@ -258,8 +258,8 @@ namespace View {
                     int nn_ = i + 1 - nWeek;
                     char sBuff_[64] = {0};
                     sprintf(sBuff_, "%d日%s", nn_, txt);
-                    sT = Util::StringOp::ToCString(sBuff_);
-                    if (nn_<= 15)
+                    sT= Util::StringOp::ToCString(sBuff_);
+                    if(nn_<= 15)
                         m_MJPGList.SetUnitText(47, sT, FALSE);
                     else
                         m_MJPGList.SetUnitText(48, sT, FALSE);
@@ -328,24 +328,24 @@ namespace View {
                 m_MJPGList.SetUnitText(nIndex+300, s1, isDraw, TRUE);
                 m_MJPGList.SetUnitText(nIndex+200, sLunder, isDraw, TRUE);
 
-                char* sPtr = NULL;
+                char *sPtr = NULL;
 
                 for (int ii = 0; ii < nWeekRet; ++ii)
                 {
                     if ((i + 1 - nWeek) == nWeekJieRi[ii])
                     {
-                        sJieri += Util::StringOp::ToCString(pWeekJieRi[ii]);
+                        sJieri += pWeekJieRi[ii];
                     }
                 }
 
                 if (!isRunDayStart && (sPtr = Logical::LunarderDate::FindNongLiJieri(y, m, d, m_Year, m_Month, i+1-nWeek)) != NULL)
                 {	
-                    sJieri += Util::StringOp::ToCString(sPtr);
+                    sJieri += sPtr;
                 }
 
-                if ((sPtr = Logical::LunarderDate::FindYangLiJieri(m_Month, i + 1 - nWeek)) != NULL)
+                if((sPtr = Logical::LunarderDate::FindYangLiJieri(m_Month, i+1-nWeek)) != NULL)
                 {
-                    sJieri += Util::StringOp::ToCString(sPtr);
+                    sJieri += sPtr;
                 }
 
                 m_MJPGList.SetUnitText(nIndex+100, sJieri, isDraw, TRUE);
@@ -375,16 +375,16 @@ namespace View {
         CString sT;
         //lxz 20081104
         sprintf(txt, "%04d年%02d月", m_Year, m_Month);
-        sT = Util::StringOp::ToCString(txt);
+        sT = txt;
         m_MJPGList.SetUnitText(49, sT, FALSE);
 
         sprintf(txt, "%d", m_Day);
-        sT = Util::StringOp::ToCString(txt);
+        sT = txt;
         m_MJPGList.SetUnitText(50, sT, FALSE);
 
         int nWeek = Logical::LunarderDate::WeekDay(m_Year, m_Month, m_Day);
         sprintf(txt, "%s", Data::LanguageResource::Get(Data::RI_COMN_SUNSTC+nWeek).c_str());
-        sT = Util::StringOp::ToCString(txt);
+        sT = txt;
         m_MJPGList.SetUnitText(51, sT, FALSE);
 
         ::UINT16 nY, nM, nD;
@@ -400,48 +400,48 @@ namespace View {
         int nYear = Logical::LunarderDate::FormatLunarYear(nY, chYear);
         Logical::LunarderDate::FormatLunarMonth(nM, chMonth);
         Logical::LunarderDate::FormatLunarDay(nD, chDay);
-        if (nLeapMonth == nM )
+        if(nLeapMonth == nM )
         {
             ::UINT16 iY, iM, iD;
             Logical::LunarderDate::CalcLeapLunarYear(nY, iY, iM, iD);
-            if ((m_Month == iM && m_Day >= iD) || m_Month > iM)
+            if((m_Month == iM && m_Day >= iD) || m_Month > iM)
                 strcpy(chLeapMonth, "润");
         }
         sprintf(txt, "%s%s%s%s%s%s", Data::LanguageResource::Get(Data::RI_MAIN_LUNARCALENDARSTC).c_str(), chYear, Data::LanguageResource::Get(Data::RI_COMN_YEARSTC).c_str(), chLeapMonth, chMonth, chDay);
-        sT = Util::StringOp::ToCString(txt);
+        sT = txt;
         m_MJPGList.SetUnitText(52, sT, FALSE);
 
         //计算星期节日
         int nWeekRet = 0;
         int nWeekJieRi[3];
-        char* pWeekJieRi[3];
+        char *pWeekJieRi[3];
         nWeekRet = Logical::LunarderDate::FindWeekJieri(m_Year, m_Month, nWeekJieRi, pWeekJieRi);
 
-        CString sJieri;
-        char* sPtr = NULL;
-        for (int ii = 0; ii < nWeekRet; ++ii)
+        CString sJieri = _T("");
+        char *sPtr = NULL;
+        for(int ii = 0; ii < nWeekRet; ii++)
         {
-            if (m_Day == nWeekJieRi[ii])
+            if(m_Day == nWeekJieRi[ii])
             {
-                sJieri += Util::StringOp::ToCString(pWeekJieRi[ii]);
+                sJieri += pWeekJieRi[ii];
             }
         }
 
-        if ((sPtr = Logical::LunarderDate::FindNongLiJieri(nY, nM, nD, m_Year, m_Month, m_Day)))
+        if( (sPtr = Logical::LunarderDate::FindNongLiJieri(nY, nM, nD, m_Year, m_Month, m_Day)))
         {	
-            //sJieri += _T("");
-            sJieri += Util::StringOp::ToCString(sPtr);
+            sJieri += "";
+            sJieri += sPtr;
         }
-        if ((sPtr = Logical::LunarderDate::FindYangLiJieri(m_Month, m_Day)))
+        if((sPtr = Logical::LunarderDate::FindYangLiJieri(m_Month, m_Day)))
         {
-            //sJieri += _T("");
-            sJieri += Util::StringOp::ToCString(sPtr);
+            sJieri += "";
+            sJieri += sPtr;
         }
         m_MJPGList.SetUnitText(53, sJieri, FALSE);
 
         char yi_ji[512] = {0};
         Logical::LunarderDate::FindHuangDaoData(CTime(m_Year, m_Month, m_Day, 0, 0, 0), yi_ji);
-        sT = Util::StringOp::ToCString(yi_ji);
+        sT = yi_ji;
         m_MJPGList.SetUnitText(54, sT, FALSE);
     }
 }

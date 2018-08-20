@@ -95,7 +95,7 @@ namespace View {
         afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized); 
         afx_msg LRESULT OnOutEvent(WPARAM w, LPARAM l);
         afx_msg LRESULT OnClickMJPG(WPARAM w, LPARAM l);
-        afx_msg LRESULT OnListCtrlClick(WPARAM w, LPARAM l);
+        afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
         afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
         //}}AFX_MSG

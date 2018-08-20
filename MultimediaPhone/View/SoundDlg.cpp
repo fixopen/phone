@@ -186,16 +186,12 @@ namespace View {
 
         m_lsType.SetScrollRagle(FALSE);
         */	
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU), this);
-		m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\录音.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 420*Y_XISHU));
-
-        m_lsList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(115*X_XISHU, 46*Y_XISHU, (115+570)*X_XISHU, (45+360)*Y_XISHU), &m_MJPGList, IDC_LIST_SOUND_LIST, TRUE, 0, FALSE);
+        m_lsList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(115, 46, 115+570, 45+360), this, IDC_LIST_SOUND_LIST, TRUE, 0, FALSE);
         m_lsList.SetExtendedStyle(m_lsList.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-        m_lsList.InsertColumn(0, _T("Sound"), LVCFMT_LEFT, (120+10)*X_XISHU);
-        m_lsList.InsertColumn(1, _T("NameNO"), LVCFMT_LEFT, (130+10-16)*X_XISHU);
-        m_lsList.InsertColumn(2, _T("Time"), LVCFMT_LEFT, (180+10-24)*X_XISHU);
-        m_lsList.InsertColumn(3, _T("Duration"), LVCFMT_LEFT, (100+10+40)*X_XISHU);
+        m_lsList.InsertColumn(0, _T("Sound"), LVCFMT_LEFT, 120+10);
+        m_lsList.InsertColumn(1, _T("NameNO"), LVCFMT_LEFT, 130+10-16);
+        m_lsList.InsertColumn(2, _T("Time"), LVCFMT_LEFT, 180+10-24);
+        m_lsList.InsertColumn(3, _T("Duration"), LVCFMT_LEFT, 100+10+40);
 
 
         m_pImageList = new CImageList();
@@ -245,7 +241,7 @@ namespace View {
         m_sticPanel.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(416, 26, 472, 198), this);
         m_sticPanel.SetColor(RGB(0, 0, 0), Data::g_allFrameInFrameLine1RGB[0][Data::g_skinstyle]);
 
-        m_sticBackground.Create(CRect(0, 0, 480, 204), this, 2);
+        m_sticBackground.Create(CRect(0, 0, 480 * 125 / 100, 204), this, 2);
 
         TextStruct ts[6];
         memset(ts, 0, sizeof(TextStruct) * 6);
@@ -282,6 +278,10 @@ namespace View {
 
         m_sticBackground.SetTextStruct(ts, 6);
         */
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\录音.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
+
         m_pPlaySoundDlg = new CPlaySoundDlg(this);
         m_pPlaySoundDlg->Create(CPlaySoundDlg::IDD);
         m_pPlaySoundDlg->SetModel(0);

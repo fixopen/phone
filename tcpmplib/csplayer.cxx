@@ -11,12 +11,11 @@
 #include "csplayer.h"
 
 #include "Util/Reg.h"
-//#include "Util/StringOp.h"
 
 #define _T TEXT
 
 // 宏定义
-#define SAFE_CLOSE_HANDLE(x)		if (x) {CloseHandle(x); x = NULL;}
+#define SAFE_CLOSE_HANDLE(x)		if(x){CloseHandle(x);x=NULL;}
 #define MSG_BASE					WM_APP + 60
 #define MSG_HEARTBEAT				MSG_BASE
 #define MSG_ASSOCIATE_HANDLE		MSG_BASE + 1
@@ -48,11 +47,11 @@
 
 // 全局变量
 LPCTSTR g_strMutexName[] = {_T("csplayer mutex object0"),_T("csplayer mutex object1"),_T("csplayer mutex object2")};
-LPCTSTR g_strAppName[] = {_T("C:\\flashdrv\\tcpmp\\mplayer0.exe"),_T("C:\\flashdrv\\tcpmp\\mplayer1.exe"),_T("C:\\flashdrv\\tcpmp\\mplayer2.exe")};
-LPCTSTR g_strWndName[] = {_T("csplayer window0"),_T("csplayer window1"),_T("csplayer window2")};
-LPCTSTR g_strClsName[] = {_T("csplayer_win0"),_T("csplayer_win1"),_T("csplayer_win2")};
+LPCTSTR g_strAppName[] = {_T("\\flashdrv\\tcpmp\\mplayer0.exe"),_T("\\flashdrv\\tcpmp\\mplayer1.exe"),_T("\\flashdrv\\tcpmp\\mplayer2.exe")};
+LPCTSTR g_strWndName[] = {_T("csplayer window"),_T("csplayer window"),_T("csplayer window")};
+LPCTSTR g_strClsName[] = {_T("csplayer_win"),_T("csplayer_win"),_T("csplayer_win")};
 
-const LPCTSTR szRunKey[] = {_T("SOFTWARE\\Cyansoft\\CSplayer0"),_T("SOFTWARE\\Cyansoft\\CSplayer1"),_T("SOFTWARE\\Cyansoft\\CSplayer2")};
+const LPCTSTR szRunKey[] = {_T("SOFTWARE\\Cyansoft\\CSplayer"),_T("SOFTWARE\\Cyansoft\\CSplayer"),_T("SOFTWARE\\Cyansoft\\CSplayer")};
 const TCHAR szRun[] = _T("playfile");
 const TCHAR szSubtitle[] = _T("subtitle");
 const TCHAR szSubtitleColor[] = _T("subcolor");
@@ -76,10 +75,9 @@ static HWND g_hWnd[3] = {NULL};
 // 函数实现
 int plyCreate(int x, int y, int width, int height, MediaType mt)
 {
-	BOOL fResult = FALSE;
+	BOOL	fResult = FALSE;
 
-	if (g_hMutex[mt])
-        return -1;
+	if (g_hMutex[mt]) return -1;
 
 	// 创建全局互斥体, 以确保进程唯一
 	g_hMutex[mt] = CreateMutex(NULL, TRUE, g_strMutexName[mt]);
@@ -95,14 +93,8 @@ int plyCreate(int x, int y, int width, int height, MediaType mt)
 
 	// 创建播放器进程
 	static char szCmdLine[256] = {0};
-
-    BOOL usedDefaultChar = false;
-    int length = WideCharToMultiByte(CP_ACP, 0, g_strAppName[mt], -1, 0, 0, 0, &usedDefaultChar);
-    char* content = (char*)malloc(length + 1);
-    memset(content, 0, length + 1);
-    int convLength = WideCharToMultiByte(CP_ACP, 0, g_strAppName[mt], -1, content, length + 1, 0, &usedDefaultChar);
-    std::sprintf(szCmdLine, "%s %d %d %d %d", content, x, y, width, height);
-    free(content);
+	
+    std::sprintf(szCmdLine, "C:\\flashdrv\\tcpmp\\mplayer.exe %d %d %d %d", x, y, width, height);
 	//if (CreateProcess(g_strAppName[mt], szCmdLine, NULL, NULL, FALSE, NULL, NULL, NULL, NULL, NULL) == FALSE)
 	//	goto finish;
 	WinExec(szCmdLine, SW_SHOW);
@@ -174,7 +166,9 @@ int plyOpen(LPTSTR pszFile, MediaType mt)
 	{
 		if (AddRegistry(pszFile, mt))
 		{
-            //MessageBox(NULL, _T("OPEN FILE"), pszFile, MB_TOPMOST);
+            TCHAR caption[256] = {0};
+            //wsprintf(caption, _T("x y w h == %d %d %d %d"), x, y, width, height);
+            MessageBox(NULL, _T("OPEN FILE"), pszFile, MB_TOPMOST);
 			if (0 == SendMessage(g_hWnd[mt], MSG_OPEN, NULL, NULL))
 			{
 				return 0;
@@ -203,21 +197,6 @@ int plyExit(MediaType mt)
 
 	if (g_hWnd[mt])
 	{
-        TCHAR caption[256] = {0};
-        switch (mt) {
-            case mtVideo:
-                wcscpy(caption, _T("video"));
-                break;
-            case mtAudio:
-                wcscpy(caption, _T("audio"));
-                break;
-            case mtImage:
-                wcscpy(caption, _T("image"));
-                break;
-            default:
-                break;
-        }
-        //MessageBox(NULL, _T("EXIT"), caption, MB_TOPMOST);
 		if (0 == SendMessage(g_hWnd[mt], MSG_EXIT, NULL, NULL))
 			return 0;
 	}
@@ -262,9 +241,9 @@ int plySetWndPos(WORD x, WORD y, WORD width, WORD height, MediaType mt)
 {
 	if (g_hWnd[mt])
 	{
-        //TCHAR caption[256] = {0};
-        //wsprintf(caption, _T("x y w h == %d %d %d %d"), x, y, width, height);
-        //MessageBox(NULL, _T("SET_WND_POS"), caption, MB_TOPMOST);
+        TCHAR caption[256] = {0};
+        wsprintf(caption, _T("x y w h == %d %d %d %d"), x, y, width, height);
+        MessageBox(NULL, _T("SET_WND_POS"), caption, MB_TOPMOST);
 		if (0 == SendMessage(g_hWnd[mt], MSG_SET_WND_POS, MAKEWPARAM(x, y), MAKELPARAM(width, height)))
 			return 0;
 	}

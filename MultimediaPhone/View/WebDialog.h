@@ -33,17 +33,35 @@ namespace View {
         HWND    m_hIEWnd;
         CRect   m_IERect;
         CString url_;
-        char m_sUrlList[10][128];
-        int m_nUrlCount;
-        CMJPGStatic m_MJPGList;
-        CCEComboBox_ m_cmbURL;
-        CCERectEdit	m_edit;
-
         void SendtoWebMessage(UINT message, WPARAM w, LPARAM l);
         void ExitWeb();
+        char m_sUrlList[10][128];
+        int m_nUrlCount;
         void SetHistoryList();
         void AddHistory(CString s);
+
+        //BOOL    m_bIsExitThread;
+
+        CMJPGStatic m_MJPGList;
+
         void ShowWindow_(BOOL bShow);
+
+        CCEComboBox_ m_cmbURL;
+        //	CCEBmpButton m_btn;
+        CCERectEdit	m_edit;
+        //	CCEBmpButton m_btnClose;
+        /*	
+        CCEStatic m_sticOperation;
+        CCEStatic m_sticPanel;
+        CCEStatic m_sticBack;
+        CCEFrameStatic m_sticBackground;
+
+        CCEListCtrl m_lstPlayList;
+        CImageList *m_pImageList;
+        TCHAR		m_chDir[128];
+
+        void SetPlayList(TCHAR *dir, int local);
+        */
         void SetURL(CString url);
 
 
@@ -74,6 +92,9 @@ namespace View {
         afx_msg void OnTimer(UINT nIDEvent);
         afx_msg LRESULT OnSelectURL(WPARAM w, LPARAM l);
         afx_msg LRESULT OnIEClick(WPARAM w, LPARAM l);
+        //	afx_msg LRESULT OnUrlSelect(WPARAM w, LPARAM l);
+        //	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
+        //	afx_msg LRESULT OnListCltrlClick(WPARAM w, LPARAM l);
         //}}AFX_MSG
         DECLARE_MESSAGE_MAP()
     };

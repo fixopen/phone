@@ -37,7 +37,7 @@ namespace View {
     HRASCONN gHRasConn = 0;
     bool CNetStatusDlg::ADSLInit()
     {
-        // gHRasConn = 0;
+        //	gHRasConn = 0;
 
         //RASENTRY   RasEntry;
 
@@ -66,18 +66,20 @@ namespace View {
         wsprintf(entry.szLocalPhoneNumber, L"");
 
         DWORD ret = RasSetEntryProperties(NULL,			// pointer to full path and filename of phone-book file
-            L"890", // pointer to an entry name
-            &entry, // buffer that contains entry information
-            sizeof(RASENTRY), // size, in bytes, of the lpRasEntry buffer
-            NULL, // buffer that contains device-specific 
+            L"890",	// pointer to an entry name
+            &entry,		// buffer that contains entry information
+            sizeof(RASENTRY),// size, in bytes, of the lpRasEntry buffer
+            NULL,			// buffer that contains device-specific 
             0);		
+        //Dprintf("RasSetEntryProperties = %d\n", ret);
+
         return 1;
     }
 
     static BOOL gDialRas = FALSE;
     bool CNetStatusDlg::ADSLDial(char *username, char *password, CWnd *pMsgWnd) 
     {
-        if (gDialRas)
+        if(gDialRas)
             ADSLHungUp();
 
         gDialRas = TRUE;
@@ -100,12 +102,20 @@ namespace View {
         //wsprintf(RasDialParams.szUserName, L"100001644588");
         wsprintf(RasDialParams.szUserName, userName);
 
+        //Dprintf(username);
+
+        /*
+        strcpy(RasDialParams.szUserName, "100001644588");
+        strcpy(RasDialParams.szPassword, "m2y8g4k9");
+        */
+
         TCHAR passWord[24];
         memset(passWord, 0, sizeof(passWord));
         //@@maybe error
         mbstowcs(passWord, password, strlen(password)+1);
         //wsprintf(RasDialParams.szPassword, L"m2y8g4k9");
         wsprintf(RasDialParams.szPassword, passWord);
+        //Dprintf(password);
 
         wsprintf(RasDialParams.szDomain, L"");
 
@@ -113,9 +123,12 @@ namespace View {
 
         char txt[64];
         sprintf(txt, "Ras Dial %d \r\n", ret1);
+        //	Dprintf("Ras code %d %d %d\r\n", result, w, l);
+        //DWriteDat("", (UINT8 *)txt, strlen(txt));
 
         if (ret1 != 0)
         {
+            //Dprintf("Dial error %d \n", ret1);
             //AfxMessageBox (TEXT("Could not connect using RAS"),NULL, MB_OK);
             return 0 ;
         }
@@ -123,14 +136,17 @@ namespace View {
         return 1;
     }
 
+    //ERROR_NOT_ENOUGH_MEMORY
+
     bool CNetStatusDlg::ADSLHungUp()
     {
         gDialRas = FALSE;
-        if (RasHangUp(gHRasConn) == 0)
+        if(RasHangUp(gHRasConn)== 0)
         {
             Sleep(2000);
             return 1;
         }
+        //Dprintf("ADSL Hung up error\n");
         Sleep(2000);
         return 0;
     }
@@ -166,15 +182,33 @@ namespace View {
 
     int CNetStatusDlg::CheckADSLStatus(int &nStatusCode)
     {
+        /*
+        int ret = 0;
+        DWORD flags;//上网方式   
+        unsigned short name[64] = {0};
+        //BOOL m_bOnline = InternetGetConnectedState(&flags,0);   
+        BOOL m_bOnline = InternetGetConnectedStateEx(&flags, name, 64, 0);
+        if(m_bOnline)//在线   
+        {   
+        switch(flags)   
+        {   
+        case  INTERNET_CONNECTION_MODEM   :   
+        return 1;	    
+        }   
+        if (flags == INTERNET_CONNECTION_MODEM_BUSY)   
+        return 0;
+        } 
+        */
+
         RASCONNSTATUS result;
         DWORD failure = RasGetConnectStatus(gHRasConn, &result);
         nStatusCode = result.rasconnstate;
-        if (result.rasconnstate >= RASCS_Interactive && result.rasconnstate <= RASCS_PasswordExpired)
+        if(result.rasconnstate >= RASCS_Interactive && result.rasconnstate <= RASCS_PasswordExpired)
             nStatusCode = result.rasconnstate - RASCS_Interactive + 19;
-        else if (result.rasconnstate >= RASCS_Connected && result.rasconnstate <= RASCS_Disconnected)
+        else if(result.rasconnstate >= RASCS_Connected && result.rasconnstate <= RASCS_Disconnected)
             nStatusCode = result.rasconnstate - RASCS_Connected + 23;
 
-        if (RASCS_Connected == result.rasconnstate)
+        if(RASCS_Connected == result.rasconnstate)
             return 1;
         else 
             return 0;
@@ -207,18 +241,20 @@ namespace View {
         int result = w;
         char txt[64];
         sprintf(txt, "Ras code %d %d %d\r\n", result, w, l);
-        if (result >= RASCS_Interactive && result <= RASCS_PasswordExpired)
+        //	Dprintf("Ras code %d %d %d\r\n", result, w, l);
+        //DWriteDat("", (UINT8 *)txt, strlen(txt));
+        if(result >= RASCS_Interactive && result <= RASCS_PasswordExpired)
             result = result - RASCS_Interactive + 19;
-        else if (result >= RASCS_Connected && result <= RASCS_Disconnected)
+        else if(result >= RASCS_Connected && result <= RASCS_Disconnected)
             result = result - RASCS_Connected + 23;
 
-        if (result > 25)
+        if(result > 25)
             result = 25;
 
         CString s = Util::StringOp::ToCString(adsl_status[result]);
         m_MJPGList.SetUnitText(4, s, TRUE);
 
-        if (result == 23)   //连接上
+        if(result == 23)   //连接上
         {
             KillTimer(1);
             m_bADSLISConnnect = TRUE;
@@ -227,7 +263,7 @@ namespace View {
             SetTimer(1, 1000, NULL);
             SetType(1, TRUE);
         }
-        else if (result == 24)   //未连接
+        else if(result == 24)   //未连接
         {
             m_bADSLISConnnect = FALSE;
         }
@@ -264,20 +300,20 @@ namespace View {
     void  CNetStatusDlg::SetType(int type, BOOL bIsConenctStatus)
     {
         m_type = type;
-        if (type == 0)
+        if(type == 0)
         {
             m_MJPGList.SetUnitIsShow(101, FALSE);
             m_MJPGList.SetUnitIsShow(102, FALSE);
             m_MJPGList.SetUnitIsShow(4, FALSE);
-            if (bIsConenctStatus)
+            if(bIsConenctStatus)
                 m_MJPGList.SetUnitBitmap(2, _T(".\\adv\\mjpg\\k1\\common\\网络连通.bmp"), _T(""), FALSE);
             else
                 m_MJPGList.SetUnitBitmap(2, _T(".\\adv\\mjpg\\k1\\common\\网络断开.bmp"), _T(""), FALSE);
         }
-        else if (type == 1)
+        else if(type == 1)
         {
             m_bADSLISConnnect = bIsConenctStatus;
-            if (bIsConenctStatus)
+            if(bIsConenctStatus)
             {
                 m_MJPGList.SetUnitBitmap(2, _T(".\\adv\\mjpg\\k1\\common\\ADSL连通.bmp"), _T(""), FALSE);
                 m_MJPGList.SetUnitIsShow(102, FALSE);
@@ -293,13 +329,13 @@ namespace View {
                 m_MJPGList.Invalidate();
             }
         }
-        CString s;
+        CString s = _T("");
         ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->GetIPInfo();
         ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_ip;
-        if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_ip.isDHCP)
-            s = _T("开启");
+        if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_ip.isDHCP)
+            s = "开启";
         else
-            s = _T("关闭");
+            s = "关闭";
         m_MJPGList.SetUnitText(3, s, FALSE);
 
         s = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_ip.ipAddress;
@@ -314,7 +350,7 @@ namespace View {
         s = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_ip.dns;
         m_MJPGList.SetUnitText(10, s, FALSE);
 
-        if (type == 1 && bIsConenctStatus)
+        if(type == 1 && bIsConenctStatus)
         {
             m_MJPGList.SetUnitIsShow(11, TRUE);
             s = GetPPPoEIP();
@@ -323,7 +359,7 @@ namespace View {
         else
         {
             m_MJPGList.SetUnitIsShow(11, FALSE);
-            s = _T("");
+            s = "";
             m_MJPGList.SetUnitText(12, s, FALSE);
         }
     }
@@ -333,9 +369,9 @@ namespace View {
         CCEDialog::OnInitDialog();
 
         // TODO: Add extra initialization here
-        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54*X_XISHU, 62*Y_XISHU, 746*X_XISHU, 358*Y_XISHU), this);
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
         m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\网络状态.xml"));
-        m_MJPGList.SetMJPGRect(CRect(54*X_XISHU, 62*Y_XISHU, 746*X_XISHU, 358*Y_XISHU));
+        m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
 
         //	WM_RASEVENT = ::RegisterWindowMessageA(RASDIALEVENT);
 
@@ -347,7 +383,7 @@ namespace View {
     {
         LRESULT result = 0;
         CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-        switch (w)
+        switch(w)
         {
         case 1:
             m_MJPGList.SetUnitIsShow(4, FALSE);
@@ -362,6 +398,14 @@ namespace View {
                 int ret = /*m_bADSLISConnnect =*/ ADSLDial(user, pwd, this);
                 KillTimer(1);
                 SetTimer(1, 1000, NULL);
+
+                // 			if(m_bADSLISConnnect)
+                // 			{
+                // 				m_MJPGList.SetUnitIsShow(4, TRUE);
+                // 				m_nADSLTimeCount++;
+                // 				SetTimer(1, 1000, NULL);
+                // 				SetType(1, TRUE);
+                // 			}
             }
             break;
         case 2:
@@ -379,12 +423,12 @@ namespace View {
 
     void CNetStatusDlg::ShowWindow_(int cmdshow)
     {
-        if (cmdshow > 0)
+        if(cmdshow > 0)
         {
             ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);    //暂停视频
 
             ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 1, 0);
-            //::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800, 480, 0);
+            ::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800 * 125 / 100, 480 * 125 / 100, 0);
         }
         else
         {
@@ -397,7 +441,7 @@ namespace View {
     void CNetStatusDlg::OnTimer(UINT nIDEvent) 
     {
         // TODO: Add your message handler code here and/or call default
-        if (nIDEvent == 1)
+        if(nIDEvent == 1)
         {
             m_nADSLTimeCount++;
             int nStatuscode;
@@ -407,13 +451,13 @@ namespace View {
             }
             else
             {
-                ++m_nADSLTimeCount;
+                m_nADSLTimeCount++;
                 CString s;
                 s.Format(_T("%02d:%02d:%02d"), m_nADSLTimeCount/3600, m_nADSLTimeCount%3600/60, m_nADSLTimeCount%60);
                 m_MJPGList.SetUnitText(4, s, TRUE);
             }
         }
-        else if (nIDEvent == 2)
+        else if(nIDEvent == 2)
         {
             int nStatuscode;
             if(!CheckADSLStatus(nStatuscode))

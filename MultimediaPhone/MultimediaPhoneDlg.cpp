@@ -212,9 +212,9 @@ BOOL ReleaseALLBmpMemoryInfo()
 }
 
 CMultimediaPhoneDlg::CMultimediaPhoneDlg(CWnd* pParent /*=NULL*/)
-: CDialog(CMultimediaPhoneDlg::IDD, pParent)
+	: CDialog(CMultimediaPhoneDlg::IDD, pParent)
 {
-    m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
     //InitImage();
     n_bklightcount = 0;
     m_bIsHungOn = FALSE;
@@ -230,20 +230,20 @@ CMultimediaPhoneDlg::~CMultimediaPhoneDlg()
 
 void CMultimediaPhoneDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
 }
 
 BEGIN_MESSAGE_MAP(CMultimediaPhoneDlg, CDialog)
     //{{AFX_MSG_MAP(CMultimediaPhoneDlg)
-    ON_WM_PAINT()
-    ON_WM_QUERYDRAGICON()
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
     ON_WM_LBUTTONDOWN()
     ON_WM_TIMER()
     ON_MESSAGE(WM_SOFTKEY, OnMainSoftKey)
     ON_MESSAGE(WM_GEN_EVENT, OnEvent)
     ON_MESSAGE(WM_DEVICECHANGE, OnDeviceChange)
     ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-    //}}AFX_MSG_MAP
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
@@ -251,16 +251,16 @@ END_MESSAGE_MAP()
 
 /*BOOL CMultimediaPhoneDlg::OnInitDialog()
 {
-CDialog::OnInitDialog();
+	CDialog::OnInitDialog();
 
-// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
-//  执行此操作
-SetIcon(m_hIcon, TRUE);			// 设置大图标
-SetIcon(m_hIcon, FALSE);		// 设置小图标
+	// 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动
+	//  执行此操作
+	SetIcon(m_hIcon, TRUE);			// 设置大图标
+	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-// TODO: 在此添加额外的初始化代码
+	// TODO: 在此添加额外的初始化代码
 
-return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }*/
 
 // 如果向对话框添加最小化按钮，则需要下面的代码
@@ -269,34 +269,34 @@ return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 
 void CMultimediaPhoneDlg::OnPaint()
 {
-    if (IsIconic())
-    {
-        CPaintDC dc(this); // 用于绘制的设备上下文
+	if (IsIconic())
+	{
+		CPaintDC dc(this); // 用于绘制的设备上下文
 
-        SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-        // 使图标在工作区矩形中居中
-        int cxIcon = GetSystemMetrics(SM_CXICON);
-        int cyIcon = GetSystemMetrics(SM_CYICON);
-        CRect rect;
-        GetClientRect(&rect);
-        int x = (rect.Width() - cxIcon + 1) / 2;
-        int y = (rect.Height() - cyIcon + 1) / 2;
+		// 使图标在工作区矩形中居中
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
 
-        // 绘制图标
-        dc.DrawIcon(x, y, m_hIcon);
-    }
-    else
-    {
-        CDialog::OnPaint();
-    }
+		// 绘制图标
+		dc.DrawIcon(x, y, m_hIcon);
+	}
+	else
+	{
+		CDialog::OnPaint();
+	}
 }
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
 //显示。
 HCURSOR CMultimediaPhoneDlg::OnQueryDragIcon()
 {
-    return static_cast<HCURSOR>(m_hIcon);
+	return static_cast<HCURSOR>(m_hIcon);
 }
 
 //IImagingFactory* pImgFactory;
@@ -307,64 +307,85 @@ HCURSOR CMultimediaPhoneDlg::OnQueryDragIcon()
 //    CoCreateInstance(CLSID_ImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IImagingFactory, (void**)&pImgFactory);
 //}
 
-void DrawImage(LPCTSTR szFileImage, CDC *pDC, CRect rt, int isOffset = 0)
+void DrawImage(LPCTSTR szFileImage, CDC *pDC, CRect rt, BOOL isOffset = FALSE)
 { 
     wprintf(szFileImage);
     printf("\r\n");
 
+    
     CRect newRect = rt;
-    if (isOffset > 0)
-    {
-        newRect = CRect(0, 0, rt.Width(), rt.Height());
-    }
+	if(isOffset)
+	{
+		newRect = CRect(0, 0, rt.Width(), rt.Height());
+	}
 
-    CString sFile = szFileImage;
-    if (sFile.Find(L".bmp") != -1 || sFile.Find(L".BMP") != -1)
-    {
-        CFile file;   
-        if (!file.Open(szFileImage, CFile::modeRead))   
-        {     
-            return;
-        }  
-
-        BITMAPFILEHEADER bfhHeader;   
-        file.Read(&bfhHeader, sizeof(BITMAPFILEHEADER));   
-        if (bfhHeader.bfType != ((WORD)('M' << 8) | 'B'))   
-        {   
-            ::MessageBox(NULL, L"The file is not a bitmap file!",  L"warning", MB_OK);  
-            file.Close();
-            return;   
-        }   
-        if (bfhHeader.bfSize != file.GetLength())     
-        {   
-            ::MessageBox(NULL, L"The BMP file header error!", L"warning", MB_OK);   
-            file.Close();
-            return;   
-        }   
-        UINT uBmpInfoLen = (UINT)bfhHeader.bfOffBits - sizeof(BITMAPFILEHEADER);   
-        LPBITMAPINFO lpBitmap = (LPBITMAPINFO)new BYTE[uBmpInfoLen];  
-
-        file.Read((LPVOID)lpBitmap, uBmpInfoLen);   
-        if ((*(LPDWORD)(lpBitmap)) != sizeof(BITMAPINFOHEADER))     
-        {   
-            ::MessageBox(NULL, L"The BMP is not Windows 3.0 format!", L"warning", MB_OK);  
-            delete []lpBitmap;    //20090216 test
-            file.Close();
-            return;   
-        }   
+	CString sFile = szFileImage;
+	if(sFile.Find(L".bmp") != -1 || sFile.Find(L".BMP") != -1)
+	{
+		CFile   file;   
+		if(   !file.Open(szFileImage,  CFile::modeRead ) )   
+		{     
+			return;
+		}  
+		
+		
+		BITMAPFILEHEADER   bfhHeader;   
+		file.Read(&bfhHeader,sizeof(BITMAPFILEHEADER));   
+		if(bfhHeader.bfType!=((WORD)   ('M'<<8)|'B'))   
+		{   
+			::MessageBox(NULL,L"The   file   is   not   a   file!", L"warning",MB_OK);  
+			file.Close();
+			return;   
+		}   
+		if(bfhHeader.bfSize!=file.GetLength())     
+		{   
+			::MessageBox(NULL,L"The   BMP   file   header   error!", L"warning", MB_OK);   
+			file.Close();
+			return;   
+		}   
+		UINT   uBmpInfoLen=(UINT)   bfhHeader.bfOffBits-sizeof(BITMAPFILEHEADER);   
+		LPBITMAPINFO   lpBitmap= (LPBITMAPINFO)   new   BYTE[uBmpInfoLen];  
+		
+		file.Read((LPVOID)   lpBitmap,uBmpInfoLen);   
+		if((*   (LPDWORD)(lpBitmap))!=sizeof(BITMAPINFOHEADER))     
+		{   
+			::MessageBox(NULL,L"The   BMP   is   not   Windows   3.0   format!", L"warning",MB_OK);  
+			file.Close();
+			delete []lpBitmap;    //20090216 test
+			return;   
+		}   
         file.Close();
 
-        LPVOID lpBits;   
+		LPVOID   lpBits;   
+		
+		int w = lpBitmap->bmiHeader.biWidth;
+		int h = lpBitmap->bmiHeader.biHeight;
 
-        int w = lpBitmap->bmiHeader.biWidth;
-        int h = lpBitmap->bmiHeader.biHeight;
+		lpBitmap->bmiHeader.biHeight = w;
+		lpBitmap->bmiHeader.biWidth = h;
 
-        /////////////////////////
+		CDC   dcMem;   
+		dcMem.CreateCompatibleDC(pDC);   
+		HBITMAP   hBmp = ::CreateDIBSection(dcMem.m_hDC, lpBitmap, DIB_RGB_COLORS, &lpBits, NULL, 0);
+		if(lpBits == NULL)
+		{
+			::MessageBox(NULL,L"Draw BMP no memory!", L"warning", MB_OK);  
+			//重启机器
+
+			//return;
+		}
+
+		CBitmap   BmpImg;   
+		BmpImg.Attach(hBmp);   
+		
+		CBitmap  *pOldBmp=dcMem.SelectObject(&BmpImg);   
+	
+       /////////////////////////
         IPicture* pPic;
         IStream* pStm;
 
         CFileStatus fstatus;
-        // CFile file;
+       // CFile file;
         LONG cb;
 
         if (file.Open(szFileImage, CFile::modeRead)
@@ -393,27 +414,13 @@ void DrawImage(LPCTSTR szFileImage, CDC *pDC, CRect rt, int isOffset = 0)
                         fX = (double)pDC->GetDeviceCaps(HORZRES) * (double)hmWidth / ((double)pDC->GetDeviceCaps(HORZSIZE) * 100.0);
                         fY = (double)pDC->GetDeviceCaps(VERTRES) * (double)hmHeight / ((double)pDC->GetDeviceCaps(VERTSIZE) * 100.0);
 
-                        DWORD x1 = 0;
-                        DWORD y1 = 0;
-                        DWORD w1 = hmWidth;
-                        DWORD h1 = hmHeight;
-                        DWORD x0 = newRect.left;
-                        DWORD y0 = newRect.top;
-                        if (isOffset > 0) {
-                            x1 = rt.left* hmWidth/w;
-                            y1 = rt.top*hmHeight/h;
-                            w1 = newRect.Width()*hmWidth/w;
-                            h1 = newRect.Height()*hmHeight/h;
-                        }
-                        if(isOffset == 2)
+                        DWORD x1 = rt.left* hmWidth/w;
+                        DWORD y1 = rt.top*hmHeight/h;
+                        DWORD w1 = newRect.Width()*hmWidth/w;
+                        DWORD h1 = newRect.Height()*hmHeight/h;
+                      
+                        if (FAILED(pPic->Render(*pDC, newRect.left, newRect.top, (DWORD)newRect.Width(), (DWORD)newRect.Height(), x1, hmHeight-y1, w1, -h1, NULL)))
                         {
-                            x0 = rt.left;
-                            y0 = rt.top;
-                        }
-
-                        if (FAILED(pPic->Render(*pDC, x0, y0, (DWORD)newRect.Width(), (DWORD)newRect.Height(), x1, hmHeight-y1, w1, -h1, NULL)))
-                        {
-                            ::MessageBox(NULL, L"Render error!", L"warning", MB_OK);  
                             GlobalFree(hGlobal);
                             file.Close();
                             //return -1;  //render error 
@@ -426,30 +433,97 @@ void DrawImage(LPCTSTR szFileImage, CDC *pDC, CRect rt, int isOffset = 0)
                     }
                     else
                     {
-                        ::MessageBox(NULL, L"OleLoadPicture error!", L"warning", MB_OK);  
                         file.Close();
                         GlobalFree(hGlobal);
                         //return -2;
                         return;
                     }
-                    pStm->Release();
                 }
             }
-            else
-                ::MessageBox(NULL, L"No Memory", L"warning", MB_OK);  
         }
         else {
             //return -3;
             return;
         }
-        delete []lpBitmap;    //20090216 test
-    }
-    else
-         ::MessageBox(NULL, L"No BMP", L"warning", MB_OK);  
+
+    //pdc->BitBlt(rect.left, rect.top, rect.Width(), rect.Height(), &dcMem, 0, 0, SRCCOPY);
+		//pDC->BitBlt(newRect.left, newRect.top, newRect.Width(), newRect.Height(), &dcMem, 0, 0, SRCCOPY);
+	
+		dcMem.SelectObject(pOldBmp); 
+	
+		DeleteObject(hBmp);
+
+		BmpImg.Detach();
+		dcMem.DeleteDC();
+	
+		delete []lpBitmap;    //20090216 test
+
+     }
     //return 0;
     return;
 }
 
+/*
+ IPicture* pPic;
+        IStream* pStm;
+
+        CFileStatus fstatus;
+        CFile file;
+        LONG cb;
+
+        if (file.Open(szFileImage, CFile::modeRead)
+            && file.GetStatus(szFileImage, fstatus)
+            && ((cb = fstatus.m_size) != -1))
+        {
+            HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, cb);
+            LPVOID pvData = NULL;
+            if (hGlobal != NULL)
+            {
+                if ((pvData = GlobalLock(hGlobal)) != NULL)
+                {
+                    file.Read(pvData, cb);
+                    GlobalUnlock(hGlobal);
+                    CreateStreamOnHGlobal(hGlobal, TRUE, &pStm);
+
+                    if (SUCCEEDED(OleLoadPicture(pStm, fstatus.m_size, TRUE, IID_IPicture, (LPVOID*)&pPic)))
+                    {
+                        OLE_XSIZE_HIMETRIC hmWidth;
+                        OLE_YSIZE_HIMETRIC hmHeight;
+
+                        pPic->get_Width(&hmWidth);
+                        pPic->get_Height(&hmHeight);
+
+                        double fX, fY;
+                        fX = (double)pDC->GetDeviceCaps(HORZRES) * (double)hmWidth / ((double)pDC->GetDeviceCaps(HORZSIZE) * 100.0);
+                        fY = (double)pDC->GetDeviceCaps(VERTRES) * (double)hmHeight / ((double)pDC->GetDeviceCaps(VERTSIZE) * 100.0);
+
+                        if (FAILED(pPic->Render(*pDC, rt.left, rt.top, (DWORD)rt.Width(), (DWORD)rt.Height(), 0, hmHeight, hmWidth, -hmHeight, NULL)))
+                        {
+                            GlobalFree(hGlobal);
+                            file.Close();
+                            //return -1;  //render error 
+                            return;
+                        }
+                        pPic->Release();
+
+                        GlobalFree(hGlobal);
+                        file.Close();
+                    }
+                    else
+                    {
+                        file.Close();
+                        GlobalFree(hGlobal);
+                        //return -2;
+                        return;
+                    }
+                }
+            }
+        }
+        else {
+            //return -3;
+            return;
+        }
+        */
 /////////////////////////////////////////////////////////////////////////////
 // CMultimediaPhoneDlg message handlers
 extern BOOL watchdog_test;
@@ -532,8 +606,7 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
     //lxz test jpg
     CDialog::OnInitDialog();
     SetWindowText(L"EDO Phone Dialog");
-    ModifyStyleEx(0, WS_EX_TOPMOST);
-    MoveWindow(0*X_XISHU, 0*Y_XISHU, 800*X_XISHU, 480*Y_XISHU);
+    MoveWindow(0, 0, 1024, 600);
 
     InitALLBmpMemoryInfo();
 
@@ -575,9 +648,9 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
     phone_ = new Phone();
     simdevice_ = new SIMDevice(NULL);
 
-    m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 420*Y_XISHU, 800*X_XISHU, 480*Y_XISHU), this);
+    m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 420 * 125 / 100, 800 * 125 / 100, 480 * 125 / 100), this);
     m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\1_new.xml"));
-    m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 420*Y_XISHU, 800*X_XISHU, 480*Y_XISHU));
+    m_MJPGList.SetMJPGRect(CRect(0, 420 * 125 / 100, 800 * 125 / 100, 480 * 125 / 100));
     //m_MJPGList.SetUnitIsDownStatus(2, TRUE);
     m_MJPGList.SetUnitIsDownStatus(2, TRUE);
 
@@ -731,11 +804,11 @@ int CMultimediaPhoneDlg::CheckInternetStatus()
         //--------------------------------------------------------------------- 
         //   retrieve   the   name   and   description   of   the   adapter. 
         //--------------------------------------------------------------------- 
-        CHAR chData[1024] = {0};
-        PNDISUIO_QUERY_BINDING pBindInfo = (PNDISUIO_QUERY_BINDING)chData;
-        pBindInfo->BindingIndex = 0;
-        int length = sizeof(NDISUIO_QUERY_BINDING);
-        DWORD bytesconsumed = 0;
+        CHAR   chData[1024];   
+        PNDISUIO_QUERY_BINDING   pBindInfo   =   (PNDISUIO_QUERY_BINDING)   chData;   
+        pBindInfo-> BindingIndex   =   0;   
+        int   length   =   sizeof   (NDISUIO_QUERY_BINDING);   
+        DWORD   bytesconsumed   =0; 
         BOOL bValue = DeviceIoControl(hDevice,   
             IOCTL_NDISUIO_QUERY_BINDING,   
             pBindInfo,   
@@ -744,14 +817,14 @@ int CMultimediaPhoneDlg::CheckInternetStatus()
             1024,   
             &bytesconsumed,   
             NULL);   
-        if (!bValue)   
+        if   (!bValue)   
         {   
             CloseHandle(hDevice);
             return 0;   
         }   
 
-        DWORD dwReturnedBytes;   
-        PTCHAR ptcDeviceName = (PTCHAR)((PUCHAR)pBindInfo + pBindInfo->DeviceNameOffset);   
+        DWORD   dwReturnedBytes;   
+        PTCHAR   ptcDeviceName   =  (PTCHAR)((PUCHAR)pBindInfo   +   pBindInfo-> DeviceNameOffset);   
 
         //--------------------------------------------------------------------- 
         //   Open   Device 
@@ -792,21 +865,23 @@ int CMultimediaPhoneDlg::CheckInternetStatus()
 
         if (*(ULONG*)(queryOid->Data) == NdisMediaStateConnected)// Connected! 
         {
+            //	Dprintf("Connected!\r\n");
             ret = 1;
         }
-        else if (*(ULONG*)(queryOid->Data) == NdisMediaStateDisconnected)
+        else if ( *(ULONG*)(queryOid->Data) ==	NdisMediaStateDisconnected)
         {
+            //	Dprintf("Disconnected!\r\n");
             ret = 0;
         }
 
         CloseHandle(hDevice); // What was the result?
         return ret;
     }
-    else if (m_pSettingDlg->m_pSetting->linkMode() == Data::lmDial)  //网络拨号
+    else if(m_pSettingDlg->m_pSetting->linkMode() == Data::lmDial)  //网络拨号
     {
         m_bNetType = 1;
         int Statuscode;
-        if (CNetStatusDlg::CheckADSLStatus(Statuscode))
+        if(CNetStatusDlg::CheckADSLStatus(Statuscode))
         {
             m_pNetStatusDlg->m_bADSLISConnnect = TRUE;
             return 1;
@@ -821,8 +896,8 @@ int CMultimediaPhoneDlg::CheckInternetStatus()
 
 void CMultimediaPhoneDlg::SetNetTelStatus()
 {
-    static CString gsNet;
-    static CString gsTelName;
+    static CString gsNet = _T("");
+    static CString gsTelName = _T("");
     CString sTel = _T(".\\adv\\mjpg\\k1\\common\\电话2.bmp");
     CString sNet = _T(".\\adv\\mjpg\\k1\\common\\网络2.bmp");
     static int gnTel = 0;
@@ -833,7 +908,7 @@ void CMultimediaPhoneDlg::SetNetTelStatus()
         if (!m_pTelephoneDlg->IsWindowVisible())
         {
             m_MJPGList.SetUnitIsDisable(1, FALSE);
-            if (gnTel++ % 2)
+            if (gnTel++%2)
                 sTel = _T(".\\adv\\mjpg\\k1\\common\\电话1.bmp");
             else
                 sTel = _T(".\\adv\\mjpg\\k1\\common\\电话2.bmp");
@@ -891,15 +966,15 @@ void CMultimediaPhoneDlg::SwitchPanel_(int panelId)
 
     //关闭输入法
     //SipShowIM(SIPF_OFF);
-    if (m_pMainDlg->m_pWebDialog->IsWindowVisible())
+    if(m_pMainDlg->m_pWebDialog->IsWindowVisible())
     {
         m_pMainDlg->m_pWebDialog->ShowWindow_(SW_HIDE);
     }
 
-    if (panelId == 0)
+    if(panelId == 0)
     {
         m_pMainDlg->m_mainVideoDlg_->OnExit_();
-        if (m_pMainDlg->m_mainLunarderDlg_->IsWindowVisible())
+        if(m_pMainDlg->m_mainLunarderDlg_->IsWindowVisible())
             m_pMainDlg->m_mainLunarderDlg_->OnExit_();
         SwitchPanel_(IDC_BUTTON_MAIN);
         //		SwitchPanel_(oldcurrentPanelID_);
@@ -910,7 +985,7 @@ void CMultimediaPhoneDlg::SwitchPanel_(int panelId)
     currentPanelID_ = panelId;
     */
 
-    if (currentPanel_ == panels_[IDC_BUTTON_MAIN])	//停止播放
+    if(currentPanel_ == panels_[IDC_BUTTON_MAIN])	//停止播放
     {
         panels_[IDC_BUTTON_MAIN]->SendMessage(WM_PLAYVIDEO, 0);
     }
@@ -925,20 +1000,20 @@ void CMultimediaPhoneDlg::SwitchPanel_(int panelId)
         m_pBtnCurrent = buttons_[panelId];
         SetButtonSelectedColor(m_pBtnCurrent);
         */
-        if (currentPanel_ == panels_[IDC_BUTTON_MAIN])
+        if(currentPanel_ == panels_[IDC_BUTTON_MAIN])
             ((CMainDlg *)currentPanel_)->ShowWindow_(SW_HIDE);
-        else if (currentPanel_ == panels_[IDC_BUTTON_INFORMATION])    //20071220 stocks
+        else if(currentPanel_ == panels_[IDC_BUTTON_INFORMATION])    //20071220 stocks
             ((CInformationDlg*)currentPanel_)->ShowWindow_(SW_HIDE);
         else
             currentPanel_->ShowWindow(SW_HIDE);
         currentPanel_ = panels_[panelId];
 
-        if (currentPanel_ != panels_[IDC_BUTTON_MAIN])   //lxz 20081206切换到主窗口很慢
+        if(currentPanel_ != panels_[IDC_BUTTON_MAIN])   //lxz 20081206切换到主窗口很慢
             ::SetFocus(currentPanel_->m_hWnd);
 
-        if (currentPanel_ == panels_[IDC_BUTTON_MAIN])
+        if(currentPanel_ == panels_[IDC_BUTTON_MAIN])
             ((CMainDlg *)currentPanel_)->ShowWindow_(SW_SHOW);
-        else if (currentPanel_ == panels_[IDC_BUTTON_INFORMATION])   //20071220 stocks
+        else if(currentPanel_ == panels_[IDC_BUTTON_INFORMATION])   //20071220 stocks
             ((CInformationDlg*)currentPanel_)->ShowWindow_(SW_SHOW);
         else
             currentPanel_->ShowWindow(SW_SHOW);
@@ -965,13 +1040,13 @@ void CMultimediaPhoneDlg::SwitchPanel_(int panelId)
         }
         */
     }
-    else if (currentPanel_ == panels_[IDC_BUTTON_MAIN])  //多次点击桌面
+    else if(currentPanel_ == panels_[IDC_BUTTON_MAIN])  //多次点击桌面
     {
         //lxz  20080623
         m_pMainDlg->SetMainMenu();
     }
 
-    if (currentPanel_ == panels_[IDC_BUTTON_MAIN])	//恢复播放消息
+    if(currentPanel_ == panels_[IDC_BUTTON_MAIN])	//恢复播放消息
     {
         panels_[IDC_BUTTON_MAIN]->SendMessage(WM_PLAYVIDEO, 1);
     }
@@ -1341,7 +1416,7 @@ void CMultimediaPhoneDlg::OnTimer(UINT nIDEvent)
         //return;
 
         CMainDlg *pWnd = (CMainDlg *)GetPanel(IDC_BUTTON_MAIN);
-        HWND hWnd = ::FindWindow(L"csplayer_win2", L"csplayer window2");
+        HWND hWnd = ::FindWindow(L"csplayer_win", L"csplayer window");
         BOOL flag2 = ::IsWindowVisible(hWnd);
         BOOL flag3 = pWnd->m_mainVideoDlg_->IsWindowVisible();
         if(flag2 && flag3)
@@ -1546,7 +1621,7 @@ void CMultimediaPhoneDlg::SetControlBackLightTimer()
     if(flag1)
     {
         CMainDlg *pWnd = (CMainDlg *)GetPanel(IDC_BUTTON_MAIN);
-        HWND hWnd = ::FindWindow(L"csplayer_win0", L"csplayer window0");
+        HWND hWnd = ::FindWindow(L"csplayer_win", L"csplayer window");
         BOOL flag2 = ::IsWindowVisible(hWnd);
         BOOL flag3 = pWnd->m_mainVideoDlg_->IsWindowVisible();
         if(flag2 && flag3)
@@ -1593,7 +1668,7 @@ void CMultimediaPhoneDlg::SetScreenSaveTimer()
     SetControlBackLightTimer();
 
     CMainDlg *pWnd = (CMainDlg *)GetPanel(IDC_BUTTON_MAIN);
-    HWND hWnd = ::FindWindow(L"csplayer_win0", L"csplayer window0");
+    HWND hWnd = ::FindWindow(L"csplayer_win", L"csplayer window");
     HWND hWnd1 = ::FindWindow(L"csplayer_win2", L"csplayer window2");
 
     KillTimer(IDT_MAIN_SAVESCREEN_TIME);
@@ -1947,119 +2022,219 @@ void ErrorFunc()
 int CSettingView::DrawImage(CString szFileImage, CRect rt, CDC *pDC) 
 {
 }
-CRect newRect = rect;
-if(isOffset)
-{
-    newRect = CRect(0, 0, rect.Width(), rect.Height());
-}
-
-CString sFile = szFileImage;
-if(sFile.Find(L".bmp") != -1 || sFile.Find(L".BMP") != -1)
-{
-    //读bmp文件头的数据  
-    DWORD   dwStart   =   GetTickCount(); 	
-
-    CFile   file;   
-    CFileException   ex;   
-    if(   !file.Open(szFileImage,  CFile::modeRead,   &ex ) )   
-    {     
-
-        TCHAR   szError[1024];   
-        int error = GetLastError();
-        ex.GetErrorMessage(szError,   1024);   
-        //	wprintf(L"%s open error %d\n", szFileImage, error );
-        //::MessageBox(NULL,szError, L"warning", MB_OK);  
-        return;
-    }  
-
-
-    BITMAPFILEHEADER   bfhHeader;   
-    file.Read(&bfhHeader,sizeof(BITMAPFILEHEADER));   
-    if(bfhHeader.bfType!=((WORD)   ('M'<<8)|'B'))   
-    {   
-        ::MessageBox(NULL,L"The   file   is   not   a   file!", L"warning",MB_OK);  
-        file.Close();
-        return;   
-    }   
-    if(bfhHeader.bfSize!=file.GetLength())     
-    {   
-        ::MessageBox(NULL,L"The   BMP   file   header   error!", L"warning", MB_OK);   
-        file.Close();
-        return;   
-    }   
-    UINT   uBmpInfoLen=(UINT)   bfhHeader.bfOffBits-sizeof(BITMAPFILEHEADER);   
-    LPBITMAPINFO   lpBitmap= (LPBITMAPINFO)   new   BYTE[uBmpInfoLen];     
-    file.Read((LPVOID)   lpBitmap,uBmpInfoLen);   
-    if((*   (LPDWORD)(lpBitmap))!=sizeof(BITMAPINFOHEADER))     
-    {   
-        ::MessageBox(NULL,L"The   BMP   is   not   Windows   3.0   format!", L"warning",MB_OK);  
-        file.Close();
-        delete []lpBitmap;
-        return;   
-    }     
-    DWORD   dwBitlen=bfhHeader.bfSize   -   bfhHeader.bfOffBits;     
-    LPVOID   lpBits;   
-    DWORD offset = GetTickCount() - dwStart;   
-    //TRACE(L"file DC 1 %d\n", offset);
-    dwStart   =   GetTickCount();
-
-    //如果背景图是 800*420，692*296，535*420，800*60，Unit框小于他们，则取出相应的BMP画出来.否则整个画
-    if(((lpBitmap->bmiHeader.biWidth == BMP_WIDTH && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT) && (!(rect.Width() >= BMP_WIDTH && rect.Height() >= BMP_HEIGHT))) ||\
-        ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH1 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT1) && (!(rect.Width() >= BMP_WIDTH1 && rect.Height() >= BMP_HEIGHT1)))||\
-        ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH2 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT2) && (!(rect.Width() >= BMP_WIDTH2 && rect.Height() >= BMP_HEIGHT2))) ||\
-        ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH3 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT3) && (!(rect.Width() >= BMP_WIDTH3 && rect.Height() >= BMP_HEIGHT3)))||\
-        ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH4 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT4) && (!(rect.Width() >= BMP_WIDTH4 && rect.Height() >= BMP_HEIGHT4))))
+    CRect newRect = rect;
+    if(isOffset)
     {
-        ;
+        newRect = CRect(0, 0, rect.Width(), rect.Height());
+    }
+
+    CString sFile = szFileImage;
+    if(sFile.Find(L".bmp") != -1 || sFile.Find(L".BMP") != -1)
+    {
+        //读bmp文件头的数据  
+        DWORD   dwStart   =   GetTickCount(); 	
+
+        CFile   file;   
+        CFileException   ex;   
+        if(   !file.Open(szFileImage,  CFile::modeRead,   &ex ) )   
+        {     
+
+            TCHAR   szError[1024];   
+            int error = GetLastError();
+            ex.GetErrorMessage(szError,   1024);   
+            //	wprintf(L"%s open error %d\n", szFileImage, error );
+            //::MessageBox(NULL,szError, L"warning", MB_OK);  
+            return;
+        }  
+
+
+        BITMAPFILEHEADER   bfhHeader;   
+        file.Read(&bfhHeader,sizeof(BITMAPFILEHEADER));   
+        if(bfhHeader.bfType!=((WORD)   ('M'<<8)|'B'))   
+        {   
+            ::MessageBox(NULL,L"The   file   is   not   a   file!", L"warning",MB_OK);  
+            file.Close();
+            return;   
+        }   
+        if(bfhHeader.bfSize!=file.GetLength())     
+        {   
+            ::MessageBox(NULL,L"The   BMP   file   header   error!", L"warning", MB_OK);   
+            file.Close();
+            return;   
+        }   
+        UINT   uBmpInfoLen=(UINT)   bfhHeader.bfOffBits-sizeof(BITMAPFILEHEADER);   
+        LPBITMAPINFO   lpBitmap= (LPBITMAPINFO)   new   BYTE[uBmpInfoLen];     
+        file.Read((LPVOID)   lpBitmap,uBmpInfoLen);   
+        if((*   (LPDWORD)(lpBitmap))!=sizeof(BITMAPINFOHEADER))     
+        {   
+            ::MessageBox(NULL,L"The   BMP   is   not   Windows   3.0   format!", L"warning",MB_OK);  
+            file.Close();
+            delete []lpBitmap;
+            return;   
+        }     
+        DWORD   dwBitlen=bfhHeader.bfSize   -   bfhHeader.bfOffBits;     
+        LPVOID   lpBits;   
+        DWORD offset = GetTickCount() - dwStart;   
+        //TRACE(L"file DC 1 %d\n", offset);
+        dwStart   =   GetTickCount();
+
+        //如果背景图是 800*420，692*296，535*420，800*60，Unit框小于他们，则取出相应的BMP画出来.否则整个画
+        if(((lpBitmap->bmiHeader.biWidth == BMP_WIDTH && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT) && (!(rect.Width() >= BMP_WIDTH && rect.Height() >= BMP_HEIGHT))) ||\
+            ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH1 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT1) && (!(rect.Width() >= BMP_WIDTH1 && rect.Height() >= BMP_HEIGHT1)))||\
+            ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH2 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT2) && (!(rect.Width() >= BMP_WIDTH2 && rect.Height() >= BMP_HEIGHT2))) ||\
+            ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH3 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT3) && (!(rect.Width() >= BMP_WIDTH3 && rect.Height() >= BMP_HEIGHT3)))||\
+            ((lpBitmap->bmiHeader.biWidth == BMP_WIDTH4 && lpBitmap->bmiHeader.biHeight == BMP_HEIGHT4) && (!(rect.Width() >= BMP_WIDTH4 && rect.Height() >= BMP_HEIGHT4))))
+        {
+            ;
+        }
+        else
+        {
+            BOOL flag = FALSE;
+            if (BMP_WIDTH == lpBitmap->bmiHeader.biWidth || BMP_WIDTH1 == lpBitmap->bmiHeader.biWidth ||BMP_WIDTH2 == lpBitmap->bmiHeader.biWidth ||BMP_WIDTH3 == lpBitmap->bmiHeader.biWidth)
+            {
+                flag = TRUE;
+
+                //wprintf(szFileImage);
+                //Dprintf( " All Draw \n");
+
+                dwStart = GetTickCount();
+                int index;
+                if (FindMemoryInfo(szFileImage, index))
+                {
+                    if (index >= 0 && index < ALLBMPMEMORY_MAX)
+                    {
+                        BitBlt(pdc->m_hDC, rect.left, rect.top, rect.Width(), rect.Height(), g_allBmpMemory[index].hdc, 0, 0, SRCCOPY);
+
+                        offset = GetTickCount() - dwStart;   
+                        if (flag) {
+                            ; //Dprintf("Draw ALL BMP %d\n", offset);
+                        }
+                        return;
+                    }
+                }
+            }
+            dwStart = GetTickCount();
+
+            file.Close();
+            delete []lpBitmap;
+
+            IImage   *pImage   =   NULL; 
+
+            //CoInitializeEx(NULL,   COINIT_MULTITHREADED); 
+
+            //Create   the   imaging   factory. 
+            // if (SUCCEEDED(CoCreateInstance   (CLSID_ImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IImagingFactory, (void   **)&pImgFactory))) 
+            { 
+                //Load   the   image   from   the   JPG   file. 
+                if (SUCCEEDED(pImgFactory-> CreateImageFromFile(szFileImage, &pImage))) 
+                { 
+                    // Draw   the   image. 
+                    pImage->Draw(pdc->m_hDC, rect, NULL); 
+                    pImage->Release(); 
+
+                    if(flag)
+                        AddALLBmpMemoryInfo(szFileImage, rect, pdc);
+
+                    ::Sleep(1);
+                } 
+                else
+                {
+                    //Dprintf("DrawImage error\n");
+                }
+
+                //pImgFactory-> Release(); 
+            }
+
+            offset = GetTickCount() - dwStart;   
+            if(flag) {
+                //Dprintf("Draw ALL BMP %d\n", offset);
+                //TRACE(L"Draw ALL BMP %d\n", offset);
+            }
+            return;
+        }
+        //创建HBITMAP句柄   
+
+        //重新根据rect 创建位图信息
+
+        int w = (((lpBitmap->bmiHeader.biWidth*lpBitmap->bmiHeader.biBitCount)+31)>>5)<<2;
+        int h = lpBitmap->bmiHeader.biHeight;
+        lpBitmap->bmiHeader.biHeight = rect.Height();
+        lpBitmap->bmiHeader.biWidth = rect.Width();
+
+        CDC   dcMem;   
+        dcMem.CreateCompatibleDC(pdc);   
+        CBitmap   BmpImg;   
+        HBITMAP   hBmp = ::CreateDIBSection(dcMem.m_hDC, lpBitmap, DIB_RGB_COLORS, &lpBits, NULL, 0);
+        if (lpBits == NULL)
+        {
+            ::MessageBox(NULL,L"Draw BMP no memory!", L"warning", MB_OK);  
+            //return;
+        }
+
+        offset = GetTickCount() - dwStart;   
+        //TRACE(L"file DC 2 %d\n", offset);
+        dwStart   =   GetTickCount();
+
+        //file.ReadHuge(lpBits, dwBitlen);  
+
+        int off = (h-rect.top-rect.Height())*w + rect.left*(lpBitmap->bmiHeader.biBitCount/8);
+
+        file.Seek(off, CFile::current);
+        int size = (((rect.Width()*lpBitmap->bmiHeader.biBitCount)+31)>>5)<<2;   //rect.Width()*3;
+        int offline = w - size; 
+
+        for (int i = 0; i < rect.Height(); ++i)
+        {
+            file.Read(lpBits, size); 
+            LPBYTE lpbyte = (LPBYTE)lpBits;
+            lpbyte += size;
+            lpBits = (LPVOID)lpbyte;
+            file.Seek(offline, CFile::current);
+        }
+        file.Close();       
+
+        offset = GetTickCount() - dwStart;   
+        //TRACE(L"file DC 3 %d\n", offset);
+        dwStart = GetTickCount();
+
+        BmpImg.Attach(hBmp);   
+
+        CBitmap* pOldBmp = dcMem.SelectObject(&BmpImg);   
+
+        offset = GetTickCount() - dwStart;   
+        //TRACE(L"file DC 4 %d\n", offset);
+        dwStart = GetTickCount(); 
+
+        //pdc->BitBlt(rect.left, rect.top, rect.Width(), rect.Height(), &dcMem, 0, 0, SRCCOPY);
+        pdc->BitBlt(newRect.left, newRect.top, newRect.Width(), newRect.Height(), &dcMem, 0, 0, SRCCOPY);
+
+        dcMem.SelectObject(pOldBmp);  
+        delete []lpBitmap;
+        DeleteObject(hBmp);
+
+        offset = GetTickCount() - dwStart;   
+        //TRACE(L"end file DC %d\n", offset);
+        ::Sleep(1);
+
     }
     else
     {
-        BOOL flag = FALSE;
-        if (BMP_WIDTH == lpBitmap->bmiHeader.biWidth || BMP_WIDTH1 == lpBitmap->bmiHeader.biWidth ||BMP_WIDTH2 == lpBitmap->bmiHeader.biWidth ||BMP_WIDTH3 == lpBitmap->bmiHeader.biWidth)
-        {
-            flag = TRUE;
+        DWORD dwStart = GetTickCount(); 	
 
-            //wprintf(szFileImage);
-            //Dprintf( " All Draw \n");
-
-            dwStart = GetTickCount();
-            int index;
-            if (FindMemoryInfo(szFileImage, index))
-            {
-                if (index >= 0 && index < ALLBMPMEMORY_MAX)
-                {
-                    BitBlt(pdc->m_hDC, rect.left, rect.top, rect.Width(), rect.Height(), g_allBmpMemory[index].hdc, 0, 0, SRCCOPY);
-
-                    offset = GetTickCount() - dwStart;   
-                    if (flag) {
-                        ; //Dprintf("Draw ALL BMP %d\n", offset);
-                    }
-                    return;
-                }
-            }
-        }
-        dwStart = GetTickCount();
-
-        file.Close();
-        delete []lpBitmap;
-
-        IImage   *pImage   =   NULL; 
+        IImage* pImage = NULL; 
 
         //CoInitializeEx(NULL,   COINIT_MULTITHREADED); 
 
         //Create   the   imaging   factory. 
-        // if (SUCCEEDED(CoCreateInstance   (CLSID_ImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IImagingFactory, (void   **)&pImgFactory))) 
+        //if (SUCCEEDED(CoCreateInstance   (CLSID_ImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IImagingFactory, (void   **)&pImgFactory))) 
         { 
             //Load   the   image   from   the   JPG   file. 
             if (SUCCEEDED(pImgFactory-> CreateImageFromFile(szFileImage, &pImage))) 
             { 
-                // Draw   the   image. 
+                //   Draw   the   image. 
+
                 pImage->Draw(pdc->m_hDC, rect, NULL); 
                 pImage->Release(); 
-
-                if(flag)
-                    AddALLBmpMemoryInfo(szFileImage, rect, pdc);
-
                 ::Sleep(1);
             } 
             else
@@ -2068,111 +2243,11 @@ if(sFile.Find(L".bmp") != -1 || sFile.Find(L".BMP") != -1)
             }
 
             //pImgFactory-> Release(); 
-        }
-
-        offset = GetTickCount() - dwStart;   
-        if(flag) {
-            //Dprintf("Draw ALL BMP %d\n", offset);
-            //TRACE(L"Draw ALL BMP %d\n", offset);
-        }
-        return;
-    }
-    //创建HBITMAP句柄   
-
-    //重新根据rect 创建位图信息
-
-    int w = (((lpBitmap->bmiHeader.biWidth*lpBitmap->bmiHeader.biBitCount)+31)>>5)<<2;
-    int h = lpBitmap->bmiHeader.biHeight;
-    lpBitmap->bmiHeader.biHeight = rect.Height();
-    lpBitmap->bmiHeader.biWidth = rect.Width();
-
-    CDC   dcMem;   
-    dcMem.CreateCompatibleDC(pdc);   
-    CBitmap   BmpImg;   
-    HBITMAP   hBmp = ::CreateDIBSection(dcMem.m_hDC, lpBitmap, DIB_RGB_COLORS, &lpBits, NULL, 0);
-    if (lpBits == NULL)
-    {
-        ::MessageBox(NULL,L"Draw BMP no memory!", L"warning", MB_OK);  
-        //return;
-    }
-
-    offset = GetTickCount() - dwStart;   
-    //TRACE(L"file DC 2 %d\n", offset);
-    dwStart   =   GetTickCount();
-
-    //file.ReadHuge(lpBits, dwBitlen);  
-
-    int off = (h-rect.top-rect.Height())*w + rect.left*(lpBitmap->bmiHeader.biBitCount/8);
-
-    file.Seek(off, CFile::current);
-    int size = (((rect.Width()*lpBitmap->bmiHeader.biBitCount)+31)>>5)<<2;   //rect.Width()*3;
-    int offline = w - size; 
-
-    for (int i = 0; i < rect.Height(); ++i)
-    {
-        file.Read(lpBits, size); 
-        LPBYTE lpbyte = (LPBYTE)lpBits;
-        lpbyte += size;
-        lpBits = (LPVOID)lpbyte;
-        file.Seek(offline, CFile::current);
-    }
-    file.Close();       
-
-    offset = GetTickCount() - dwStart;   
-    //TRACE(L"file DC 3 %d\n", offset);
-    dwStart = GetTickCount();
-
-    BmpImg.Attach(hBmp);   
-
-    CBitmap* pOldBmp = dcMem.SelectObject(&BmpImg);   
-
-    offset = GetTickCount() - dwStart;   
-    //TRACE(L"file DC 4 %d\n", offset);
-    dwStart = GetTickCount(); 
-
-    //pdc->BitBlt(rect.left, rect.top, rect.Width(), rect.Height(), &dcMem, 0, 0, SRCCOPY);
-    pdc->BitBlt(newRect.left, newRect.top, newRect.Width(), newRect.Height(), &dcMem, 0, 0, SRCCOPY);
-
-    dcMem.SelectObject(pOldBmp);  
-    delete []lpBitmap;
-    DeleteObject(hBmp);
-
-    offset = GetTickCount() - dwStart;   
-    //TRACE(L"end file DC %d\n", offset);
-    ::Sleep(1);
-
-}
-else
-{
-    DWORD dwStart = GetTickCount(); 	
-
-    IImage* pImage = NULL; 
-
-    //CoInitializeEx(NULL,   COINIT_MULTITHREADED); 
-
-    //Create   the   imaging   factory. 
-    //if (SUCCEEDED(CoCreateInstance   (CLSID_ImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_IImagingFactory, (void   **)&pImgFactory))) 
-    { 
-        //Load   the   image   from   the   JPG   file. 
-        if (SUCCEEDED(pImgFactory-> CreateImageFromFile(szFileImage, &pImage))) 
-        { 
-            //   Draw   the   image. 
-
-            pImage->Draw(pdc->m_hDC, rect, NULL); 
-            pImage->Release(); 
-            ::Sleep(1);
         } 
-        else
-        {
-            //Dprintf("DrawImage error\n");
-        }
+        int offset = GetTickCount() - dwStart;  
+        //	wprintf(szFileImage);
+        //	Dprintf(" Draw ALL BMP %d\n", offset);
+        //	CoUninitialize(); 
 
-        //pImgFactory-> Release(); 
-    } 
-    int offset = GetTickCount() - dwStart;  
-    //	wprintf(szFileImage);
-    //	Dprintf(" Draw ALL BMP %d\n", offset);
-    //	CoUninitialize(); 
-
-}
+    }
 #endif

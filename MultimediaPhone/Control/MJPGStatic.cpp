@@ -515,7 +515,7 @@ namespace Control {
             {
                 //test lxz 20080703
                 if(m_currentMJPGList->bgfilename_down.Find(L".bmp") != -1 || m_currentMJPGList->bgfilename_down.Find(L".BMP") != -1)
-                    ::DrawImage(ToFileDir(m_currentMJPGList->bgfilename_down), pdc, pUnit->m_Rect, 2);
+                    ::DrawImage(ToFileDir(m_currentMJPGList->bgfilename_down), pdc, pUnit->m_Rect);
                 else
                 {
                     CDC *pMemDC = new CDC();
@@ -626,8 +626,6 @@ namespace Control {
             }
 #endif
         }
-        ReleaseDC(pdc);
-        ReleaseMemDC();
     } 
 
     CString	CMJPGStatic::ToFileDir(CString filename)
@@ -636,11 +634,7 @@ namespace Control {
         if (filename == _T("") || filename.GetAt(0) != _T('.'))
             return filename;
         sDirName = _T("C:");
-#if SCREENMODE
         sDirName += filename.Mid(1);
-#else
-        sDirName += _T("\\600") + filename.Mid(1);
-#endif
         return sDirName;
     }
 
@@ -667,8 +661,9 @@ namespace Control {
     void CMJPGStatic::SetCurrentLinkFile(CString s)
     {
         m_sCurrentLinkFile = ToFileDir(s);
-        if (m_currentMJPGList)
+        if(m_currentMJPGList)
             delete m_currentMJPGList;
+        //	DMemprintf("MJPGPage 1");
         m_currentMJPGList = ::Util::XmlParser::ParseFileToMJPGList_(m_sCurrentLinkFile);
 
         if (m_currentMJPGList)
@@ -1178,7 +1173,7 @@ namespace Control {
             {
                 //test lxz 20080703
                 if (m_currentMJPGList->bgfilename_down.Find(L".bmp") != -1 || m_currentMJPGList->bgfilename_down.Find(L".BMP") != -1)
-                    ::DrawImage(ToFileDir(sAllJpg), pMemDC1, pUnit->m_Rect, 1);
+                    ::DrawImage(ToFileDir(sAllJpg), pMemDC1, pUnit->m_Rect, TRUE);
                 else
                 {
                     CDC *pMemDC = new CDC();
@@ -1289,33 +1284,4 @@ namespace Control {
         }
         //	DMemprintf("DrawUnitStatus 1 ");
     }
-
-	LRESULT CMJPGStatic::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
-	{
-        LRESULT ret = 0;
-		switch (message)
-		{
-			case WM_LUNAR_CLICKED:
-			case WM_PROCESS_POS:
-			case WM_VSCROLL:
-			case STN_CLICKED:
-			case UM_BTN_UP:
-            case WM_KEYDOWN:
-            case WM_SOFTKEY:
-			case WM_EDITENTER:
-            case WM_LISTCTRL_CLICK:
-            case NM_CLICK:
-            case CBN_SELCHANGE:
-            case WM_COMMBOX_CLICKED:
-            case WM_CHAR:
-				{
-					GetParent()->SendMessage(message, wParam, lParam);
-				}
-                break;
-            default:
-		        ret =  CWnd::WindowProc(message, wParam, lParam);
-                break;
-		}
-        return ret;
-	}
 }

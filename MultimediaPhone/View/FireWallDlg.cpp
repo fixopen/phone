@@ -56,37 +56,33 @@ namespace View {
         std::string strTemp;
         CString str;
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\电话防火墙.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU));
-
         //strTemp = Data::LanguageResource::Get(Data::RI_FIREWALL_ENABLE);
         str = "";
-        m_chbEnableFireWall.Create(str, WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(82*X_XISHU, 94*Y_XISHU, (90+32)*X_XISHU, (94+32)*Y_XISHU), &m_MJPGList, IDC_CHECKBOX_FIREWALL_ENABLE);
-        m_chbEnableFireWall.SetIcon(IDI_ICON_CHECK1, CSize(32*X_XISHU, 32*Y_XISHU), IDI_ICON_CHECK0, CSize(32*X_XISHU, 32*Y_XISHU));
+        m_chbEnableFireWall.Create(str, WS_CHILD|WS_VISIBLE|BS_CHECKBOX, CRect(82, 94, 90+32, 94+32), this, IDC_CHECKBOX_FIREWALL_ENABLE);
+        m_chbEnableFireWall.SetIcon(IDI_ICON_CHECK1, CSize(32, 32), IDI_ICON_CHECK0, CSize(32, 32));
         m_chbEnableFireWall.SetColor(CCEButtonST::BTNST_COLOR_BK_IN, RGB(237, 237, 237));
         m_chbEnableFireWall.SetColor(CCEButtonST::BTNST_COLOR_BK_OUT, RGB(237, 237, 237));
         m_chbEnableFireWall.SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(237, 237, 237));
 
         //	strTemp = Data::LanguageResource::Get(Data::RI_FIREWALL_BLACKLIST);
         str = strTemp.c_str();
-        m_chbRefuseBlacklist.Create(str, WS_CHILD|WS_VISIBLE, CRect(83*X_XISHU, 183*Y_XISHU, (83+36)*X_XISHU, (183+36)*Y_XISHU), &m_MJPGList, IDC_CHECKBOX_FIREWALL_BLACKLIST);
+        m_chbRefuseBlacklist.Create(str, WS_CHILD|WS_VISIBLE, CRect(83, 183, 83+36, 183+36), this, IDC_CHECKBOX_FIREWALL_BLACKLIST);
         m_chbRefuseBlacklist.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
 
         //	strTemp = Data::LanguageResource::Get(Data::RI_FIREWALL_CONTACT);
         //	str = strTemp.c_str();
-        m_chbContactExceptBlacklist.Create(str, WS_CHILD|WS_VISIBLE, CRect(83*X_XISHU, 219*Y_XISHU, (83+36)*X_XISHU, (219+36)*Y_XISHU), &m_MJPGList, IDC_CHECKBOX_FIREWALL_CONTACT);
+        m_chbContactExceptBlacklist.Create(str, WS_CHILD|WS_VISIBLE, CRect(83, 219, 83+36, 219+36), this, IDC_CHECKBOX_FIREWALL_CONTACT);
         m_chbContactExceptBlacklist.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
 
         //	strTemp = Data::LanguageResource::Get(Data::RI_FIREWALL_VIP);
         //	str = strTemp.c_str();
-        m_chbOnlyVIP.Create(str, WS_CHILD|WS_VISIBLE, CRect(83*X_XISHU, 254*Y_XISHU, (83+36)*X_XISHU, (254+36)*Y_XISHU), &m_MJPGList, IDC_CHECKBOX_FIREWALL_VIP);
+        m_chbOnlyVIP.Create(str, WS_CHILD|WS_VISIBLE, CRect(83, 254, 83+36, 254+36), this, IDC_CHECKBOX_FIREWALL_VIP);
         m_chbOnlyVIP.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
 
 
         //	strTemp = Data::LanguageResource::Get(Data::RI_FIREWALL_ALL);
         //	str = strTemp.c_str();
-        m_chbRefuseAllByTime.Create(str, WS_CHILD|WS_VISIBLE, CRect(83*X_XISHU, 289*Y_XISHU, (83+36)*X_XISHU, (289+36)*Y_XISHU), &m_MJPGList, IDC_CHECKBOX_FIREWALL_ALL);
+        m_chbRefuseAllByTime.Create(str, WS_CHILD|WS_VISIBLE, CRect(83, 289, 83+36, 289+36), this, IDC_CHECKBOX_FIREWALL_ALL);
         m_chbRefuseAllByTime.SetColor(RGB(0, 0, 0), RGB(237, 237, 237));
 
 
@@ -105,7 +101,7 @@ namespace View {
         // 	str = strTemp.c_str();
         // 	m_sticTimePart1.Create(str, WS_CHILD|WS_VISIBLE, CRect(164, 153, 260, 169), this);
 
-        m_cmbTime.Create(WS_CHILD|WS_VISIBLE, CRect(325*X_XISHU, 289*Y_XISHU, 460*X_XISHU, 460*Y_XISHU), &m_MJPGList, IDC_COMBO_FIREWALL_TIME);
+        m_cmbTime.Create(WS_CHILD|WS_VISIBLE, CRect(325, 289, 460, 460), this, IDC_COMBO_FIREWALL_TIME);
         m_cmbTime.AddString(_T("30分钟"));
         m_cmbTime.AddString(_T("1小时"));
         m_cmbTime.AddString(_T("2小时"));
@@ -128,6 +124,10 @@ namespace View {
         m_btnCancel.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 103, 434, 123), this, IDC_BUTTON_FIREWALL_CANCEL);
         m_btnCancel.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
         */
+
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\电话防火墙.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100));
 
         // 	m_sticBackground.Create(CRect(34, 40, 448, 184), this, 1);
         // 	

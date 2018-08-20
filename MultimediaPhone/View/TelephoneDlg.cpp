@@ -227,38 +227,34 @@ namespace View {
         std::string strTemp;
         CString str;
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54*X_XISHU, 62*Y_XISHU, 746*X_XISHU, 358*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\拨打电话.xml"));
-        m_MJPGList.SetMJPGRect(CRect(54*X_XISHU, 62*Y_XISHU, 746*X_XISHU, 358*Y_XISHU));
-
-        m_sticNameNo.Create(str, WS_CHILD|WS_VISIBLE, CRect(48*X_XISHU , 90*Y_XISHU , 536*X_XISHU , 130*Y_XISHU), &m_MJPGList, IDC_STATIC_TELEPHONE_NAMENO);
+        m_sticNameNo.Create(str, WS_CHILD|WS_VISIBLE, CRect(48 + 54, 90 + 62, 536 + 54, 130 + 62), this, IDC_STATIC_TELEPHONE_NAMENO);
         m_sticNameNo.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
         m_sticNameNo.SetFontSize(36);   
 
-        m_sticCompany.Create(str, WS_CHILD|WS_VISIBLE, CRect(48*X_XISHU , 150*Y_XISHU , 300*X_XISHU , 180*Y_XISHU ), &m_MJPGList, IDC_STATIC_TELEPHONE_COMPANY);
+        m_sticCompany.Create(str, WS_CHILD|WS_VISIBLE, CRect(48 + 54, 150 + 62, 300 + 54, 180 + 62), this, IDC_STATIC_TELEPHONE_COMPANY);
         m_sticCompany.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 
-        m_sticDepartment.Create(str, WS_CHILD|WS_VISIBLE, CRect(48*X_XISHU , 190*Y_XISHU , 300*X_XISHU , 220*Y_XISHU ), &m_MJPGList, IDC_STATIC_TELEPHONE_DEPARTMENT);
+        m_sticDepartment.Create(str, WS_CHILD|WS_VISIBLE, CRect(48 + 54, 190 + 62, 300 + 54, 220 + 62), this, IDC_STATIC_TELEPHONE_DEPARTMENT);
         m_sticDepartment.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 
-        m_sticDuty.Create(str, WS_CHILD|WS_VISIBLE, CRect(48*X_XISHU , 230*Y_XISHU , 300*X_XISHU , 260*Y_XISHU ), &m_MJPGList, IDC_STATIC_TELEPHONE_DUTY);
+        m_sticDuty.Create(str, WS_CHILD|WS_VISIBLE, CRect(48 + 54, 230 + 62, 300 + 54, 260 + 62), this, IDC_STATIC_TELEPHONE_DUTY);
         m_sticDuty.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 
 
         strTemp = Data::LanguageResource::Get(Data::RI_TEL_RECORDING);
         str = strTemp.c_str();
-        m_sticRecordCaption.Create(str, WS_CHILD/*|WS_VISIBLE*/, CRect(350*X_XISHU , 200*Y_XISHU , 448*X_XISHU , 230*Y_XISHU ), &m_MJPGList);
+        m_sticRecordCaption.Create(str, WS_CHILD/*|WS_VISIBLE*/, CRect(350 + 54, 200 + 62, 448 + 54, 230 + 62), this);
         m_sticRecordCaption.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 
-        m_sticRecord.Create(_T("00:00"), WS_CHILD/*|WS_VISIBLE*/, CRect(450*X_XISHU , 200*Y_XISHU , 536*X_XISHU , 230*Y_XISHU ), &m_MJPGList);
+        m_sticRecord.Create(_T("00:00"), WS_CHILD/*|WS_VISIBLE*/, CRect(450 + 54, 200 + 62, 536 + 54, 230 + 62), this);
         m_sticRecord.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 
         strTemp = Data::LanguageResource::Get(Data::RI_TEL_DURATION);
         str = strTemp.c_str();
-        m_sticDurationCaption.Create(str, WS_CHILD/*|WS_VISIBLE*/, CRect(350*X_XISHU , 236*Y_XISHU , 448*X_XISHU , 266*Y_XISHU ), &m_MJPGList);
+        m_sticDurationCaption.Create(str, WS_CHILD/*|WS_VISIBLE*/, CRect(350 + 54, 236 + 62, 448 + 54, 266 + 62), this);
         m_sticDurationCaption.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 
-        m_sticDuration.Create(_T("00:00"), WS_CHILD/*|WS_VISIBLE*/, CRect(450*X_XISHU , 236*Y_XISHU , 536*X_XISHU , 266*Y_XISHU ), &m_MJPGList);
+        m_sticDuration.Create(_T("00:00"), WS_CHILD/*|WS_VISIBLE*/, CRect(450 + 54, 236 + 62, 536 + 54, 266 + 62), this);
         m_sticDuration.SetColor(RGB(0, 0, 0), RGB(203, 203, 203));//Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 
         /*
@@ -282,7 +278,7 @@ namespace View {
         m_btnHandle.Create(str, Data::g_buttonArcBMPPARTDILOAGID[0][Data::g_skinstyle], Data::g_buttonArcBMPPARTDILOAGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(378, 153, 434, 173), this, IDC_BUTTON_TELEPHONE_HANDLE);
         m_btnHandle.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
         */
-        //	m_btnRecordTip.Create(_T(""),IDB_BITMAP31, IDB_BITMAP31, WS_CHILD|WS_VISIBLE, CRect(320 , 200 , 350 , 230 ), this, IDC_BUTTON_TELEPHONE_RECORDTIP);
+        //	m_btnRecordTip.Create(_T(""),IDB_BITMAP31, IDB_BITMAP31, WS_CHILD|WS_VISIBLE, CRect(320 + 54, 200 + 62, 350 + 54, 230 + 62), this, IDC_BUTTON_TELEPHONE_RECORDTIP);
         //	m_btnRecordTip.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
 
         /*	
@@ -298,6 +294,10 @@ namespace View {
 
         m_sticBackground.SetTextStruct(ts, 1);
         */
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\拨打电话.xml"));
+        m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
+
         m_MJPGList.SetUnitIsShow(4, TRUE);
         m_MJPGList.SetUnitIsShow(5, FALSE);
         m_MJPGList.SetUnitIsShow(6, FALSE);
@@ -1554,28 +1554,27 @@ namespace View {
             ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);    //暂停视频
 
             ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 1, 0);
-            //::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800, 480, 0);
+            ::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800 * 125 / 100, 480 * 125 / 100, 0);
             CCEDialog::ShowWindow_(cmdshow);
 
-            //lxz 2009
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactGroupDlg->m_cmbSoundTip.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactGroupDlg->m_cmbSoundTip.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbType.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainLunarderDlg_->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactDlg->m_pSimImportDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->m_cmbURL.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbType.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactNewDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainLunarderDlg_->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pContactDlg->m_pSimImportDlg->m_cmbGroup.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_pWebDialog->m_cmbURL.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRing.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSoundSavePath.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
 
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
-            //::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbContrlBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbRingVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbSystemVolume.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
+            ::PostMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_cmbContrlBlackLightWaitTime.m_Combo.m_hWnd, CB_SHOWDROPDOWN,0,0);
         }
         else
         {

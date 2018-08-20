@@ -89,7 +89,7 @@ namespace View {
             OnButtonContactSearch();
             break;
         case 5:						//sim卡导入
-            //m_pSimImportDlg->ShowWindow(SW_SHOW);
+            m_pSimImportDlg->ShowWindow(SW_SHOW);
             break;
         case 6:						//关闭
             OnButtonContactClose();
@@ -106,14 +106,10 @@ namespace View {
         std::string strTemp;
         CString str;
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\通讯录.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0, 0, 800*X_XISHU, 420*Y_XISHU));
-
         m_lsType.m_nLineHeight = 30;
-        m_lsType.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(1*X_XISHU, 46*Y_XISHU, 112*X_XISHU, 348*Y_XISHU), &m_MJPGList, IDC_LIST_CONTACT_TYPE, FALSE);
+        m_lsType.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(1, 46, 112, 348), this, IDC_LIST_CONTACT_TYPE, FALSE);
         m_lsType.SetExtendedStyle(m_lsType.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-        m_lsType.InsertColumn(0, _T("Type"), LVCFMT_LEFT, 110*X_XISHU);
+        m_lsType.InsertColumn(0, _T("Type"), LVCFMT_LEFT, 110);
 
         m_pImageList = new CImageList();
         m_pImageList->Create(32, 32, ILC_COLOR32|ILC_MASK, 12, 2);   
@@ -158,12 +154,12 @@ namespace View {
 
         //	m_lsType.SetImageList(m_pImageList, LVSIL_SMALL);
 
-        m_lsList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(115*X_XISHU, 46*Y_XISHU, (115+570)*X_XISHU, (46+300)*Y_XISHU), &m_MJPGList, IDC_LIST_CONTACT_LIST, TRUE, 0, FALSE);
+        m_lsList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(115, 46, 115+570, 46+302), this, IDC_LIST_CONTACT_LIST, TRUE, 0, FALSE);
         m_lsList.SetExtendedStyle(m_lsList.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-        m_lsList.InsertColumn(0, _T("Name"), LVCFMT_LEFT, (120+22+34)*X_XISHU);
-        m_lsList.InsertColumn(1, _T("Company"), LVCFMT_LEFT, (180+60)*X_XISHU);
+        m_lsList.InsertColumn(0, _T("Name"), LVCFMT_LEFT, 120+22+34);
+        m_lsList.InsertColumn(1, _T("Company"), LVCFMT_LEFT, 180+60);
         //	m_lsList.InsertColumn(2, _T("Department"), LVCFMT_LEFT, 120);
-        m_lsList.InsertColumn(2, _T("Duty"), LVCFMT_LEFT, (150-22/*+26*/)*X_XISHU);
+        m_lsList.InsertColumn(2, _T("Duty"), LVCFMT_LEFT, 150-22+26);
 
         m_pImageList = new CImageList();
         m_pImageList->Create(32, 32, ILC_COLOR32|ILC_MASK, 3, 2);   
@@ -187,29 +183,100 @@ namespace View {
         {	
             if (j > 12)
             {
-                offsetX = ((j - 13) * 50)*X_XISHU;
-                offsetY = 37*Y_XISHU;
+                offsetX = (j - 13) * 50;
+                offsetY = 37;
             }
             else
             {
-                offsetX = (j * 50)*X_XISHU;
+                offsetX = j * 50;
             }
-            rectKey[j] = CRect(150 *X_XISHU+ offsetX, offsetY, 200*X_XISHU + offsetX, offsetY + 37*Y_XISHU);
+            rectKey[j] = CRect(150 + offsetX, offsetY, 200 + offsetX, offsetY + 37);
             uiKey[j] = 'a' + j;
         };
-        rectKey[26] = CRect(0*X_XISHU, 37*Y_XISHU, 50*X_XISHU, 74*Y_XISHU);
+        rectKey[26] = CRect(0, 37, 50, 74);
         uiKey[26] = 0x7F;
-        rectKey[27] = CRect(50*X_XISHU, 37*Y_XISHU, 100*X_XISHU, 74*Y_XISHU);
+        rectKey[27] = CRect(50, 37, 100, 74);
         uiKey[27] = 0x00;
-        rectKey[28] = CRect(100*X_XISHU, 37*Y_XISHU, 150*X_XISHU, 74*Y_XISHU);
+        rectKey[28] = CRect(100, 37, 150, 74);
         uiKey[28] = '\?';
 
-        m_sticPinYin.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(70*X_XISHU, 348*Y_XISHU, 148*X_XISHU, 380*Y_XISHU), &m_MJPGList, IDC_STATIC_CONTACT_PINYIN);
+        m_sticPinYin.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(70, 348, 148, 380), this, IDC_STATIC_CONTACT_PINYIN);
         m_sticPinYin.SetColor(RGB(0, 0, 0), RGB(173, 227, 251));
-        //m_sticPinYin.SetLeftMargin(10);
-        m_sticPinYin.SetFontSize(26*X_XISHU);
-        m_skSoftKey.Create(IDB_VOIPPYSEARCH, CPoint(0,0), 29, rectKey, uiKey, CRect(0*X_XISHU, 346*Y_XISHU, 800*X_XISHU, 420*Y_XISHU),&m_MJPGList,WS_CHILD|WS_VISIBLE, IDC_SOFTKEY_CONTACT_PYSEARCH);
+        //	m_sticPinYin.SetLeftMargin(10);
+        m_sticPinYin.SetFontSize(26);
 
+        m_skSoftKey.Create(IDB_VOIPPYSEARCH, CPoint(0,0), 29, rectKey, uiKey, CRect(0, 346, 800 * 125 / 100, 420 * 125 / 100),this,WS_CHILD|WS_VISIBLE, IDC_SOFTKEY_CONTACT_PYSEARCH);
+
+        /*
+        strTemp = Data::LanguageResource::Get(Data::RI_CARD_NEWCARDBTN);
+        str = strTemp.c_str();
+        m_btnNewContact.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 26, 471, 45), this, IDC_BUTTON_CONTACT_NEW);
+        m_btnNewContact.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_CARD_NEWTYPEBTN);
+        str = strTemp.c_str();
+        m_btnNewType.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 46, 471, 65), this, IDC_BUTTON_CONTACT_NEWTYPE);
+        m_btnNewType.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_CARD_EDITTYPEBTN);
+        str = strTemp.c_str();
+        m_btnEditType.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 66, 471, 85), this, IDC_BUTTON_CONTACT_EDITTYPE);
+        m_btnEditType.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_COMN_FINDBTN);
+        str = strTemp.c_str();
+        m_btnSearch.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 86, 471, 105), this, IDC_BUTTON_CONTACT_SEARCH);
+        m_btnSearch.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+        strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_CLOSE);
+        str = strTemp.c_str();
+        m_btnClose.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 138, 471, 157), this, IDC_BUTTON_CONTACT_CLOSE);
+        m_btnClose.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+        m_sticPanel.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(416, 26, 472, 157), this);
+        m_sticPanel.SetColor(RGB(0, 0, 0), Data::g_allFrameInFrameLine1RGB[0][Data::g_skinstyle]);
+
+        m_sticBackground.Create(CRect(0, 0, 480 * 125 / 100, 204), this, 2);
+
+        TextStruct ts[6];
+        memset(ts, 0, sizeof(TextStruct) * 6);
+
+        ts[0].txtRect = CRect(0, 0, 100, 20);
+        ts[0].txtFontSize = 16;
+        ts[0].sAlign = DT_CENTER | DT_BOTTOM;
+        memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_CARD_TYPESTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_TYPESTC).length());
+
+        ts[1].txtRect = CRect(112, 0, 170, 20);
+        ts[1].txtFontSize = 16;
+        ts[1].sAlign = DT_CENTER | DT_BOTTOM;
+        memcpy(ts[1].sTxt, Data::LanguageResource::Get(Data::RI_CARD_NAMESTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_NAMESTC).length());
+
+        ts[2].txtRect = CRect(170, 0, 266, 20);
+        ts[2].txtFontSize = 16;
+        ts[2].sAlign = DT_CENTER | DT_BOTTOM;
+        memcpy(ts[2].sTxt, Data::LanguageResource::Get(Data::RI_CARD_COMPANYSTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_COMPANYSTC).length());
+
+        ts[3].txtRect = CRect(266, 0, 336, 20);
+        ts[3].txtFontSize = 16;
+        ts[3].sAlign = DT_CENTER | DT_BOTTOM;
+        memcpy(ts[3].sTxt, Data::LanguageResource::Get(Data::RI_CARD_DEPARTSTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_DEPARTSTC).length());
+
+        ts[4].txtRect = CRect(336, 0, 396, 20);
+        ts[4].txtFontSize = 16;
+        ts[4].sAlign = DT_CENTER | DT_BOTTOM;
+        memcpy(ts[4].sTxt, Data::LanguageResource::Get(Data::RI_CARD_TITLESTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_TITLESTC).length());
+
+        ts[5].txtRect = CRect(417, 0, 470, 20);
+        ts[5].txtFontSize = 16;
+        ts[5].sAlign = DT_CENTER | DT_BOTTOM;
+        memcpy(ts[5].sTxt, Data::LanguageResource::Get(Data::RI_CARD_OPERATORSTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_OPERATORSTC).length());
+
+        m_sticBackground.SetTextStruct(ts, 6);
+        */
+
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\通讯录.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 800 * 125 / 100, 420 * 125 / 100));
 
         m_pContactSearchDlg = new CContactSearchDlg(this);
         m_pContactSearchDlg->Create(CContactSearchDlg::IDD);
@@ -247,7 +314,7 @@ namespace View {
     {
         // TODO: Add your control notification handler code here
 
-        m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(_T(""));
+        GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(_T(""));
         ShowItemsInList();
 
         *pResult = 0;
@@ -257,7 +324,8 @@ namespace View {
     {
         m_lsType.DeleteAllItems();
         int imageID = 0;
-        std::string strTemp = Data::LanguageResource::Get(Data::RI_CARD_ALLCARDSTC);
+        std::string strTemp;
+        strTemp = Data::LanguageResource::Get(Data::RI_CARD_ALLCARDSTC);
         CString str = Util::StringOp::ToCString(strTemp);
         m_lsType.InsertItem(0, str, imageID);
         m_lsType.SetItemData(0, 0);
@@ -268,7 +336,7 @@ namespace View {
             result = Data::ContactGroup::GetFromDatabase("");
             for (std::size_t i = 0; i < result.size(); ++i)
             {
-                m_lsType.InsertItem(i + 1, Util::StringOp::ToCString(result[i]->name())/*, imageID*/);
+                m_lsType.InsertItem(i + 1, CString(result[i]->name().c_str())/*, imageID*/);
                 m_lsType.SetItemData(i + 1, result[i]->id());
                 ++imageID;
                 if (imageID > 10)
@@ -278,13 +346,13 @@ namespace View {
             }
         }
         strTemp = Data::LanguageResource::Get(Data::RI_CARD_FINDREAULTSTC);
-        str = Util::StringOp::ToCString(strTemp);
+        str = strTemp.c_str();
         m_lsType.InsertItem(result.size() + 1, str/*, 1*/);
         m_lsType.SetItemData(result.size() + 1, result.size() + 1);
         m_lsType.SetScrollRagle(TRUE);
     }
 
-    void CContactDlg::ShowItemsInList()
+    void CContactDlg::ShowItemsInList(void)
     {
         POSITION pos = m_lsType.GetFirstSelectedItemPosition();
         if (pos != NULL)
@@ -334,11 +402,10 @@ namespace View {
 
             if (Data::Contact::GetDataCount("") > 0)
             {
-                //m_vCurrentResult = Data::Contact::GetFromDatabase(filter, "id", Data::srDesc, Data::Contact::GetCurrentId() + 1, PageSize);
-                m_vCurrentResult = Data::Contact::GetFromDatabase(filter, "id", Data::srDesc, 0, PageSize);
+                m_vCurrentResult = Data::Contact::GetFromDatabase(filter, "id", Data::srDesc, Data::Contact::GetCurrentId() + 1, PageSize);
                 int count = Data::Contact::GetDataCount(filter);
                 m_lsList.m_scollbar_.SetRangle(0, count, PageSize);
-                ShowArrayInList(m_vCurrentResult);
+                ShowArrayInList(m_vCurrentResult);		
                 m_lsList.SetScrollRagle(TRUE);
             }
         }
@@ -346,6 +413,7 @@ namespace View {
 
     void CContactDlg::ScrollItemsInList(int step, int nPos)
     {
+
         if (m_vCurrentResult.empty())
         {
             return;
@@ -377,40 +445,104 @@ namespace View {
         m_vCurrentResult.clear();
         m_vCurrentResult = Data::Contact::GetFromDatabase(filter, "id", Data::srDesc, nPos, PageSize);
 
-        ShowArrayInList(m_vCurrentResult);
+        // 	if (step == SB_LINEUP)
+        // 	{
+        // 		currentID = m_vCurrentResult[0]->id();
+        // 		temp = Data::Contact::GetFromDatabase(filter, Data::dUp, currentID, 1);
+        // 		if (!temp.empty())
+        // 		{
+        // 			m_vCurrentResult.insert(m_vCurrentResult.begin(),temp[0]);
+        // 			if (m_vCurrentResult.size() > PageSize)
+        // 			{
+        // 				m_vCurrentResult.pop_back();
+        // 			}
+        // 		}
+        // 	}
+        // 	else if (step == SB_LINEDOWN)
+        // 	{
+        // 		currentID = m_vCurrentResult[m_vCurrentResult.size() - 1]->id();
+        // 		temp = Data::Contact::GetFromDatabase(filter, Data::dDown, currentID, 1);
+        // 		if (!temp.empty())
+        // 		{
+        // 			m_vCurrentResult.push_back(temp[0]);
+        // 			if (m_vCurrentResult.size() > PageSize)
+        // 			{
+        // 				m_vCurrentResult.erase(m_vCurrentResult.begin());
+        // 			}
+        // 		}
+        // 	}
+        // 	else if (step == SB_PAGEUP)
+        // 	{
+        // 		currentID = m_vCurrentResult[0]->id();
+        // 		temp = Data::Contact::GetFromDatabase(filter, Data::dUp, currentID, PageSize);
+        // 		if (temp.size() < PageSize)
+        // 		{
+        // 			temp.insert(temp.end(), m_vCurrentResult.begin(), m_vCurrentResult.begin() + PageSize - temp.size());
+        // 		}
+        // 		m_vCurrentResult = temp;
+        // 	}
+        // 	else if(step == SB_PAGEDOWN)
+        // 	{
+        // 		currentID = m_vCurrentResult[m_vCurrentResult.size() - 1]->id();
+        // 		temp = Data::Contact::GetFromDatabase(filter, Data::dDown, currentID, PageSize);
+        // 		if (temp.size() < PageSize)
+        // 		{
+        // 			m_vCurrentResult.insert(m_vCurrentResult.end(), temp.begin(), temp.end());
+        // 			if (m_vCurrentResult.size() > PageSize)
+        // 			{
+        // 				m_vCurrentResult.erase(m_vCurrentResult.begin(), m_vCurrentResult.begin() + m_vCurrentResult.size() - PageSize);
+        // 			}
+        // 		}
+        // 		else
+        // 		{
+        // 			m_vCurrentResult = temp;
+        // 		}
+        // 	}
+        // 	else if(step == SB_THUMBPOSITION)
+        // 	{
+        // 		if(m_pContactFilter.size() <= 0)
+        // 		{
+        // 			m_pContactFilter = Data::Contact::GetFromDatabase(filter);
+        // 		}
+        // 		
+        // 		m_vCurrentResult.clear();
+        // 		if (m_pContactFilter.size() > nPos)
+        // 		{
+        // 			int nOff = m_pContactFilter.size() - nPos;
+        // 			if(nOff >= PageSize)
+        // 			{
+        // 				m_vCurrentResult.insert(m_vCurrentResult.begin(), m_pContactFilter.begin() + nPos, m_pContactFilter.begin() + nPos + PageSize);
+        // 			}
+        // 			else
+        // 				m_vCurrentResult.insert(m_vCurrentResult.begin(), m_pContactFilter.begin() + m_pContactFilter.size() - PageSize, m_pContactFilter.end());
+        // 		}
+        // 		else
+        // 		{
+        // 			m_vCurrentResult.insert(m_vCurrentResult.begin(), m_pContactFilter.begin() + m_pContactFilter.size() - PageSize, m_pContactFilter.end());
+        // 		}
+        // 
+        // 	
+        // 	}
+        ShowArrayInList(m_vCurrentResult);		
     }
 
     void CContactDlg::ShowArrayInList(std::vector<Util::shared_ptr<Data::Contact> > array)
     {
         m_lsList.DeleteAllItems();
-        //lxz 090224
-#if 0
-        for (std::size_t i = 0; i < 10; ++i)
-        {	
-            std::string s = "test";
-            CString temp = Util::StringOp::ToCString(s);	
-            m_lsList.InsertItem(i, temp, 0);
-            temp = Util::StringOp::ToCString(s);
-            m_lsList.SetItemText(i, 1, temp);
-            temp = Util::StringOp::ToCString(s);
-            m_lsList.SetItemText(i, 2, temp);
-
-            m_lsList.SetItemData(i, 0);
-        }
-#else
         CString temp;
         for (std::size_t i = 0; i < (array).size(); ++i)
         {	
-            temp = Util::StringOp::ToCString(array[i]->name());	
+            temp = array[i]->name().c_str();	
             m_lsList.InsertItem(i, temp, array[i]->type());
-            temp = Util::StringOp::ToCString(array[i]->company());
+            temp = array[i]->company().c_str();
             m_lsList.SetItemText(i, 1, temp);
-            temp = Util::StringOp::ToCString(array[i]->duty());
+            //		temp = array[i]->department().c_str();
+            //		m_lsList.SetItemText(i, 2, temp);
+            temp = array[i]->duty().c_str();
             m_lsList.SetItemText(i, 2, temp);
 
             m_lsList.SetItemData(i, array[i]->id());
         }
-#endif
     }
 
     void CContactDlg::OnClickListList(NMHDR* pNMHDR, LRESULT* pResult) 
@@ -427,9 +559,11 @@ namespace View {
         {
             KillTimer(1);
             POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+            //Dprintf("List click!!!!\n");
             if (pos != NULL)
             {
                 int index = m_lsList.GetNextSelectedItem (pos);
+                //Dprintf("List click %d!!!!\n", index);
                 int id = m_lsList.GetItemData(index);
                 std::vector<Util::shared_ptr<Data::Contact> > result = Data::Contact::GetFromDatabase("id = " + Util::StringOp::FromInt(id));
                 if (!result.empty())
@@ -513,39 +647,33 @@ namespace View {
 
     LRESULT CContactDlg::OnSoftKeyMessage(WPARAM wParam, LPARAM lParam)
     {
-        //@@ error for multi char
-        TCHAR key = wParam;
-        CString py(key);
-        //CString py;
-        switch (key)
+        unsigned short key = wParam; 
+        //CString py(key); 
+        CString py;
+        //py = key;
+        switch(char(key))
         {
         case 0x7F://del
-            m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->GetWindowText(py);
-            m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(py.Left(py.GetLength() - 1));
+            GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->GetWindowText(py);
+            GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(py.Left(py.GetLength() - 1));
             break;
         case 0x00://clear
-            m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(_T(""));
+            GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(_T(""));
             break;
+            // 	case '\?'://?
+            // 		break';
         default:
-            m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->GetWindowText(py);
+            GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->GetWindowText(py);
             if (py.GetLength() >= 6)
             {
-                m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(L"");
-                py = _T("");
                 return 0;
             }
             //GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(py + key);
-            CString s_;
-            if (py != "")
-                s_.Format(_T("%s%c"), py, key);
-            else
-                s_.Format(_T("%c"), key);
-            m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(s_);
+            py.Format(_T("%d"), key);
+            GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(py);
             break;
         }
-        
         ShowItemsInList();
-        m_sticPinYin.SendMessage(WM_PAINT, 0, 0);
         return 0;
     }
 
@@ -553,7 +681,7 @@ namespace View {
     {
         std::string alias;
         CString py;
-        m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->GetWindowText(py);
+        GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->GetWindowText(py);
         if (!py.IsEmpty())
         {
             alias = Util::StringOp::FromCString(py);
@@ -593,7 +721,7 @@ namespace View {
     void CContactDlg::Search(std::string filter)
     {
         m_sListSearchFilter = filter;
-        m_MJPGList.GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(_T(""));
+        GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->SetWindowText(_T(""));
         POSITION pos = m_lsType.GetFirstSelectedItemPosition();   
         while (pos != NULL)
         {   

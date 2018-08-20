@@ -59,11 +59,11 @@ namespace Logical
         unsigned char minute;  // 0 - 59
 
         unsigned char numberStatus; // CALLID_OK / CALLID_NONE / CALLID_FORBID / CALLID_CANNOT_GET
-        //char number[CALLID_NUM_LEN];  // string ending with '\0'
+        //         char number[CALLID_NUM_LEN];  // string ending with '\0'
         char number[32];  // string ending with '\0'
 
         unsigned char nameStatus; // CALLID_OK / CALLID_NONE / CALLID_FORBID / CALLID_CANNOT_GET
-        //char name[CALLID_NAME_LEN];  // string ending with '\0'
+        //         char name[CALLID_NAME_LEN];  // string ending with '\0'
         char name[32];  // string ending with '\0'
     };
 

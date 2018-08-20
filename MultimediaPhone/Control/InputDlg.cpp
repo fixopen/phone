@@ -483,7 +483,7 @@ namespace Control {
         CRect rt;
         GetWindowRect(&rt);
         //ScreenToClient(&rt);
-        //::SetWindowPos(m_hWnd, HWND_TOPMOST, rt.left, rt.top, rt.Width(), rt.Height(), 0);
+        ::SetWindowPos(m_hWnd, HWND_TOPMOST, rt.left, rt.top, rt.Width(), rt.Height(), 0);
         ShowWindow(SW_SHOW);
         /*
         if(flag)

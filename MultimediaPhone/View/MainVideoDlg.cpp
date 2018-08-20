@@ -67,7 +67,7 @@ namespace View {
         ON_MESSAGE(WM_USB_MSG, OnDeviceChange)
         ON_MESSAGE(WM_OUTEVENT, OnOutEvent)
         ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-        ON_MESSAGE(WM_LISTCTRL_CLICK, OnListCtrlClick)
+        ON_MESSAGE(WM_LISTCTRL_CLICK, OnListCltrlClick)
         ON_WM_KEYDOWN()
         //}}AFX_MSG_MAP
     END_MESSAGE_MAP()
@@ -84,10 +84,10 @@ namespace View {
         }
     }
 
-    LRESULT CMainVideoDlg::OnListCtrlClick(WPARAM w, LPARAM l)
+    LRESULT CMainVideoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
     {
         LRESULT ret;
-        if (w == IDC_LIST_PLAYLIST)
+        if(w == IDC_LIST_PLAYLIST)
             OnClickPlayList(NULL, &ret);
         return ret;
     }
@@ -117,24 +117,20 @@ namespace View {
 
         // TODO: Add extra initialization here
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\影院1.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0, 535*X_XISHU, 420*Y_XISHU));
-
-        m_prgPlayTime.Create(WS_CHILD|WS_VISIBLE, CRect(25*X_XISHU, 268*Y_XISHU, (25*X_XISHU+393), (268*Y_XISHU+16)), &m_MJPGList, IDC_PROGRESS_VIDEOTIME);
+        m_prgPlayTime.Create(WS_CHILD|WS_VISIBLE, CRect(5, 268, 5+393, 268+16), this, IDC_PROGRESS_VIDEOTIME);
         m_prgPlayTime.SetParam(IDB_PROGRESS_TIME_THINCK, 0, 10, 1, 1, IDB_PROGRESS_TIME1, IDB_PROGRESS_TIME2);
 
         m_prgPlayTime.SetPos(0, FALSE);
         m_prgPlayTime.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
 
-        m_prgSoundSelect.Create(WS_CHILD|WS_VISIBLE, CRect(498*X_XISHU, 313*Y_XISHU, (498*X_XISHU+27), (313*Y_XISHU+90)), &m_MJPGList,IDC_PROGRESS_VIDEOSOUND);
+        m_prgSoundSelect.Create(WS_CHILD|WS_VISIBLE, CRect(498, 313, 498+27, 313+90), this,IDC_PROGRESS_VIDEOSOUND);
         m_prgSoundSelect.SetParam(IDB_PROGRESS_VOLUMETHINCK, 0, 10, 1, 3, IDB_PROGRESS_VOLUME1, IDB_PROGRESS_VOLUME1);
         SetVolume();
         m_prgSoundSelect.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
 
-        m_lstPlayList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7*X_XISHU, 50*Y_XISHU, (7+522)*X_XISHU, (50+213)*Y_XISHU), &m_MJPGList, IDC_LIST_PLAYLIST, TRUE, 1);
+        m_lstPlayList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7, 50, 7+522, 50+213), this, IDC_LIST_PLAYLIST, TRUE, 1);
         m_lstPlayList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], Data::g_listctrlBackRGB2[Data::g_skinstyle]);
-        m_lstPlayList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480*X_XISHU);
+        m_lstPlayList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480 * 125 / 100);
 
         m_pImageList = new CImageList();
         m_pImageList->Create(32, 32, ILC_COLOR32|ILC_MASK, 2, 2);   
@@ -165,6 +161,10 @@ namespace View {
 
         playerDlg_->Create(CPlayerDlg::IDD, this);
 
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\影院1.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100));
+
         m_MJPGList.SetUnitIsShow(3, TRUE);
         m_MJPGList.SetUnitIsShow(4, TRUE);
         m_MJPGList.SetUnitIsShow(11, FALSE);
@@ -178,14 +178,7 @@ namespace View {
     void CMainVideoDlg::SetVideo(char *filename)
     {
         playerDlg_->SetParam( /*"/flashdrv/my_video/playlist.pls"*/"", mtVideo);
-        CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-        CRect position;
-        main->GetWindowRect(&position);
-        position.left += 7 * X_XISHU;
-        position.top += 50 * Y_XISHU;
-        position.right = position.left + 522 * X_XISHU;
-        position.bottom = position.top + 213 * Y_XISHU;
-        playerDlg_->ReSetWindowsRect(position);
+        playerDlg_->ReSetWindowsRect(CRect(7, 50, 7+522, 50+213));
         m_bIsPausebyEvent = FALSE;
     }
 
@@ -217,10 +210,15 @@ namespace View {
         wcscpy(m_chDir, cdir);
         CString dir = cdir;
         ProcessFiles(_T("*.wmv"), FindMovie(dir, m_lstPlayList));
+        ProcessFiles(_T("*.WMV"), FindMovie(dir, m_lstPlayList));
         ProcessFiles(_T("*.avi"), FindMovie(dir, m_lstPlayList));
+        ProcessFiles(_T("*.AVI"), FindMovie(dir, m_lstPlayList));
         ProcessFiles(_T("*.mpg"), FindMovie(dir, m_lstPlayList));
+        ProcessFiles(_T("*.MPG"), FindMovie(dir, m_lstPlayList));
         ProcessFiles(_T("*.mp4"), FindMovie(dir, m_lstPlayList));
+        ProcessFiles(_T("*.MP4"), FindMovie(dir, m_lstPlayList));
         ProcessFiles(_T("*.m4v"), FindMovie(dir, m_lstPlayList));
+        ProcessFiles(_T("*.M4V"), FindMovie(dir, m_lstPlayList));
         m_lstPlayList.SetScrollRagle(TRUE);
     }
 
@@ -355,7 +353,7 @@ namespace View {
                 int n = sDir.Find(_T("/"));
                 ::UINT8 old[16];
                 int i = 0;
-                while (n != -1)
+                while(n != -1)
                 {
                     old[i++] = n;
                     n += 1;
@@ -390,14 +388,14 @@ namespace View {
                 else
                 {
                     int id = m_lstPlayList.GetItemData(index);
-                    id = (id == 0) ? 1 : 0;
+                    id=(id == 0)?1:0;
                     LVITEM lvitem;
-                    lvitem.mask = LVIF_TEXT | LVIF_IMAGE;   
-                    lvitem.iItem = index;   
-                    lvitem.iSubItem = 0;   
-                    lvitem.pszText = (LPWSTR)(LPCTSTR)s; //m_lstPlayList.GetItemText(index, 0).GetBuffer(128);   
-                    lvitem.lParam = index;   
-                    lvitem.iImage = id;
+                    lvitem.mask=LVIF_TEXT | LVIF_IMAGE;   
+                    lvitem.iItem=index;   
+                    lvitem.iSubItem=0;   
+                    lvitem.pszText = m_lstPlayList.GetItemText(index, 0).GetBuffer(128);   
+                    lvitem.lParam=index;   
+                    lvitem.iImage=id;
                     m_lstPlayList.SetItem(&lvitem);
                     m_lstPlayList.SetItemData(index, id);
                 }
@@ -409,47 +407,45 @@ namespace View {
     //播放
     void CMainVideoDlg::OnPlayer()
     {
-        if (m_IsPlay == 0)
+        if(m_IsPlay == 0)
         {
-            if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->GetIsRecordStatus())
+            if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->GetIsRecordStatus())
                 return;
 
             m_VideoList.clear();
             int ncount = m_lstPlayList.GetItemCount();
 
-#if 0
-            char buffer[1024 * 4];
-            memset(buffer, 0, 1024 * 4);
+            char buffer[1024*4];
+            memset(buffer, 0, 1024*4);
             int nFileSelected = 0;
 
             char txt[128];
             strcpy(txt, "[Playlist]\r\n");
             strcpy(buffer, txt);
-            for (int i = 0; i < ncount; ++i)
+
+            for(int i = 0; i < ncount; i++)
             {
                 int val = m_lstPlayList.GetItemData(i);
-                if (val == 1)
+                if(val == 1)
                 {
+                    char filename[128];
                     CString s = m_lstPlayList.GetItemText(i, 0);
-                    //char filename[128];
-                    //int n = wcstombs(filename, s.GetBuffer(128), 128/*s.GetLength()*/);
-                    //filename[n] = '\0';
-                    std::string filename = Util::StringOp::FromCString(s);
+                    int n = wcstombs( filename, s.GetBuffer(128), 128/*s.GetLength()*/);
+                    filename[n] = '\0';
 
-                    //char file_dir[128];
-                    //n = wcstombs(file_dir, m_chDir, 128);
-                    //file_dir[n] = '\0';
-                    std::string dir = Util::StringOp::FromCString(m_chDir);
-                    sprintf(txt, "File%d=%s/%s\r\nLength%d=255\r\n", i, dir.c_str(), filename.c_str(), i);
+                    char file_dir[128];
+                    n = wcstombs( file_dir, m_chDir, 128);
+                    file_dir[n] = '\0';
+                    sprintf(txt, "File%d=%s%s\r\nLength%d=255\r\n", i,file_dir,filename, i);
 
-                    if (strlen(buffer) < (1024 * 3))
+                    if(strlen(buffer) < (1024*3))
                         strcat(buffer, txt);
 
                     strcat(buffer, txt);
-                    ++nFileSelected;
+                    nFileSelected++;
 
                     char txt[128];
-                    sprintf(txt, "%s/%s", dir.c_str(), filename.c_str());
+                    sprintf(txt, "%s%s",file_dir, filename);
 
                     m_VideoList.push_back(Util::StringOp::ToCString(txt));
                 }
@@ -457,49 +453,50 @@ namespace View {
             sprintf(txt, "NumberOfEntries=%d\r\nVersion=2\r\n", nFileSelected);
             strcat(buffer, txt);
 
-            //if (nFileSelected != 0)
+            if(nFileSelected != 0)
             {
                 std::string videoFilename = Util::StringOp::FromCString(::videoPath);
                 videoFilename += "/playlist.pls";
-                FILE* file = fopen(videoFilename.c_str(), "w+b");
-                if (file)
+                FILE *file;
+                file = fopen(videoFilename.c_str(), "w+b");
+                if(file)
                 {
                     fwrite(buffer, sizeof(char), strlen(buffer), file);
                     fclose(file);
                 }
-            }
-#endif
-            for (int i = 0; i < ncount; ++i) {
-                int val = m_lstPlayList.GetItemData(i);
-                if (val == 1) {
-                    m_VideoList.push_back(CString(m_chDir) + _T("/") + m_lstPlayList.GetItemText(i, 0));
+                //调用播放窗口
+                if(playerDlg_)
+                {
+                    CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+                    main->playervideo_->SetImageList(m_VideoList);
+
+                    //退出MP3播放窗口
+                    main->m_pMainDlg->m_mainMp3Dlg_->OnExit_(TRUE);
+
+                    SetVideo("");
+                    playerDlg_->Show();
+                    main->playervideo_->Cur();
+
+                    SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
                 }
+
+                //lxz test 20080704
+                /*
+                m_btnAllSelect.ShowWindow(SW_HIDE);
+                m_btnAllClear.ShowWindow(SW_HIDE);
+                m_btnOpenFile.ShowWindow(SW_SHOW);
+                m_btnPlayAll.ShowWindow(SW_SHOW);
+                */
+                m_MJPGList.SetUnitIsShow(3, FALSE);
+                m_MJPGList.SetUnitIsShow(4, FALSE);
+                m_MJPGList.SetUnitIsShow(11, TRUE);
+                m_MJPGList.SetUnitIsShow(10, TRUE);
+                m_IsPlay = 1;
+                m_MJPGList.SetUnitIsDownStatus(0, TRUE);
+                m_MJPGList.SetUnitIsShow(0, TRUE);
             }
-            //调用播放窗口
-            if (playerDlg_)
-            {
-                CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-                main->playervideo_->SetImageList(m_VideoList);
-
-                //退出MP3播放窗口
-                main->m_pMainDlg->m_mainMp3Dlg_->OnExit_(TRUE);
-
-                SetVideo("");
-                playerDlg_->Show();
-                main->playervideo_->Cur();
-
-                SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
-            }
-
-            m_MJPGList.SetUnitIsShow(3, FALSE);
-            m_MJPGList.SetUnitIsShow(4, FALSE);
-            m_MJPGList.SetUnitIsShow(11, TRUE);
-            m_MJPGList.SetUnitIsShow(10, TRUE);
-            m_IsPlay = 1;
-            m_MJPGList.SetUnitIsDownStatus(0, TRUE);
-            m_MJPGList.SetUnitIsShow(0, TRUE);
         }
-        else if (m_IsPlay == 1)	//stop player	
+        else if(m_IsPlay == 1)	//stop player	
         {
             //lxz test 20080704
             m_IsPlay = 2;
@@ -510,7 +507,7 @@ namespace View {
             CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
             main->playervideo_->PausePlayer(TRUE);
         }
-        else if (m_IsPlay == 2)	//continue player
+        else if(m_IsPlay == 2)	//continue player
         {
             m_IsPlay = 1;
             //lxz test 20080704
@@ -729,12 +726,12 @@ namespace View {
         {
             KillTimer(1001);
             CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-            if (m_bIsPausebyEvent)
+            if(m_bIsPausebyEvent)
             {
-                if (IsWindowVisible() && m_bIsPausebyEvent)
+                if(IsWindowVisible() && m_bIsPausebyEvent)
                 {
                     m_bIsPausebyEvent = FALSE;
-                    //main->playervideo_->SetOwner(playerDlg_);
+                    main->playervideo_->SetOwner(playerDlg_);
                     main->playervideo_->InitPlayer();
                     main->playervideo_->SetVolume(m_Volume);
                     main->playervideo_->ResumePlayer();

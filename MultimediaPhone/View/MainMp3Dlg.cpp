@@ -20,6 +20,90 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 namespace View {
+    /*
+    //检测路径是否存在
+    BOOL DetectDIR(TCHAR *sDir)
+    {
+    BOOL flag = FALSE;
+    WIN32_FIND_DATA fd; 
+    HANDLE hFind = FindFirstFile(sDir, &fd); 
+    if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) 
+    { 
+    flag = TRUE;
+    } 
+    FindClose(hFind);
+    return flag;
+    }
+
+    BOOL DetectFile(TCHAR *sDir)
+    {
+    BOOL flag = FALSE;
+    WIN32_FIND_DATA fd; 
+    HANDLE hFind = FindFirstFile(sDir, &fd); 
+    if (hFind != INVALID_HANDLE_VALUE) 
+    { 
+    flag = TRUE;
+    } 
+    FindClose(hFind);
+    return flag;
+    }
+
+    void CopyDirFiles(TCHAR *src, TCHAR *des)
+    {
+    CString SrcDir = src;
+    CString DesDir = des;
+    CString findFilename = SrcDir + "/*.*";
+    WIN32_FIND_DATA FindFileData;
+    HANDLE hFind = FindFirstFile((LPCTSTR)findFilename, &FindFileData);
+    if (hFind == INVALID_HANDLE_VALUE)
+    {
+    //		Dprintf("not find file\n");
+    }
+    else
+    {
+    bool finished = false;
+    do
+    {
+    wchar_t wideToName[256];
+    //	wchar_t root[256] = {0};
+    //	mbstowcs(root, rootPath.c_str(), rootPath.length());
+    wsprintf(wideToName, _T("%s/%s"), DesDir, (LPCTSTR)FindFileData.cFileName); //findFileName
+    //	wideToName =  
+    wchar_t wideFromName[256] = {0};
+    //	wchar_t usb[256] = {0};
+    wsprintf(wideFromName, _T("%s/%s"), SrcDir, (LPCTSTR)FindFileData.cFileName); //findFileName
+
+    if((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+    {
+    //wprintf(_T("create dir %s to %s\n"), wideFromName, wideToName);
+    //CopyDirFiles(wideFromName, wideToName);
+    }
+    else
+    {
+    if (!::CopyFile(wideFromName, wideToName, false))
+    {
+    //	Dprintf("current error is %d.", GetLastError());
+    }
+    //wprintf(_T("copy %s to %s\n"), wideFromName, wideToName);
+    }
+
+    if (!FindNextFile(hFind, &FindFileData))
+    {
+    if (GetLastError() == ERROR_NO_MORE_FILES)
+    {
+    Dprintf("find end.\n");
+    finished = true;
+    }
+    else
+    {
+    Dprintf("Couldn't find next file.\n");
+    }
+    }
+    } while (!finished);
+    FindClose(hFind);
+    }
+    }
+    */
     /////////////////////////////////////////////////////////////////////////////
     // CMainMp3Dlg dialog
 
@@ -63,27 +147,27 @@ namespace View {
         ON_WM_ACTIVATE()
         ON_MESSAGE(WM_OUTEVENT, OnOutEvent)
         ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-        ON_MESSAGE(WM_LISTCTRL_CLICK, OnListCtrlClick)
+        ON_MESSAGE(WM_LISTCTRL_CLICK, OnListCltrlClick)
         ON_WM_KEYDOWN()
         //}}AFX_MSG_MAP
     END_MESSAGE_MAP()
 
     void CMainMp3Dlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
     {
-        if (nChar == 'U')
+        if(nChar == 'U')
         {
             OnPre();
         }
-        else if (nChar == 'D')
+        else if(nChar == 'D')
         {
             OnBack();
         }
     }
 
-    LRESULT CMainMp3Dlg::OnListCtrlClick(WPARAM w, LPARAM l)
+    LRESULT CMainMp3Dlg::OnListCltrlClick(WPARAM w, LPARAM l)
     {
         LRESULT result = 0;
-        if (m_IsPlay == 0)
+        if(m_IsPlay == 0)
         {
             LRESULT ret;
             OnClickPlayList(NULL, &ret);
@@ -91,13 +175,14 @@ namespace View {
         return result;
     }
 
-    void CMainMp3Dlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+    void CMainMp3Dlg ::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
     {
-        if (nState & WA_ACTIVE)
+        if(nState & WA_ACTIVE )
         {
             SetPlayList((TCHAR*)(LPCTSTR)::musicPath, 0);
         }
     }
+
 
     BOOL CMainMp3Dlg::OnInitDialog() 
     {
@@ -108,28 +193,25 @@ namespace View {
         // 	m_prgPlayTime.Create(WS_CHILD|WS_VISIBLE, CRect(32, 286, 32+11, 286+120), this, IDC_PROGRESS_MP3TIME);
         // 	m_prgPlayTime.SetParam(0, 0, 10, 1, 3, IDB_BITMAP_PROGRESS_BAR2, IDB_BITMAP_PROGRESS_BAR1);
 
-		m_MJPGList.Create(L"", WS_CHILD|WS_VISIBLE, CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\mp3.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU));
-
-        m_prgPlayTime.Create(WS_CHILD|WS_VISIBLE, CRect(25*X_XISHU, 268*Y_XISHU, (25*X_XISHU+393), (268*Y_XISHU+16)), &m_MJPGList, IDC_PROGRESS_MP3TIME);
+        m_prgPlayTime.Create(WS_CHILD|WS_VISIBLE, CRect(5, 268, 5+393, 268+16), this, IDC_PROGRESS_MP3TIME);
         m_prgPlayTime.SetParam(IDB_PROGRESS_TIME_THINCK, 0, 10, 1, 1, IDB_PROGRESS_TIME1, IDB_PROGRESS_TIME2);
+
 
         m_prgPlayTime.SetPos(0, FALSE);
         m_prgPlayTime.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
 
-        m_prgSoundSelect.Create(WS_CHILD|WS_VISIBLE, CRect(498*X_XISHU, 313*Y_XISHU, (498*X_XISHU+27), (313*Y_XISHU+90)), &m_MJPGList,IDC_PROGRESS_MP3SOUND);
+        m_prgSoundSelect.Create(WS_CHILD|WS_VISIBLE, CRect(498, 313, 498+27, 313+90), this,IDC_PROGRESS_MP3SOUND);
         m_prgSoundSelect.SetParam(IDB_PROGRESS_VOLUMETHINCK, 0, 10, 1, 3, IDB_PROGRESS_VOLUME1, IDB_PROGRESS_VOLUME1);
-         SetVolume();
         m_prgSoundSelect.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
-       
-        m_lstPlayList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7*X_XISHU, 50*Y_XISHU, (7+522)*X_XISHU, (50+213)*Y_XISHU), &m_MJPGList, IDC_LIST_MP3LIST, TRUE, 1);
-        m_lstPlayList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], Data::g_listctrlBackRGB2[Data::g_skinstyle]);
-        m_lstPlayList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480*X_XISHU);
+        SetVolume();
 
-        m_lstPlayList1.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7*X_XISHU, 50*Y_XISHU, (7+522)*X_XISHU, (50+213)*Y_XISHU), &m_MJPGList, 0xFFFF, TRUE, 1);
+        m_lstPlayList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7, 50, 7+522, 50+213), this, IDC_LIST_MP3LIST, TRUE, 1);
+        m_lstPlayList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], Data::g_listctrlBackRGB2[Data::g_skinstyle]);
+        m_lstPlayList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480 * 125 / 100);
+
+        m_lstPlayList1.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7, 50, 7+522, 50+213), this, 0xFFFF, TRUE, 1);
         m_lstPlayList1.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], Data::g_listctrlBackRGB2[Data::g_skinstyle]);
-        m_lstPlayList1.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480*X_XISHU);
+        m_lstPlayList1.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480 * 125 / 100);
         m_lstPlayList1.ShowWindow_(SW_HIDE);
 
         m_pImageList = new CImageList();
@@ -162,7 +244,11 @@ namespace View {
         playerDlg_->Create(CPlayerDlg::IDD, this);
         playerDlg_->MoveWindow(CRect(15, 28, 15, 28), FALSE);
 
-		m_MJPGList.SetUnitIsShow(3, TRUE);
+        m_MJPGList.Create(L"", WS_CHILD|WS_VISIBLE, CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\mp3.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100));
+
+        m_MJPGList.SetUnitIsShow(3, TRUE);
         m_MJPGList.SetUnitIsShow(4, TRUE);
         m_MJPGList.SetUnitIsShow(11, FALSE);
         m_MJPGList.SetUnitIsShow(10, FALSE);
@@ -204,15 +290,15 @@ namespace View {
         wcscpy(m_chDir, cdir);
         CString dir = cdir;
         ProcessFiles(_T("*.MP3"), FindMp3(dir, m_lstPlayList));
-        ProcessFiles(_T("*.WAV"), FindMp3(dir, m_lstPlayList));
-        //ProcessFiles(_T("*.mp3"), FindMp3(dir, m_lstPlayList));
+        ProcessFiles(_T("*.Mp3"), FindMp3(dir, m_lstPlayList));
+        ProcessFiles(_T("*.mp3"), FindMp3(dir, m_lstPlayList));
         m_lstPlayList.SetScrollRagle(TRUE);
     }
 
     void CMainMp3Dlg::OnExit_(BOOL isStopMusic)
     {
         CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-        if (isStopMusic)
+        if(isStopMusic)
         {
             main->playeraudio_->ExitPlayer();
             KillTimer(IDT_GETINFO_TIIMER);
@@ -294,10 +380,12 @@ namespace View {
     void CMainMp3Dlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
     {
         POSITION pos = m_lstPlayList.GetFirstSelectedItemPosition();
+        //Dprintf("Mp3 list clicked\n");
         if (pos != NULL)
         {
             int index = m_lstPlayList.GetNextSelectedItem(pos);
             m_nListIndex = index;
+            //Dprintf("Mp3 list clicked %d\n", index);
             CString s;
             CString s1 = Util::StringOp::ToCString(Data::LanguageResource::Get(Data::RI_COMN_TOBOTTOM).c_str());
             s = m_lstPlayList.GetItemText(index, 0);
@@ -348,14 +436,14 @@ namespace View {
                 else
                 {
                     int id = m_lstPlayList.GetItemData(index);
-                    id = (id == 0) ? 1 : 0;
+                    id=(id == 0)?1:0;
                     LVITEM lvitem;
-                    lvitem.mask = LVIF_TEXT | LVIF_IMAGE;   
-                    lvitem.iItem = index;   
-                    lvitem.iSubItem = 0;   
-                    lvitem.pszText = (LPWSTR)(LPCTSTR)s; //m_lstPlayList.GetItemText(index, 0).GetBuffer(128);   
-                    lvitem.lParam = index;   
-                    lvitem.iImage = id;
+                    lvitem.mask=LVIF_TEXT | LVIF_IMAGE;   
+                    lvitem.iItem=index;   
+                    lvitem.iSubItem=0;   
+                    lvitem.pszText = m_lstPlayList.GetItemText(index, 0).GetBuffer(128);   
+                    lvitem.lParam=index;   
+                    lvitem.iImage=id;
                     m_lstPlayList.SetItem(&lvitem);
                     m_lstPlayList.SetItemData(index, id);
                 }
@@ -368,36 +456,38 @@ namespace View {
     //播放
     void CMainMp3Dlg::OnPlayer()
     {
-        if (m_IsPlay == 1)
+        if(m_IsPlay == 1)
         {
-            if (m_lstPlayList1.IsWindowVisible())
+            if(m_lstPlayList1.IsWindowVisible())
             {
                 POSITION pos = m_lstPlayList1.GetFirstSelectedItemPosition();
                 //Dprintf("Mp3 list clicked\n");
                 if (pos != NULL)
                 {
                     int index = m_lstPlayList1.GetNextSelectedItem(pos);
-                    if (index >= 0 && index != gPlayIndex)
+                    if(index >= 0 && index != gPlayIndex)
                     {
                         CString sFilename = m_lstPlayList1.GetItemText(index, 0);
                         std::string s = Util::StringOp::FromCString(sFilename);
                         char filename_[128];
                         char file_dir[128];
                         int n = wcstombs( file_dir, m_chDir, 128);
-                        sprintf(filename_, "%s/%s", file_dir, s.c_str());
+                        sprintf(filename_, "%s%s", file_dir, s.c_str());
                         //sprintf(filename_, "/flashdrv/my_music/%s", s.c_str());
                         SetMP3(filename_);
                         gPlayIndex = index;
-                        playerDlg_->Show();
+                        playerDlg_->Show();	
                         return;
                     }
                 }
             }
         }
-        if (m_IsPlay == 0)
+
+        if(m_IsPlay == 0)
         {
-            if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->GetIsRecordStatus())
+            if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->GetIsRecordStatus())
                 return;
+
             //else
             {
                 int ncount = m_lstPlayList.GetItemCount();
@@ -405,22 +495,15 @@ namespace View {
                 char *buffer = new char[1024*10];
                 memset(buffer, 0, 1024*10);
                 int nFileSelected = 0;
-                for (int i = 0; i < ncount; ++i) {
-                    int val = m_lstPlayList.GetItemData(i);
-                    if (val == 1) {
-                        m_lstPlayList1.InsertItem(nFileSelected, m_lstPlayList.GetItemText(i, 0));
-                        ++nFileSelected;
-                    }
-                }
 
-#if 0
                 char txt[128];
                 strcpy(txt, "[Playlist]\r\n");
                 strcpy(buffer, txt);
-                for (int i = 0; i < ncount; ++i)
+
+                for(int i = 0; i < ncount; i++)
                 {
                     int val = m_lstPlayList.GetItemData(i);
-                    if (val == 1)
+                    if(val == 1)
                     {
                         char filename[128];
                         CString s = m_lstPlayList.GetItemText(i, 0);
@@ -434,37 +517,39 @@ namespace View {
                         if(strlen(buffer) < (1024*8))
                             strcat(buffer, txt);
                         m_lstPlayList1.InsertItem(nFileSelected, s);
-                        ++nFileSelected;
+                        nFileSelected++;
                     }
                 }
                 m_lstPlayList1.SetScrollRagle(FALSE);
+
                 sprintf(txt, "NumberOfEntries=%d\r\nVersion=2\r\n", nFileSelected);
                 strcat(buffer, txt);
+
+                if(nFileSelected != 0)
+                {
                     FILE *file;
                     std::string musicFilename = Util::StringOp::FromCString(::musicPath);
                     musicFilename += "/playlist.pls";
                     file = fopen(musicFilename.c_str(), "w+b");
-                    if (file)
+                    if(file)
                     {
                         fwrite(buffer, sizeof(char), strlen(buffer), file);
                         fclose(file);
                     }
-#endif
-                if (nFileSelected != 0)
-                {
                     //调用播放窗口
-                    if (playerDlg_)
+                    if(playerDlg_)
                     {
+
                         m_lstPlayList1.ShowWindow_(SW_SHOW);
                         m_lstPlayList.ShowWindow_(SW_HIDE);
-                        
+
                         CString sFilename = m_lstPlayList1.GetItemText(0, 0);
                         std::string s = Util::StringOp::FromCString(sFilename);
                         char filename_[128];
 
                         char file_dir[128];
                         int n = wcstombs( file_dir, m_chDir, 128);
-                        sprintf(filename_, "%s/%s", file_dir, s.c_str());
+                        sprintf(filename_, "%s%s", file_dir, s.c_str());
 
                         SetMP3(filename_);
                         gPlayIndex = 0;
@@ -481,22 +566,20 @@ namespace View {
                     m_IsPlay = 1;
                     m_MJPGList.SetUnitIsDownStatus(0, TRUE);
                     m_MJPGList.SetUnitIsShow(0, TRUE);
-                    //m_prgSoundSelect.SetFocus();
-                    m_prgSoundSelect.Invalidate();
                 }
             }
         }
-        else if (m_IsPlay == 1)
+        else if(m_IsPlay == 1)
         {
             m_IsPlay = 2;
             m_MJPGList.SetUnitIsDownStatus(0, FALSE);
             m_MJPGList.SetUnitIsShow(0, TRUE);
-            //m_btnPlayMp3.SetIcon(IDI_ICON_PLAY, CSize(24, 24));
+            //		m_btnPlayMp3.SetIcon(IDI_ICON_PLAY, CSize(24, 24));
 
             CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
             main->playeraudio_->PausePlayer(TRUE);
         }
-        else if (m_IsPlay == 2)
+        else if(m_IsPlay == 2)
         {
             m_IsPlay = 1;
             m_MJPGList.SetUnitIsDownStatus(0, TRUE);
@@ -512,7 +595,7 @@ namespace View {
         if(m_lstPlayList1.IsWindowVisible())
         {
             int  nCount = m_lstPlayList1.GetItemCount() -1;
-            --gPlayIndex;
+            gPlayIndex--;
             if(gPlayIndex < 0)
                 gPlayIndex = nCount;
             CString sFilename = m_lstPlayList1.GetItemText(gPlayIndex, 0);
@@ -532,8 +615,8 @@ namespace View {
         //	KillTimer(123);
         if(m_lstPlayList1.IsWindowVisible())
         {
-            int  nCount = m_lstPlayList1.GetItemCount() - 1;
-            ++gPlayIndex;
+            int  nCount = m_lstPlayList1.GetItemCount() -1;
+            gPlayIndex ++;
             if(gPlayIndex > nCount)
                 gPlayIndex = 0;
             CString sFilename = m_lstPlayList1.GetItemText(gPlayIndex, 0);
@@ -648,7 +731,7 @@ namespace View {
         // TODO: Add your message handler code here and/or call default
         if(IDT_GETINFO_TIIMER == nIDEvent)
         {
-            //KillTimer(IDT_GETINFO_TIIMER);
+            //		KillTimer(IDT_GETINFO_TIIMER);
             CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
             MEDIA_INFO info;
             main->playeraudio_->GetVideoFileInfo(&info);
@@ -730,15 +813,15 @@ namespace View {
             main->playeraudio_->SetVolume(nn);
             m_Volume = nn;
         }
-        else if (nIDEvent == 1001)   //恢复播放
+        else if(nIDEvent == 1001)   //恢复播放
         {
             //Dprintf("Mp3 resume\r\n");
             KillTimer(1001);
             CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-            if (m_bIsPausebyEvent)
+            if(m_bIsPausebyEvent)
             {
                 m_bIsPausebyEvent = FALSE;
-                //main->playeraudio_->SetOwner(playerDlg_);
+                main->playeraudio_->SetOwner(playerDlg_);
                 main->playeraudio_->InitPlayer();
 
                 main->playeraudio_->SetVolume(m_Volume);
@@ -818,7 +901,7 @@ namespace View {
         return result;
     }
 
-    LRESULT CMainMp3Dlg::OnClickMJPG(WPARAM w, LPARAM l)
+    LRESULT CMainMp3Dlg ::OnClickMJPG(WPARAM w, LPARAM l)
     {
         LRESULT result = 0;
         switch(w)
@@ -853,4 +936,108 @@ namespace View {
         }
         return result;
     }
+
+    // BOOL CMainMp3Dlg::PreTranslateMessage(MSG* pMsg) 
+    // {
+    //  	if(pMsg->message == WM_KEYDOWN)
+    //  	{
+    // 		if(pMsg->wParam == 'U')
+    // 		{
+    // 			OnPre();
+    // 		}
+    // 		else if (pMsg->wParam == 'D')
+    // 		{
+    // 			OnBack();
+    // 		}
+    //  	}
+    //  	return CDialog::PreTranslateMessage(pMsg);
+    // }
+
+
+    // BOOL CMainMp3Dlg::PreTranslateMessage(MSG* pMsg) 
+    // {
+    // 	// TODO: Add your specialized code here and/or call the base class
+    // 	if(pMsg->message == WM_LBUTTONDOWN)
+    // 	{
+    // 		m_nListIndex = -1;
+    // 		
+    // 		CDialog::PreTranslateMessage(pMsg);
+    // 
+    // 		POSITION pos = m_lstPlayList.GetFirstSelectedItemPosition();
+    // 		if (pos != NULL)
+    // 		{
+    // 			int index = m_lstPlayList.GetNextSelectedItem (pos);
+    // 			CRect rt;
+    // 			m_lstPlayList.GetWindowRect(&rt);
+    // 			if(index != m_nListIndex && rt.PtInRect(pMsg->pt))
+    // 			{
+    // 				CString s;
+    // 				CString s1 = Data::LanguageResource::Get(Data::RI_COMN_TOBOTTOM).c_str();
+    // 				s = m_lstPlayList.GetItemText(index, 0);
+    // 				//usb
+    // 				if(s.Compare(_T("usbdisk")) == 0)
+    // 				{
+    // 					SetPlayList(_T("/usbdisk/"), 1);
+    // 				}
+    // 				//sd
+    // 				else if(s.Compare(_T("storagecard")) == 0)
+    // 				{
+    // 					SetPlayList(_T("/storagecard/"), 1);
+    // 				}
+    // 				//上一级
+    // 				else if(s.Compare(s1) == 0)
+    // 				{
+    // 					//	m_chDir
+    // 					CString sDir = m_chDir;
+    // 					int n = sDir.Find(_T("/"));
+    // 					UINT8 old[16];
+    // 					int i = 0;
+    // 					while(n != -1)
+    // 					{
+    // 						old[i++] = n;
+    // 						n += 1;
+    // 						n = sDir.Find(_T("/"), n);
+    // 					}
+    // 					sDir = sDir.Mid(0, old[i-2]+1);
+    // 					if(sDir == _T("/"))
+    // 						SetPlayList(sDir.GetBuffer(128), 0);
+    // 					else
+    // 						SetPlayList(sDir.GetBuffer(128), 1);
+    // 				}
+    // 				
+    // 				else
+    // 				{
+    // 					int n = s.Find(_T(".mp3"));
+    // 					int n1 = s.Find(_T(".MP3"));
+    // 					int n2 = s.Find(_T(".wav"));
+    // 					int n3 = s.Find(_T(".WAV"));
+    // 					if((n1 == -1) && (n == -1) && (n2 == -1) && (n3 == -1))
+    // 					{
+    // 						CString sDir = m_chDir;
+    // 						sDir += s; 
+    // 						sDir += "/";
+    // 						SetPlayList(sDir.GetBuffer(128), 1);
+    // 					}
+    // 					else
+    // 					{
+    // 						int id = m_lstPlayList.GetItemData(index);
+    // 						id=(id == 0)?1:0;
+    // 						LVITEM lvitem;
+    // 						lvitem.mask=LVIF_TEXT | LVIF_IMAGE;   
+    // 						lvitem.iItem=index;   
+    // 						lvitem.iSubItem=0;   
+    // 						lvitem.pszText = m_lstPlayList.GetItemText(index, 0).GetBuffer(128);   
+    // 						lvitem.lParam=index;   
+    // 						lvitem.iImage=id;
+    // 						m_lstPlayList.SetItem(&lvitem);
+    // 						m_lstPlayList.SetItemData(index, id);
+    // 					}
+    // 				}
+    // 			}
+    // 		}
+    // 		
+    // 		return TRUE;
+    // 	}
+    // 	return CDialog::PreTranslateMessage(pMsg);
+    // }
 }

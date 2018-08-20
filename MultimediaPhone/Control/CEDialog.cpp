@@ -18,15 +18,21 @@ namespace Control {
     // CCEDialog dialog
     void CCEDialog::ShowWindow_(int nCmdShow)
     {
-        if (nCmdShow == SW_HIDE)
+        if(nCmdShow == SW_HIDE)
             m_bIsFreshMemDC = TRUE;   //test 20071204
         ShowWindow(nCmdShow);
     }
 
-    void CCEDialog::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+    void CCEDialog ::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
     {
-        if (nState == 0)
+        if(nState == 0)
         {
+            /*
+            if(theApp.inputDlg_->IsWindowVisible())  //show
+            {
+            theApp.inputDlg_->hide();
+            }
+            */
         }
     }
 
@@ -50,7 +56,7 @@ namespace Control {
         //}}AFX_DATA_MAP
     }
 
-    BOOL CCEDialog::OnEraseBkgnd(CDC* pDC)
+    BOOL CCEDialog::OnEraseBkgnd(CDC* pDC) 
     {
         // TODO: Add your message handler code here and/or call default
         return TRUE;
@@ -109,7 +115,8 @@ namespace Control {
 
         // 创建新图片
         LPVOID lpBits;
-        hbmp24 = ::CreateDIBSection(dc, lpBmpInfo, DIB_RGB_COLORS, &lpBits, NULL, 0);
+        hbmp24 =::CreateDIBSection(dc,lpBmpInfo,DIB_RGB_COLORS,
+            &lpBits,NULL,0);
 
         DeleteDC(dc);
         delete lpBmpInfo;
@@ -136,8 +143,8 @@ namespace Control {
         COLORREF oldbkcolor = SetBkColor(dcImage24, colorTrans);
         BitBlt(dcTrans, 0, 0, bmp.bmWidth, bmp.bmHeight, dcImage24, 0, 0, SRCCOPY);
 
-        SetBkColor(dcImage24, RGB(0, 0, 0));
-        COLORREF oldtextcolor = SetTextColor(dcImage24, RGB(255, 255, 255));
+        SetBkColor(dcImage24, RGB(0,0,0));
+        COLORREF oldtextcolor = SetTextColor(dcImage24, RGB(255,255,255));
         BitBlt(dcImage24, 0, 0, bmp.bmWidth, bmp.bmHeight, dcTrans, 0, 0, SRCAND);
 
         // 去除指定的颜色
@@ -173,32 +180,71 @@ namespace Control {
 
     void CCEDialog::OnPaint() 
     {
-        HDC hScrDC = ::GetDC(theApp.m_pMainWnd->m_hWnd);
-        HDC hMemDC = CreateCompatibleDC(hScrDC);
+        //	CPaintDC dc(this); // device context for painting
+        //CDialog::OnPaint();
+        // TODO: Add your message handler code here
+        // 	DWORD t, a;
+        // 	int ret1 = DMemprintf("CEDialog 0", t, a);
 
-        CRect bounds;
-        GetWindowRect(&bounds);
-        BITMAPINFO RGB24BitsBITMAPINFO;
-        ZeroMemory(&RGB24BitsBITMAPINFO, sizeof(BITMAPINFO));
-        RGB24BitsBITMAPINFO.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        RGB24BitsBITMAPINFO.bmiHeader.biWidth = bounds.Width();
-        RGB24BitsBITMAPINFO.bmiHeader.biHeight = bounds.Height();
-        RGB24BitsBITMAPINFO.bmiHeader.biPlanes = 1;
-        RGB24BitsBITMAPINFO.bmiHeader.biBitCount = 24;
+        static HDC hScrDC;   
+        static HDC hMemDC;
+        static HBITMAP directBmp = NULL;
 
-        BYTE* lpBitmapBits = NULL;
+        if(m_bMemDCCrate && !m_bIsFreshMemDC)
+        {
+            CDialog::OnPaint();
 
-        HBITMAP directBmp = CreateDIBSection(hMemDC, (BITMAPINFO*)&RGB24BitsBITMAPINFO, DIB_RGB_COLORS, (void **)&lpBitmapBits, NULL, 0);
+            HDC pdc = ::GetDC(m_hWnd);
+            CRect rt;
+            GetClientRect(&rt);
+            BitBlt(pdc, 0, 0, rt.Width()-1, rt.Height()-1, hMemDC, 0, 0, SRCCOPY);
+            ::ReleaseDC(m_hWnd, pdc);
+        }
+        else
+        {
+            int  width, height; 
 
-        SelectObject(hMemDC, directBmp);
-        BitBlt(hMemDC, 0, 0, bounds.Width(), bounds.Height(), hScrDC, 0, 0, SRCCOPY);
-        CDialog::OnPaint();
+            width = GetDeviceCaps(hScrDC, HORZRES);
+            height = GetDeviceCaps(hScrDC, VERTRES); 
 
-        HDC pdc = ::GetDC(m_hWnd);
-        CRect rt;
-        GetClientRect(&rt);
-        BitBlt(pdc, 0, 0, rt.Width()-1, rt.Height()-1, hMemDC, 0, 0, SRCCOPY);
-        ::ReleaseDC(m_hWnd, pdc);
+            if(directBmp == NULL)
+            {
+                hScrDC = CreateDC(_T("DISPLAY"), NULL, NULL, NULL); 
+                hMemDC = CreateCompatibleDC(hScrDC); 
+
+                BYTE  *lpBitmapBits = NULL;
+                BITMAPINFO RGB24BitsBITMAPINFO; 
+                ZeroMemory(&RGB24BitsBITMAPINFO, sizeof(BITMAPINFO));
+                RGB24BitsBITMAPINFO.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                RGB24BitsBITMAPINFO.bmiHeader.biWidth = width;
+                RGB24BitsBITMAPINFO.bmiHeader.biHeight = height;
+                RGB24BitsBITMAPINFO.bmiHeader.biPlanes = 1;
+                RGB24BitsBITMAPINFO.bmiHeader.biBitCount = 24;
+
+                directBmp = CreateDIBSection(hMemDC, (BITMAPINFO*)&RGB24BitsBITMAPINFO, DIB_RGB_COLORS, (void **)&lpBitmapBits, NULL, 0);
+                SelectObject(hMemDC, directBmp); 
+            }
+
+            m_bMemDCCrate = TRUE;
+            m_bIsFreshMemDC = FALSE;
+
+            BitBlt(hMemDC, 0, 0, width, height, hScrDC, 0, 0, SRCCOPY);
+
+            CDialog::OnPaint();
+
+            HDC pdc = ::GetDC(m_hWnd);
+            CRect rt;
+            GetClientRect(&rt);
+            BitBlt(pdc, 0, 0, rt.Width()-1, rt.Height()-1, hMemDC, 0, 0, SRCCOPY);
+            ::ReleaseDC(m_hWnd, pdc);
+        }
+
+        // 	int ret2 = DMemprintf("CEDialog 1", t, a);
+        // 	if(ret1 != ret2)
+        // 	{
+        // 		Dprintf("ret = %d\r\n", ret1-ret2 );
+        // 	}
+        // Do not call CDialog::OnPaint() for painting messages
     }
 
 
@@ -240,36 +286,36 @@ namespace Control {
         GetClientRect(&rt);
 
         BOOL bHalfwindow = FALSE;
-        if (rt.Width() < 480)
+        if(rt.Width() < 480)
             bHalfwindow = TRUE;
 
         //画top线
         CRect rect1= rt;
-        rect1 = CRect(0, 0, 480-1+1, 0+1);
+        rect1 = CRect(0, 0, 480 * 125 / 100-1+1, 0+1);
         pdc->FillSolidRect(&rect1, Data::g_allFramTopLineRGB[0][Data::g_skinstyle]);
-        rect1 = CRect(1, 1, 480-2+1, 1+1);
+        rect1 = CRect(1, 1, 480 * 125 / 100-2+1, 1+1);
         pdc->FillSolidRect(&rect1, Data::g_allFramTopLineRGB[1][Data::g_skinstyle]);
-        rect1 = CRect(2, 2, 480-3+1, 2+1);
+        rect1 = CRect(2, 2, 480 * 125 / 100-3+1, 2+1);
         pdc->FillSolidRect(&rect1, Data::g_allFramTopLineRGB[2][Data::g_skinstyle]);
-        rect1 = CRect(3, 3, 480-4+1, 3+1);
+        rect1 = CRect(3, 3, 480 * 125 / 100-4+1, 3+1);
         pdc->FillSolidRect(&rect1, Data::g_allFramTopLineRGB[3][Data::g_skinstyle]);
 
-        if (m_nStyle == 0)
+        if(m_nStyle == 0)
         {
-            rect1 = CRect(1, 4, 480-2+1, 12+1);
+            rect1 = CRect(1, 4, 480 * 125 / 100-2+1, 12+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramTopLineRGB[4][Data::g_skinstyle]);
-            rect1 = CRect(4, 13, 480-5+1, 13+1);
+            rect1 = CRect(4, 13, 480 * 125 / 100-5+1, 13+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramBackRGB[Data::g_skinstyle]);
         }
 
         //画bottom线
-        if (!bHalfwindow)
+        if(!bHalfwindow)
         {
-            rect1 = CRect(0, 204-1, 480-1+1, 204-1+1);
+            rect1 = CRect(0, 204-1, 480 * 125 / 100-1+1, 204-1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramBottomLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(1, 204-2, 480-2+1, 204-2+1);
+            rect1 = CRect(1, 204-2, 480 * 125 / 100-2+1, 204-2+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramBottomLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(2, 204-3, 480-3+1, 204-3+1);
+            rect1 = CRect(2, 204-3, 480 * 125 / 100-3+1, 204-3+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramBottomLineRGB[2][Data::g_skinstyle]);
         }
 
@@ -284,65 +330,65 @@ namespace Control {
         pdc->FillSolidRect(&rect1, Data::g_allFramLeftLineRGB[3][Data::g_skinstyle]);
 
         //画right线
-        if (!bHalfwindow)
+        if(!bHalfwindow)
         {
-            rect1 = CRect(480-1, 0, 480-1+1, 204-1+1);
+            rect1 = CRect(480-1, 0, 480 * 125 / 100-1+1, 204-1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramRightLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(480-2, 1, 480-2+1, 204-2+1);
+            rect1 = CRect(480-2, 1, 480 * 125 / 100-2+1, 204-2+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramRightLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(480-3, 2, 480-3+1, 204-3+1);
+            rect1 = CRect(480-3, 2, 480 * 125 / 100-3+1, 204-3+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramRightLineRGB[2][Data::g_skinstyle]);
-            rect1 = CRect(480-4, 2, 480-4+1, 204-4+1);
+            rect1 = CRect(480-4, 2, 480 * 125 / 100-4+1, 204-4+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramRightLineRGB[3][Data::g_skinstyle]);
         }
 
 
-        if (m_nStyle == 0)
+        if(m_nStyle == 0)
         {
             //最后画一条Top线
-            rect1 = CRect(1, 14, 480-2+1, 14+1);
+            rect1 = CRect(1, 14, 480 * 125 / 100-2+1, 14+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramTopLineRGB[4][Data::g_skinstyle]);
 
             //画背景
-            rect1 = CRect(4, 15, 480-5+1, 204-4+1);
+            rect1 = CRect(4, 15, 480 * 125 / 100-5+1, 204-4+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramBackRGB[Data::g_skinstyle]);
         }
-        else if (m_nStyle == 1 || m_nStyle == 2)
+        else if(m_nStyle == 1 || m_nStyle == 2)
         {
             //画背景
-            rect1 = CRect(4, 4, 480-4+1, 204-4+1);
+            rect1 = CRect(4, 4, 480 * 125 / 100-4+1, 204-4+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramBackRGB[Data::g_skinstyle]);
         }
 
         //当 m_nStyle = 1时，画三角形及中间框
-        if (m_nStyle == 1)
+        if(m_nStyle == 1)
         {
             //画top
-            rect1 = CRect(293, 0, 480-1+1, 0+1);
+            rect1 = CRect(293, 0, 480 * 125 / 100-1+1, 0+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(294, 1, 480-2+1, 1+1);
+            rect1 = CRect(294, 1, 480 * 125 / 100-2+1, 1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(295-2, 2, 480-3+1, 2+1);
+            rect1 = CRect(295-2, 2, 480 * 125 / 100-3+1, 2+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[2][Data::g_skinstyle]);
-            rect1 = CRect(295-2, 3, 480-4+1, 3+1);
+            rect1 = CRect(295-2, 3, 480 * 125 / 100-4+1, 3+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[3][Data::g_skinstyle]);
-            rect1 = CRect(295-2, 4, 480-5+1, 4+1);
+            rect1 = CRect(295-2, 4, 480 * 125 / 100-5+1, 4+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[4][Data::g_skinstyle]);
 
             //画right
-            rect1 = CRect(480-1, 0, 480-1+1, 188-1+1);
+            rect1 = CRect(480-1, 0, 480 * 125 / 100-1+1, 188-1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(480-2, 1, 480-2+1, 188-2+1+1);
+            rect1 = CRect(480-2, 1, 480 * 125 / 100-2+1, 188-2+1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(480-3, 2, 480-3+1, 188-3+1+1);
+            rect1 = CRect(480-3, 2, 480 * 125 / 100-3+1, 188-3+1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[2][Data::g_skinstyle]);
-            rect1 = CRect(480-4, 3, 480-4+1, 188-4+1+1);
+            rect1 = CRect(480-4, 3, 480 * 125 / 100-4+1, 188-4+1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[3][Data::g_skinstyle]);
-            rect1 = CRect(480-5, 4, 480-5+1, 188-5+1+1);
+            rect1 = CRect(480-5, 4, 480 * 125 / 100-5+1, 188-5+1+1);
             pdc->FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[4][Data::g_skinstyle]);
 
             int x = 296;
-            for (int i = 5; i <= 184; ++i)
+            for(int i = 5; i <= 184; i++)
             {
                 rect1 = CRect(x++, i, 475+1, i+1);
                 pdc->FillSolidRect(&rect1, Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
@@ -427,7 +473,7 @@ namespace Control {
         }
 
         //画上小框
-        if (bHalfwindow && m_InRect.Width() != 0)
+        if(bHalfwindow && m_InRect.Width() != 0)
         {
             CRect rrt = m_InRect;
             rect1 = CRect(rrt.left, rrt.top, rrt.right+1, rrt.top+1);
@@ -451,7 +497,7 @@ namespace Control {
         }
 
         //通话记录 名片主窗口
-        if (m_nStyle == 2)
+        if(m_nStyle == 2)
         {
             CRect rrt = CRect(7, 26, 472, 197);
             rect1 = CRect(rrt.left, rrt.top, rrt.right+1, rrt.top+1);

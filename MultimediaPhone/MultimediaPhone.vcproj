@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib psapi.lib rasapi32.lib cximage.lib libspeex.lib"
+				AdditionalDependencies="winmm.lib rasapi32.lib cximage.lib libspeex.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;D:\My Documents\Visual Studio 2008\Projects\MultimediaPhone\MultimediaPhone\lib&quot;"
 				GenerateDebugInformation="true"
@@ -149,7 +149,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib psapi.lib rasapi32.lib cximage.lib libspeex.lib"
+				AdditionalDependencies="winmm.lib rasapi32.lib cximage.lib libspeex.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;D:\My Documents\Visual Studio 2008\Projects\MultimediaPhone\MultimediaPhone\lib&quot;"
 				GenerateDebugInformation="true"
@@ -889,10 +889,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Control\URLEdit.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Control\¸´¼þ CERadioButton.h"
 					>
 				</File>
@@ -974,10 +970,6 @@
 				</File>
 				<File
 					RelativePath=".\Control\SoftKey.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Control\URLEdit.cpp"
 					>
 				</File>
 			</Filter>
@@ -2173,10 +2165,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Resource Files"
-				>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Data"
@@ -2536,9 +2524,5 @@
 		</File>
 	</Files>
 	<Globals>
-		<Global
-			Name="RESOURCE_FILE"
-			Value="MultimediaPhone.rc"
-		/>
 	</Globals>
 </VisualStudioProject>

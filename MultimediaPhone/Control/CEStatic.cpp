@@ -130,7 +130,7 @@ namespace Control {
             DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
             _T("宋体")));                 // lpszFacename
 
-        //SetFont(&m_Font);
+        //	 SetFont(&m_Font);
         //CDC *pdc = GetDC();
         //pdc->SelectObject(&m_Font);
         //ReleaseDC(pdc);
@@ -797,6 +797,8 @@ namespace Control {
     void CCEWriteStatic::OnPaint() 
     {
         CPaintDC dc(this); // device context for painting
+
+        //	CStatic::OnPaint();
         CRect rt;
         GetWindowRect(&rt);
         CDC *pdc = GetDC();
@@ -911,27 +913,28 @@ namespace Control {
 
     CPoint CCEWriteStatic::DoWithWrite(CPoint pt)
     {
-        if (DOWITH_WRITE == 1)
-        {
-            CPoint ret = m_PrePoint[0];
+        if(DOWITH_WRITE == 1)
+        { 
+            CPoint ret;
+            ret = m_PrePoint[0];
             m_PrePoint[0] = m_PrePoint[1];
             m_PrePoint[1] = m_PrePoint[2];
 
-            if (m_PrePoint[0].x != 0xFFFF || m_PrePoint[0].y != 0xFFFF)
+            if(m_PrePoint[0].x != 0xFFFF || m_PrePoint[0].y != 0xFFFF)
             {
-                m_PrePoint[2].x = (m_PrePoint[0].x + pt.x) / 2;
-                m_PrePoint[2].y = (m_PrePoint[0].y + pt.y) / 2;
+                m_PrePoint[2].x =( m_PrePoint[0].x+pt.x)/2;
+                m_PrePoint[2].y =( m_PrePoint[0].y+pt.y)/2;
             }
             else
             {
                 m_PrePoint[2] = pt;
             }
-            if (ret.x == 0xFFFF || ret.y == 0xFFFF)
+            if(ret.x == 0xFFFF || ret.y == 0xFFFF)
                 return pt;
             return ret;
         }
         else
-            return pt;
+            return pt;	
     }
 
     void CCEWriteStatic::OnAddPoint(CPoint pt1, CPoint point)
@@ -1002,32 +1005,103 @@ namespace Control {
 
     void CCEWriteStatic::OnMouseMove(UINT nFlags, CPoint point) 
     {
-        if (nFlags & MK_LBUTTON)
-        {
-            if (WRITE_TYPE == 1)
-            {
-                if (m_OldPoint.x <= 800 * X_XISHU && m_OldPoint.y <= 480 * Y_XISHU)
-                {
-                    if (m_OldPoint.x != point.x || m_OldPoint.y != point.y)
-                    {
-                        MoveToEx(m_MemDC->m_hDC, m_OldPoint.x, m_OldPoint.y, NULL);
-                        LineTo(m_MemDC->m_hDC, point.x, point.y);
+        POINT pt[64];
+        POINT ptM;
+        UINT i, uPoints = 0;
 
-                        MoveToEx(m_pDC->m_hDC, m_OldPoint.x, m_OldPoint.y, NULL);
-                        LineTo(m_pDC->m_hDC, point.x, point.y);
+        CStatic::OnMouseMove(nFlags, point);
+
+        if(nFlags & MK_LBUTTON)
+        {
+            CPoint pt1 = point;
+            //	if(pt1.x != 0xFFFF && pt1.y != 0xFFFF)
+            {
+
+
+                //	CPen pen (PS_SOLID, 2, RGB(0, 0, 0));
+                //	CPen* pOldPen = m_MemDC->SelectObject (&pen);
+                //	CPen* pOldPen1 = pdc->SelectObject (&pen);
+
+                if(WRITE_TYPE == 1)
+                {
+                    POINT pt[128];
+                    POINT ptM;
+                    UINT i, uPoints = 0;
+                    CPoint ptt;
+
+                    //::GetMouseMovePoints (pt, 128, &uPoints);
+
+                    for (i = 0; i < uPoints; i++) 
+                    {
+                        //Dprintf("Add %d\r\n", uPoints);
+                        pt[i].x /= 4;  // Convert move pts to screen coords
+                        pt[i].y /= 4;
+                        // Covert screen coordinates to window coordinates
+                        ::MapWindowPoints(HWND_DESKTOP, m_hWnd, &pt[i], 1);
+
+                        if(m_OldPoint.x <= 800 && m_OldPoint.y <= 480)
+                        {
+                            ptt = DoWithWrite(pt[i]);
+                            //Dprintf("[%d %d %d %d %d %d] ", pt[i].x, pt[i].y, m_OldPoint.x, m_OldPoint.y, m_OldPoint.x-ptt.x, m_OldPoint.y-ptt.y);
+
+                            if(m_OldPoint.x != ptt.x || m_OldPoint.y != ptt.y)
+                            {
+                                MoveToEx(m_MemDC->m_hDC, m_OldPoint.x, m_OldPoint.y, NULL);
+                                LineTo(m_MemDC->m_hDC, ptt.x, ptt.y);
+
+                                MoveToEx(m_pDC->m_hDC, m_OldPoint.x, m_OldPoint.y, NULL);
+                                LineTo(m_pDC->m_hDC, ptt.x, ptt.y);
+                            }
+
+
+                            //	OnAddPoint(m_OldPoint, ptt);
+                            //OnAddPoint(m_OldPoint, pt[i]);
+                            //		Dprintf("Pen MOVE (%d, %d) (%d, %d)\r\n", m_OldPoint.x, m_OldPoint.y, pt[i].x, pt[i].y);
+                        }
+
+                        m_OldPoint.x = ptt.x;
+                        m_OldPoint.y = ptt.y;
+
+                        //m_OldPoint.x = pt[i].x;
+                        //m_OldPoint.y = pt[i].y;
                     }
+
+                    if(m_OldPoint.x <= 800 && m_OldPoint.y <= 480)
+                    {
+                        ptt = DoWithWrite(pt1);
+                        //Dprintf("(%d %d %d %d %d %d) ", pt1.x, pt1.y, m_OldPoint.x, m_OldPoint.y, m_OldPoint.x-ptt.x, m_OldPoint.y-ptt.y);
+
+                        if(m_OldPoint.x != ptt.x || m_OldPoint.y != ptt.y)
+                        {
+                            MoveToEx(m_MemDC->m_hDC, m_OldPoint.x, m_OldPoint.y, NULL);
+                            LineTo(m_MemDC->m_hDC, ptt.x, ptt.y);
+
+                            MoveToEx(m_pDC->m_hDC, m_OldPoint.x, m_OldPoint.y, NULL);
+                            LineTo(m_pDC->m_hDC, ptt.x, ptt.y);
+                        }
+
+                        //OnAddPoint(m_OldPoint, point);
+
+
+                        //	Dprintf("Pen MOVE (%d, %d) (%d, %d)\r\n", m_OldPoint.x, m_OldPoint.y, pt1.x, pt1.y);
+                    }
+
+                    //		m_MemDC->SelectObject(pOldPen);
+                    //		pdc->SelectObject(pOldPen1);
+
+                    //m_OldPoint = pt1;
+                    m_OldPoint.x = ptt.x;
+                    m_OldPoint.y = ptt.y;
                 }
 
-                m_OldPoint.x = point.x;
-                m_OldPoint.y = point.y;
+                else		
+                {
+                    OnAddPoint(m_OldPoint, point);
+                    m_OldPoint = point;
+                }
             }
-            else
-            {
-                OnAddPoint(m_OldPoint, point);
-                m_OldPoint = point;
-            }
-            Invalidate();
         }
+        //Invalidate();
     }
 
     void CCEWriteStatic::ResetPoint()
@@ -1037,7 +1111,6 @@ namespace Control {
         m_PrePoint[1] = CPoint(0xFFFF, 0xFFFF);
         m_PrePoint[2] = CPoint(0xFFFF, 0xFFFF);
     }
-
     void CCEWriteStatic::ClearDC()
     {
         CRect rt;
@@ -1057,11 +1130,11 @@ namespace Control {
 
     CCEFrameStatic::~CCEFrameStatic()
     {
-        if (m_pTxtStruct)
+        if(m_pTxtStruct)
             delete m_pTxtStruct;
 
-        //memDC.DeleteDC();
-        //bmp.DeleteObject();
+        //	memDC.DeleteDC();   
+        //	bmp.DeleteObject();
     }
 
     BEGIN_MESSAGE_MAP(CCEFrameStatic, CStatic)
@@ -1088,7 +1161,8 @@ namespace Control {
 
     void CCEFrameStatic::OnDrawRect()
     {
-        //CStatic::OnPaint();
+
+        //	CStatic::OnPaint();
 
         CDC *pdc = GetDC();
         CRect rt;
@@ -1106,31 +1180,31 @@ namespace Control {
 
         //画top线
         CRect rect1= rt;
-        rect1 = CRect(0, 0, 480-1+1, 0+1);
+        rect1 = CRect(0, 0, 480 * 125 / 100-1+1, 0+1);
         memDC.FillSolidRect(&rect1, Data::g_allFramTopLineRGB[0][Data::g_skinstyle]);
-        rect1 = CRect(1, 1, 480-2+1, 1+1);
+        rect1 = CRect(1, 1, 480 * 125 / 100-2+1, 1+1);
         memDC.FillSolidRect(&rect1, Data::g_allFramTopLineRGB[1][Data::g_skinstyle]);
-        rect1 = CRect(2, 2, 480-3+1, 2+1);
+        rect1 = CRect(2, 2, 480 * 125 / 100-3+1, 2+1);
         memDC.FillSolidRect(&rect1, Data::g_allFramTopLineRGB[2][Data::g_skinstyle]);
-        rect1 = CRect(3, 3, 480-4+1, 3+1);
+        rect1 = CRect(3, 3, 480 * 125 / 100-4+1, 3+1);
         memDC.FillSolidRect(&rect1, Data::g_allFramTopLineRGB[3][Data::g_skinstyle]);
 
         if(m_nStyle == 0)
         {
-            rect1 = CRect(1, 4, 480-2+1, 12+1);
+            rect1 = CRect(1, 4, 480 * 125 / 100-2+1, 12+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramTopLineRGB[4][Data::g_skinstyle]);
-            rect1 = CRect(4, 13, 480-5+1, 13+1);
+            rect1 = CRect(4, 13, 480 * 125 / 100-5+1, 13+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramBackRGB[Data::g_skinstyle]);
         }
 
         //画bottom线
         if(!bHalfwindow)
         {
-            rect1 = CRect(0, 204-1, 480-1+1, 204-1+1);
+            rect1 = CRect(0, 204-1, 480 * 125 / 100-1+1, 204-1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramBottomLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(1, 204-2, 480-2+1, 204-2+1);
+            rect1 = CRect(1, 204-2, 480 * 125 / 100-2+1, 204-2+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramBottomLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(2, 204-3, 480-3+1, 204-3+1);
+            rect1 = CRect(2, 204-3, 480 * 125 / 100-3+1, 204-3+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramBottomLineRGB[2][Data::g_skinstyle]);
         }
 
@@ -1147,13 +1221,13 @@ namespace Control {
         //画right线
         if(!bHalfwindow)
         {
-            rect1 = CRect(480-1, 0, 480-1+1, 204-1+1);
+            rect1 = CRect(480-1, 0, 480 * 125 / 100-1+1, 204-1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramRightLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(480-2, 1, 480-2+1, 204-2+1);
+            rect1 = CRect(480-2, 1, 480 * 125 / 100-2+1, 204-2+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramRightLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(480-3, 2, 480-3+1, 204-3+1);
+            rect1 = CRect(480-3, 2, 480 * 125 / 100-3+1, 204-3+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramRightLineRGB[2][Data::g_skinstyle]);
-            rect1 = CRect(480-4, 2, 480-4+1, 204-4+1);
+            rect1 = CRect(480-4, 2, 480 * 125 / 100-4+1, 204-4+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramRightLineRGB[3][Data::g_skinstyle]);
         }
 
@@ -1161,17 +1235,17 @@ namespace Control {
         if(m_nStyle == 0)
         {
             //最后画一条Top线
-            rect1 = CRect(1, 14, 480-2+1, 14+1);
+            rect1 = CRect(1, 14, 480 * 125 / 100-2+1, 14+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramTopLineRGB[4][Data::g_skinstyle]);
 
             //画背景
-            rect1 = CRect(4, 15, 480-5+1, 204-4+1);
+            rect1 = CRect(4, 15, 480 * 125 / 100-5+1, 204-4+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramBackRGB[Data::g_skinstyle]);
         }
         else if(m_nStyle == 1 || m_nStyle == 2)
         {
             //画背景
-            rect1 = CRect(4, 4, 480-4+1, 204-4+1);
+            rect1 = CRect(4, 4, 480 * 125 / 100-4+1, 204-4+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramBackRGB[Data::g_skinstyle]);
         }
 
@@ -1179,27 +1253,27 @@ namespace Control {
         if(m_nStyle == 1)
         {
             //画top
-            rect1 = CRect(293, 0, 480-1+1, 0+1);
+            rect1 = CRect(293, 0, 480 * 125 / 100-1+1, 0+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(294, 1, 480-2+1, 1+1);
+            rect1 = CRect(294, 1, 480 * 125 / 100-2+1, 1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(295-2, 2, 480-3+1, 2+1);
+            rect1 = CRect(295-2, 2, 480 * 125 / 100-3+1, 2+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[2][Data::g_skinstyle]);
-            rect1 = CRect(295-2, 3, 480-4+1, 3+1);
+            rect1 = CRect(295-2, 3, 480 * 125 / 100-4+1, 3+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[3][Data::g_skinstyle]);
-            rect1 = CRect(295-2, 4, 480-5+1, 4+1);
+            rect1 = CRect(295-2, 4, 480 * 125 / 100-5+1, 4+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleTopLineRGB[4][Data::g_skinstyle]);
 
             //画right
-            rect1 = CRect(480-1, 0, 480-1+1, 188-1+1);
+            rect1 = CRect(480-1, 0, 480 * 125 / 100-1+1, 188-1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[0][Data::g_skinstyle]);
-            rect1 = CRect(480-2, 1, 480-2+1, 188-2+1+1);
+            rect1 = CRect(480-2, 1, 480 * 125 / 100-2+1, 188-2+1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[1][Data::g_skinstyle]);
-            rect1 = CRect(480-3, 2, 480-3+1, 188-3+1+1);
+            rect1 = CRect(480-3, 2, 480 * 125 / 100-3+1, 188-3+1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[2][Data::g_skinstyle]);
-            rect1 = CRect(480-4, 3, 480-4+1, 188-4+1+1);
+            rect1 = CRect(480-4, 3, 480 * 125 / 100-4+1, 188-4+1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[3][Data::g_skinstyle]);
-            rect1 = CRect(480-5, 4, 480-5+1, 188-5+1+1);
+            rect1 = CRect(480-5, 4, 480 * 125 / 100-5+1, 188-5+1+1);
             memDC.FillSolidRect(&rect1, Data::g_allFramAngleRightLineRGB[4][Data::g_skinstyle]);
 
             int x = 296;

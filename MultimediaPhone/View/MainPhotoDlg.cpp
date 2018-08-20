@@ -10,7 +10,7 @@
 #include "../Data/SkinStyle.h"
 #include "../Util/ScanDir.h"
 
-#include <algorithm>
+#include<algorithm>
 #include <string>
 
 #ifdef _DEBUG
@@ -91,14 +91,9 @@ namespace View {
 
         // TODO: Add extra initialization here
 
-		m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0*X_XISHU, 0*Y_XISHU, 535*X_XISHU, 420*Y_XISHU), this);
-        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\相册1.xml"));
-        m_MJPGList.SetMJPGRect(CRect(0*X_XISHU, 0, 535*X_XISHU, 420*Y_XISHU));
-
-
-        m_lstPlayList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7*X_XISHU, 50*Y_XISHU, (7+522)*X_XISHU, (50+213)*Y_XISHU), &m_MJPGList, IDC_LIST_PLAYPHOTOLIST, TRUE, 1);
+        m_lstPlayList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(7, 50, 7+522, 50+213), this, IDC_LIST_PLAYPHOTOLIST, TRUE, 1);
         m_lstPlayList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], Data::g_listctrlBackRGB2[Data::g_skinstyle]);
-        m_lstPlayList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480*X_XISHU);
+        m_lstPlayList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 480 * 125 / 100);
 
         m_pImageList = new CImageList();
         m_pImageList->Create(32, 32, ILC_COLOR32|ILC_MASK, 2, 2);   
@@ -136,6 +131,10 @@ namespace View {
         playerDlg_ = new CPlayerDlg(main->playerimage_);
         playerDlg_->Create(CPlayerDlg::IDD, this);
 
+        m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100), this);
+        m_MJPGList.SetCurrentLinkFile(_T(".\\adv\\mjpg\\k1\\中文\\相册1.xml"));
+        m_MJPGList.SetMJPGRect(CRect(0, 0, 535 * 125 / 100, 420 * 125 / 100));
+
         m_MJPGList.SetUnitIsShow(3, TRUE);
         m_MJPGList.SetUnitIsShow(4, TRUE);
         m_MJPGList.SetUnitIsShow(11, FALSE);
@@ -150,14 +149,7 @@ namespace View {
     void CMainPhotoDlg::SetPhoto()
     {
         playerDlg_->SetParam("", mtImage, FALSE);
-        CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-        CRect position;
-        main->GetWindowRect(&position);
-        position.left += 7 * X_XISHU;
-        position.top += 50 * Y_XISHU;
-        position.right = position.left + 522 * X_XISHU;
-        position.bottom = position.top + 213 * Y_XISHU;
-        playerDlg_->ReSetWindowsRect(position);
+        playerDlg_->ReSetWindowsRect(CRect(7, 50, 7+522, 50+213));
     }
 
     class FindJpg : public Util::ProcessFileProcedure {
@@ -189,7 +181,7 @@ namespace View {
         //wcscat(m_chDir, _T("/"));
         CString dir = cdir;
         ProcessFiles(_T("*.JPG"), FindJpg(dir, m_lstPlayList));
-        ProcessFiles(_T("*.BMP"), FindJpg(dir, m_lstPlayList));
+        //ProcessFiles(_T("*.jpg"), FindJpg(dir, m_lstPlayList));
         m_lstPlayList.SetScrollRagle(TRUE);
         return 1;
     }
@@ -338,6 +330,10 @@ namespace View {
             m_lstPlayList.SetItem(&lvitem);
             m_lstPlayList.SetItemData(i, 1);
         }
+        // 	char stxt[32];
+        // 	sprintf(stxt, "%d/%d", ncount, m_nCountPhoto);
+        // 	CString s = stxt;
+        // //	m_stcCount.SetWindowText(s);
     }
 
     void CMainPhotoDlg::OnClearAll()
@@ -364,6 +360,10 @@ namespace View {
             m_lstPlayList.SetItem(&lvitem);
             m_lstPlayList.SetItemData(i, 0);
         }
+        // 	char stxt[32];
+        // 	sprintf(stxt, "%d/%d", 0, m_nCountPhoto);
+        // 	CString s = stxt;
+        // //	m_stcCount.SetWindowText(s);
     }
 
     void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
@@ -376,42 +376,43 @@ namespace View {
             CString s1 = Util::StringOp::ToCString(Data::LanguageResource::Get(Data::RI_COMN_TOBOTTOM).c_str());
             s = m_lstPlayList.GetItemText(index, 0);
             //usb
-            if (s.Compare(_T("usbdisk")) == 0)
+            if(s.Compare(_T("usbdisk")) == 0)
             {
                 SetPlayList(_T("/usbdisk/"), 1);
             }
             //sd
-            else if (s.Compare(_T("storagecard")) == 0)
+            else if(s.Compare(_T("storagecard")) == 0)
             {
                 SetPlayList(_T("/storagecard/"), 1);
             }
             //上一级
-            else if (s.Compare(s1) == 0)
+            else if(s.Compare(s1) == 0)
             {
                 //	m_chDir
                 CString sDir = m_chDir;
                 int n = sDir.Find(_T("/"));
                 ::UINT8 old[16];
                 int i = 0;
-                while (n != -1)
+                while(n != -1)
                 {
                     old[i++] = n;
                     n += 1;
                     n = sDir.Find(_T("/"), n);
                 }
-                sDir = sDir.Mid(0, old[i - 2] + 1);
-                if (sDir == _T("/"))
+                sDir = sDir.Mid(0, old[i-2]+1);
+                if(sDir == _T("/"))
                     SetPlayList(sDir.GetBuffer(128), 0);
                 else
                     SetPlayList(sDir.GetBuffer(128), 1);
             }
+
             else
             {
                 int n = s.Find(_T(".bmp"));
                 int n1 = s.Find(_T(".BMP"));
                 int n2 = s.Find(_T(".jpg"));
                 int n3 = s.Find(_T(".JPG"));
-                if ((n1 == -1) && (n == -1) && (n2 == -1) && (n3 == -1))
+                if((n1 == -1) && (n == -1) && (n2 == -1) && (n3 == -1))
                 {
                     CString sDir = m_chDir;
                     sDir += s; 
@@ -421,14 +422,14 @@ namespace View {
                 else
                 {
                     int id = m_lstPlayList.GetItemData(index);
-                    id = (id == 0) ? 1 : 0;
+                    id=(id == 0)?1:0;
                     LVITEM lvitem;
-                    lvitem.mask = LVIF_TEXT | LVIF_IMAGE;   
-                    lvitem.iItem = index;   
-                    lvitem.iSubItem = 0;   
+                    lvitem.mask=LVIF_TEXT | LVIF_IMAGE;   
+                    lvitem.iItem=index;   
+                    lvitem.iSubItem=0;   
                     lvitem.pszText = (LPWSTR)(LPCTSTR)s;//(LPWSTR)(LPCTSTR)m_lstPlayList.GetItemText(index, 0);   
-                    lvitem.lParam = index;   
-                    lvitem.iImage = id;
+                    lvitem.lParam=index;   
+                    lvitem.iImage=id;
                     m_lstPlayList.SetItem(&lvitem);
                     m_lstPlayList.SetItemData(index, id);
                 }
@@ -437,12 +438,17 @@ namespace View {
 
         int ncount = m_lstPlayList.GetItemCount();
         int n = 0;
-        for (int i = 0; i < ncount; ++i)
+        for(int i = 0; i < ncount; i++)
         {
-            if (m_lstPlayList.GetItemData(i) == 1)
-                ++n;
+            if(m_lstPlayList.GetItemData(i) == 1)
+                n++;
         }
         m_nCountPhoto = n;
+        // 	char stxt[32];
+        // 	sprintf(stxt, "%d/%d", 1, m_nCountPhoto);
+        // 	CString s = stxt;
+        // 	m_stcCount.SetWindowText(s);
+
         *pResult = 0;
     }
 
@@ -454,15 +460,14 @@ namespace View {
         int nFileSelected = 0;
         int ncount = m_lstPlayList.GetItemCount();
 
-        for (int i = 0; i < ncount; ++i)
+        for(int i = 0; i < ncount; i++)
         {
             int val = m_lstPlayList.GetItemData(i);
-            if (val == 1)
+            if(val == 1)
             {
-#if 0
                 char filename[128];
                 CString s = m_lstPlayList.GetItemText(i, 0);
-                int n = wcstombs(filename, (LPTSTR)(LPCTSTR)s, 128/*s.GetLength()*/);
+                int n = wcstombs( filename, s.GetBuffer(128), 128/*s.GetLength()*/);
                 filename[n] = '\0';
 
                 char file_dir[128];
@@ -474,20 +479,17 @@ namespace View {
 
                 m_PhotoList.push_back(Util::StringOp::ToCString(txt));
                 nFileSelected++;
-#else
-                m_PhotoList.push_back(CString(m_chDir) + _T("/") + m_lstPlayList.GetItemText(i, 0));
-#endif
             }
         }
 
-        if (m_PhotoList.size() != 0)
+        if(nFileSelected != 0)
         {
             std::sort(m_PhotoList.begin(), m_PhotoList.end());
             CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
             main->playerimage_->SetImageList(m_PhotoList);
 
             //调用播放窗口
-            if (playerDlg_)
+            if(playerDlg_)
             {
                 SetPhoto();
                 playerDlg_->ShowWindow(SW_SHOW);
@@ -586,16 +588,16 @@ namespace View {
 
     }
 
-    void CMainPhotoDlg ::SetAllScreenPlayer(BOOL flag)
+    void CMainPhotoDlg::SetAllScreenPlayer(BOOL flag)
     {
         if(flag)
         {
-            CRect rt = CRect(0, 0, 800*X_XISHU, 480*Y_XISHU);
+            CRect rt = CRect(0, 0, 800 * 125 / 100, 480 * 125 / 100);
             playerDlg_->MoveWindow(&rt);
         }
         else
         {
-            CRect rt = CRect(7*X_XISHU, 50*Y_XISHU, (7+522)*X_XISHU, (50+213)*Y_XISHU);
+            CRect rt = CRect(7, 50, 7 + 522, 50 + 213);
             playerDlg_->MoveWindow(&rt);
         }
 

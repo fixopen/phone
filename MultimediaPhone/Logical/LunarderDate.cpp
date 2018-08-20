@@ -885,14 +885,14 @@ namespace Logical {
         //查找农历节日
         char *LunarderDate::FindNongLiJieri(int nY, int nM, int nD, int y, int m, int d)
         {
-     		//UINT16 iYear, iMonth, iDay;
-     		//UINT ret = CalcLeapLunarYear(nY, iYear, iMonth, iDay);
-     
-     		//if(ret > 0)
-     		//{
-     		//	if((GetLeapMonth(nY) == nM) && ((m > iMonth) || (m == iMonth && d >= iDay)))
-     		//		return NULL;
-     		//}
+            // 		UINT16 iYear, iMonth, iDay;
+            // 		UINT ret = CalcLeapLunarYear(nY, iYear, iMonth, iDay);
+            // 
+            // 		if(ret > 0)
+            // 		{
+            // 			if((GetLeapMonth(nY) == nM) && ((m > iMonth) || (m == iMonth && d >= iDay)))
+            // 				return NULL;
+            // 		}
             if(GetLeapMonth(nY) == nM) 
             {
                 if(nM == 4 || nM == 6 || nM == 10 || nM == 11)

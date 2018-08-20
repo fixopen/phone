@@ -43,12 +43,8 @@ namespace View {
         int Cur();
         bool ExitPlayer(BOOL flag = TRUE);
         bool SetAllScreenPlayer(BOOL flag = TRUE); //È«ÆÁ²¥·Å
-        void SetOwner(CWnd *pWnd) {
-            owner_ = pWnd;
-        }
-        void SetPlayerOwner(CWnd *pWnd) {
-            playerOwner_ = pWnd;
-        }
+        void SetOwner(CWnd *pWnd){owner_ = pWnd;}
+        void SetPlayerOwner(CWnd *pWnd){playerOwner_ = pWnd;}
         void SetVolume(int volume);
 
         MediaType mt_;
