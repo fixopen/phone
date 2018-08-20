@@ -37,8 +37,6 @@ public:
 
 	void GetTime(CTime &timeDest);
 	void GetTime(SYSTEMTIME &sti);
-	
-	em_selection m_curSel;		//控件中被选择的字段
 
 private:
 	static const int BUTTON_WIDTH;
@@ -51,8 +49,12 @@ private:
 	int m_nHour;
 	int m_nMinute;
 	int m_nSecond;
+
+//	SYSTEMTIME m_sysTime;
 	
+	em_selection m_curSel;
 	em_mode m_mode;
+//	CTime m_time;
 
 	CCEBmpButton m_btnUp;
 	CCEBmpButton m_btnDown;
@@ -70,9 +72,7 @@ private:
 // Implementation
 public:
 	virtual ~CDateCtrl();
-	
-	afx_msg void OnButtonUp();
-	afx_msg void OnButtonDown();
+
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CDateCtrl)
@@ -83,6 +83,8 @@ protected:
 	 afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	 afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	 afx_msg void OnSize(UINT nType, int cx, int cy);
+	 afx_msg void OnButtonUp();
+	 afx_msg void OnButtonDown();
 	 afx_msg void OnSubBtnUp(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 };

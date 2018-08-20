@@ -19,12 +19,11 @@ namespace Util {
         };
         std::wstring const HttpAcceptType = L"*/*";
         std::wstring const HttpAccept = L"Accept: */*\r\n";
-		WCHAR const *HttpAcceptType_;
         int const BufferSize = 1024;
     }
     std::wstring const AgentName = L"3GPHONE(0.9/;p)";
 
-    URI::URI(std::wstring const& uri):port(80) {
+    URI::URI(std::wstring const& uri) {
         size_t startPos = 0;
         size_t stopPos = 0;
         stopPos = uri.find(L"://", startPos);
@@ -98,10 +97,6 @@ namespace Util {
     , thread_(new Transport(this))*/ 
 	{
 		wsprintf(apn_proxyIP, L"");
-		bNewSocket = FALSE;
-		HTTPRequest = NULL;
-	//	pNewSocket = NULL;
-		pNewSocket.Create();
     }
 	
 	void HTTPTransport::SetAPN(DIAL_APN apn, char *proxy)
@@ -111,20 +106,17 @@ namespace Util {
 	}
 
     DWORD HTTPTransport::Get(std::wstring const& uriV, std::wstring const& agentName) {
-		Dprintf("Get HTTPTransport 0\r\n");
         DWORD error = 0;
         HINTERNET HTTPOpen = ::InternetOpen(agentName.c_str(),
             INTERNET_OPEN_TYPE_PROXY /*INTERNET_OPEN_TYPE_PRECONFIG*/, // proxy option
             apn_proxyIP, // proxy
             NULL, // proxy bypass
             0); // flags
-		Dprintf("Get HTTPTransport 1\r\n");
+
         if (!HTTPOpen) {
             error = ::GetLastError();
         } else {
-			Dprintf("Get HTTPTransport 2\r\n");
             URI uri(uriV);
-			Dprintf("Get HTTPTransport 3\r\n");
 
             HINTERNET HTTPConnection = ::InternetConnect(HTTPOpen, // internet opened handle
                 uri.host.c_str(),
@@ -134,69 +126,47 @@ namespace Util {
                 INTERNET_SERVICE_HTTP, // service type
                 INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_NO_CACHE_WRITE, // service option
                 0);	// context call-back option
-			Dprintf("Get HTTPTransport 4\r\n");
+
             if (!HTTPConnection) {
                 error = ::GetLastError();
                 ::CloseHandle(HTTPOpen);
             } else {
-				Dprintf("Get HTTPTransport 5\r\n");
                 if (::InternetAttemptConnect(NULL) != ERROR_SUCCESS) {
                     error = ::GetLastError();
                     ::CloseHandle(HTTPConnection);
                     ::CloseHandle(HTTPOpen);
                 } else {
-					Dprintf("Get HTTPTransport 6\r\n");
-					wchar_t data[256];
-					wcscpy(data,  HttpAcceptType.c_str());
-                //  wchar_t const* acceptType = HttpAcceptType.c_str();
-					wchar_t const* acceptType = &data[0];
-
-					LPCTSTR ppszAcceptTypes[2];
-					ppszAcceptTypes[0] = _T("*/*"); //We support accepting any mime file type since this is a simple download of a file
-					ppszAcceptTypes[1] = NULL;
-					/*
-					m_hHttpFile = HttpOpenRequest(m_hHttpConnection, NULL, (LPCTSTR)m_sObject, NULL, NULL, ppszAcceptTypes, INTERNET_FLAG_RELOAD | INTERNET_FLAG_DONT_CACHE | INTERNET_FLAG_KEEP_CONNECTION, (DWORD) this);
-					if (m_hHttpFile == NULL)
-					{
-						HandleThreadErrorWithLastError(IDS_HTTPDOWNLOAD_FAIL_CONNECT_SERVER);
-						return;
-					}
-					*/
-				       HTTPRequest = ::HttpOpenRequest(HTTPConnection,
+                    wchar_t const* acceptType = HttpAcceptType.c_str();
+                    HTTPRequest = ::HttpOpenRequest(HTTPConnection,
                         HttpVerbs[vGet].c_str(), // HTTP Verb
                         uriV.c_str(), // Object Name
                         HTTP_VERSION, // Version
-                        NULL, // Reference
-                        /*&acceptType*/ppszAcceptTypes, // Accept Type
-                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_DONT_CACHE | INTERNET_FLAG_KEEP_CONNECTION,
+                        L"", // Reference
+                        &acceptType, // Accept Type
+                        INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_NO_CACHE_WRITE,
                         0); // context call-back point
-					Dprintf("Get HTTPTransport 62\r\n");
+
                     if (!HTTPRequest) {
                         error = ::GetLastError();
-						Dprintf("Get HTTPTransport 63 = %d\r\n", error);
                         return error;
                     } else {
                         // set accept header
-						Dprintf("Get HTTPTransport 7\r\n");
                         if (!::HttpAddRequestHeaders(HTTPRequest, HttpAccept.c_str(), HttpAccept.length(), HTTP_ADDREQ_FLAG_REPLACE)) {
                             error = ::GetLastError();
                             return error;
                         } else {
                             //set other headers
-							Dprintf("Get HTTPTransport 8\r\n");
                             std::wstring headers;
                             for (std::map<std::wstring, std::wstring>::iterator i = message.headers.begin(); i != message.headers.end(); ++i) {
                                 headers += i->first + L": " + i->second + L"\x0d\x0a";
                             }
                             if(headers.length() != 0)
 							{
-								Dprintf("Get HTTPTransport 9\r\n");
 								if (!::HttpAddRequestHeaders(HTTPRequest, headers.c_str(), headers.length(), HTTP_ADDREQ_FLAG_ADD)) {
 									error = ::GetLastError();
 								}
                             } 
 							{
-								Dprintf("Get HTTPTransport 10\r\n");
                                 //send request
                                 if (!::HttpSendRequest(HTTPRequest, // handle by returned HttpOpenRequest
                                     NULL, // additional HTTP header
@@ -248,16 +218,12 @@ namespace Util {
                     ::CloseHandle(HTTPOpen);
                 } else {
                     wchar_t const* acceptType = HttpAcceptType.c_str(); //const_cast<wchar_t*>();
-					LPCTSTR ppszAcceptTypes[2];
-					ppszAcceptTypes[0] = _T("*/*"); //We support accepting any mime file type since this is a simple download of a file
-					ppszAcceptTypes[1] = NULL;
-
                     HTTPRequest = ::HttpOpenRequest(HTTPConnection,
                         HttpVerbs[vPost].c_str(), // HTTP Verb
                         uriV.c_str(), // Object Name
                         HTTP_VERSION, // Version
-                        NULL, // Reference
-                        /*&acceptType*/ppszAcceptTypes, // Accept Type reinterpret_cast<LPCWSTR*>()
+                        L"", // Reference
+                        &acceptType, // Accept Type reinterpret_cast<LPCWSTR*>()
                         INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_NO_CACHE_WRITE,
                         0); // context call-back point
 
@@ -314,120 +280,9 @@ namespace Util {
 				actSize = 0;
 			}       
 		}
-		else if(bNewSocket)
-		{
-			actSize = pNewSocket.Receive(pBuf, length);
-		}
 		return actSize;
 	}
 
-	void HTTPTransport::Close()
-	{
-		if(HTTPRequest)
-		{
-			::InternetCloseHandle(HTTPRequest);
-			HTTPRequest = NULL;
-		}
-		if(bNewSocket)
-		{
-//			pNewSocket.Close();    //不主动断开
-//			delete pNewSocket;
-//			pNewSocket = NULL;
-			bNewSocket = FALSE;
-		}
-	}
-
-	DWORD HTTPTransport::Get_(std::wstring const& uriV) {
-		bNewSocket = FALSE;
-	//	if(pNewSocket == NULL)
-		{
-		//	pNewSocket = new CNewSocket();
-		//	pNewSocket.Create();
-		}
-		Dprintf("Get_ HTTPTransport 0\r\n");
-        DWORD error = 0;
-		URI uri(uriV);
-		CString sIp = apn_proxyIP;
-		int port = 80;
-        if(wcslen(apn_proxyIP) > 0)
-		{
-			CString s = apn_proxyIP;
-			int n = s.Find(L":");
-			if(n >= 0)
-			{
-				sIp = s.Mid(0, n);
-				CString sPort = s.Right(s.GetLength() - n - 1);
-				port = Util::StringOp::ToInt(sPort);
-			}
-		}
-		else
-		{
-			sIp = uri.host.c_str();
-			port = uri.port;
-		}
-		if(pNewSocket.Connect(sIp, port))
-		{
-			bNewSocket = TRUE;
-			char BUF_[1024] = {0};
-			char url_[256] = {0};
-			wcstombs(url_, uriV.c_str(), uriV.length());
-			sprintf(BUF_, "GET %s HTTP/1.1\r\nAccept:*/*\r\nAccept-Language:zh-cn\r\nUser-Agent:3GPHONE(0.9/;p)\r\nConnection:Keep-Alive\r\n\r\n", url_);
-			int ret = pNewSocket.Send(BUF_, strlen(BUF_));
-			if(ret != strlen(BUF_))
-				error = GetLastError();
-		}
-		else
-			error = GetLastError();	
-        return error;
-    }
-
-	DWORD HTTPTransport::Post_(std::wstring const& uriV) {
-		bNewSocket = FALSE;
-	//	if(pNewSocket == NULL)
-		{
-		//	pNewSocket = new CNewSocket();
-		//	pNewSocket.Create();
-		}
-		Dprintf("Post_ HTTPTransport 0\r\n");
-        DWORD error = 0;
-		URI uri(uriV);
-		CString sIp = apn_proxyIP;
-		int port = 80;
-        if(wcslen(apn_proxyIP) > 0)
-		{
-			CString s = apn_proxyIP;
-			int n = s.Find(L":");
-			if(n >= 0)
-			{
-				sIp = s.Mid(0, n);
-				CString sPort = s.Right(s.GetLength() - n -1);
-				port = Util::StringOp::ToInt(sPort);
-			}
-
-		}
-		else
-		{
-			sIp = uri.host.c_str();
-			port = uri.port;
-		}
-		if(pNewSocket.Connect(sIp, port))
-		{
-			bNewSocket = TRUE;
-			char BUF_[1024] = {0};
-			char url_[256] = {0};
-			wcstombs(url_, uriV.c_str(), uriV.length());
-			char *pBuf[3] = {"POST ", " HTTP/1.1\r\nContent-type: application/x-www-form-urlencoded\r\nAccept: text/plain,*/*\r\nUser-Agent: ceHttp\r\nContent-Length: ", "\r\n\r\n"};
-	
-			sprintf(BUF_, "%s%s%s%d%s", pBuf[0], url_, pBuf[1], nPostDataLenth, pBuf[2]);
-			strcat(BUF_, pPostData);
-			int ret = pNewSocket.Send(BUF_, strlen(BUF_));
-			if(ret != strlen(BUF_))
-				error = GetLastError();
-		}
-		else
-			error = GetLastError();	
-        return error;
-    }
 	/*
 	int HTTPTransport::Recv()
 	{

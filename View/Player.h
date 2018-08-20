@@ -36,14 +36,9 @@ public:
 	bool StopImage();
 	bool PausePlayer(BOOL isPause);
 	bool ResumePlayer();
-	bool NarrowPlay(CString filename);   //缩小显示
-	bool ZoomPlay(CString filename);	 //放大显示	
-	bool RotatePicture(CString filename);    //旋转图片
 
 	int Up();
 	int Down();
-	int First();
-	int Last();
 	int Cur();
 	bool ExitPlayer(BOOL flag = TRUE);
 	bool SetAllScreenPlayer(BOOL flag = TRUE); //全屏播放
@@ -73,13 +68,12 @@ public:
 
 	std::vector<CString> files_;
 	int index_;
-	unsigned int zoom_;     //图片显示大小
-	unsigned int rotate_;
 	BOOL isPlayerRun;
 	//CString currentFile_;
 
 	CWnd* owner_;			//playerDlg_					播放窗口
-	CWnd* playerOwner_;		//MultimediaPhoneDlg			接受播放器消息的窗口 
+	CWnd* playerOwner_;		//MultimediaPhoneDlg			接受播放器消息的窗口
+	//CWnd* 
 };
 
 #endif // !defined(AFX_PLAYER_H__606ADDB4_DE80_42E8_B118_B2F56084EB7E__INCLUDED_)

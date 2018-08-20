@@ -77,8 +77,7 @@ void C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	switch(w)
 	{
 	case 1:			//家庭影院
-		//pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
-		pMainDlg->OnButtonSetting(); //系统设置
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
 		break;
 	case 2:			//计算器
 		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnCalculBtn();
@@ -86,6 +85,8 @@ void C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 3:			//电子日历
 		SYSTEMTIME curtime;
 		GetLocalTime(&curtime);
+		pMainDlg->m_pMainDlg->m_pHuangLiDlg_->SetData(curtime.wYear, curtime.wMonth, curtime.wDay, TRUE);
+		pMainDlg->m_pMainDlg->m_pHuangLiDlg_->ShowWindow(SW_SHOW);    //老黄历
 		break;
 	case 4:			//日程提醒
 		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnLunarderBtn();

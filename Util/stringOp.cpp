@@ -436,7 +436,7 @@ namespace Util
 	std::string StringOp::FromDouble(double const value)
 	{
 		char stringValue[64] = {0};
-		sprintf(stringValue, "%f", value);
+		sprintf(stringValue, "%d", value);
 		return stringValue;
 	}
 	

@@ -6,8 +6,6 @@
 #include "../Data/LanguageResource.h"
 #include "../Data/SkinStyle.h"
 #include "CalculaterDlg.h"
-#include "../multimediaphone.h"
-#include "../MultimediaPhoneDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -58,6 +56,57 @@ void wsprintf_1(WCHAR *wstr, int num, double val)
 	_gcvt(val, num, str);
 	int len = strlen(str);
 	str[len] = '0';
+
+	/*
+	double tt1= ceil(val);
+	char *pTxt = ecvt(val, num, &n, &s);
+	
+	if(s == 1)
+	{
+		strcpy(str, "-");
+		if(n <= 0)
+		{
+			n = abs(n);
+			strcat(str, "0.");
+			while(n--)
+			{
+				strcat(str, "0");
+			}
+			strcat(str, pTxt);
+		}
+		else
+		{
+			char txt[20];
+			memset(txt, 0, 20);
+			strncpy(txt, pTxt, n);
+			strcat(str, txt);
+			strcat(str, ".");
+			strcat(str, (pTxt+n));
+		}
+	}
+	else
+	{
+		if(n <= 0)
+		{
+			n = abs(n);
+			strcpy(str, "0.");
+			while(n--)
+			{
+				strcat(str, "0");
+			}
+			strcat(str, pTxt);
+		}
+		else
+		{
+			char txt[20];
+			memset(txt, 0, 20);
+			strncpy(txt, pTxt, n);
+			strcpy(str, txt);
+			strcat(str, ".");
+			strcat(str, (pTxt+n));
+		}
+	}
+	*/
 	
 	mbstowcs(wstr, str, strlen(str)+1);
 }
@@ -83,20 +132,13 @@ void CCalculaterDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CCalculaterDlg, CDialog)
 	//{{AFX_MSG_MAP(CCalculaterDlg)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 void CCalculaterDlg::OnExit()
 {
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	CString icon ;
-	
 	OnSoftKey(C_KEYV, 0);
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)this, (LPARAM)SW_HIDE);
-
-	main->PopbackIcon();
-	
 }
 /////////////////////////////////////////////////////////////////////////////
 // CCalculaterDlg message handlers
@@ -111,74 +153,44 @@ BOOL CCalculaterDlg::OnInitDialog()
 	m_dtemp0 = 0;
 	m_dtemp1 = 0;
 	m_dtemp2 = 0;
-	m_transferType = 0;
 	m_IsError = FALSE; //2005.5.19 zmy
 
-//  wangzhenxing1102
-	CRect r(51, 30, 532, 82);
-	m_NumFont.CreateFont(30,                        // nHeight
-		0,                         // nWidth
-		0,                         // nEscapement
-		0,                         // nOrientation
-		FW_NORMAL,                 // nWeight
-		FALSE,                     // bItalic
-		FALSE,                     // bUnderline
-		0,                         // cStrikeOut
-		ANSI_CHARSET,              // nCharSet
-		OUT_DEFAULT_PRECIS,        // nOutPrecision
-		CLIP_DEFAULT_PRECIS,       // nClipPrecision
-		DEFAULT_QUALITY,           // nQuality
-		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-	   _T("宋体"));
-	m_DialNumEdit.Create(WS_CHILD|ES_RIGHT|ES_NUMBER|ES_MULTILINE, r, this, 0xFFFF);
+	CRect r(62, 70, 534, 104);
+	m_DialNumEdit.Create(WS_CHILD|WS_VISIBLE|ES_RIGHT|ES_NUMBER|ES_MULTILINE, r, this, 0xFFFF);
 	m_DialNumEdit.SetIsAutoInput();
-	m_DialNumEdit.SetFont(&m_NumFont);
+/*	
+	VERIFY(m_Font.CreateFont(
+	   18,                        // nHeight
+	   0,                         // nWidth
+	   0,                         // nEscapement
+	   0,                         // nOrientation
+	   FW_NORMAL,                 // nWeight
+	   FALSE,                     // bItalic
+	   FALSE,                     // bUnderline
+	   0,                         // cStrikeOut
+	   ANSI_CHARSET,              // nCharSet
+	   OUT_DEFAULT_PRECIS,        // nOutPrecision
+	   CLIP_DEFAULT_PRECIS,       // nClipPrecision
+	   DEFAULT_QUALITY,           // nQuality
+	   DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
+	   _T("宋体")));                 // lpszFacename
+	m_DialNumEdit.SetFont(&m_Font,FALSE);   
+	*/
 	m_DialNumEdit.HideCaret();
 	m_DialNumEdit.SetLimitText(16);
-	//m_DialNumEdit.ShowWindow(SW_SHOW);
-	
-	m_TransFont.CreateFont(18,                        // nHeight
-		0,                         // nWidth
-		0,                         // nEscapement
-		0,                         // nOrientation
-		FW_NORMAL,                 // nWeight
-		FALSE,                     // bItalic
-		FALSE,                     // bUnderline
-		0,                         // cStrikeOut
-		ANSI_CHARSET,              // nCharSet
-		OUT_DEFAULT_PRECIS,        // nOutPrecision
-		CLIP_DEFAULT_PRECIS,       // nClipPrecision
-		DEFAULT_QUALITY,           // nQuality
-		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-	   _T("宋体"));
 
-	m_edtTransferNum1.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(623,152,740,175), this, 0xFFFF);
-	m_edtTransferNum1.SetFont(&m_TransFont);
-	m_edtTransferNum1.SetLimitDiagital();
-	m_edtTransferNum1.ShowWindow(SW_HIDE);
+//	m_DialNumEdit.SetFontSize(24);
+//	m_DialNumEdit.SetColor(RGB(0, 0, 0), RGB(255, 255, 255));
 	
-	m_edtTransferNum2.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(623,205,740,228), this, 0xFFFF);
-	m_edtTransferNum2.SetFont(&m_TransFont);
-	m_edtTransferNum2.SetLimitDiagital();
-	m_edtTransferNum2.ShowWindow(SW_HIDE);
-
-	m_cmbType1.CreateEx(WS_CHILD|WS_VISIBLE, CRect(623, 129, 740, 360), this, 0xFFFF, 20, 36, 26, 1);
-	m_cmbType2.CreateEx(WS_CHILD|WS_VISIBLE, CRect(623, 181, 740, 400), this, 0xFFFF, 20, 36, 26, 1);
-	m_cmbType1.ShowWindow(SW_HIDE);
-	m_cmbType2.ShowWindow(SW_HIDE);
-
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\计算器.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
-	
-	OnClickMJPG(50, 0);
-	MoveWindow(0,57,800,423);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\计算器.xml");
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 600, 420));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CCalculaterDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void CCalculaterDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 {
 	UINT16 keyV[] = {0x800, BACKSPACE_KEYV, CE_KEYV, C_KEYV,\
 		MC_KEYV, '7', '8', '9', CHU_KEYV, GENHAO_KEYV,\
@@ -186,86 +198,11 @@ void CCalculaterDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		MS_KEYV, '1', '2', '3', JIAN_KEYV, DAOSHU_KEYV,\
 		MJ_KEYV, '0', FUHAO_KEYV, '.', JIA_KEYV, DENG_KEYV
 	};
-	switch (w)
-	{
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-	case 8:
-	case 9:
-	case 10:
-	case 11:
-	case 12:
-	case 13:
-	case 14:
-	case 15:
-	case 16:
-	case 17:
-	case 18:
-	case 19:
-	case 20:
-	case 21:
-	case 22:
-	case 23:
-	case 24:
-	case 25:
-	case 26:
-	case 27:		//功能和数字键
-		OnSoftKey(keyV[w], 0);
-		break;
-	case 50:	//功率
-		m_MJPGList.SetUnitFont(61, font_16);
-		m_MJPGList.SetUnitText(61, L"功率", TRUE);
-		m_transferType = 1;
-		SetComboData(m_transferType);
-		break;
-	case 51:	//时间
-		m_MJPGList.SetUnitFont(61, font_16);
-		m_MJPGList.SetUnitText(61, L"时间", TRUE);
-		m_transferType = 2;
-		SetComboData(m_transferType);
-		break;
-	case 52:	//压力
-		m_MJPGList.SetUnitFont(61, font_16);
-		m_MJPGList.SetUnitText(61, L"压力", TRUE);
-		m_transferType = 3;
-		SetComboData(m_transferType);
-		break;
-	case 53:	//温度
-		m_MJPGList.SetUnitFont(61, font_16);
-		m_MJPGList.SetUnitText(61, L"温度", TRUE);
-		m_transferType = 4;
-		SetComboData(m_transferType);
-		break;
-	case 54:	//速率
-		m_MJPGList.SetUnitFont(61, font_16);
-		m_MJPGList.SetUnitText(61, L"速率", TRUE);
-		m_transferType = 5;
-		SetComboData(m_transferType);
-		break;
-	case 55:	//体积
-		m_MJPGList.SetUnitFont(61, font_16);
-		m_MJPGList.SetUnitText(61, L"体积", TRUE);
-		m_transferType = 6;
-		SetComboData(m_transferType);
-		break;
-	case 62:
-		OnButtonEquel(m_transferType);
-		break;
-	case 1000:		//返回
-		OnExit();
-		break;
-	default:
-		break;
-	}
+	OnSoftKey(keyV[w-1], 0);
 }
 
 //软键盘的响应函数
-void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
+void CCalculaterDlg ::OnSoftKey(WPARAM w, LPARAM l)
 {
 	if(w == 0x800)   //退出
 	{
@@ -273,8 +210,7 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 		return;
 	}
 
-	if (m_IsError && w != C_KEYV)
-		return;		//2005.5.19 zmy 错误，点击任何键都无反应		
+	if (m_IsError && w != C_KEYV)return; //2005.5.19 zmy 错误，点击任何键都无反应		
 	
 	//数字键的输入
 	if (w < m_keynull)
@@ -282,6 +218,7 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 		if (m_keyvalue < C_KEYV)
 		{	
 			WCHAR t_buffer[20];
+			//CString s;
 			int len = m_DialNumEdit.GetWindowText(t_buffer, 20);
 			if((len == 0) && (w == '.'))return;
 			if((len == 1) && (t_buffer[0] == '0') && (w == '0'))return;
@@ -360,7 +297,7 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 				
 				break;
 			//清除作用
-			case C_KEYV:
+			case C_KEYV :
 				m_DialNumEdit.SetWindowText(L"");
 				m_dtemp0 = 0;
 				m_keyvalue = m_keynull;
@@ -378,11 +315,21 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 			case CE_KEYV :
 				//ClearData();
 				m_DialNumEdit.SetWindowText(L"");
+
 				m_dCurtemp = 0;					//wwf
+			//	m_dtemp0 = 0;
+				/*
+				m_keyvalue = m_keynull;
+				m_keyvalue1 = m_keynull;
+				m_keyvalue2 = m_keynull;
+				*/
 				break;
 
 			//当前数字和存储器中的数据相加并存到存储器中
 			case MJ_KEYV :
+// 				m_DialNumEdit.GetWindowText(buffer, 20);
+// 				dtemp1 = WTOF(buffer);
+// 				m_number1 = m_number1 + dtemp1;
 				m_number1 = m_number1 + m_dCurtemp;
 				m_keyvalue = MJ_KEYV;
 				break;
@@ -472,7 +419,8 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 
 			//当前数字取负号
 			case FUHAO_KEYV :
-				m_dCurtemp = -m_dCurtemp;
+					m_dCurtemp = -m_dCurtemp;
+				//sprintf_(buffer, "%.12f", temp2);
 				wsprintf(buffer, _T("%16.14f"), m_dCurtemp);
 				for (i =  wcslen(buffer); i > 0; i --)
 					if (buffer[i-1] != '0')break;
@@ -700,7 +648,7 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 				{
 					//strcpy(buffer1, "除数不能为零");					
 					m_DialNumEdit.SetWindowText(L"Error");		
-					m_IsError = TRUE;	//2005.5.19 zmy 设置错误的标志
+					m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
 					m_dCurtemp = 0;
 				}
 				
@@ -908,6 +856,7 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 				m_keyvalue = DENG_KEYV;
 				m_keyvalue2 = DENG_KEYV;
 				break;
+				
 		}	
 	}
 }
@@ -920,502 +869,4 @@ void CCalculaterDlg::ClearData()
 	m_dtemp2 = 0;
 	m_number1 = 0;
 	m_IsError = FALSE;//2005.5.19 zmy 
-}
-
-void CCalculaterDlg::ShowWindow_(int nCmdShow)
-{
-	m_DialNumEdit.SetWindowText(L"");
-	OnClickMJPG(50, 0);
-	SetTimer(1, 100, NULL);
-	ShowWindow(nCmdShow);
-}
-
-void CCalculaterDlg::SetComboData(int type)
-{
-	m_edtTransferNum1.SetWindowText(L"");
-	m_edtTransferNum2.SetWindowText(L"");
-	m_cmbType1.SetWindowText(L"");
-	m_cmbType2.SetWindowText(L"");
-	switch(type)
-	{
-	case 1:		//功率
-		m_cmbType1.ResetContent();
-		m_cmbType1.AddString(L"瓦(W)");
-		m_cmbType1.AddString(L"千瓦(kW)");
-		m_cmbType1.AddString(L"焦耳/秒(J/s)");
-		m_cmbType1.AddString(L"英制马力(HP)");
-		m_cmbType1.AddString(L"米制马力(PS)");
-		m_cmbType1.SetCurSel(0);
-
-		m_cmbType2.ResetContent();
-		m_cmbType2.AddString(L"瓦(W)");
-		m_cmbType2.AddString(L"千瓦(kW)");
-		m_cmbType2.AddString(L"焦耳/秒(J/s)");
-		m_cmbType2.AddString(L"英制马力(HP)");
-		m_cmbType2.AddString(L"米制马力(PS)");
-		m_cmbType2.SetCurSel(0);
-		break;
-	case 2:		//时间
-		m_cmbType1.ResetContent();
-		m_cmbType1.AddString(L"秒(second)");
-		m_cmbType1.AddString(L"毫秒(minsecond)");
-		m_cmbType1.AddString(L"分钟(minute)");
-		m_cmbType1.AddString(L"小时(hour)");
-		m_cmbType1.AddString(L"天(day)");
-		m_cmbType1.SetCurSel(0);
-
-		m_cmbType2.ResetContent();
-		m_cmbType2.AddString(L"秒(second)");
-		m_cmbType2.AddString(L"毫秒(minsecond)");
-		m_cmbType2.AddString(L"分钟(minute)");
-		m_cmbType2.AddString(L"小时(hour)");
-		m_cmbType2.AddString(L"天(day)");
-		m_cmbType2.SetCurSel(0);
-		break;
-	case 3:		//压力
-		m_cmbType1.ResetContent();
-		m_cmbType1.AddString(L"帕(Pa)");
-		m_cmbType1.AddString(L"千帕(kPa)");
-		m_cmbType1.AddString(L"标准大气压(atm)");
-		m_cmbType1.AddString(L"毫米汞柱(托)");
-		m_cmbType1.AddString(L"毫米水柱");
-		m_cmbType1.SetCurSel(0);
-
-		m_cmbType2.ResetContent();
-		m_cmbType2.AddString(L"帕(Pa)");
-		m_cmbType2.AddString(L"千帕(kPa)");
-		m_cmbType2.AddString(L"标准大气压(atm)");
-		m_cmbType2.AddString(L"毫米汞柱(托)");
-		m_cmbType2.AddString(L"毫米水柱");
-		m_cmbType2.SetCurSel(0);
-		break;
-	case 4:		//温度
-		m_cmbType1.ResetContent();
-		m_cmbType1.AddString(L"摄氏度(C)");
-		m_cmbType1.AddString(L"华氏度(F)");
-		m_cmbType1.SetCurSel(0);
-
-		m_cmbType2.ResetContent();
-		m_cmbType2.AddString(L"摄氏度(C)");
-		m_cmbType2.AddString(L"华氏度(F)");
-		m_cmbType2.SetCurSel(0);
-		break;
-	case 5:		//速率
-		m_cmbType1.ResetContent();
-		m_cmbType1.AddString(L"米/秒");
-		m_cmbType1.AddString(L"千米/小时");
-		m_cmbType1.AddString(L"英尺/秒");
-		m_cmbType1.AddString(L"英里/小时");
-		m_cmbType1.SetCurSel(0);
-
-		m_cmbType2.ResetContent();
-		m_cmbType2.AddString(L"米/秒");
-		m_cmbType2.AddString(L"千米/小时");
-		m_cmbType2.AddString(L"英尺/秒");
-		m_cmbType2.AddString(L"英里/小时");
-		m_cmbType2.SetCurSel(0);
-		break;
-	case 6:		//体积
-		m_cmbType1.ResetContent();
-		m_cmbType1.AddString(L"立方厘米");
-		m_cmbType1.AddString(L"立方米");
-		m_cmbType1.AddString(L"升");
-		m_cmbType1.AddString(L"立方英寸");
-		m_cmbType1.AddString(L"立方英尺");
-		m_cmbType1.AddString(L"立方码");
-		m_cmbType1.AddString(L"加仑");
-		m_cmbType1.SetCurSel(0);
-
-		m_cmbType2.ResetContent();
-		m_cmbType2.AddString(L"立方厘米");
-		m_cmbType2.AddString(L"立方米");
-		m_cmbType2.AddString(L"升");
-		m_cmbType2.AddString(L"立方英寸");
-		m_cmbType2.AddString(L"立方英尺");
-		m_cmbType2.AddString(L"立方码");
-		m_cmbType2.AddString(L"加仑");
-		m_cmbType2.SetCurSel(0);
-		break;
-	default:
-		break;
-	}
-}
-
-void CCalculaterDlg::OnButtonEquel(int type)
-{
-	CString strUnit1 = L"";
-	CString strUnit2 = L"";
-	m_edtTransferNum1.GetWindowText(strUnit1);
-	m_edtTransferNum2.GetWindowText(strUnit2);
-	int sel1 = m_cmbType1.GetCurSel();
-	int sel2 = m_cmbType2.GetCurSel();
-	double value1;
-	double value2;
-	double times1;
-	double times2;
-	if(L"" == strUnit1 && L"" == strUnit2)
-	{
-		m_edtTransferNum1.SetWindowText(L"");
-		m_edtTransferNum2.SetWindowText(L"");
-		return;
-	}
-	else if(strUnit1 != L"")
-	{
-		value1 = atof((Util::StringOp::FromCString(strUnit1)).c_str());
-	}
-	else if(L"" == strUnit1 && strUnit2 != L"")
-	{
-		value1 = atof((Util::StringOp::FromCString(strUnit2)).c_str());
-	}
-	
-	switch(type)
-	{
-	case 1:
-		if(0 == sel1 || 2 == sel1)
-		{
-			times1 = 1;
-		}
-		else if(1 == sel1)
-		{
-			times1 = 1000;
-		}
-		else if(3 == sel1)
-		{
-			times1 = 745.712172;
-		}
-		else if(4 == sel1)
-		{
-			times1 = 735.2941;
-		}
-		
-		if(0 == sel2 || 2 == sel2)
-		{
-			times2 = 1;
-		}
-		else if(1 == sel2)
-		{
-			times2 = 1000;
-		}
-		else if(3 == sel2)
-		{
-			times2 = 745.712172;
-		}
-		else if(4 == sel2)
-		{
-			times2 = 735.2941;
-		}
-
-		if(strUnit1 != L"")
-		{
-			value2 = value1*times1/times2;
-			m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		else
-		{
-			value2 = value1*times2/times1;
-			m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		break;
-	case 2:
-		if(0 == sel1)
-		{
-			times1 = 1;
-		}
-		else if(1 == sel1)
-		{
-			times1 = 1/1000;
-		}
-		else if(2 == sel1)
-		{
-			times1 = 60;
-		}
-		else if(3 == sel1)
-		{
-			times1 = 3600;
-		}
-		else if(4 == sel1)
-		{
-			times1 = 3600*24;
-		}
-		
-		if(0 == sel2)
-		{
-			times2 = 1;
-		}
-		else if(1 == sel2)
-		{
-			times2 = 1/1000;
-		}
-		else if(2 == sel2)
-		{
-			times2 = 60;
-		}
-		else if(3 == sel2)
-		{
-			times2 = 3600;
-		}
-		else if(4 == sel2)
-		{
-			times2 = 3600*24;
-		}
-		
-		if(strUnit1 != L"")
-		{
-			value2 = value1*times1/times2;
-			m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		else
-		{
-			value2 = value1*times2/times1;
-			m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		break;
-	case 3:
-		if(0 == sel1)
-		{
-			times1 = 1;
-		}
-		else if(1 == sel1)
-		{
-			times1 = 1000;
-		}
-		else if(2 == sel1)
-		{
-			times1 = 101325;
-		}
-		else if(3 == sel1)
-		{
-			times1 = 133.32237;
-		}
-		else if(4 == sel1)
-		{
-			times1 = 9.80665;
-		}
-		
-		if(0 == sel2)
-		{
-			times2 = 1;
-		}
-		else if(1 == sel2)
-		{
-			times2 = 1000;
-		}
-		else if(2 == sel2)
-		{
-			times2 = 101325;
-		}
-		else if(3 == sel2)
-		{
-			times2 = 133.32237;
-		}
-		else if(4 == sel2)
-		{
-			times2 = 9.80665;
-		}
-		
-		if(strUnit1 != L"")
-		{
-			value2 = value1*times1/times2;
-			m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		else
-		{
-			value2 = value1*times2/times1;
-			m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		break;
-	case 4:
-		if(0 == sel1)
-		{
-			if(0 == sel2)
-			{
-				value2 = value1;
-				if(strUnit1 != L"")
-				{
-					m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-				else
-				{
-					m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-			}
-			else if(1 == sel2)
-			{
-				if(strUnit1 != L"")
-				{
-					value2 = 33.8 + (value1-1)*1.8;
-					m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-				else
-				{
-					value2 = (value1-33.8)/1.8 + 1;
-					m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-			}
-		}
-		else if(1 == sel1)
-		{
-			if(1 == sel2)
-			{
-				value2 = value1;
-				if(strUnit1 != L"")
-				{
-					m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-				else
-				{
-					m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-			}
-			else if(0 == sel2)
-			{
-				if(strUnit1 != L"")
-				{
-					value2 = (value1-33.8)/1.8 + 1;
-					m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-				else
-				{
-					value2 = 33.8 + (value1-1)*1.8;
-					m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-				}
-			}
-		}
-		break;
-	case 5:
-		if(0 == sel1)
-		{
-			times1 = 3.6;
-		}
-		else if(1 == sel1)
-		{
-			times1 = 1;
-		}
-		else if(2 == sel1)
-		{
-			times1 = 1.09728;
-		}
-		else if(3 == sel1)
-		{
-			times1 = 1.60934;
-		}
-		
-		if(0 == sel2)
-		{
-			times2 = 3.6;
-		}
-		else if(1 == sel2)
-		{
-			times2 = 1;
-		}
-		else if(2 == sel2)
-		{
-			times2 = 1.09728;
-		}
-		else if(3 == sel2)
-		{
-			times2 = 1.60934;
-		}
-		
-		if(strUnit1 != L"")
-		{
-			value2 = value1*times1/times2;
-			m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		else
-		{
-			value2 = value1*times2/times1;
-			m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		break;
-	case 6:
-		if(0 == sel1)
-		{
-			times1 = 1;
-		}
-		else if(1 == sel1)
-		{
-			times1 = 1000000;
-		}
-		else if(2 == sel1)
-		{
-			times1 = 1000;
-		}
-		else if(3 == sel1)
-		{
-			times1 = 16.387;
-		}
-		else if(4 == sel1)
-		{
-			times1 = 28316.846592;
-		}
-		else if(5 == sel1)
-		{
-			times1 = 764554.857984;
-		}
-		else if(6 == sel1)
-		{
-			times1 = 3785.411784;
-		}
-		
-		if(0 == sel2)
-		{
-			times2 = 1;
-		}
-		else if(1 == sel2)
-		{
-			times2 = 1000000;
-		}
-		else if(2 == sel2)
-		{
-			times2 = 1000;
-		}
-		else if(3 == sel2)
-		{
-			times2 = 16.387;
-		}
-		else if(4 == sel2)
-		{
-			times2 = 28316.846592;
-		}
-		else if(5 == sel2)
-		{
-			times2 = 764554.857984;
-		}
-		else if(6 == sel2)
-		{
-			times2 = 3785.411784;
-		}
-		
-		if(strUnit1 != L"")
-		{
-			value2 = value1*times1/times2;
-			m_edtTransferNum2.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		else
-		{
-			value2 = value1*times2/times1;
-			m_edtTransferNum1.SetWindowText(Util::StringOp::ToCString(Util::StringOp::FromDouble(value2)));
-		}
-		break;
-	default:
-		break;
-	}
-} 
-
-void CCalculaterDlg::OnTimer(UINT nIDEvent)
-{
-	if(1 == nIDEvent)
-	{
-		ShowCtrl();
-	}
-}
-
-void CCalculaterDlg::ShowCtrl()
-{
-	m_DialNumEdit.ShowWindow(SW_SHOW);
-	m_edtTransferNum1.ShowWindow(SW_SHOW);
-	m_edtTransferNum2.ShowWindow(SW_SHOW);
-	m_cmbType1.ShowWindow(SW_SHOW);
-	m_cmbType2.ShowWindow(SW_SHOW);
 }

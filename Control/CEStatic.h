@@ -149,7 +149,7 @@ public:
 	CDC   memDC; 
 	CBitmap   bmp;   
 	BOOL Create(LPCTSTR sTxt, COLORREF backcl, int style, CRect &rect, CWnd *pParentWnd, int nCtrlID= 0xFFFF);
-	void SetTxt(LPCTSTR sTxt, int height, COLORREF rgb);
+	void SetTxt(LPCTSTR sTxt);
 	void SetBackColor(COLORREF cl){m_backColor = cl;}
 // Construction
 public:

@@ -27,25 +27,7 @@
 #include "3GDetailDlg.h"
 #include "3GSysToolTelDlg.h"
 
-#include "3GHomeJoyDlg.h"
-#include "3GHomePicDlg.h"
-#include "3GHomeMovieDlg.h"
-
-
 #define MAIN_MARGIN_OFFSET	0	
-
-CString static Allicon[10]={	
-		L".\\adv\\mjpg\\k5\\common\\电话\\电话图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\短信\\信息图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\通讯录\\通讯录图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\通话记录\\通话记录图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\音乐\\音乐图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\影院\\影院图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\相册\\相册图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\计算器\\计算器图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\日程提醒\\日程提醒图标.bmp",
-		L".\\adv\\mjpg\\k5\\common\\设置\\设置图标.bmp",
-};
 
 class CMainDlg : public CDialog
 {
@@ -55,7 +37,7 @@ public:
 	int  m_nMMSCount;
 	int  m_nSMSLeaveCount;
 	int  m_nRssCount;
-	void SetUpInfo(BOOL isDraw = FALSE);
+	void SetRightInfo(BOOL isDraw = FALSE);
 	void SetWeather();
 	std::vector<boost::shared_ptr<Data::MultimediaDownload> > rssFileresult;
 	std::vector<boost::shared_ptr<Data::Message> > smsFileresult;
@@ -66,17 +48,14 @@ public:
 	void doReadSMS();
 	void doReadLeaveHome();
 	void doReadWeather();
-	
+
+	C3GTelDlg	*m_p3GTelDlg;
+	C3GSysToolDlg	*m_p3GSysToolDlg;
+	C3GSMSDlg	*m_p3GSMSDlg;
+	C3GDetailDlg	*m_p3GDetailDlg;
+
+	CWebDialog* m_pWebDialog;
 	void StartWeb();
-	
-	C3GHomePicDlg	*m_p3GHomePicDlg;
-	C3GHomeJoyDlg	*m_p3GHomeJoyDlg;
-	C3GHomeMovieDlg *m_p3GHomeMovieDlg;
-
-	CSMSDlg			*m_p3GSMSDlg;//change by qi 
-
-	CWebDialog		*m_pWebDialog;
-	
 	CMainMenuDlg	*m_mainmenuDlg_;
 	CMainVideoDlg	*m_mainVideoDlg_;
 	CMainPhotoDlg	*m_mainPhotoDlg_;
@@ -85,12 +64,13 @@ public:
 	CScreenSaveDlg	*m_mainScreenSaveDlg_;
 	CCalculaterDlg	*m_mainCalucaterDlg_;
 	CFireWallDlg	*m_firewalDlg_;
+	CHuangliDlg		*m_pHuangLiDlg_;
 	CWnd *m_currentWnd;
 
 	std::vector<CString> m_PhotoList;
 	int SetPhotoList();
 	void SetTimer_(BOOL flag);
-
+	
 public:
 	void SetCtrlEnable(BOOL flag);
 	//获取未接电话个数
@@ -112,7 +92,6 @@ public:
 public:
 	virtual ~CMainDlg();
 	
-	int     m_nUnSMS;
 	int		m_nUnTel;					//未接电话数
 	int     m_nLeaveSound;				//录音留言数
 	BOOL    m_bIsFireWall;				//防火墙是否开启
@@ -120,7 +99,6 @@ public:
 	BOOL	FindTodayAlarm();			//查找今天已经过期的闹铃
 	BOOL    ShowTodayAlarm();			//显示今天已经过期的闹铃
 	void    SetStatusAll(BOOL flag = TRUE);
-	void	HideAllWindow();
 
 	void SetDateTime(BOOL isDraw);
 // Dialog Data
@@ -131,7 +109,6 @@ public:
 
 	CMJPGStatic		m_MJPGList;
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnClickMJPGToApp(WPARAM w, LPARAM l);
 
 	/*
 	CCEStatic	m_TelStatusStatic;
@@ -150,8 +127,6 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-
-
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -166,6 +141,7 @@ protected:
 	afx_msg void OnPlayPhoto(WPARAM w, LPARAM l);
 	afx_msg void OnStaticClick(WPARAM w, LPARAM l);
 	afx_msg void OnMJPGShowHalf(WPARAM w, LPARAM l);
+	afx_msg void OnClickMJPGToApp(WPARAM w, LPARAM l);
 	afx_msg void OnSetAdmin(WPARAM w, LPARAM l);
 	afx_msg void OnUnSetAdmin(WPARAM w, LPARAM l);
 	afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );

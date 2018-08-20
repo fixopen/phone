@@ -2,65 +2,61 @@
 
 [General Info]
 Version=1
-LastClass=CTelephoneDialDlg
+LastClass=CMultimediaPhoneApp
 LastTemplate=CDialog
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "multimediaphone.h"
 LastPage=0
 
-ClassCount=5
+ClassCount=3
 Class1=CMultimediaPhoneApp
 Class2=CMultimediaPhoneDlg
 Class3=CTestCEDlg
 
-ResourceCount=45
-Resource1=IDD_DIALOG_VIDEO
-Resource2=IDD_DIALOG_CEDLG
-Resource3=IDD_DIALOG_SOUNDSEARCH
-Resource4=IDD_DIALOG_INPUT
-Resource5=IDD_DIALOG_RECORDSOUND
-Resource6=IDD_DIALOG_NOTE
-Resource7=IDD_DIALOG_CONTACT
-Resource8=IDD_DIALOG_LUNARDER
-Resource9=IDD_DIALOG_PLAYER
-Resource10=IDD_DIALOG_CONTACTSEARCH
-Resource11=IDD_DIALOG_FASTDIALS
-Resource12=IDD_DIALOG_PASSWORD
-Resource13=IDD_DIALOG_SIMIMPORT
-Resource14=IDD_DIALOG_CONTACTGROUP
-Resource15=IDD_LIST_DLG
-Resource16=IDD_DIALOG_MAINMENU
-Resource17=IDD_DIALOG_SCREENSAVE
-Resource18=IDD_DIALOG_SETTING
-Resource19=IDD_DIALOG_SOUND
-Resource20=IDD_PIC_SELECT_DLG
-Resource21=IDD_DIALOG_FIREWALL
-Resource22=IDD_DIALOG_DELETETIP
-Resource23=IDD_DIALOG_TESTCEDLG
-Resource24=IDD_DIALOG_TEST
-Resource25=IDD_DIALOG_CACULATER
-Resource26=IDD_DIALOG_MP3
-Resource27=IDD_DIALOG_HUANGLI
-Resource28=IDD_DIALOG_ALARM
-Resource29=IDD_DIALOG_COPYFILE
-Resource30=IDD_DIALOG_NETSTATUS
-Resource31=IDD_DIALOG_CONTACTNEW
-Resource32=IDD_DIALOG_CONTACTINFOSEARCH
-Resource33=IDD_DIALOG_INFORMATION
-Resource34=IDD_DIALOG_NOTEBOOK
-Resource35=IDD_DIALOG_WEB
-Resource36=IDD_DIALOG_RENAME
-Resource37=IDD_DIALOG_MMS
-Resource38=IDD_DIALOG_NOFLASH
-Resource39=IDD_MULTIMEDIAPHONE_DIALOG
-Resource40=IDD_DIALOG_PHOTO
-Resource41=IDD_DIALOG_PLAYSOUND
-Resource42=IDD_DIALOG_CONTACTINFO
-Class4=CMMSDlg
-Resource43=IDD_DIALOG_TELEPHONE
-Resource44=IDD_DIALOG_MAIN
-Class5=CTelephoneDialDlg
-Resource45=IDD_DLG_MOVIE
+ResourceCount=43
+Resource1=IDD_DIALOG_SOUND
+Resource2=IDD_DIALOG_NETSTATUS
+Resource3=IDD_DIALOG_TEST
+Resource4=IDD_MULTIMEDIAPHONE_DIALOG
+Resource5=IDD_DIALOG_NOTE
+Resource6=IDD_DIALOG_WEB
+Resource7=IDD_LIST_DLG
+Resource8=IDD_DIALOG_PLAYER
+Resource9=IDD_DIALOG_CONTACTGROUP
+Resource10=IDD_DIALOG_CEDLG
+Resource11=IDD_DIALOG_MP3
+Resource12=IDD_DIALOG_CONTACTSEARCH
+Resource13=IDD_DIALOG_PHOTO
+Resource14=IDD_DIALOG_INFORMATION
+Resource15=IDD_DIALOG_ALARM
+Resource16=IDD_DIALOG_CONTACTINFOSEARCH
+Resource17=IDD_DIALOG_CONTACTNEW
+Resource18=IDD_DIALOG_PLAYSOUND
+Resource19=IDD_DIALOG_COPYFILE
+Resource20=IDD_DIALOG_HUANGLI
+Resource21=IDD_DIALOG_VIDEO
+Resource22=IDD_DIALOG_FASTDIALS
+Resource23=IDD_DIALOG_RECORDSOUND
+Resource24=IDD_DIALOG_SETTING
+Resource25=IDD_DIALOG_INPUT
+Resource26=IDD_DIALOG_CONTACT
+Resource27=IDD_DIALOG_CONTACTINFO
+Resource28=IDD_DIALOG_CACULATER
+Resource29=IDD_DIALOG_MAINMENU
+Resource30=IDD_DIALOG_TELEPHONE
+Resource31=IDD_DIALOG_RENAME
+Resource32=IDD_DIALOG_SCREENSAVE
+Resource33=IDD_DIALOG_SIMIMPORT
+Resource34=IDD_DIALOG_NOFLASH
+Resource35=IDD_DIALOG_TESTCEDLG
+Resource36=IDD_DIALOG_PASSWORD
+Resource37=IDD_DIALOG_FIREWALL
+Resource38=IDD_DIALOG_SOUNDSEARCH
+Resource39=IDD_DIALOG_LUNARDER
+Resource40=IDD_DIALOG_DELETETIP
+Resource41=IDD_DIALOG_NOTEBOOK
+Resource42=IDD_DIALOG_MAIN
+Resource43=IDD_PIC_SELECT_DLG
 
 [CLS:CMultimediaPhoneApp]
 Type=0
@@ -74,16 +70,12 @@ Type=0
 BaseClass=CDialog
 HeaderFile=MultimediaPhoneDlg.h
 ImplementationFile=MultimediaPhoneDlg.cpp
-Filter=W
-LastObject=CMultimediaPhoneDlg
 
 [CLS:CTestCEDlg]
 Type=0
 BaseClass=CCEDialog
 HeaderFile=TestCEDlg.h
 ImplementationFile=TestCEDlg.cpp
-Filter=D
-LastObject=CTestCEDlg
 
 [DLG:IDD_MULTIMEDIAPHONE_DIALOG]
 Type=1
@@ -227,7 +219,7 @@ ControlCount=0
 
 [DLG:IDD_DIALOG_TELEPHONE]
 Type=1
-Class=CTelephoneDialDlg
+Class=?
 ControlCount=0
 
 [DLG:IDD_DIALOG_NOTE]
@@ -257,7 +249,7 @@ ControlCount=0
 
 [DLG:IDD_DIALOG_CACULATER]
 Type=1
-Class=CMMSDlg
+Class=?
 ControlCount=0
 
 [DLG:IDD_DIALOG_COPYFILE]
@@ -319,30 +311,4 @@ ControlCount=0
 Type=1
 Class=?
 ControlCount=0
-
-[CLS:CMMSDlg]
-Type=0
-HeaderFile=MMSDlg.h
-ImplementationFile=MMSDlg.cpp
-BaseClass=CDialog
-Filter=W
-LastObject=CMMSDlg
-
-[DLG:IDD_DIALOG_MMS]
-Type=1
-Class=?
-ControlCount=0
-
-[DLG:IDD_DLG_MOVIE]
-Type=1
-Class=?
-ControlCount=0
-
-[CLS:CTelephoneDialDlg]
-Type=0
-HeaderFile=TelephoneDialDlg.h
-ImplementationFile=TelephoneDialDlg.cpp
-BaseClass=CDialog
-Filter=W
-LastObject=CTelephoneDialDlg
 

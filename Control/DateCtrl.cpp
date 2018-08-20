@@ -21,7 +21,6 @@ const int CDateCtrl::ID_BUTTON_DOWN = 22;
 CDateCtrl::CDateCtrl()
 :m_strBuffer("")
 {
-	
 }
 
 CDateCtrl::~CDateCtrl()
@@ -50,7 +49,7 @@ BOOL CDateCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT n
 {
 	// TODO: Add your specialized code here and/or call the base class
 	
-	dwStyle |= ES_NOHIDESEL|ES_CENTER|ES_NUMBER;//ES_LEFT|
+	dwStyle |= /*ES_READONLY|*/ES_NOHIDESEL|ES_CENTER|ES_LEFT|ES_NUMBER;
 	BOOL bRes = CEdit::Create(dwStyle, rect, pParentWnd, nID);
 	if (bRes)
 	{
@@ -59,11 +58,11 @@ BOOL CDateCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT n
 		
 		rect.DeflateRect(1, 1);
 
-		CRect rcButton(rect.right-BUTTON_WIDTH, rect.top, 0, 0);
+		CRect rcButton(rect.right-BUTTON_WIDTH, rect.top, rect.right, rect.bottom);
 		if (!m_btnDown.Create(_T(""), IDB_BITMAP_RIGHTARROW, IDB_BITMAP_RIGHTARROWD, WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, rcButton, this, ID_BUTTON_DOWN)) return FALSE;
 		rcButton.OffsetRect((0-BUTTON_WIDTH), 0);
 
-		if (!m_btnUp.Create(_T(""), IDB_BITMAP_LEFTARROW, IDB_BITMAP_LEFTARROWD, WS_CHILD|BS_PUSHBUTTON, rcButton, this, ID_BUTTON_UP)) return FALSE;
+		if (!m_btnUp.Create(_T(""), IDB_BITMAP_LEFTARROW, IDB_BITMAP_LEFTARROWD, WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, rcButton, this, ID_BUTTON_UP)) return FALSE;
 		
 		m_font.CreateFont(
 			uFontHeight,				// nHeight
@@ -83,6 +82,15 @@ BOOL CDateCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT n
 		SetFont(&m_font);
 
 		m_mode = mode;
+
+// 		SYSTEMTIME sm;
+// 		GetSystemTime(&sm/*&m_sysTime*/);
+// 		m_nYear = sm.wYear;
+// 		m_nMonth = sm.wMonth;
+// 		m_nDay = sm.wDay;
+// 		m_nHour = sm.wHour;
+// 		m_nMinute = sm.wMinute;
+// 		m_nSecond = sm.wSecond;
 		
 		CTime sm(CTime::GetCurrentTime());
 		m_nYear = sm.GetYear();
@@ -98,11 +106,15 @@ BOOL CDateCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT n
 		{
 			FormatDateOrTime(strTemp, m_nYear, m_nMonth, m_nDay, m_mode);
 			SetWindowText(strTemp);
+			SetSel(0, 4);
+			m_curSel = esel_year;
 		}
 		else
 		{
 			FormatDateOrTime(strTemp, m_nHour, m_nMinute, m_nSecond, modeTime);
 			SetWindowText(strTemp);
+			SetSel(0, 2);
+			m_curSel = esel_hour;
 		}		
 	}
 
@@ -111,6 +123,9 @@ BOOL CDateCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT n
 
 BOOL CDateCtrl::OnEraseBkgnd(CDC* pDC )
 {
+// 	CRect rect;
+// 	GetClientRect(&rect);
+// 	pDC->FillSolidRect(&rect, RGB(255, 255, 255));
 	return CEdit::OnEraseBkgnd(pDC);
 }
 
@@ -141,6 +156,14 @@ void CDateCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 	GetTextExtentPoint(pDC, L"XXXX", 4, &szY);
 	GetTextExtentPoint(pDC, L"XX", 2, &szM);
 	GetTextExtentPoint(pDC, L"-", 1, &szF);
+
+
+//  	CSize szY = pDC->GetTextExtent("XXXX");
+// 	CSize szM = pDC->GetTextExtent("XX");
+// 	CSize szF = pDC->GetTextExtent("-");
+
+//	TEXTMETRIC tm;
+//	pDC->GetTextMetrics(&tm);
 	
 	switch(m_mode)
 	{
@@ -306,6 +329,7 @@ void CDateCtrl::OnButtonDown()
 {
 	CString strTemp;
 	TCHAR tBuf[16] = {0};
+
 	
 	switch(m_curSel)
 	{

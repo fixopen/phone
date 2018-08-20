@@ -22,7 +22,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CMJPGStatic
 extern void DrawImage(LPCTSTR szFileImage, CDC *pdc, CRect rect, BOOL isOffset = FALSE);
-extern void DrawImage_HDC(LPCTSTR szFileImage, HDC pdc, CRect rect, BOOL isOffset = FALSE, VOID *lpBits = NULL);
+extern void DrawImage_HDC(LPCTSTR szFileImage, HDC pdc, CRect rect, BOOL isOffset = FALSE);
 //globle data
 CString gLangName[] = {".\\adv\\mjpg\\中文\\playcfg.xml", ".\\adv\\mjpg\\英文\\playcfg.xml", ".\\adv\\mjpg\\日文\\playcfg.xml", ".\\adv\\mjpg\\韩文\\playcfg.xml"};
 CString gAdvPlayList = ".\\adv\\video\\advplaylist.xml";
@@ -41,7 +41,6 @@ CMJPGStatic::CMJPGStatic()
 
 CMJPGStatic::~CMJPGStatic()
 {
-
 }
 
 void CMJPGStatic::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
@@ -51,58 +50,6 @@ void CMJPGStatic::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		CWnd *pWnd = GetParent();
 		if(pWnd)
 			pWnd->SendMessage(WM_KEYDOWN, nChar, 0);
-	}
-	else if(nChar == LEFT_KEY || nChar == VK_NUMPAD2)
-	{
-		int rt = FindRowFocusUnit(TOLEFT);
-		if(rt != -1)
-		{
-			SetFocusUnit(TOLEFT, rt);
-			Invalidate();
-			//SetUnitIsShow(rt, TRUE, TRUE);
-		}
-	}
-	else if(nChar == RIGHT_KEY || nChar == VK_NUMPAD3)
-	{
-		int rt = FindRowFocusUnit(TORIGHT);
-		if(rt != -1)
-		{
-			SetFocusUnit(TORIGHT, rt);
-			Invalidate();
-			//SetUnitIsShow(rt, TRUE, TRUE);
-		}
-	}
-	else if(nChar == UP_KEY || nChar == VK_NUMPAD0)
-	{
-		int rt = FindColFocusUnit(TOUP);
-		if(rt >= 0)
-		{
-			SetFocusUnit(TOUP, rt);
-			Invalidate();
-			//SetUnitIsShow(rt, TRUE, TRUE);
-		}
-		else if(rt == -2)
-			GetParent()->PostMessage(WM_CLICKMJPG_TOAPP, (WPARAM)UP_KEY, GetDlgCtrlID());
-	}
-	else if(nChar == DOWN_KEY || nChar == VK_NUMPAD1)
-	{
-		int rt = FindColFocusUnit(TODOWN);
-		if(rt >= 0)
-		{
-			SetFocusUnit(TODOWN, rt);
-			Invalidate();
-			//SetUnitIsShow(rt, TRUE, TRUE);
-		}
-		else if(rt == -3)
-			GetParent()->PostMessage(WM_CLICKMJPG_TOAPP, (WPARAM)DOWN_KEY, GetDlgCtrlID());
-	}
-	else if(nChar == OK_KEY || nChar == VK_NUMPAD5)
-	{
-		GetParent()->PostMessage(WM_CLICKMJPG_TOAPP, (WPARAM)m_nFocusUnit, GetDlgCtrlID());
-	}
-	else if(nChar == CANCEL_KEY || nChar == VK_NUMPAD4)
-	{
-		GetParent()->PostMessage(WM_CLICKMJPG_TOAPP, (WPARAM)CANCEL_KEY, GetDlgCtrlID());
 	}
 	CStatic::OnKeyDown(nChar, nRepCnt, nFlags);
 }
@@ -267,7 +214,7 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 	}
 	return nLineCount;
 	*/
-  if(rt.Width() ==0 || (rt.Width()-MULITI_RECT_OFFSET*2) < height)
+    if(rt.Width() ==0 || (rt.Width()-MULITI_RECT_OFFSET*2) < height)
 		return 0;
 	TEXTMETRIC tm;
 	int nCount = (rt.Width()-MULITI_RECT_OFFSET*2)/(height/2);
@@ -334,13 +281,13 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 					{
 						i++;
 						n++;
-						if((i < nLength) && IsBiaodianFuhao(s.GetAt(i)))
+						if(IsBiaodianFuhao(s.GetAt(i)))
 						{
 							n++;
 							i++;
 						}
 
-						i--; //正好符号换行多加了一个字符 lxz 20081105
+						i--;   //正好符号换行多加了一个字符   lxz 20081105
 					}
 					pCount[nLineCount].nCount = n;     //自动折行了，不能加1;
 					n = 0;
@@ -352,11 +299,11 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 					{
 						n++;
 						i++;
-						if((i < nLength) && IsBiaodianFuhao(s.GetAt(i)))
+						if(IsBiaodianFuhao(s.GetAt(i)))
 						{
 							n++;
 							i++;
-							if((i < nLength) && IsBiaodianFuhao(s.GetAt(i)))
+							if(IsBiaodianFuhao(s.GetAt(i)))
 							{
 								n++;
 								i++;
@@ -378,7 +325,7 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 				nChar += 1;
 				if(nChar == nCount)
 				{
-					if(IsBiaodianFuhao(s.GetAt(i+1)))//符号显示在上一行上
+					if(IsBiaodianFuhao(s.GetAt(i+1)))			//符号显示在上一行上
 					{
 						n++;
 						i++;
@@ -396,7 +343,6 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 		}
 	}
 	return nLineCount;
-	
 }
 
 void TrimRinghtEnterChar(CString &s)
@@ -816,51 +762,13 @@ void CMJPGStatic ::ReleaseMemDC()
 }
 */
 
-void CMJPGStatic ::CreateMemDC_HDC(CString sFilename) 
+void CMJPGStatic ::CreateMemDC_HDC() 
 {
-	//   20090723
 	HDC pdc = ::GetDC(m_hWnd);
 	m_hMemDC = ::CreateCompatibleDC(pdc); 
-	m_plpBits = NULL;
-	CFile   file;   
-	if( file.Open(sFilename,  CFile::modeRead ) )   
-	{     
-		BITMAPFILEHEADER   bfhHeader;   
-		file.Read(&bfhHeader,sizeof(BITMAPFILEHEADER));   
-		if(bfhHeader.bfType ==((WORD)   ('M'<<8)|'B'))   
-		{   		 
-			if(bfhHeader.bfSize == file.GetLength())     
-			{   
-				UINT   uBmpInfoLen=(UINT)   bfhHeader.bfOffBits-sizeof(BITMAPFILEHEADER);   
-				LPBITMAPINFO   lpBitmap= (LPBITMAPINFO)   new   BYTE[uBmpInfoLen];  
-				
-				file.Read((LPVOID)   lpBitmap,uBmpInfoLen);   
-				if((* (LPDWORD)(lpBitmap))==sizeof(BITMAPINFOHEADER))     
-				{   
-					DWORD   dwBitlen=bfhHeader.bfSize   -   bfhHeader.bfOffBits;     
-					lpBitmap->bmiHeader.biHeight = m_ClientRect.Height();
-					lpBitmap->bmiHeader.biWidth = m_ClientRect.Width();
-					
-					m_hBmp = ::CreateDIBSection(pdc, lpBitmap, DIB_RGB_COLORS, &m_plpBits, NULL, 0);
-					if(m_plpBits)
-					{
-						m_hOldBmp = (HBITMAP)::SelectObject(m_hMemDC, m_hBmp);   
-						::ReleaseDC(m_hWnd, pdc);
-						file.Close();
-						delete []lpBitmap; 
-						return;
-					}
-				}
-				else
-					delete []lpBitmap;    //20090216 test
-			}
-		}	
-		file.Close();
-	}
-	
-	m_hBmp = ::CreateCompatibleBitmap(pdc, m_ClientRect.Width(), m_ClientRect.Height());
+	m_hBmp = ::CreateCompatibleBitmap(pdc, m_ClientRect.Width(), m_ClientRect.Height());   
 	m_hOldBmp = (HBITMAP)::SelectObject(m_hMemDC, m_hBmp);   
-	::ReleaseDC(m_hWnd, pdc);	
+	::ReleaseDC(m_hWnd, pdc);
 }
 
 void CMJPGStatic ::ReleaseMemDC_HDC()  
@@ -872,20 +780,15 @@ void CMJPGStatic ::ReleaseMemDC_HDC()
 
 void CMJPGStatic::SetCurrentLinkFile(CString s)
 {
-	//lxz 20091130
-	if(ToFileDir(s) == m_sCurrentLinkFile)
-		return;
-	m_nIndexSelectUnit = -1;
 	m_sCurrentLinkFile = ToFileDir(s);
 	if(m_currentMJPGList)
 		delete m_currentMJPGList;
 	//	DMemprintf("MJPGPage 1");
-	
+
 	DWORD dwStart = GetTickCount();
 	m_currentMJPGList = ::Util::XmlParser::ParseFileToMJPGList_(m_sCurrentLinkFile);
 	DWORD offset = GetTickCount() - dwStart;   
 	TRACE(L"ParseFileToMJPGList_ %s:%d\n", s, offset);
-	InitFocusUnit();
 
 	if(m_currentMJPGList)
 	{
@@ -1076,7 +979,6 @@ void CMJPGStatic::PreSubclassWindow()
 
 void CMJPGStatic::OnLButtonDown(UINT nFlags, CPoint point) 
 {
-	SetFocus();
 	extern BOOL watchdog_MFC;
 	watchdog_MFC = TRUE;   //设置watchdog生效
 
@@ -1091,30 +993,7 @@ void CMJPGStatic::OnLButtonDown(UINT nFlags, CPoint point)
 
 		m_nIndexSelectUnit = nIndex;
 		//InvertRect(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Rect);
-		if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Ctrltype == ctrl_unittoggle)
-		{
-		//	if(!m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_bIsDownStatus)
-			{
-				DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 1);
-				if(GetParent())
-				{
-					if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_UnitType == unit_click) //click
-					{
-						CString sDial = m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_UnitContent;
-						if(sDial != "")
-						{
-							std::string str = Util::StringOp::FromCString(sDial);
-							CString s_ = str.c_str();
-							int code = atoi(s_);
-							GetParent()->PostMessage(WM_MJPGTOGGLE, (WPARAM)code, GetDlgCtrlID());
-						}
-					}
-				}
-			}
-		}
-		else
-			DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 1);
-		
+		DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 1);
 		
 		/*
 		
@@ -1160,11 +1039,6 @@ void CMJPGStatic::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if(m_nIndexSelectUnit >= 0)
 	{
-		if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Ctrltype == ctrl_unittoggle)
-		{
-			CStatic::OnMouseMove(nFlags, point);
-		}
-
 		if(IsWindowVisible())
 			if(GetParent()->IsWindowVisible())
 			{
@@ -1196,13 +1070,6 @@ void CMJPGStatic::OnLButtonUp(UINT nFlags, CPoint point)
 	if(m_nIndexSelectUnit >= 0)
 	{
 		//InvertRect(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Rect);
-		if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Ctrltype == ctrl_unittoggle)
-		{
-			m_nIndexSelectUnit = -1;
-			CStatic::OnLButtonUp(nFlags, point);
-			return;
-		}
-
 		if(IsWindowVisible())
 			if(GetParent()->IsWindowVisible())
 			DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 0);
@@ -1377,7 +1244,7 @@ BOOL CMJPGStatic::SetUnitIsDownStatus(int UnitNO, BOOL isDown)
 	return FALSE;
 }
 
-int CMJPGStatic:: SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh, BOOL isInvalidate)
+BOOL CMJPGStatic:: SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh, BOOL isInvalidate)
 {
 	if(!m_currentMJPGList)
 		return FALSE;
@@ -1393,21 +1260,6 @@ int CMJPGStatic:: SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh, BOOL isI
 				else
 					DrawUnitStatus_HDC(&m_currentMJPGList->items[i]->unitparam, m_currentMJPGList->items[i]->unitparam.m_bIsDownStatus);
 			}
-			return i;
-		}
-	}
-	return -1;
-}
-
-BOOL CMJPGStatic::SetUnitFont(int UnitNO, TEXTSIZE nFont)
-{
-	if(!m_currentMJPGList)
-		return FALSE;
-	for(int i = 0; i < m_currentMJPGList->items.size(); i++)
-	{
-		if(m_currentMJPGList->items[i]->unitparam.m_nSiererNO == UnitNO)
-		{
-			m_currentMJPGList->items[i]->unitparam.m_FontSize = nFont;		
 			return TRUE;
 		}
 	}
@@ -1462,29 +1314,18 @@ BOOL CMJPGStatic::SetUnitBitmap(int UnitNO, CString filename_up, CString filenam
 					InvalidateRect(m_currentMJPGList->items[i]->unitparam.m_Rect);
 				else
 				{
-				
+			//		wprintf(filename_up);
+			//		unsigned int  w = DMemprintf(" SetUnitBitmap 0 ");
 					DrawUnitStatus_HDC(&m_currentMJPGList->items[i]->unitparam, m_currentMJPGList->items[i]->unitparam.m_bIsDownStatus);
-			
+			//		unsigned int  w1 = DMemprintf("SetUnitBitmap 1 ");
+			//		if(w != w1)
+			//			Dprintf("w != w1\r\n");
 				}
 			}
 			return TRUE;
 		}
 	}
 	return FALSE;
-}
-
-BOOL CMJPGStatic::GetUnitIsDisable(int UnitNO)
-{
-	if(!m_currentMJPGList)
-		return TRUE;
-	for(int i = 0; i < m_currentMJPGList->items.size(); i++)
-	{
-		if(m_currentMJPGList->items[i]->unitparam.m_nSiererNO == UnitNO)
-		{
-			return m_currentMJPGList->items[i]->unitparam.m_bIsDisable;
-		}
-	}
-	return TRUE;
 }
 
 BOOL CMJPGStatic::SetUnitIsDisable(int UnitNO, BOOL isDisable)
@@ -1535,22 +1376,6 @@ BOOL CMJPGStatic::SetUnitText(int UnitNO, CString text, BOOL isDraw, BOOL isInva
 				else
 					DrawUnitStatus_HDC(&m_currentMJPGList->items[i]->unitparam, m_currentMJPGList->items[i]->unitparam.m_bIsDownStatus);
 			}				
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-BOOL CMJPGStatic::SetUnitRect(int UnitNO, CRect rt)
-{
-	if(!m_currentMJPGList)
-		return FALSE;
-	for (int i=0; i<m_currentMJPGList->items.size(); i++)
-	{
-		if(m_currentMJPGList->items[i]->unitparam.m_nSiererNO == UnitNO)
-		{
-			m_currentMJPGList->items[i]->unitparam.m_Rect = rt;
-			InvalidateRect(m_currentMJPGList->items[i]->unitparam.m_Rect);
 			return TRUE;
 		}
 	}
@@ -1914,6 +1739,7 @@ void CMJPGStatic::DrawUnitStatus_HDC(UNIT *pUnit, int nUintStatus)
 	if(!pUnit->m_bIsShow)
 		return;
 
+	DWORD   dwStart   =   GetTickCount(); 	
 
 	//贴背景图
 	CString sAllJpg = "";
@@ -1948,15 +1774,14 @@ void CMJPGStatic::DrawUnitStatus_HDC(UNIT *pUnit, int nUintStatus)
 		if(sUintJpg != "")
 		{
 			//为了支持透明色，先拷贝背景 李新志20090514
-			if(sUintJpg.Find(L".png") > 0 || sUintJpg.Find(L".PNG") > 0)
+	//		if(sUintJpg.Find(L".png") > 0)
 			{
 				if(sAllJpg == "")
 					sAllJpg = m_currentMJPGList->bgfilename;
 				if(sAllJpg != "")
 					DrawImage_HDC(ToFileDir(sAllJpg), pMemDC1, CRect(pUnit->m_Rect.left, pUnit->m_Rect.top, pUnit->m_Rect.right, pUnit->m_Rect.bottom), TRUE);
 			}
-			
-			//小图
+				
 			DrawImage_HDC(ToFileDir(sUintJpg), pMemDC1, CRect(0, 0, pUnit->m_Rect.Width(), pUnit->m_Rect.Height()));
 // 			if(!pUnit->m_bIsTranslate)
 // 				DrawImage(ToFileDir(sUintJpg), pMemDC1, CRect(0, 0, pUnit->m_Rect.Width(), pUnit->m_Rect.Height()));
@@ -2002,30 +1827,10 @@ void CMJPGStatic::DrawUnitStatus_HDC(UNIT *pUnit, int nUintStatus)
 			InvertRect_HDC(pMemDC1, CRect(0, 0, pUnit->m_Rect.Width(), pUnit->m_Rect.Height()));
 		}
 		
+		DWORD offset = GetTickCount() - dwStart;   
+	//	TRACE(L"DrawUnit Status %d\n", offset);
+
 		//画文字
-		if(pUnit->m_nSiererNO == m_nFocusUnit)
-		{
-			CPen pen(PS_SOLID, 1, RGB(255, 0, 0));
-			HGDIOBJ oldpen = ::SelectObject(pMemDC1, pen.m_hObject);
-			POINT pt[4];
-			POINT pt1;
-			CRect rt_ = pUnit->m_Rect;
-			rt_.DeflateRect(1, 1);
-			pt[0].x = rt_.left;
-			pt[0].y = rt_.top;
-			::MoveToEx(pMemDC1, pt[0].x, pt[0].y, &pt1);
-			pt[1].x = rt_.left;
-			pt[1].y = rt_.bottom;
-			::LineTo(pMemDC1, pt[1].x, pt[1].y);
-			pt[2].x = rt_.right;
-			pt[2].y = rt_.bottom;
-			::LineTo(pMemDC1, pt[2].x, pt[2].y);
-			pt[3].x = rt_.right;
-			pt[3].y = rt_.top;
-			::LineTo(pMemDC1, pt[3].x, pt[3].y);
-			::LineTo(pMemDC1, pt[0].x, pt[0].y);
-			::SelectObject(pMemDC1, &oldpen);
-		}
 		if(pUnit->m_sContent != "")
 		{
 			//	int ret = DMemprintf("Font 0");
@@ -2067,37 +1872,11 @@ void CMJPGStatic::DrawUnitStatus_HDC(UNIT *pUnit, int nUintStatus)
 		::DeleteObject(pBmp1);
 		::DeleteDC(pMemDC1);
 		::ReleaseDC(m_hWnd, pdc);
-
 	}
 	else
 	{
 		HDC pdc = ::GetDC(m_hWnd);
 		InvertRect_HDC(pdc, pUnit->m_Rect);
-
-		if(pUnit->m_nSiererNO == m_nFocusUnit)
-		{
-			CPen pen(PS_SOLID, 1, RGB(255, 0, 0));
-			HGDIOBJ oldpen = ::SelectObject(pdc, pen.m_hObject);
-			POINT pt[4];
-			POINT pt1;
-			CRect rt_ = pUnit->m_Rect;
-			rt_.DeflateRect(1, 1);
-			pt[0].x = rt_.left;
-			pt[0].y = rt_.top;
-			::MoveToEx(pdc, pt[0].x, pt[0].y, &pt1);
-			pt[1].x = rt_.left;
-			pt[1].y = rt_.bottom;
-			::LineTo(pdc, pt[1].x, pt[1].y);
-			pt[2].x = rt_.right;
-			pt[2].y = rt_.bottom;
-			::LineTo(pdc, pt[2].x, pt[2].y);
-			pt[3].x = rt_.right;
-			pt[3].y = rt_.top;
-			::LineTo(pdc, pt[3].x, pt[3].y);
-			::LineTo(pdc, pt[0].x, pt[0].y);
-			::SelectObject(pdc, &oldpen);
-		}
-
 		if(pUnit->m_sContent != "")
 		{
 			//	int ret = DMemprintf("Font 0");
@@ -2138,32 +1917,6 @@ void CMJPGStatic::DrawUnitStatus_HDC(UNIT *pUnit, int nUintStatus)
 //	DMemprintf("DrawUnitStatus 1 ");
 }
 
-void CMJPGStatic::DrawGroup_HDC(int *nNO, int nCount, BOOL isShow)
-{
-	CPoint p1 = CPoint(800, 480);
-	CPoint p2 = CPoint(0, 0);
-
-	for(int i = 0; i < nCount; i++)
-	{
-		int nIndex = SetUnitIsShow(nNO[i], isShow, FALSE);
-		if(nIndex >= 0)
-		{
-			CPoint p1_ = CPoint(m_currentMJPGList->items[nIndex]->unitparam.m_Rect.left, m_currentMJPGList->items[nIndex]->unitparam.m_Rect.top);
-			CPoint p2_ = CPoint(m_currentMJPGList->items[nIndex]->unitparam.m_Rect.right, m_currentMJPGList->items[nIndex]->unitparam.m_Rect.bottom);
-			if(p1.x>p1_.x)
-				p1.x = p1_.x;
-			if(p1.y>p1_.y)
-				p1.y = p1_.y;
-			if(p2.x<p2_.x)
-				p2.x = p2_.x;
-			if(p2.y<p2_.y)
-				p2.y = p2_.y;
-		}
-	}
-	CRect rt = CRect(p1.x, p1.y, p2.x, p2.y);
-	InvalidateRect(rt);
-}
-
 void CMJPGStatic::DrawUnit_HDC(UNIT *pUnit, HDC pdc)
 {
 	if(!pUnit)
@@ -2179,7 +1932,7 @@ void CMJPGStatic::DrawUnit_HDC(UNIT *pUnit, HDC pdc)
 	//贴背景图
 	if(!pUnit->m_bIsDownStatus)
 	{
-		if(pUnit->m_bgFilename != L"")
+		if(pUnit->m_bgFilename != "")
 		{
 			//if(!pUnit->m_bIsTranslate)
 			DrawImage_HDC(ToFileDir(pUnit->m_bgFilename), pdc, pUnit->m_Rect);
@@ -2195,7 +1948,6 @@ void CMJPGStatic::DrawUnit_HDC(UNIT *pUnit, HDC pdc)
 		else if(m_currentMJPGList->bgfilename_down != "")
 		{
 			//test lxz 20080703
-			//去扣图
 			if(m_currentMJPGList->bgfilename_down.Find(L".bmp") != -1 || m_currentMJPGList->bgfilename_down.Find(L".BMP") != -1)
 				DrawImage_HDC(ToFileDir(m_currentMJPGList->bgfilename_down), pdc, pUnit->m_Rect);
 			else
@@ -2210,30 +1962,6 @@ void CMJPGStatic::DrawUnit_HDC(UNIT *pUnit, HDC pdc)
 				::DeleteDC(pMemDC);
 			}
 		}
-	}
-
-	if(pUnit->m_nSiererNO == m_nFocusUnit)
-	{
-		CPen pen(PS_SOLID, 1, RGB(255, 0, 0));
-		HGDIOBJ oldpen = ::SelectObject(pdc, pen.m_hObject);
-		POINT pt[4];
-		POINT pt1;
-		CRect rt_ = pUnit->m_Rect;
-		rt_.DeflateRect(1, 1);
-		pt[0].x = rt_.left;
-		pt[0].y = rt_.top;
-		::MoveToEx(pdc, pt[0].x, pt[0].y, &pt1);
-		pt[1].x = rt_.left;
-		pt[1].y = rt_.bottom;
-		::LineTo(pdc, pt[1].x, pt[1].y);
-		pt[2].x = rt_.right;
-		pt[2].y = rt_.bottom;
-		::LineTo(pdc, pt[2].x, pt[2].y);
-		pt[3].x = rt_.right;
-		pt[3].y = rt_.top;
-		::LineTo(pdc, pt[3].x, pt[3].y);
-		::LineTo(pdc, pt[0].x, pt[0].y);
-		::SelectObject(pdc, &oldpen);
 	}
 
 	//画文字
@@ -2291,15 +2019,14 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 	else
 		GetParent()->SendMessage(WM_MJPGSHOWHALF, 0);
 		*/
-	DWORD  s = GetTickCount(); 
-	
+
+	CreateMemDC_HDC();
 	CRect rt1 = m_currentMJPGList->m_Rect;
 	SetMJPGRect(rt1);
 //	MoveWindow(m_rtMJPG, FALSE);
 	m_ClientRect = CRect(0, 0, rt1.Width(), rt1.Height());
-	CreateMemDC_HDC(ToFileDir(m_currentMJPGList->bgfilename));
 	HDC pdc = ::GetDC(m_hWnd);
-	
+
 	if(m_currentMJPGList)
 	{
 #if 1
@@ -2313,46 +2040,53 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 		CBitmap *oldbmp = memDC.SelectObject(&bmp);   
 		*/
 		
+		DWORD  s = GetTickCount(); 
+		DWORD   dwStart   =   GetTickCount(); 	
 		if(m_currentMJPGList->bgfilename != "")
-		{
-			DrawImage_HDC(ToFileDir(m_currentMJPGList->bgfilename), m_hMemDC, m_ClientRect, FALSE, m_plpBits);
-		}
+			DrawImage_HDC(ToFileDir(m_currentMJPGList->bgfilename), m_hMemDC, m_ClientRect);
 		else
 		{
 			CBrush bBr = RGB(255, 255, 255); 
 			::FillRect(m_hMemDC, &m_ClientRect, (HBRUSH)bBr.m_hObject);
 		}
-				
-		int size_ = m_currentMJPGList->items.size();
-		for (int i = 0; i < size_; ++i)
-		//for (int i = size_-1; i >= 0; --i)
-		{
- 			MJPGItem *item = m_currentMJPGList->items[i];
- 			DrawUnit_HDC(&item->unitparam, m_hMemDC);
-		}
-
-		::BitBlt(pdc, m_ClientRect.left, m_ClientRect.top, m_ClientRect.Width(), m_ClientRect.Height(), m_hMemDC, 0, 0, SRCCOPY);
+		DWORD offset = GetTickCount() - dwStart;   
+		//TRACE(L"BG %d\n", offset);
 		
+		for (int i = 0; i < m_currentMJPGList->items.size(); ++i)
+		{
+			DWORD  s = GetTickCount(); 
+			DWORD   dwStart   =   GetTickCount(); 
+			MJPGItem *item = m_currentMJPGList->items[i];
+			DrawUnit_HDC(&item->unitparam, m_hMemDC);
+			DWORD offset = GetTickCount() - dwStart;   
+			//TRACE(L"Unit %d\n", offset);
+		}
+		::BitBlt(pdc, m_ClientRect.left, m_ClientRect.top, m_ClientRect.Width(), m_ClientRect.Height(), m_hMemDC, 0, 0, SRCCOPY);
 		//移到全局中
 		// 		memDC.SelectObject(&oldbmp);
 		// 		memDC.DeleteDC();   
 		// 		bmp.DeleteObject();
 #else
 		m_sCurrentLinkFile = sFile;
+		DWORD  s = GetTickCount(); 
+		DWORD   dwStart   =   GetTickCount(); 	
 		DrawImage_HDC(ToFileDir(m_currentMJPGList->bgfilename), pdc, m_ClientRect);
+		DWORD offset = GetTickCount() - dwStart;   
 		//TRACE(L"BG %d\n", offset);
 		
-		//int size_ = m_currentMJPGList->items.size();
 		for (int i = 0; i < m_currentMJPGList->items.size(); ++i)
-		//for (int i = size_-1; i >= 0; --i)
 		{
+			DWORD  s = GetTickCount(); 
+			DWORD   dwStart   =   GetTickCount(); 
 			MJPGItem *item = m_currentMJPGList->items[i];
 			DrawUnit_HDC(&item->unitparam, pdc);
+			DWORD offset = GetTickCount() - dwStart;   
 			//TRACE(L"Unit %d\n", offset);
 		}
 #endif
 	}
 	/*
+	int ret1 = DMemprintf("MJPGPage 3");
 	if(ret1 != ret)
 	{
 	//wprintf(L"%s\n", sFile);
@@ -2374,7 +2108,6 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 	*/
 	::ReleaseDC(m_hWnd, pdc);
 	ReleaseMemDC_HDC();
-	
 	/*
 	if(m_currentMJPGList)
 	{
@@ -2383,213 +2116,3 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 	}
 	*/
 } 
-
-BOOL CMJPGStatic::InitFocusUnit()
-{
-	m_nFocusUnit = -1;
-	m_nRowFocusUnit = -1;
-	m_nColFocusUnit = -1;
-	if(m_currentMJPGList)
-	{
-		CString s = m_currentMJPGList->m_sTab;
-		if(!s.IsEmpty())
-		{
-			int nStart = s.Find(L"(", 0);
-			int nEnd;
-			if(nStart >= 0)
-			{
-				nEnd = s.Find(L",", 0);
-				if(nEnd)
-				{
-					CString sRow = s.Mid(nStart+1, nEnd-nStart-1);
-					m_nRowFocusUnit = Util::StringOp::ToInt(sRow);
-					m_nFocusUnit = m_nRowFocusUnit;
-				}
-			}
-			nStart = s.Find(L"[", 0);
-			if(nStart >= 0)
-			{
-				nEnd = s.Find(L",", nStart);
-				if(nEnd)
-				{
-					CString sCol = s.Mid(nStart+1, nEnd-nStart-1);
-					m_nColFocusUnit = Util::StringOp::ToInt(sCol);
-				}
-			}
-		}
-	}
-	return TRUE;
-}
-
-int CMJPGStatic::FindRowFocusUnit(FOCUSDIRECT direct)
-{
-	int ret = -1;
-	if(m_nRowFocusUnit != -1)
-	{
-		CString s = m_currentMJPGList->m_sTab;
-		if(m_currentMJPGList)
-		{
-			if(!s.IsEmpty())
-			{
-				int nStart = s.Find(L"(", 0);
-				int nEnd = s.Find(L")", nStart);
-				int nCount = 0;
-				int Id[100];
-				CString sIndex = "";
-				for(int i = nStart+1; i <= nEnd; i++)
-				{
-					CString sTemp = s.Mid(i, 1);	
-					if(sTemp == L"," || sTemp == L")")
-					{
-						int no = Util::StringOp::ToInt(sIndex,10);
-						if(GetUnitIsShow(no) && (!GetUnitIsDisable(no)))
-							Id[nCount++] = no;
-						sIndex = "";
-					}
-					else if(sTemp != L"(" && sTemp != L" ")
-					{
-						sIndex += sTemp;
-					}
-				}
-				for(i = 0; i < nCount; i++)
-				{
-					if(Id[i] == m_nRowFocusUnit)
-						break;
-				}
-				if(i == nCount)
-					ret = Id[0];
-				else
-				{
-					if(direct == TOLEFT)  //向左
-					{
-						if(i == 0)
-							i = nCount-1;
-						else
-							i--;
-						ret = Id[i];
-					}
-					else				//向右
-					{
-						i++;
-						if(i >= nCount)
-						i = 0;
-						ret = Id[i];
-					}
-				}
-			}
-		}
-	}
-	return ret;
-}
-
-int CMJPGStatic::FindColFocusUnit(FOCUSDIRECT direct)
-{
-	int ret = -1;
-	if(m_nColFocusUnit != -1)
-	{
-		CString s = m_currentMJPGList->m_sTab;
-		if(m_currentMJPGList)
-		{
-			if(!s.IsEmpty())
-			{
-				int nStart = s.Find(L"[", 0);
-				int nEnd = s.GetLength();
-				int nCount = 0;
-				int rCount = 0;
-				int Id[20][100];
-				memset(&Id[0][0], 0xFF, sizeof(int)*(2000));
-				CString sIndex = "";
-				for(int i = nStart+1; i <= nEnd; i++)
-				{
-					CString sTemp = s.Mid(i, 1);	
-					if(sTemp == L"," || sTemp == L"]")
-					{
-						int no = Util::StringOp::ToInt(sIndex, 10);
-						if(GetUnitIsShow(no) && (!GetUnitIsDisable(no)))
-							Id[rCount][nCount++] = no;
-						sIndex = "";
-						if(sTemp == L"]")
-						{
-							nCount = 0;
-							rCount++;
-						}
-					}
-					else if(sTemp != L"[" && sTemp != L" ")
-					{
-						sIndex += sTemp;
-					}
-				}
-				for(int j = 0; j < rCount; j++)
-					for(i = 0; i < 100; i++)
-					{
-						if(Id[j][i] == m_nColFocusUnit)
-							goto TAB;
-						else if(Id[j][i] == -1)
-							break;
-					}
-TAB:	    	if(j == rCount)
-					ret = Id[0][0];
-				else
-				{
-				    nCount = 0;
-					for(int j_ = 0; j_ < 100; j_++)
-					{
-						if(Id[j][j_] != -1)
-							nCount++;
-						else
-							break;
-					}
-					if(direct == TOUP)  //向上
-					{
-						if(i == 0)
-							return -2;
-						else
-							i--;
-						ret = Id[j][i];
-					}
-					else				//向下
-					{
-						i++;
-						if(i >= nCount)
-							return -3;
-						i = i%nCount;
-						ret = Id[j][i];
-					}
-				}
-			}
-		}
-	}
-	return ret;
-}
-
-BOOL CMJPGStatic::SetFocusUnit(FOCUSDIRECT direct, int noUnit)
-{
-	CString s = Util::StringOp::FromInt(noUnit).c_str();
-	if(direct == TOLEFT || direct == TORIGHT)
-	{
-		m_nRowFocusUnit = noUnit; 
-		CString s_ = m_currentMJPGList->m_sTab;
-		int nStart = s_.Find(L"[");
-		if(nStart >= 0)
-		{
-			nStart = s_.Find(s, nStart);
-			if(nStart)
-				m_nColFocusUnit = m_nRowFocusUnit;
-		}
-	}
-	else if(direct == TOUP || direct == TODOWN)
-	{
-		m_nColFocusUnit = noUnit; 
-		CString s_ = m_currentMJPGList->m_sTab;
-		int nStart = s_.Find(L"(");
-		int nEnd = s_.Find(L")");
-		if(nStart >= 0)
-		{
-			nStart = s_.Find(s, nStart);
-			if(nStart < nEnd)
-				m_nRowFocusUnit = m_nColFocusUnit;
-		}
-	}
-	m_nFocusUnit = noUnit;
-	return TRUE;
-}

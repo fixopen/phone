@@ -83,13 +83,13 @@ namespace Data
         cmd += ", autoReplyRingCount = ";
         cmd += Util::StringOp::FromInt(autoReplyRingCount_);
 		int idx = 0;
-		for (std::vector< std::pair<std::string, std::string> >::const_iterator i = speedDials_.begin(); i != speedDials_.end(); ++i)
+		for (std::map<char, std::string>::const_iterator i = speedDials_.begin(); i != speedDials_.end(); ++i)
 		{
 			++idx;
-			cmd += ", speedDialName" + Util::StringOp::FromInt(idx) + " = '";
-			std::string name = i->first;
-			cmd += i->first;
-			cmd += "', speedDialValue" + Util::StringOp::FromInt(idx) + " = '";
+			cmd += ", speedDialName" + Util::StringOp::FromInt(idx) + " = ";
+			int c = i->first;
+			cmd += Util::StringOp::FromInt(i->first);
+			cmd += ", speedDialValue" + Util::StringOp::FromInt(idx) + " = '";
 			std::string str = i->second;
 			cmd += i->second;
 			cmd += "'";
@@ -214,16 +214,10 @@ namespace Data
 		cmd += ", isNightControlBlackLight = ";
 		cmd += Util::StringOp::FromInt(isNightControlBlackLight_);
 		cmd += ", nightControlBlackLightStartTime = '";
-		cmd += Util::StringOp::FromInt(nightControlBlackLightStartTime_);
+		cmd += Util::StringOp::FromTimestamp(nightControlBlackLightStartTime_);
 		cmd += "', nightControlBlackLightEndTime = '";
-		cmd += Util::StringOp::FromInt(nightControlBlackLightEndTime_);
-		cmd += "', isPhoneCallRing = ";
-		cmd += Util::StringOp::FromInt(isPhoneCallRing_);
-		cmd += ", phoneCallRingFilename ='";
-		cmd += phoneCallRingFilename_;
-		cmd += "', phoneCallRingVolume = ";
-		cmd += Util::StringOp::FromInt(phoneCallRingVolume_);
-		cmd += ", isSmsRing = "; 
+		cmd += Util::StringOp::FromTimestamp(nightControlBlackLightEndTime_);
+		cmd += "', isSmsRing = "; 
 		cmd += Util::StringOp::FromInt(isSmsRing_);
 		cmd += ", smsRingFilename ='";
 		cmd += smsRingFilename_;
@@ -330,11 +324,10 @@ namespace Data
 		cmd += ", ";
 		cmd += Util::StringOp::FromInt(autoReplyRingCount_);
 		cmd += ", ";
-		for (std::vector<std::pair<std::string, std::string> >::iterator i = speedDials_.begin(); i != speedDials_.end(); ++i)
+		for (std::map<char, std::string>::iterator i = speedDials_.begin(); i != speedDials_.end(); ++i)
 		{
-			cmd += "'";
-			cmd += i->first;
-			cmd += "', '";
+			cmd += Util::StringOp::FromInt(i->first);
+			cmd += ", '";
 			cmd += i->second;
 			cmd += "', ";
 		}
@@ -458,16 +451,10 @@ namespace Data
 	    cmd += ", ";
 		cmd += Util::StringOp::FromInt(isNightControlBlackLight_);
 		cmd += ", '";
-		cmd += Util::StringOp::FromInt(nightControlBlackLightStartTime_);
+		cmd += Util::StringOp::FromTimestamp(nightControlBlackLightStartTime_);
 		cmd += "', '";
-		cmd += Util::StringOp::FromInt(nightControlBlackLightEndTime_);
+		cmd += Util::StringOp::FromTimestamp(nightControlBlackLightEndTime_);
 		cmd += "', ";
-		cmd += Util::StringOp::FromInt(isPhoneCallRing_);
-		cmd += ", '";
-		cmd += phoneCallRingFilename_;
-		cmd += "', ";
-		cmd += Util::StringOp::FromInt(phoneCallRingVolume_);
-		cmd += ", ";
 		cmd += Util::StringOp::FromInt(isSmsRing_);
 		cmd += ", '";
 		cmd += smsRingFilename_;
@@ -503,7 +490,7 @@ namespace Data
 		cmd += speCode11_;
 		cmd += "', '";
 		cmd += speCode12_;
-		cmd += "', '";
+		cmd += "', ";
 		cmd += Util::StringOp::FromInt(callRecall_);
 		cmd += ", ";
 		cmd += Util::StringOp::FromInt(callLimit_);
@@ -563,8 +550,8 @@ namespace Data
 			std::string value = "speedDialValue" + Util::StringOp::FromInt(i);
 			std::string n = argv[Data::getIndexByName(argc, columnName, const_cast<char*>(name.c_str()))];
 			std::string v = argv[Data::getIndexByName(argc, columnName, const_cast<char*>(value.c_str()))];
-			std::pair<std::string, std::string> temp(n, v);
-			item->speedDials_.push_back(temp);
+			item->speedDials_[Util::StringOp::ToInt(n)] = v;
+			//item->speedDials_[*] = ;
 		}
 
         item->id(atoi(argv[Data::getIndexByName(argc, columnName, "id")]));
@@ -616,11 +603,11 @@ namespace Data
         item->soundProtectPassword_ = argv[Data::getIndexByName(argc, columnName, "soundProtectPassword")];
 
         item->isUseScreenSaver_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isUseScreenSaver")]);
-		item->screenSaverDuration_ = Util::StringOp::ToTimeSpan(std::string(argv[Data::getIndexByName(argc, columnName, "screenSaverDuration")]));
-		item->screenSaverContent_ = static_cast<ScreenSaverContent>(atoi(argv[Data::getIndexByName(argc, columnName, "screenSaverContent")]));
+        item->screenSaverDuration_ = atoi(argv[Data::getIndexByName(argc, columnName, "screenSaverDuration")]);
+        item->screenSaverContent_ = static_cast<ScreenSaverContent>(atoi(argv[Data::getIndexByName(argc, columnName, "screenSaverContent")]));
         item->isUseScreenSaverPassword_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isUseScreenSaverPassword")]);
         item->screenSaverPassword_ = argv[Data::getIndexByName(argc, columnName, "screenSaverPassword")];
-		
+
         item->isAdmin_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isAdmin")]);
         item->isPlayProtect_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isPlayProtect")]);
         item->isMustRecord_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isMustRecord")]);
@@ -634,12 +621,9 @@ namespace Data
 		item->isContrlBlackLight_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isContrlBlackLight")]);
 		item->isNightControlBlackLight_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isNightControlBlackLight")]);
 		item->contrlBlackLightWaitTime_ = atoi(argv[Data::getIndexByName(argc, columnName, "controlBlackLightWaitTime")]);
-		item->nightControlBlackLightStartTime_ = atoi(argv[Data::getIndexByName(argc, columnName, "nightControlBlackLightStartTime")]);
-		item->nightControlBlackLightEndTime_ = atoi(argv[Data::getIndexByName(argc, columnName, "nightControlBlackLightEndTime")]);
-		
-		item->isPhoneCallRing_ = atoi(argv[Data::getIndexByName(argc, columnName, "isPhoneCallRing")]);
-		item->phoneCallRingFilename_ = argv[Data::getIndexByName(argc, columnName, "phoneCallRingFilename")];
-		item->phoneCallRingVolume_ = atoi(argv[Data::getIndexByName(argc, columnName, "phoneCallRingVolume")]);
+		item->nightControlBlackLightStartTime_ = Util::StringOp::ToTimestamp(std::string(argv[Data::getIndexByName(argc, columnName, "nightControlBlackLightStartTime")]));
+		item->nightControlBlackLightEndTime_ = Util::StringOp::ToTimestamp(std::string(argv[Data::getIndexByName(argc, columnName, "nightControlBlackLightEndTime")]));
+   
 		item->isSmsRing_ = atoi(argv[Data::getIndexByName(argc, columnName, "isSmsRing")]);
 		item->smsRingFilename_ = argv[Data::getIndexByName(argc, columnName, "smsRingFilename")];
 		item->smsRingVolume_ = atoi(argv[Data::getIndexByName(argc, columnName, "smsRingVolume")]); 

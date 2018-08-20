@@ -87,10 +87,6 @@ namespace Data
 		, useDefaultTips_(true)
 		, tipsFinded_(false)
 		, contactsFinded_(false)
-		, ringId_(0)
-		, smRingId_(0)
-		, tipsId_(0)
-		, iconId_(0)
     {
 		id(0);
     }

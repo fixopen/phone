@@ -22,7 +22,7 @@ public:
 	int			m_nCtrlID;
 	CFont		m_font;
 	int			m_nFontHeight;
-	BOOL CreateEx(int style, CRect &rect, CWnd *pParentWnd, int nCtrlID, int fontSize, int btnWidth, int btnHeight, int bitmapType = 0);
+
 	BOOL Create(int style, CRect &rect, CWnd *pParentWnd, int nCtrlID= 0xFFFF);
 
 	int GetCount() {return m_Combo.GetCount();}

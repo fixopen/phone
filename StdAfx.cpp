@@ -10,8 +10,7 @@ void Dprintf(CString s)
 	wprintf(s);
 	printf("\r\n");
 #else
- //	wprintf(s);
- //	printf("\r\n");
+	
 #endif
 }
 
@@ -28,17 +27,7 @@ int  Dprintf(const char *format, ...)
    printf(buf); 
 
 #else
-// 	char   buf[4096];   
-// 	va_list   ap;   
-// 
-// 	va_start(ap,   format);   
-// 	int   len   =   vsprintf(buf,   format,   ap);   
-// 	va_end(ap);   
-// 
-
-
-// 	printf(buf); 
-   
+ 
 #endif
 
   return   0;   

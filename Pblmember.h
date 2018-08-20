@@ -20,11 +20,8 @@ struct HttpParam
 extern BOOL DetectDIR(TCHAR *sDir);
 extern BOOL DetectFile(TCHAR *sDir);
 extern void CopyDirFiles(TCHAR *src, TCHAR *des, BOOL bOverflow=TRUE);
-extern void CopyDirectoryFiles(TCHAR *src, TCHAR *des, DWORD &freeBytes, BOOL bOverflow=TRUE);
 extern int CopyDirFilesEx(LPCTSTR strSrc, LPCTSTR strDes, UINT nNums=1);
 extern BOOL DeleteFiles(TCHAR* sDir);
 extern DWORD CountFolderSize(CString strPath);
-extern float GetFileSize(TCHAR *sFile);
-extern float GetDirSize(TCHAR *sDir, float &fSize);
 
 #endif

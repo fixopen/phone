@@ -16,7 +16,6 @@
 #include "../Control/MJPGStatic.h"
 #include "../resource.h"
 #include "PlayerDlg.h"
-#include "Player.h"
 #include "../data/OTAData.h"
 
 enum PhotoType{local_type, net_type};
@@ -30,31 +29,24 @@ public:
 
 	CCEListCtrl m_lstPlayList;
 	CMJPGStatic		m_MJPGList;
-	
-	BOOL m_isAllScreenPlay;
-	unsigned int m_selectFileCount;   //被选中文件总数
-	unsigned int m_selectCurrentFile;   //当前显示的文件
+
+
 	std::vector<CString> m_PhotoList;
 	std::vector<boost::shared_ptr<Data::MultimediaDownload> > m_pMediaFileresult;// = Data::MenuManager::GetFromDatabase(""); 
 
 	int m_nCountPhoto;
-	//wangzhenxing20091011
+	
+	int SetPlayList(TCHAR *dir, int local = 0);
+	void SetPhoto();
 	void SetCtrlEnable(BOOL flag = TRUE);
 	void SetAllScreenPlayer(BOOL flag);
 	void OnExit_(){OnExit();}
-	void OnFirst();
-	void OnLast();
-	void SetCurrentFile();
-	void ZoomPicture();
-	void NarrowPicture();
-	void RotatePicture();
 	afx_msg void OnOpenFile();
-	afx_msg void OnPlayer(int index = 0);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 public:
 	CPlayerDlg	*playerDlg_; 
-	Player *player_;
+	
 // Construction
 public:
 	CMainPhotoDlg(CWnd* pParent = NULL);   // standard constructor
@@ -80,15 +72,20 @@ protected:
 	//{{AFX_MSG(CMainPhotoDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnExit();
+	afx_msg void OnSelectAll();
+	afx_msg void OnClearAll();
+	afx_msg void OnPlayer(int index = 0);
 	afx_msg void OnPre();
 	afx_msg void OnBack();
 	afx_msg void OnPlayerAll();
 	afx_msg void OnScreenSave();
+	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized); 
+	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
 	afx_msg void OnOutEvent(WPARAM w, LPARAM l);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

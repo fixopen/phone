@@ -101,22 +101,24 @@ void CMainMenuDlg::OnVideoBtn()
 {
 	// TODO: Add your control notification handler code here
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	main->m_pMainDlg->m_mainVideoDlg_->SetPlayList(_T("/flashdrv/my_video/"), 0);
+	main->m_pMainDlg->m_mainVideoDlg_->InitCtrl();
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)0, SW_SHOW);   //切换到视频
+//	main->m_mainVideoDlg_->ShowWindow(SW_SHOW);
 }
-void CMainMenuDlg::OnPhotoBtn(int type) 
+void CMainMenuDlg::OnPhotoBtn() 
 {
 	// TODO: Add your control notification handler code here
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	main->m_pMainDlg->m_mainPhotoDlg_->m_nPhotoType = (PhotoType)(!type);
-//	main->m_pMainDlg->m_p3GHomePicDlg->SetPlayList(_T("/flashdrv/my_photo/"));
+	main->m_pMainDlg->m_mainPhotoDlg_->SetPlayList(_T("/flashdrv/my_photo/"), 0);
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)1, SW_SHOW);   //切换到Photo
-
 //	main->m_mainVideoDlg_->ShowWindow(SW_SHOW);
 }
 
 void CMainMenuDlg::OnMp3Btn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	main->m_pMainDlg->m_mainMp3Dlg_->SetPlayList(_T("/flashdrv/my_music/"), 0);
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)2, SW_SHOW);   //切换到Mp3
 }
 
@@ -138,7 +140,7 @@ void CMainMenuDlg::SetVideo()
 void CMainMenuDlg ::OnScreenSaveBtn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int type = (int)main->m_pSettingDlg->m_pTempSetting->screenSaverContent();
+	int type = (int)main->m_pSettingDlg->m_pSetting->screenSaverContent();
 	((CMainDlg *)(main->GetPanel(IDC_BUTTON_MAIN)))->m_mainScreenSaveDlg_->SetSaveScreenType(type, TRUE);	  //1 图片屏保   0  时间屏保
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)5, SW_SHOW);   //切换到互联网
 }
@@ -168,6 +170,25 @@ BOOL CMainMenuDlg::OnInitDialog()
 	
 	CString s;
 	s = Data::LanguageResource::Get(Data::RI_MAIN_VIDEOBTN).c_str();
+	/*
+	m_VideoBtn.Create(s, WS_CHILD|WS_VISIBLE, CRect(21, 122, 94, 142), this, IDC_BUTTON1);
+	m_VideoBtn.SetIcon(IDI_ICON_VIDEO, CSize(16, 16));
+	s = Data::LanguageResource::Get(Data::RI_MAIN_POTOBTN).c_str();
+	m_PhotoBtn.Create(s, WS_CHILD|WS_VISIBLE, CRect(112, 122, 185, 142), this, IDC_BUTTON2);
+	m_PhotoBtn.SetIcon(IDI_ICON_PHOTO, CSize(16, 16));
+	s = Data::LanguageResource::Get(Data::RI_MAIN_MP3BTN).c_str();
+	m_MusicBtn.Create(s, WS_CHILD|WS_VISIBLE, CRect(21, 147, 94, 167), this, IDC_BUTTON3);
+	m_MusicBtn.SetIcon(IDI_ICON_MP3, CSize(16, 16));
+	s = Data::LanguageResource::Get(Data::RI_MAIN_CALENDARBTN).c_str();
+	m_CalenBtn.Create(s, WS_CHILD|WS_VISIBLE, CRect(112, 147, 185, 167), this, IDC_BUTTON4);
+	m_CalenBtn.SetIcon(IDI_ICON_CANL, CSize(16, 16));
+	s = Data::LanguageResource::Get(Data::RI_MAIN_CALCULATORBTN).c_str();
+	m_CalcuBtn.Create(s, WS_CHILD|WS_VISIBLE, CRect(21, 172, 94, 192), this, IDC_BUTTON5);
+	m_CalcuBtn.SetIcon(IDI_ICON_CALU, CSize(16, 16));
+	s = Data::LanguageResource::Get(Data::RI_MAIN_SCREENSAVERBTN).c_str();
+	m_ScreenSaveBtn.Create(s, WS_CHILD|WS_VISIBLE, CRect(112, 172, 185, 192), this, IDC_BUTTON6);
+	m_ScreenSaveBtn.SetIcon(IDI_ICON_SAVESCREEN, CSize(16, 16));
+	*/
 
 	ICONKEYSTRUCT softkeyval_[6];
 	softkeyval_[0].sKeyRect = CRect(0, 0, 69, 41);

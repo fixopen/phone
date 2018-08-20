@@ -6,7 +6,7 @@
 #endif // _MSC_VER > 1000
 // CELineEdit.h : header file
 //
-#define WM_CHARNUMBER WM_USER + 90
+
 /////////////////////////////////////////////////////////////////////////////
 // CCELineEdit window
 
@@ -25,6 +25,7 @@ public:
 
 // Attributes
 public:
+
 // Operations
 public:
 

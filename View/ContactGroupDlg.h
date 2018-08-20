@@ -15,11 +15,10 @@
 
 #include "../control/MJPGStatic.h"
 
-#include "../Control/CEDialog.h"//add by qi 
 /////////////////////////////////////////////////////////////////////////////
 // CContactGroupDlg dialog
 
-class CContactGroupDlg : public CCEDialog
+class CContactGroupDlg : public CDialog
 {
 // Construction
 public:
@@ -61,8 +60,17 @@ protected:
 private:
 	CMJPGStatic		m_MJPGList;
 
+	/*
+	CCEStatic m_sticTitle;
+	CCEStatic m_sticName;
+	CCEStatic m_sticRing;
+	CCEStatic m_sticSoudTip;
+	CCEStatic m_sticOperation;
+	CCEStatic m_sticSepLine2;
+	*/
 	CCERectEdit m_edtName;
 
+//	CCEComboBox_ m_cmbRing;
 	//铃声选择由Combox改成ListCtrl
 	CImageList *m_pImageList1;
 	CCERectEdit m_ringEdit;

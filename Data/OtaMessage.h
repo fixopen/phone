@@ -34,8 +34,7 @@
                 stUnDownload,
                 stDownloaded,
                 stUnParse,
-                stParsed,
-				stDownloadedError
+                stParsed
             };
             State state;
             Type instruction;

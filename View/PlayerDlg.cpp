@@ -16,8 +16,6 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CPlayerDlg dialog
 
-extern BOOL g_isAutoPlay;
-
 #define PHOTOSHOW_TIME		8*1000
 CPlayerDlg::CPlayerDlg(Player *player, CWnd* pParent /*=NULL*/)
 	: CDialog(CPlayerDlg::IDD, pParent)
@@ -30,9 +28,6 @@ CPlayerDlg::CPlayerDlg(Player *player, CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 }
 
-CPlayerDlg::CPlayerDlg(CWnd* pParent)
-{
-}
 
 void CPlayerDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -91,20 +86,14 @@ void CPlayerDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	if(player_->mt_ == mtImage)
 	{
-		ReSetWindowsRect(CRect(110, 88, 552, 385));
-		player_->SetAllScreenPlayer(FALSE);
-	}
-	if (player_->mt_ == mtVideo)
-	{
-		ReSetWindowsRect(CRect(36, 109, 474, 377));
-		player_->SetAllScreenPlayer(FALSE);
+		main->m_pMainDlg->SendMessage(WM_PLAYPHOTO, 3);  //退出全屏
 	}
 }
 
 BOOL CPlayerDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
-
+	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -355,10 +344,39 @@ void CPlayerDlg::OnPaint()
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
 	if(player_->mt_ == mtImage)
 	{
+		KillTimer(0x10002);
+		SetTimer(0x10002, PHOTOSHOW_TIME, NULL);
 		player_->PlayerImage();
 	}
 
 	CDialog::OnPaint();
+/*
+	//临时加上相框 20071217 by lxz
+	CRect rt;
+	GetClientRect(&rt);
+	if(rt.Width() >= 799 && rt.Height() >= 479)
+	{
+		CxImage *pImage = new CxImage();
+		if(pImage)
+		{
+			bool ret = pImage->Load(TEXT("/flashdrv/a4.jpg"), CXIMAGE_FORMAT_JPG);
+			if(ret)
+			{
+				CDC *pdc = GetDC();
+				pImage->Draw(pdc->m_hDC, 0, 0, 800, 480, 0, TRUE);
+				ReleaseDC(pdc);
+			}
+		}
+		delete pImage;
+	}
+	//
+
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
+	if(!main->player_->type_)
+	{
+		main->player_->PlayerImage();
+	}
+*/	
 
 
  // TODO: Add your message handler code here
@@ -376,8 +394,11 @@ void CPlayerDlg::OnTimer(UINT nIDEvent)
 		//lxz 20080710
 		if((player_->mt_ == mtImage) && IsWindowVisible() && player_->owner_ == this)
 		{
-			main->m_pMainDlg->m_mainPhotoDlg_->m_selectCurrentFile = player_->Down()+1;
-			main->m_pMainDlg->m_mainPhotoDlg_->SetCurrentFile();
+			//lxz test memory 20071109
+		//	DMemprintf("PlayerDlg Image OnTimer0");
+			player_->Down();
+	//		DMemprintf("PlayerDlg Image OnTimer1");
+			//end
 		}
 	}
 	else if(nIDEvent == 0x1003 && IsWindowVisible())
@@ -397,11 +418,17 @@ void CPlayerDlg:: OnCancel()
 {
 }
 
-void CPlayerDlg::SetParam(char *videoFile, MediaType isVideo, BOOL isSaveScreen)
+void CPlayerDlg:: SetParam(char *videoFile, MediaType isVideo, BOOL isSaveScreen)
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	player_->isActiveMode_ = !isSaveScreen;
 	player_->mt_ = isVideo;
+
+// 	if(isVideo == mtVideo)
+// 	{
+// 		//如果进入视频，则需要停止播放MP3音乐
+// 		main->playeraudio_->ExitPlayer(TRUE);   
+// 	}
 
 	isActiveMode_ = !isSaveScreen;
 	player_->SetOwner(this);
@@ -411,19 +438,33 @@ void CPlayerDlg::SetParam(char *videoFile, MediaType isVideo, BOOL isSaveScreen)
 	if(!isActiveMode_)  //屏保
 	{
 		if(player_->mt_ == mtImage)	//图片
-		{
-			if (main->m_pMainDlg->m_mainPhotoDlg_->m_PhotoList.size() > 1)
-			{
-				SetTimer(0x10002, PHOTOSHOW_TIME, NULL);
-				g_isAutoPlay = TRUE;
-			}
-		}
+			SetTimer(0x10002, PHOTOSHOW_TIME, NULL);
 	}
 }
 
-void CPlayerDlg::ReSetWindowsRect(CRect rt)
+void CPlayerDlg:: ReSetWindowsRect(CRect rt)
 {
 	MoveWindow(&rt, FALSE);
+/*
+	//临时加上相框 20071217 by lxz
+	CRect rt1;
+	GetClientRect(&rt1);
+	if(rt1.Width() >= 799 && rt1.Height() >= 479)
+	{
+		CxImage *pImage = new CxImage();
+		if(pImage)
+		{
+			bool ret = pImage->Load(TEXT("/flashdrv/a4.jpg"), CXIMAGE_FORMAT_JPG);
+			if(ret)
+			{
+				CDC *pdc = GetDC();
+				pImage->Draw(pdc->m_hDC, 0, 0, 800, 480, 0, TRUE);
+				ReleaseDC(pdc);
+			}
+		}
+		delete pImage;
+	}
+*/
 }
 
 void CPlayerDlg:: Show()
@@ -473,21 +514,12 @@ void CPlayerDlg::SetResumeTimer()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	if(player_->mt_ == mtImage)	//图片
-	{
-		if (main->m_pMainDlg->m_mainPhotoDlg_->m_PhotoList.size() > 1)
-		{
-			SetTimer(0x10002, PHOTOSHOW_TIME, NULL);
-			g_isAutoPlay = TRUE;
-		}
-	}
+		SetTimer(0x10002, PHOTOSHOW_TIME, NULL);
 }
 
-void CPlayerDlg::StopTimer()
+void CPlayerDlg:: StopTimer()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	if(player_->mt_ == mtImage)	//图片
-	{
 		KillTimer(0x10002);
-		g_isAutoPlay = FALSE;
-	}
 }

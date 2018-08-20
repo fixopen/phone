@@ -16,7 +16,7 @@ namespace Util
 	void RS232::SetReadFunc(OnSerialPortDataReceived onSerialPortDataReceived)
 	{
 		onSerialPortDataReceived_ = onSerialPortDataReceived;
-		readThread_ = boost::shared_ptr<ReadThread >(new ReadThread(this));
+		readThread_ = boost::shared_ptr<ReadThread>(new ReadThread(this));
 		readThread_->start();
 	}
 
@@ -164,7 +164,6 @@ namespace Util
 		, frameHeadPos_(-1)
 		, isFirstPacket_(true)
 	{
-	
 	}
 
 	int const RS232::ReadThread::run(void)
@@ -190,7 +189,7 @@ namespace Util
 		unsigned char readBuffer[1024] = {0};
 		while (!quit_)
 		{
-			Sleep(50);
+			Sleep(10);
 		    //printf("serial port start\n");
 			if (::WaitCommEvent(serialPort_->handle_, &evtMask, 0))
 			{
@@ -253,7 +252,6 @@ namespace Util
 // 								serialPort_->onSerialPortDataReceived_(totalBuffer, totalReadChars);
 							}
 							memset(readBuffer, 0, 1024);
-							Sleep(10);
 //							totalReadChars = 0;
 // 						}
 					}

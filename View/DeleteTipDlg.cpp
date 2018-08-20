@@ -25,7 +25,6 @@ CDeleteTipDlg::CDeleteTipDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CDeleteTipDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-	m_ntype = 0;
 }
 
 
@@ -53,13 +52,11 @@ void CDeleteTipDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
 	switch(w)
 	{
-	case 1001:
+	case 1:
 		OnButtonDeleteTipOk();
 		break;
-	case 1000:
+	case 2:
 		OnButtonDeleteTipCancel();
-		break;
-	default:
 		break;
 	}
 }
@@ -67,42 +64,82 @@ BOOL CDeleteTipDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-	m_procbarSound.Create(WS_CHILD, CRect(190+20 , 105+202, 190+20 + 400, 105+202 + 32), this, 0xFF10);
+	// TODO: Add extra initialization here
+	
+	m_edtNewPassword1.Create(WS_CHILD|ES_PASSWORD, CRect(54 + 267, 62 + 148, 54 + 522, 62 + 188), this, IDC_SETTING_PASSWORD2);
+	m_edtNewPassword1.SetLimitText(6);
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(190, 105, 190+440,105+270), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\删除确认.xml");
-	m_MJPGList.SetMJPGRect(CRect(190, 105, 190+440, 105+270));
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\删除确认.xml");
+	m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
+	m_MJPGList.SetUnitBitmap(4, L"", L"",  TRUE);
+	m_MJPGList.SetUnitBitmap(5, L"", L"",  TRUE);
 
-//	MoveWindow(180,105,440,270);
-
+	m_bIsPasswordModel = false;
+	m_bIsTipModel = false;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CDeleteTipDlg::OnButtonDeleteTipOk()
 {	
+	KillTimer(100);
+	m_edtNewPassword1.ShowWindow(SW_HIDE);
+	m_MJPGList.SetUnitBitmap(4, L"", L"",  TRUE);
+	m_MJPGList.SetUnitBitmap(5, L"", L"",  TRUE);
 
-	if (m_iMaxPos)
-	{	
-		m_MJPGList.SetUnitIsShow(1001,false,true);
-		m_procbarSound.ShowWindow(true);
+	if (m_bIsPasswordModel)
+	{
+		CString p;
+		m_edtNewPassword1.GetWindowText(p);
+		if (m_sPassword == p)
+		{
+			ShowWindow_(FALSE);	
+			m_edtNewPassword1.SetWindowText(_T(""));
+				
+			SetPasswordModel(false);
+			//::SendMessage(m_handle, WM_DELETESELITEM, 0, 0);
+			::PostMessage(m_handle, WM_DELETESELITEM, 0, 0);
+		}
+		else
+		{
+
+			//std::string strTemp;
+			//strTemp = Data::LanguageResource::Get(Data::RI_PASSWORD_TIP3);
+			SetDelTip(L"");
+			m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_checkerror.bmp", L"",  TRUE);
+			m_edtNewPassword1.SetWindowText(_T(""));
+			SetPasswordModel(false);
+			m_bIsTipModel = TRUE;
+			return;
+		}
+	}
+	else if (m_bIsTipModel)
+	{
+		m_bIsTipModel = FALSE; 
+		ShowWindow_(FALSE);
+		SetTipModel(false);
 	}
 	else
 	{
-		ShowWindow_(SW_HIDE);
+		ShowWindow_(FALSE);
+		SetPasswordModel(false);
+		::PostMessage(m_handle, WM_DELETESELITEM, 0, 0);
 	}
-
-	::PostMessage(m_handle, WM_DELETESELITEM, m_ntype, 0);
-	KillTimer(100);
-	m_ntype = 0 ;
-
+	m_edtNewPassword1.SetWindowText(_T(""));
+	SipShowIM(SIPF_OFF);
 }
 
 void CDeleteTipDlg::OnButtonDeleteTipCancel()
-{	
-	ShowWindow_(SW_HIDE);
+{
 	KillTimer(100);
-//	ShowWindow(SW_HIDE);
+	m_edtNewPassword1.SetWindowText(_T(""));
+	m_edtNewPassword1.ShowWindow(SW_HIDE);
+	m_MJPGList.SetUnitBitmap(4, L"", L"",  TRUE);
+	m_MJPGList.SetUnitBitmap(5, L"", L"",  TRUE);
+
+	ShowWindow_(FALSE);
+	SipShowIM(SIPF_OFF);
 }
 
 void CDeleteTipDlg::SetHWnd(HWND handle)
@@ -113,20 +150,17 @@ void CDeleteTipDlg::SetHWnd(HWND handle)
 void CDeleteTipDlg::OnTimer(UINT nIDEvent) 
 {
 	// TODO: Add your message handler code here and/or call default
-	
 	if(nIDEvent == 100)
 	{
 		OnButtonDeleteTipCancel();
 	}
-	else if ( 1 == nIDEvent)
-	{
-		KillTimer(1);
-		m_procbarSound.ShowWindow(SW_HIDE);
-		ShowWindow_(SW_HIDE);
-	}
-	else 
+	else
 	{
 		KillTimer(nIDEvent);
+		m_edtNewPassword1.SetWindowText(_T(""));
+		m_edtNewPassword1.ShowWindow(SW_HIDE);
+		m_MJPGList.SetUnitBitmap(4, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(5, L"", L"",  TRUE);
 	}
 
 	CCEDialog::OnTimer(nIDEvent);
@@ -134,48 +168,50 @@ void CDeleteTipDlg::OnTimer(UINT nIDEvent)
 
 void CDeleteTipDlg::SetPasswordModel(bool b)
 {
-
+ 	m_bIsPasswordModel = b;
+	if(b)
+	{
+		m_edtNewPassword1.ShowWindow(SW_SHOW);
+		m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_supper.bmp", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(5, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+	}
 }
 
 void CDeleteTipDlg::SetPassword(CString password)
 {
-	//	m_sPassword = password;
+	m_sPassword = password;
 }
 
 void CDeleteTipDlg::SetDelTip(CString tips)
 {
-	//m_MJPGList.SetUnitText(100, "", TRUE);
-	//m_MJPGList.SetUnitBitmap(100, tips, "", TRUE);
+	m_MJPGList.SetUnitText(100, "", TRUE);
+	m_MJPGList.SetUnitBitmap(100, tips, "", TRUE);
 	//m_sticTip.SetWindowText(tips);
 }
 
-void CDeleteTipDlg::SetTitle(CString title,int isTime )
-{	
-	m_iMaxPos = 0;
-	m_MJPGList.SetUnitText(1,title,true);
-	
-	if(isTime > 0)	
+void CDeleteTipDlg::SetTitle(CString title, BOOL isTime)
+{
+// 	TextStruct ts[1];
+// 	memset(ts, 0, sizeof(TextStruct) * 1);
+// 	
+// 	ts[0].txtRect = CRect(8, 0, 100, 20);
+// 	ts[0].txtFontSize = 16;
+// 	ts[0].sAlign = DT_LEFT | DT_BOTTOM;
+// 	memcpy(ts[0].sTxt, title.c_str(), title.length());
+// 	
+// 	m_sticBackground.SetTextStruct(ts, 1);
+	m_MJPGList.SetUnitText(100, title, TRUE);
+	m_MJPGList.SetUnitBitmap(100, "", "", TRUE);
+	if(isTime)
+		SetTimer(100, 15000, NULL);
+	else
 	{
-		SetTimer(100, isTime, NULL);
+
 	}
-	
-	m_MJPGList.SetUnitIsShow(1001,true,true);
-	m_procbarSound.ShowWindow(SW_HIDE);
 }
 
-void CDeleteTipDlg::SetProcessMax(int max )
+void CDeleteTipDlg::SetTipModel(BOOL b)
 {
-	m_procbarSound.SetParam(0,0,max,1);
-	m_procbarSound.SetPos(0);
-	m_iMaxPos = max;
-}
-
-void CDeleteTipDlg::SetProcessPos(int npos)
-{
-	m_procbarSound.SetPos(npos);
-	if (npos == m_iMaxPos)
-	{
-		SetTimer(1,100,NULL);
-		m_iMaxPos = 0;
-	}
+//	m_bIsTipModel = b;
+//	m_btnCancel.ShowWindow(!b);
 }

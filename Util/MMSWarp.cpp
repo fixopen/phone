@@ -76,9 +76,6 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 	length += to.size();
 	pDst[length++] = 0x00;
 	pDst[length++] = 0x96;//96h表示主题
-	pDst[length++] = pSrc->Subject.size() + 3;
-	pDst[length++] = 0xEA;
-	pDst[length++] = 0x7F;
 	memcpy(pDst + length, pSrc->Subject.c_str(), pSrc->Subject.size());
 	length += pSrc->Subject.size();
 	pDst[length++] = 0x00;
@@ -131,7 +128,7 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 
 	pDst[length++] = count + 1;//消息内容由几部分组成 smil、图片、文字、声音
 
-	char* buf = new char[128*1024];      //64K
+	char* buf = new char[1024*1024];      //64K
 	unsigned short bufLen = 0;
 	buf[bufLen++] = 0x13;
 	memcpy(&buf[bufLen], "application/smil", strlen("application/smil"));
@@ -169,7 +166,7 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 	smil += "width=\"";
 	memset(width, 0, 8);
 	map<string, MMS_REGION> regions = pSrc->layout.regions;
-	MMS_REGION region = regions[string("image")];
+	MMS_REGION region = regions[string("Image")];
 	_itoa(region.width, width, 10);
 	smil += width;
 	smil += "\" ";
@@ -192,7 +189,7 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 	smil += "      <region id=\"Text\" ";
 	smil += "width=\"";
 	memset(width, 0, 8);
-	region = regions[string("text")];
+	region = regions[string("Text")];
 	_itoa(region.width, width, 10);
 	smil += width;
 	smil += "\" ";
@@ -216,7 +213,6 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 	smil += "\r\n";
 	smil += "  <body>\r\n";
 
-	unsigned int index = 0;//解决中文名字的问题，所有文件全部重新命名
 	for (/*vector<MMS_PAR>::iterator */iter = pars.begin(); iter != pars.end(); ++iter)
 	{
 		smil += "    <par dur=\"";
@@ -232,15 +228,6 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 			{
 				name = name.substr(name.rfind("/") + 1);
 			}
-			string suffix;
-			if (name.find(".") != string::npos)
-			{
-				suffix = name.substr(name.find("."));
-			}
-
-			char namebuf[128] = {0};
-			sprintf(namebuf, "file%d", index++);
-			name = namebuf + suffix;
 
 			if ((*i).type == stImge)
 			{
@@ -250,7 +237,7 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 			}
 			else if ((*i).type == stText)
 			{
-				smil += "      <text src=\"";
+				smil += "      <text str=\"";
 				smil += name;
 				smil += "\" region=\"Text\" />\r\n";
 			}
@@ -261,7 +248,7 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 				smil += "\" />\r\n";
 			}		
 		}
-		smil += "    </par>\r\n";		
+		smil += "    <par/>\r\n";		
 	}
 
 	smil += "  </body>\r\n";
@@ -302,7 +289,7 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 	memcpy(pDst + length, smil.c_str(), smil.size());
 	length += smil.size();
 
-	index = 0;//
+	//content
 	for (/*vector<MMS_PAR>::iterator */iter = pars.begin(); iter != pars.end(); ++iter)
 	{
 		for (vector<MMS_SRC>::iterator i = (*iter).srcs.begin(); i != (*iter).srcs.end(); ++i)
@@ -314,16 +301,6 @@ int MMSWarp::EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst)
 			{
 				name = filename.substr(filename.rfind("/") + 1);
 			}
-
-			string suffix;
-			if (name.find(".") != string::npos)
-			{
-				suffix = name.substr(name.find("."));
-			}
-			
-			char namebuf[128] = {0};
-			sprintf(namebuf, "file%d", index++);
-			name = namebuf + suffix;
 
 			if ((*i).type == stImge)
 			{
@@ -468,7 +445,7 @@ int MMSWarp::DecodeSubmitResponse(const unsigned char* pSrc, int srcLen, MMS_Sub
 		else
 		{
 			pSrc[length++];
-			Dprintf("DecodeSubmitResponse error flag=%x\n", flag);
+			printf("DecodeSubmitResponse error flag=%x\n", flag);
 		}
 	}
 
@@ -647,7 +624,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 				n = ((n << 8) | t);
 				length += 1;
 			}
-			pDst->DateAndTime = (n+8*3600);
+			pDst->DateAndTime = n;
 		}
 		else if (flag == 0x96)
 		{
@@ -978,7 +955,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 							pos2 = smil.find("</body>");
 							if ((pos1 != string::npos ) && (pos2 != string::npos))
 							{
-								pos1 += (sizeof("<body>")-1);
+								pos1 += sizeof("<body>");
 								string body = smil.substr(pos1, pos2 - pos1);
 								while ((body.find("<par") != string::npos) && (body.find("</par>") != string::npos))
 								{
@@ -1118,7 +1095,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 		else
 		{
 			pSrc[length++];
-		//	Dprintf("DecodeRetrieveResponse error flag=%x\n", flag);
+			printf("DecodeRetrieveResponse error flag=%x\n", flag);
 		}
 	}
 
@@ -1185,7 +1162,7 @@ int MMSWarp::DecodeDeliveryReportingRequest(const unsigned char* pSrc, int srcLe
 		else
 		{
 			pSrc[length++];
-			Dprintf("DecodeDeliveryReportingRequest error flag=%x\n", flag);
+			printf("DecodeDeliveryReportingRequest error flag=%x\n", flag);
 		}
 	}
 
@@ -1364,7 +1341,7 @@ void MMSWarp::DecodeSmil(std::string file, vector<MMS_PAR>& vpars, MMS_LAYOUT& v
 	pos2 = smil.find("</body>");
 	if ((pos1 != string::npos ) && (pos2 != string::npos))
 	{
-		pos1 += (sizeof("<body>")-1);
+		pos1 += sizeof("<body>");
 		string body = smil.substr(pos1, pos2 - pos1);
 		while ((body.find("<par") != string::npos) && (body.find("</par>") != string::npos))
 		{
@@ -1627,6 +1604,7 @@ void MMSWarp::EncodeSmil(vector<MMS_PAR> vpars, MMS_LAYOUT layout, std::string p
 			}
 			
 			CopyFile(ToUnicode((*i).name).c_str(), ToUnicode(path + name).c_str(), FALSE);
+			DeleteFile(ToUnicode((*i).name).c_str());
 
 			if ((*i).type == stImge)
 			{
@@ -1636,7 +1614,7 @@ void MMSWarp::EncodeSmil(vector<MMS_PAR> vpars, MMS_LAYOUT layout, std::string p
 			}
 			else if ((*i).type == stText)
 			{
-				smil += "      <text src=\"";
+				smil += "      <text str=\"";
 				smil += name;
 				smil += "\" region=\"Text\" />\r\n";
 			}
@@ -1647,13 +1625,13 @@ void MMSWarp::EncodeSmil(vector<MMS_PAR> vpars, MMS_LAYOUT layout, std::string p
 				smil += "\" />\r\n";
 			}		
 		}
-		smil += "    </par>\r\n";		
+		smil += "    <par/>\r\n";		
 	}
 	
 	smil += "  </body>\r\n";
 	smil += "</smil>\r\n";
 
-	FILE* f= fopen(std::string(path+"start.smil").c_str(), "wb");
+	FILE* f= fopen("start.smil", "wb");
 	fwrite(smil.c_str(), 1, smil.size(), f);
 	fclose(f);
 }

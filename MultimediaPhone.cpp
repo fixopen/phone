@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MultimediaPhone.h"
 #include "MultimediaPhoneDlg.h"
-#include "afxsock.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,22 +84,9 @@ BOOL CMultimediaPhoneApp::InitInstance()
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
 	//  the specific initialization routines you do not need.
-
-// 	if (!AfxSocketInit())
-// 	{
-// 	//	AfxMessageBox(IDP_SOCKETS_INIT_FAILED);
-// 		return FALSE;
-// 	}
-
-	WSADATA wsa;
-	//加载winsock动态链接库
-	if (WSAStartup(MAKEWORD(1, 1), &wsa) != 0)
-	{
-		return -1;//代表失败
-	}
-
 	AfxEnableControlContainer();
 
+// 	unsigned int w_ = DMemprintf("test 0");
 // 	for(int i = 0; i < 20; i++)
 // 	{
 // 	//	unsigned int w = DMemprintf("test 0");
@@ -213,11 +199,11 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 	if(pMsg->message == WM_LBUTTONUP)
 	{
 	//	((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->CancelBalckLightSaveTimer();
-	//	Dprintf("Penup %d (%d, %d)\n", gCount_penUp++, pMsg->pt.x, pMsg->pt.y);
+		Dprintf("Penup %d (%d, %d)\n", gCount_penUp++, pMsg->pt.x, pMsg->pt.y);
 
 		if(gCount_penUp != gCount_penDwon)
 		{
-		//	Dprintf("pen Error \n");
+			Dprintf("pen Error \n");
 			gCount_penUp = gCount_penDwon = 0;
 		}
 // 		if((gCount_penDwon - gCount_penUp) >= 2)
@@ -258,7 +244,7 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 			//屏保 要后发送笔点消息
 			if(pMsg->pt.x != oldx && pMsg->pt.y != oldy)
 			{
-			//	Dprintf("WM_GEN_EVENT \r\n");
+				Dprintf("WM_GEN_EVENT \r\n");
 				if(!((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->ReStoreBackLight())
 					::SendMessage(m_pMainWnd->m_hWnd, WM_GEN_EVENT, 1, 0);
 				else
@@ -274,23 +260,10 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 	else if(pMsg->message == WM_LBUTTONDOWN)
 	{
 		((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->CancelBalckLightSaveTimer();
-	//	Dprintf("Pen down %d (%d, %d)\n", gCount_penDwon++, pMsg->pt.x, pMsg->pt.y);
+		Dprintf("Pen down %d (%d, %d)\n", gCount_penDwon++, pMsg->pt.x, pMsg->pt.y);
 		if(((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_nBackLightStatus == 0)  //为黑
 			return TRUE;
 		ret = CWinApp::PreTranslateMessage(pMsg);
-	}
-	else if (pMsg->message == WM_KEYDOWN)
-	{
-		if ( pMsg->wParam == VK_F1)//音量增加 +
-		{
-			((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->AddAudio(true);
-		}
-		else if (pMsg->wParam == VK_F2)//音量减 -
-		{
-			((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->AddAudio(false);
-
-		}
-
 	}
 	else
 		ret = CWinApp::PreTranslateMessage(pMsg);

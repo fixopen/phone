@@ -224,12 +224,12 @@ BOOL CFastDialsDlg::OnInitDialog()
 
 void CFastDialsDlg::OnButtonFastDialsOk()
 {
-	std::vector<std::pair<std::string, std::string> > diallist;
+	std::map<char, std::string> diallist;
 	for (int i = 0; i < 12; i++)
 	{
 		CString s;
 		m_edtNumber[i].GetWindowText(s);
-//		diallist[i+1] = Util::StringOp::FromCString(s);
+		diallist[i+1] = Util::StringOp::FromCString(s);
 	}
 	if(m_Data)
 	{
@@ -253,9 +253,9 @@ void CFastDialsDlg::OnButtonFastDialsCancel()
 void CFastDialsDlg::SetFastDialParam(boost::shared_ptr<Data::Setting> data)
 {
 	m_Data = data;
-	std::vector<std::pair<std::string, std::string> >  diallist = m_Data->speedDials();
+	std::map<char, std::string>  diallist = m_Data->speedDials();
 	int idx = 0;
-	for (std::vector<std::pair<std::string, std::string> >::const_iterator i = diallist.begin(); i != diallist.end(); ++i)
+	for (std::map<char, std::string>::const_iterator i = diallist.begin(); i != diallist.end(); ++i)
 	{
 		std::string str = i->second;
 		m_edtNumber[idx++].SetWindowText(Util::StringOp::ToCString(str));

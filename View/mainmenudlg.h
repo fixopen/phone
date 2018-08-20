@@ -22,7 +22,7 @@ public:
 	void SetSkinStyle();
 
 	void OnVideoBtn();
-	void OnPhotoBtn(int type = 0);
+	void OnPhotoBtn();
 	void OnMp3Btn();
 	void OnScreenSaveBtn();
 	void OnCalculBtn();

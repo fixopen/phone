@@ -141,7 +141,13 @@ BOOL CFireWallDlg::OnInitDialog()
 // 	
 // 	m_sticBackground.SetTextStruct(ts, 1);
 
-	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall() && ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->firewallType() == 3) //掉电后让限时防火墙失效
+	/*
+	SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration().GetTotalSeconds());
+		*/
+
+	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall() && ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType() == 3) //掉电后让限时防火墙失效
 	{
 		SetTimer(1, 10, NULL);   
 	}
@@ -155,11 +161,11 @@ void CFireWallDlg::OnButtonFireWallOk()
 	KillTimer(1);
 	if (m_chbEnableFireWall.GetCheck() == BST_CHECKED)
 	{
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall(true);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(true);
 	}
 	else
 	{
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall(false);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(false);
 	}
 	//m_cmbTime.GetLBText(m_cmbTime.GetCurSel(), d);
 	int nSel = m_cmbTime.GetCurSel();
@@ -169,7 +175,7 @@ void CFireWallDlg::OnButtonFireWallOk()
 		nSecond = nSel*3600;
 	else
 		nSecond = 1800;
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->blockAllTimeDuration(nSecond);
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration(nSecond);
 
 	int type = 0;
 	if (m_chbRefuseBlacklist.GetCheck_() == BST_CHECKED)
@@ -193,30 +199,29 @@ void CFireWallDlg::OnButtonFireWallOk()
 		type = 3;
 		SetTimer(1, nSecond * 1000, 0);
 	}
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->firewallType((Data::FirewallType)type);
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->Update();
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType((Data::FirewallType)type);
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->Update();
 	ShowWindow(FALSE);
 	OnStart(FALSE);
 	::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SetStatusAll(FALSE);
-
 }
 
 void CFireWallDlg::OnButtonFireWallCancel()
 {
 	ShowWindow(FALSE);
 	OnStart(FALSE);
-	SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall(),
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->firewallType(),
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->blockAllTimeDuration().GetTotalSeconds());
+	SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration().GetTotalSeconds());
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SetStatusAll(FALSE);
 }
 
 void CFireWallDlg::BrushWindow(void)
 {
-	SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall(),
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->firewallType(),
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->blockAllTimeDuration().GetTotalSeconds());
+	SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration().GetTotalSeconds());
 }
 void CFireWallDlg::SetParameters(bool enable, int type, int duration)
 {
@@ -252,17 +257,17 @@ void CFireWallDlg::OnTimer(UINT nIDEvent)
 	// TODO: Add your message handler code here and/or call default
 	KillTimer(nIDEvent);
 	m_chbEnableFireWall.SetCheck(BST_UNCHECKED);
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall(false);
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->Update();
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(false);
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->Update();
 	::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_FIRENOTIFY, 0, 0);
 	CDialog::OnTimer(nIDEvent);
 }
 
 int CFireWallDlg::GetFirewallType()
 {
-	if(!((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isFirewall())
+	if(!((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall())
 		return -1;
-	return ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->firewallType();
+	return ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType();
 }
 
 void CFireWallDlg::OnStart(BOOL isStart)

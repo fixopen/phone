@@ -148,7 +148,7 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 
 	CTelephoneDlg *PhoneDlg = reinterpret_cast<CTelephoneDlg*>(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg);
 	CSettingDlg *pSetDlg = reinterpret_cast<CSettingDlg*>(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg);
-	std::vector<std::pair<std::string, std::string> > ms =pSetDlg->m_pTempSetting->speedDials();
+	std::map<char, std::string> ms =pSetDlg->m_pSetting->speedDials();
 	pDlg->m_listBox.AddString(_T("开始拨打电话测试:"));
 
 	//log
@@ -183,7 +183,7 @@ DWORD CTestDlg::ThreadCallProc(LPVOID lParam)
 
 		PhoneDlg->HandleOn();
 		Sleep(1500);
-		PhoneDlg->DialContact(ms[1].second);
+		PhoneDlg->DialContact(ms[1]);
 
 		pDlg->SetTimer(1, 1000, NULL);
 	//	Sleep(5000);

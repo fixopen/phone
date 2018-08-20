@@ -15,59 +15,43 @@
 #include "../resource.h"
 #include "PlayerDlg.h"
 
-//#include "MidiPlayerControl.h"
-//#pragma comment(lib, "SDL.lib")
-
 /////////////////////////////////////////////////////////////////////////////
 // CMainMp3Dlg dialog
 
 class CMainMp3Dlg : public CDialog
 {
+	//control
 public:
-	BOOL				m_bIsPausebyEvent;
-	TCHAR				m_chDir[128];
+	BOOL m_bIsPausebyEvent;
+	int			m_nListIndex;
+
+	TCHAR		m_chDir[128];
+	CImageList *m_pImageList;
 	
-	CCEProcessBar		m_prgPlayTime;
-	CMJPGStatic			m_MJPGList;
-	CCEMoveTxtStatic	*m_MoveText;
+	CCEProcessBar m_prgPlayTime;
+	CCEProcessBar m_prgSoundSelect;
 	
-	BOOL m_isMidiMusic;
-	BOOL m_isMidiInit;
-	BOOL m_isPlayerShow;
-	int  m_ClickType;
-	int  m_IsPlay;
-	int  m_PreOrBack;  //0代表正常，1代表前一首，2代表下一首
+	CCEListCtrl m_lstPlayList;
+	CCEListCtrl m_lstPlayList1;
+
+	CMJPGStatic		m_MJPGList;
+
+	int m_IsPlay;
 	BOOL m_IsSound;
 	int  m_Volume;
-	BOOL m_isAllScreenPlay;
-	unsigned int m_pageSize;
-	unsigned int m_selectPageCount;   //被选中文件总页数
-	unsigned int m_selectCurrentPage;   //当前显示的文件
-	std::vector<CString> m_MP3List;
-	std::vector<CString> m_ShowList;
 
 	//local 0初级阶段
-	void SetMP3(CString filename);
+	void SetPlayList(TCHAR *dir, int local = 0);
+	void SetMP3(char *filename);
+	void SetCtrlEnable(BOOL flag = TRUE);
+	void StartOpenNewFile();
 	void OnExit_(BOOL isStopMusic);
-	void ChangeVolume(int w);
-	void OnFirst();
-	void OnLast();
-	void ShowArrayInList(std::vector<CString> fileName);
-	void PageUp();
-	void PageDown();
-	void ClearAll();
-	void CalculatePage(int dataCount);
-	void OnClickShowList(int unitNO);
-	void OnDBClickShowList(int unitNO);
-
-	void HandleAudio(bool bt);
-
+	void SetVolume();
 
 public:
 	CPlayerDlg	*playerDlg_; 
 
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnOpenFile();
 
 // Construction
 public:
@@ -78,8 +62,7 @@ public:
 	enum { IDD = IDD_DIALOG_CACULATER };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-private:
-//	MediaPlayer::MidiPlayer *pTheMidiPlayer;
+
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -97,15 +80,20 @@ protected:
 	//{{AFX_MSG(CMainMp3Dlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnExit();
+	afx_msg void OnSelectAll();
+	afx_msg void OnClearAll();
 	afx_msg void OnPlayer();
-	afx_msg void OnStop();
 	afx_msg void OnPre();
 	afx_msg void OnBack();
+	afx_msg void OnOpenFile();
 	afx_msg void OnMute();
 	afx_msg void OnPregress(WPARAM w, LPARAM l);
+	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized); 
 	afx_msg void OnOutEvent(WPARAM w, LPARAM l);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 
 	//}}AFX_MSG

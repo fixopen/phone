@@ -165,8 +165,6 @@ void CWebDialog::OnClickMJPG(WPARAM w, LPARAM l)
 			ShowWindow(SW_HIDE);
 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SetStatusAll(FALSE);
 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->SetScreenSaveTimer();
-
-			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->IsUnConnectNet();
 		}		
 		break;
 	case 8:				//确定
@@ -441,12 +439,71 @@ BOOL CWebDialog::OnInitDialog()
 
 void IEThreadPrc(void)
 {
-
+// 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+// 	
+// 	if(main->m_pMainDlg->m_pWebDialog->browser_)
+// 	{
+// 		main->m_pMainDlg->m_pWebDialog->browser_->Release();
+// 		main->m_pMainDlg->m_pWebDialog->browser_ = NULL;
+// 	}
+// 
+// 	///得到指针
+// 	LPUNKNOWN lpUnk = main->m_pMainDlg->m_pWebDialog->browserContainer_.GetControlUnknown();
+// 	HRESULT hr = lpUnk->QueryInterface(IID_IWebBrowser2, (void**)&main->m_pMainDlg->m_pWebDialog->browser_);
+// 	if (!SUCCEEDED(hr))
+// 	{
+// 		Dprintf("query IWebBrowser2 interface error\n");
+// 		main->m_pMainDlg->m_pWebDialog->browser_ = NULL;
+// 		main->m_pMainDlg->m_pWebDialog->browserContainer_.DestroyWindow();
+// 		main->m_pMainDlg->m_pWebDialog->DestroyWindow();
+// 		return ;
+// 	}
+// 	
+// 	tagVARIANT	flag;
+// 	flag.vt = navNoWriteToCache;
+// 	long v = main->m_pMainDlg->m_pWebDialog->browser_->Navigate((unsigned short*)(LPCTSTR)main->m_pMainDlg->m_pWebDialog->url_, &flag, 0, 0, 0); //, flags, targetFrameName, postData, headers
+// 	main->m_pMainDlg->m_pWebDialog->m_edit.SetWindowText(main->m_pMainDlg->m_pWebDialog->url_);
+// 	Dprintf("v value is %x\n", v);
+// 
+// 	main->m_pMainDlg->m_pWebDialog->m_bIsExitThread = FALSE;
+// 	while(!main->m_pMainDlg->m_pWebDialog->m_bIsExitThread)
+// 	{
+// 		::Sleep(30);
+// 	}
 }
 
 void CWebDialog::SetURL(CString url)
 {
-
+// 	m_bIsExitThread = TRUE;
+// 	SetTimer(1, 1500, NULL);
+// 	url_ = url;
+// 	HANDLE hIEEndThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)IEThreadPrc, NULL, 0, NULL);
+// 	KillTimer(1);
+// 	if(browser_)
+// 	{
+// 		browser_->Release();
+// 		browser_ = NULL;
+// 	}
+// 
+// 	///得到指针
+// 	LPUNKNOWN lpUnk = browserContainer_.GetControlUnknown();
+// 	HRESULT hr = lpUnk->QueryInterface(IID_IWebBrowser2, (void**)&browser_);
+// 	if (!SUCCEEDED(hr))
+// 	{
+// 		Dprintf("query IWebBrowser2 interface error\n");
+// 		browser_ = NULL;
+// 		browserContainer_.DestroyWindow();
+// 		DestroyWindow();
+// 		return ;
+// 	}
+// 	
+// 	tagVARIANT	flag;
+// 	flag.vt = navNoWriteToCache;
+// 	url_ = url;
+// 	long v = browser_->Navigate((unsigned short*)(LPCTSTR)url_, &flag, 0, 0, 0); //, flags, targetFrameName, postData, headers
+// 	m_edit.SetWindowText(url_);
+// 	SetTimer(1, 1500, NULL);
+// 	Dprintf("v value is %x\n", v);
 
 	if(!m_bPlaying)
 	{
@@ -505,6 +562,23 @@ void CWebDialog::SetURL(CString url)
 void CWebDialog::OnSetLink(WPARAM w, LPARAM l)
 {
 	COPYDATASTRUCT *ldata;
+
+	/*
+	char txt[256];
+	Dprintf(txt, "hwnd: 0x%x\r\n", w);
+	
+	Dprintf(txt, "len %d %d\r\n", ldata->dwData, ldata->cbData);
+	memset(txt, 0, 256);
+	wcstombs(txt, (TCHAR *)ldata->lpData, ldata->cbData);
+	Dprintf(txt);
+	Dprintf("end \r\n");
+	*/
+	/*   //lxz 20090304
+	ldata = (COPYDATASTRUCT *)l;
+	if(ldata->lpData)
+		m_edit.SetWindowText((TCHAR *)ldata->lpData);
+		*/
+
 }
 
 void CWebDialog::OnTimer(UINT nIDEvent)
@@ -547,7 +621,7 @@ void CWebDialog::OnKillWEBShow(WPARAM w, LPARAM l)
 				KillTimer(3);
 			else
 			{
-				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_AlarmShowDlg->IsWindowVisible() || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->IsWindowVisible())
+				if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pNetStatusDlg->IsWindowVisible() || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_AlarmShowDlg->IsWindowVisible() || ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->IsWindowVisible())
 					return;
 				SetTimer(3, 30, NULL);
 			}

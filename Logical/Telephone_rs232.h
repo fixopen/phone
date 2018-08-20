@@ -205,10 +205,10 @@ bool DecodeDTMFCallIDPackage(BYTE *buf, CALLID_INFO *pcallid);
 #define FSK_CST                 0x40 // FSK 来电通道开始
 #define FSK_CEND                0x4F // FSK 来电通道结束
 
-#define DTMF_CHANNEL_STRAT      DTMF_CST  // DTMF 来电通道开始
+#define DTMF_CHANNEL_STRAT      DTMF_CST // DTMF 来电通道开始
 #define DTMF_CHANNEL_END        DTMF_CEND // DTMF 来电通道结束
-#define FSK_CHANNEL_STRAT       FSK_CST   // FSK 来电通道开始
-#define FSK_CHANNEL_END         FSK_CEND  // FSK 来电通道结束
+#define FSK_CHANNEL_STRAT       FSK_CST         // FSK 来电通道开始
+#define FSK_CHANNEL_END         FSK_CEND // FSK 来电通道结束
 
 #define TEL_DTMFEND             0x8E // DTMF 来电结束
 #define TEL_FSKEND              0x8F // FSK 来电结束

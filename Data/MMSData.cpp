@@ -65,7 +65,7 @@ namespace Data {
             ExecCommand(cmd);
         }
 
-        bool MMSData::Insert() {
+        void MMSData::Insert() {
             std::string cmd = "INSERT INTO ";
             cmd += tableName();
             cmd += " ( messageType, transactionId, mmsVersion, recipientAddress, contentType, senderAddress, timeOfExpiry, subject, messageId, messageClass, dateAndTime, requestStatus, savePath, isRead, [type] ) VALUES ( '" ; 
@@ -101,12 +101,8 @@ namespace Data {
             cmd += " )";
 			extern void WriteLog(char *ptr);
 			WriteLog((char *)cmd.c_str());
-            
-			bool bt = ExecCommand(cmd);
-
+            ExecCommand(cmd);
             id(GetCurrentId());
-
-			return bt ;
         }
 
         void MMSData::Remove() const {

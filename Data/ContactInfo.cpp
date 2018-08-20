@@ -112,17 +112,17 @@ namespace Data
 
     std::vector<boost::shared_ptr<ContactInfo> > ContactInfo::GetFromDatabase(std::string filter, Direction const dir, int const id, int const pageSize)
     {
+// 		int contactLength = sizeof(ContactInfo);
+// 		int boostPointerLength = sizeof(boost::shared_ptr<ContactInfo>);
+// 		int vectorLength = sizeof(std::vector<boost::shared_ptr<ContactInfo> >);
         return DataAccess<ContactInfo>::GetDatasByFilter(filter, modifyFieldByDB_, dir, id, pageSize);
     }
-	
-	std::vector<int> ContactInfo::GetIdByFilter(std::string const filter, Direction const dir, std::vector<int>& itemId, int const pageSize)
-	{
-		return DataAccess<ContactInfo>::GetIdsByFilter(filter, itemId, dir);
-	}
 
     std::vector<boost::shared_ptr<ContactInfo> > ContactInfo::GetFromDatabaseByTypeOffsetLength(std::string type, int const offset, int const pageSize)
     {
 		std::string filter = type;
+// 		if (type != "")
+// 			filter = "\"type\" = " + type;
         return DataAccess<ContactInfo>::GetDatasByFilterAndPageInfo(filter, modifyFieldByDB_, offset, pageSize);
     }
 	
@@ -203,25 +203,6 @@ namespace Data
         item->name_ = argv[Data::getIndexByName(argc, columnName, "name")];
         item->played_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "played")]);
     }
-	//wangzhenxing1028
-	std::vector<int> ContactInfo::modifyFieldByDb_(int argc, char** argv, char** columnName, int itemId)
-	{
-// 		boost::shared_ptr<ContactInfo> item = DataAccess<ContactInfo>::GetDataById(itemId, modifyFieldByDB_);
-// 		
-// 		item->id(atoi(argv[Data::getIndexByName(argc, columnName, "id")]));
-//         item->type_ = static_cast<ContatcInfoType>(atoi(argv[Data::getIndexByName(argc, columnName, "type")]));
-//         item->isSound_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "isSound")]);
-//         item->startTime_ = Util::StringOp::ToTimestamp(std::string(argv[Data::getIndexByName(argc, columnName, "startTime")]));
-//         item->duration_ = atoi(argv[Data::getIndexByName(argc, columnName, "duration")]);
-//         //item->classId_ = atoi(argv[Data::getIndexByName(argc, columnName, "classId")]);
-//         item->telephoneNumber_ = TelephoneNumber(argv[Data::getIndexByName(argc, columnName, "telephoneNumber")], true);
-//         item->contactId_ = atoi(argv[Data::getIndexByName(argc, columnName, "contactId")]);
-//         item->name_ = argv[Data::getIndexByName(argc, columnName, "name")];
-//         item->played_ = !!atoi(argv[Data::getIndexByName(argc, columnName, "played")]);
-// 
-// 		return item;
-		return std::vector<int>();
-	}
 
     std::string DataAccess<ContactInfoSoundSegmentMap>::tableName_ = "contactInfoSoundSegmentMap";
     sqlite3* DataAccess<ContactInfoSoundSegmentMap>::db_ = Data::GetDB();

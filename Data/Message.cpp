@@ -75,7 +75,7 @@ namespace Data {
             ExecCommand(cmd);
         }
 
-        bool Message::Insert() {
+        void Message::Insert() {
             std::string  cmd = "INSERT INTO ";
             cmd += tableName();
 	        cmd += " (smscAddressType, smscAddress, isSetReplyPath, hasHeaderInfo, requestReport, validityPeriodFormat, rejectCopy, type, reference, remoteAddressType, remoteAddress, uplevelProtocol, encoding, validityPeriod, data, timestamp, state, [group], [transactionId], [total], [no] ) VALUES ( " ; 
@@ -123,12 +123,9 @@ namespace Data {
             cmd += " )";
 			extern VOID WriteLog(CHAR* str);
 			WriteLog((char *)cmd.c_str());
-			
-			bool btr = ExecCommand(cmd);
+            ExecCommand(cmd);
 
             id(GetCurrentId());
-
-			return btr ;
         }
 
         void Message::Remove() const {

@@ -89,7 +89,6 @@ void CCELineEdit::OnChange()
 	}
 	::SelectObject(pdc, old);
 	::ReleaseDC(m_hWnd, pdc);
-
 // 	extern void GlobelSetEditFocus(); //mhq 新建名片切换到桌面
 // 	GlobelSetEditFocus();
 	
@@ -210,7 +209,6 @@ void CCELineEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		Invalidate();
 		CEdit::OnChar(nChar, nRepCnt, nFlags);
-		GetParent()->SendMessage(WM_CHARNUMBER, 0, 0);
 	}
 }
 

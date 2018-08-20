@@ -11,10 +11,10 @@
 #define SCL_IOCODE_BASE		   2050
 #define METHOD_IN_DIRECT       1
 #define FILE_ANY_ACCESS        0
-#define SCL_SYSTEM_RESET		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x1,METHOD_IN_DIRECT,FILE_ANY_ACCESS)  //reset system
-#define SCL_ENABLE_WATCHDOG		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x2,METHOD_IN_DIRECT,FILE_ANY_ACCESS)  //enable watch dog
-#define SCL_ADJUST_BACKLIGHT	CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x5,METHOD_IN_DIRECT,FILE_ANY_ACCESS)  //LCD 灯控制 
-#define RS232_INVERT			0
+#define SCL_SYSTEM_RESET   CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x1,METHOD_IN_DIRECT,FILE_ANY_ACCESS)  //reset system
+#define SCL_ENABLE_WATCHDOG   CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x2,METHOD_IN_DIRECT,FILE_ANY_ACCESS)  //enable watch dog
+#define SCL_ADJUST_BACKLIGHT  CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x5,METHOD_IN_DIRECT,FILE_ANY_ACCESS)  //LCD 灯控制 
+#define RS232_INVERT		0
 
 static unsigned char g_tel_code[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '*', '#', 'A', 'B', 'C', 'D'};
 const char *const DTMFNUMBER = "D1234567890*#ABC";
@@ -202,7 +202,7 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 						  Dprintf("GetForegroundWindow = %x\r\n", hWnd);
 						  if(hWnd)
 							  ::SendMessage(hWnd, WM_SYSKEYDOWN, VK_ESCAPE, 0);
-						*/
+							  */
 						keybd_event(VK_F9, 0, 0, 0);
 					}
 				
@@ -221,7 +221,6 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 					CallIDLen = 0;
 					//theApp.m_pMainWnd->SendMessage(WM_TEL_HUNGOFF, 0, 0);
 					break;
-
 				case FSKEND_VALUE:
 					isRingTelCode = FALSE;
 					CallIDbuff[CallIDLen++] = c;
@@ -231,7 +230,6 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 					CallIDLen = 0;
 					//theApp.m_pMainWnd->SendMessage(WM_TEL_CALLIDEND, 0, 0);
 					break;
-
 				case DTMFEND_VALUE:
 					isRingTelCode = FALSE;
 					CallIDbuff[CallIDLen++] = c;
@@ -242,7 +240,6 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 					CallIDLen = 0;
 					//theApp.m_pMainWnd->SendMessage(WM_TEL_CALLIDEND, 0, 0);
 					break;
-
 				case PAGEUP_VALUE:
 					//keybd_event('U', 0, 0, 0);
 					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, 'U', 0);
@@ -711,7 +708,6 @@ void Phone::InitRingSrc()
 	//得到音频相关接口 
     pGraph->QueryInterface(IID_IBasicAudio,   (void   **)&ipBasAudio); 
 	pGraph->QueryInterface(IID_IMediaEvent, (void **)&pEvent);
-
 }
 
 void Phone::RelaseRingSrc()
@@ -768,7 +764,7 @@ void Phone::StartRing(TCHAR *filename, int ncount)
 // 	HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1"); //
 // 	if(hWnd)
 // 		AfxMessageBox(L"csplayer_win1");
-	
+
 	::Sleep(50);
 	::EnterCriticalSection(&m_ringSetion_);
 	nRingCount = ncount;

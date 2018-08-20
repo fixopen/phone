@@ -376,10 +376,10 @@ void CSoundDlg::OnButtonSound()
 		
 		if(m_pPlaySoundDlg->SetSound(m_uiType, m_lsList.GetItemData(index), 0, m_sListSearchFilter))
 		{
-			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 			{
 				m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
-				std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
+				std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
 				m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 				m_pPasswordDlg->SetHWnd(this->m_hWnd);
 				m_pPasswordDlg->ShowWindow(SW_SHOW);	
@@ -395,8 +395,7 @@ void CSoundDlg::OnButtonSound()
 
 void CSoundDlg::OnButtonRecord()
 {
-//	if ((((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff))
-	if ((((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_phoneLine[0].pFSM->getCurrentState() != CMultimediaPhoneDlg::p3gsHangOff))
+	if ((((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff))
 		return;
 
 // 	POSITION pos = m_lsType.GetFirstSelectedItemPosition();
@@ -460,11 +459,11 @@ void CSoundDlg::OnButtonDelete()
 	if (pos != NULL)
 	{
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 		{
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 		}
-		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->adminPassword();
+		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 		std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_TIP);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
@@ -872,9 +871,7 @@ void CSoundDlg::DeleteSelectedItem(void)
 			{
 				result[0]->isSound(false);
 				result[0]->Update();
-//				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
-				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ResetTypeInfo();
-
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactInfoDlg->ShowItemsInList(-1);
 			}
 		}
 		
@@ -949,8 +946,8 @@ LRESULT CSoundDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		DeleteSelectedItem();
 		break;
 	case WM_SETTINGPASSWORD:
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->soundProtectPassword(std::string((char*)wParam, lParam));
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->Update();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->soundProtectPassword(std::string((char*)wParam, lParam));
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->Update();
 		break;
 	case WM_SCROLL_EDO:
 		ScrollItemsInList(wParam, lParam);
@@ -991,10 +988,10 @@ LRESULT CSoundDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if(m_pPlaySoundDlg->SetSound(0, result[result.size() - 1]->id(), 0, m_sListSearchFilter))
 				{
-					if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+					if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 					{
 						m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
-						std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
+						std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
 						m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 						m_pPasswordDlg->SetHWnd(this->m_hWnd);
 						m_pPasswordDlg->ShowWindow(SW_SHOW);	

@@ -27,12 +27,12 @@ BOOL ComWarp::OpenComm(const WCHAR* pPort, int nBaudRate, int nParity, int nByte
 			50,                  // 写操作时每字符的时间:  ms (n个字符总共为n ms)    
 			2000};               // 基本的(额外的)写超时时间:  ms    
 		
-	//     COMMTIMEOUTS timeouts = {   // 串口超时控制参数    
-	// 			100,                // 读字符间隔超时时间: 100 ms    
-	// 			1,                  // 读操作时每字符的时间: 1 ms (n个字符总共为n ms)    
-	// 			500,                // 基本的(额外的)读超时时间: 500 ms    
-	// 			1,                  // 写操作时每字符的时间: 1 ms (n个字符总共为n ms)    
-	// 			100};               // 基本的(额外的)写超时时间: 100 ms    
+//     COMMTIMEOUTS timeouts = {   // 串口超时控制参数    
+// 			100,                // 读字符间隔超时时间: 100 ms    
+// 			1,                  // 读操作时每字符的时间: 1 ms (n个字符总共为n ms)    
+// 			500,                // 基本的(额外的)读超时时间: 500 ms    
+// 			1,                  // 写操作时每字符的时间: 1 ms (n个字符总共为n ms)    
+// 			100};               // 基本的(额外的)写超时时间: 100 ms    
 
 		hComm = CreateFile(pPort,   // 串口名称或设备路径    
 			GENERIC_READ | GENERIC_WRITE,   // 读写方式    
@@ -60,7 +60,7 @@ BOOL ComWarp::OpenComm(const WCHAR* pPort, int nBaudRate, int nParity, int nByte
 		return TRUE;   
 }   
 
-// 关闭串口 
+// 关闭串口    
 BOOL ComWarp::CloseComm()   
 {   
 	return CloseHandle(hComm);   
@@ -78,9 +78,10 @@ int ComWarp::WriteComm(void* pData, int nLength)
 	if (dwNumWrite > 0)
 	{
 		extern VOID WriteLog(char *ptr);
-		WriteLog((char *)pData);
-//		Dprintf("Write: %d ", dwNumWrite);
-//		Dprintf((char *)pData);
+	//	WriteLog((char *)pData);
+		Dprintf("Write: %d ", dwNumWrite);
+		Dprintf((char *)pData);
+		Dprintf("\n");
 	}
 	return (int)dwNumWrite;   
 }   
@@ -91,31 +92,24 @@ int ComWarp::WriteComm(void* pData, int nLength)
 // 返回: 实际读出的数据长度    
 int ComWarp::ReadComm(void* pData, int nLength)   
 {   
-//	Sleep(1000);
-	DWORD dwNumRead;    // 串口收到的数据长度  
-	DWORD ret = 0;
+	Sleep(1000);
+	DWORD dwNumRead;    // 串口收到的数据长度    
 
 	memset(pData, 0, nLength);
-	DWORD  s = GetTickCount();
-
-	while((GetTickCount() -s) < 1000)
+	ReadFile(hComm, pData, (DWORD)nLength, &dwNumRead, NULL);   
+	if (dwNumRead > 0)
 	{
-		ReadFile(hComm, pData, (DWORD)nLength, &dwNumRead, NULL);  
-		ret += dwNumRead;
-		if (dwNumRead > 0)
-		{
-			extern VOID WriteLog(char *ptr);
-			WriteLog((char *)pData);
-			
-	//		Dprintf((char *)pData);
-			break;
-		}
-		else if (dwNumRead == 0)
-		{
-			//TRACE(L"00000000000000000000000000000000000000000\n");
-			// Dprintf("00000000000000000000000000000000000000000\n");
-		}
-		::Sleep(0);
+		extern VOID WriteLog(char *ptr);
+	//	WriteLog((char *)pData);
+
+		Dprintf("Read: %d ", dwNumRead);
+		Dprintf((char *)pData);
+//		Dprintf("\r\n");
+	}
+	else if (dwNumRead == 0)
+	{
+		TRACE(L"00000000000000000000000000000000000000000\n");
+		Dprintf("00000000000000000000000000000000000000000\n");
 	}
 
 	return (int)dwNumRead;   

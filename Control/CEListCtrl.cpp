@@ -306,7 +306,7 @@ BOOL CCEListCtrl::PreTranslateMessage(MSG* pMsg)
 	// TODO: Add your specialized code here and/or call the base class
 	if(pMsg->message == WM_LBUTTONDOWN)
 	{
-//		Dprintf("ListCtrl pendown\r\n");
+		Dprintf("ListCtrl pendown\r\n");
 		theApp.GetMainWnd()->SendMessage(WM_NOPENUP, 0, 0);
 		m_nListIndex = -1;
 		BOOL ret =	CListCtrl::PreTranslateMessage(pMsg);

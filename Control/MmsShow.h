@@ -2,7 +2,6 @@
 #define IMAGESHOW_H
 //////GIFShow.h////////
 
-
 #include "../util/MMSWarp.h"
 #include "CELineEdit.h"
 #include "CEListCtrl.h"
@@ -13,47 +12,39 @@
 #include "ximage.h"
 
 
-#define		DISPOSAL_NO 0
-#define		DISPOSAL_NOT 4
-#define		DISPOSAL_RESTBACK 8
-#define		DISPOSAL_RESTORE 12
+#define DISPOSAL_NO 0
+#define DISPOSAL_NOT 4
+#define DISPOSAL_RESTBACK 8
+#define DISPOSAL_RESTORE 12
 
-#define		PAR_SHOW_TIMER		5
-#define		IMAGE_TIMER			1
-#define		TXT_TIMER			2
-#define		DEF_IMAGE_SHOW		3
-#define		DEF_TXT_SHOW		4
-#define		BTN_INTERVAL		25
-#define		BTN_HEITHT			205
-#define		BTN_WIDTH			130
-#define		TIME_BASE			1
-#define		PIC_BTN_HEIGHT		85	
-#define		PIC_BTN_WIDTH		100
-#define		PIC_SAVE_TIMER		6
-#define		IMAGE_REGION_WIDTH	200
-#define		IMAGE_REGION_HEIGHT	172
-#define		TEXT_REGION_WIDTH	290
-#define		TEXT_REGION_HEIGHT	172
-#define		TEXT_TOP			29
+#define PAR_SHOW_TIMER		5
+#define IMAGE_TIMER			1
+#define TXT_TIMER			2
+#define DEF_IMAGE_SHOW		3
+#define DEF_TXT_SHOW		4
 
-#define		IDC_BTN_PIC1		0x2000
-#define		IDC_BTN_PIC2		0x2001
-#define		MMS_BTN_OK			0x2002
-#define		MMS_BTN_CANCEL		0x2003
-#define		IDC_LIST_CONTRAL	0x2004
-#define		IDC_BTN_MUSIC		0x2005
-#define		IDC_BTN_PICTURE		0x2006
-#define		IDC_BTN_VEDIO		0x2007
-#define		IDC_BTN_NEXT_PAGE	0x2008
-#define		IDC_BTN_UP_PAGE		0x2009
-#define     IDC_BTN_SAVE		0x200A
+#define BTN_INTERVAL		25
+#define	BTN_HEITHT			205
+#define BTN_WIDTH			130
 
-#ifndef IDC_BTN_OK
-#define IDC_BTN_OK	0x2010
-#endif
-#ifndef IDC_BTN_CANCEL
-#define IDC_BTN_CANCEL	0x2011
-#endif
+#define  TIME_BASE			1000
+
+
+#define		PIC_BTN_HEIGHT	85	
+#define		PIC_BTN_WIDTH	100
+
+#define		PIC_SAVE_TIMER  1
+
+#define IDC_BTN_PIC1		0x2000
+#define IDC_BTN_PIC2		0x2001
+#define IDC_BTN_OK			0x2002
+#define IDC_BTN_CANCEL		0x2003
+#define IDC_LIST_CONTRAL	0x2004
+#define IDC_BTN_MUSIC		0x2005
+#define IDC_BTN_PICTURE		0x2006
+#define IDC_BTN_VEDIO		0x2007
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CPicPathSet dialog
@@ -128,7 +119,6 @@ public:
 	void	SetCopyPath(CString &allpath,CString &filename);
 	void	SetState(UINT state);
 	void	GetMainWnd(CWnd *mwnd);
-	void    SetClue(CString const clue);
 	void    OnShow();
 	void    OnHide();
 	
@@ -337,7 +327,7 @@ protected:
 
 	std::vector<TFrame> m_arrFrames;
 
-	int		FindType(const CString ext);
+	int		FindType(const CString& ext);
 	BOOL	DrawBitmap();
 	BOOL	Load(int nImgType);
 	void	ThreadAnimation();
@@ -406,11 +396,10 @@ public:
 	MmsShow();
 	virtual ~MmsShow();
 public:
-	void FromListName(CString const allpath);
+	void FromListName(CString const& allpath);
 	void SetImageFileName(std::wstring const& filename);//设置图片路径
 	void SetImageRegion(CPoint const& origin, CSize const& size);//截取图片固定的大小。
 	void SetImageShow(BOOL show = true);//
-	
 	void SetTextContent(std::wstring const& text);//设置文本的内容
 	void SetTextFont(const LOGFONT &font);//文本字体
 	void SetTextColor(COLORREF bkclor,COLORREF txtclor);//设置背景色 和 文本色
@@ -420,14 +409,12 @@ public:
 	void SetImagePos(CRect &rct);
 	void SetMmsEdit();//设置文本可编辑，以及按钮性质
 	void SetMmsRead();//设置文本为可读状态,
-	
 	BOOL LoadTextBMP(UINT bmpID);
-	BOOL FindFileSmil(std::wstring const filename);
+	BOOL FindFileSmil(std::wstring const& filename);
 	void InitialDefRegion();
 	void InitialDefPar();
-	void InitialRegion();
-	void InitialPar();
-	
+	void InitialRegion();//
+	void InitialPar();//
 	void Clear();
 	void GetMmsRegionInfo();
 	void GetDefRegionInfo();
@@ -435,15 +422,8 @@ public:
 	void GetName(CString &fl);
 	void InsertPicture();
 	void ClosePicture();
-	void GetAllFileInfo(std::wstring &image,std::wstring &text,std::wstring &aduio,std::wstring &vedio);//获得所有文件的信息
-	
-	BOOL GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp::MMS_LAYOUT &mmsLayout,std::wstring &title);//获得par里的内容
-	void SaveParInfo();
-	void AddParInfo();//往par里添加一条par
-	void SetTitle(std::wstring const title);
-	void SetTransit(std::wstring const filename);//设置转移
-	CString	GetFileName(CString const allpath);
-
+	void GetAllFileInfo(std::wstring &image,std::wstring &text,std::wstring &aduio,std::wstring &vedio);
+	CString	GetFileName(CString const &allpath);
 public:
 
 protected:
@@ -453,7 +433,6 @@ private:
 	CImageViewer							m_cPic			;
 //	CTextViewer								m_cTextView		;
 	CCELineEdit								m_cTextView		;
-	CCEStatic								m_cstcTitle		;
 	CCELineEdit								m_cMmsTitle		;//标题
 	UINT									m_imageWidth	;//图片的高度
 	UINT									m_imageHeight	;//图片的宽度
@@ -464,9 +443,8 @@ private:
 	std::vector<MMS::MMSWarp::MMS_REGION>	m_cMmsRegion	;//文件的路径
 	std::vector<MMS::MMSWarp::MMS_PAR>		m_cMmsPar		;//par
 	MMS::MMSWarp::MMS_LAYOUT				m_cMmsLayOut	;//mms layout
-	
 	UINT									m_cImageTime	;//图片显示次数
-	int										m_uMmsParPlay	;//当前正在播放的PAR
+	UINT									m_uMmsParPlay	;//当前正在播放的PAR
 	CString									m_cSmilPath		;//SMIL文件的路径
 	CString									m_cImagePath	;//图片全路径
 	UINT									m_uImageDur		;//图片的显示时间
@@ -480,26 +458,19 @@ private:
 	std::vector<CString>					m_cDefTxtContent;//没有SMIL文件，加载文本
 	UINT									m_uDefTxtTime	;//文本显示了多长时间
 	UINT									m_uDefImageTime	;//显示的时间
-	int										m_uDefTxtItem	;//正在
-	int										m_uDefImageItem	;//显示的时间
+	UINT									m_uDefTxtItem	;//正在
+	UINT									m_uDefImageItem	;//显示的时间
 	BOOL									m_bFindSiml		;
-	
 	CCEButtonST								m_btnPicture	;//保存图片
 	CCEButtonST								m_btnMusic		;//保存音频
 	CCEButtonST								m_btnVedio		;//保存视频
-	CCEButtonST								m_btnNextPage	;//下一页
-	CCEButtonST								m_btnUpPage		;//上一页
-	CCEButtonST								m_btnSave		;//保存
-	
 	UINT									m_uState		;//1,readonly,2,edit
 	std::vector<CString>					m_cInsertList	;//插入图片的列表
 	std::vector<CString>					m_cInsertAudio	;//音乐
 	std::vector<CString>					m_cInsertvedio	;//视频
 	CString									m_cAudioName	;//音频路径
 	CString									m_cVedioName	;//
-	CString									m_cTitleName	;//标题名字
 	CPicPathSet								m_picPathDlg	;//路径设置
-	int										m_iPageNum		;//页数
 //	CListContral							m_listCtral		;//文件列表
 
 protected:
@@ -513,9 +484,7 @@ public:
 	afx_msg void  OnBtnPicture();
 	afx_msg void  OnBtnMusic();
 	afx_msg void  OnBtnVedio();
-	afx_msg void  OnBtnUp();
-	afx_msg void  OnBtnNext();
-	afx_msg void  OnBtnSave();
+
 
 };
 

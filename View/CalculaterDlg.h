@@ -12,7 +12,6 @@
 #include "../Control/SoftKey.h"
 #include "../Control/CELineEdit.h"
 #include "../Control/MJPGStatic.h"
-#include "../Control/CEComboBox_.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCalculaterDlg dialog
@@ -22,17 +21,16 @@ class CCalculaterDlg : public CDialog
 private:
 
 	CMJPGStatic		m_MJPGList;
+/*
+	CCEStatic		m_stcTitle;
+	CCEBmpButton	m_btnExit;
+	CSoftKey        m_SoftKey;
+	CCEFrameStatic  m_backGroudStatic;
+*/
 	CCERectEdit		m_DialNumEdit;
-	CCEComboBox_    m_cmbType1;
-	CCEComboBox_    m_cmbType2;
-	CCERectEdit     m_edtTransferNum1;
-	CCERectEdit     m_edtTransferNum2;
-
-	unsigned int    m_transferType;
 
 	BOOL			m_IsError;  //2005.5.19 zmy 设置错误的标志
-	CFont m_NumFont;
-	CFont m_TransFont;
+	CFont m_Font;
 	
 public:
 	double  m_number1;    //MS键的数据缓冲区bn
@@ -44,13 +42,9 @@ public:
 	double  m_dtemp1;     //存放运算结果
 	double  m_dtemp2;    //存放运算符中第二个数字
 	double	m_dCurtemp;	 //当前显示在输入框的数字
-	
-	void OnButtonEquel(int type);
+
 	void ClearData();
-	void SetComboData(int type);
-	void ShowWindow_(int nCmdShow);
 	void OnExit_(){OnExit();}
-	void ShowCtrl();
 
 // Construction
 public:
@@ -79,7 +73,6 @@ protected:
 	afx_msg void OnSoftKey(WPARAM w, LPARAM l);
 	afx_msg void OnExit();
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

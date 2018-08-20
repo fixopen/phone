@@ -30,7 +30,6 @@
 #define TEL_FROMRING                    13
 #define TEL_FROMEND                     14
 #define TEL_SIGNALQUALITY               15
-#define TEL_NETTYPE                     16
 #define IDD_MULTIMEDIAPHONE_DIALOG      102
 #define IDR_MAINFRAME                   128
 #define IDD_DIALOG_MAIN                 129
@@ -179,7 +178,6 @@
 #define IDC_COMBOBOX_CONTACTGROUP_RING  1203
 #define IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP 1204
 #define IDC_EDIT_CONTACTGROUP_NAME      1205
-#define IDC_EDIT_NAME                   1206
 #define IDC_BUTTON_CONTACTSEARCH_SEARCH 1300
 #define IDC_BUTTON_CONTACTSEARCH_CANCEL 1301
 #define IDC_EDIT_CONTACTSEARCH_NAME     1302
@@ -280,10 +278,6 @@
 #define IDC_BUTTON_CONTACTINFO_CLOSE    3223
 #define IDC_BUTTON_SOUND_CLOSE          3224
 #define IDC_BUTTON_NOTE_CLOSE           3225
-#define WM_CLCK							4000
-#define WM_CCFC							4002
-#define WM_SIM_CAPACITY					4003
-#define WM_CONTACT_NUM					4004
 #define IDT_GETINFO_TIIMER              8000
 #define IDT_PAUSE_PLAYER                8001
 #define WM_CHANGEWINDOW                 8001
@@ -570,22 +564,15 @@
 #define WM_SCROLL_EDO                   9078
 #define IDC_SETTING_BLACKSCREEN2        9079
 #define WM_BINGJIZHAIJI                 9079
-#define IDB_BITMAP34                    9079
 #define WM_MJPGMOVE                     9080
 #define WM_CLEARPWD                     9081
-#define IDB_BITMAP_COMBOX1_FORE         9081
 #define WM_FORMATDATA                   9082
-#define IDB_BITMAP_COMBOX1_BACK         9082
 #define IDC_CHECK_SETTING_PLAYPROTECT   9083
 #define WM_NOPENUP                      9083
-#define IDB_BITMAP_COMBOX_FORE          9083
 #define IDC_CHECK_SETTING_ADNINPROTECT  9084
 #define WM_TEL_STATUS                   9084
-#define IDB_BITMAP_COMBOX_BACK          9084
 #define IDC_RADIO_SETTING_RECORDAUTO    9085
-#define IDB_BITMAP_CONTACTNEW           9085
 #define IDC_RADIO_SETTING_RECORDMANUL   9086
-#define IDB_BITMAP_CONTACTNEW1          9086
 #define IDC_RADIO_SETTING_RECORDHIGHT   9087
 #define IDC_RADIO_SETTING_RECORDMIDDLE  9088
 #define WM_LISTCTRL_CLICKSUBITEM        9089
@@ -594,50 +581,12 @@
 #define WM_SMS_MMS                      9092
 #define WM_SMS_OTA                      9093
 #define WM_SMS_SENDRESULT               9094
-#define WM_SMS_SENDPRO                  9095
-#define IDC_LIST_CONTRAL_CARDSELECT     9096
-#define WM_PIN_INPUT                    9097
-#define PIN_OK                          9098
-#define PIN_ERROR                       9099
-#define PIN_LOCKED                      9100
-#define PIN_PUK                         9101
-#define PIN_FUK_LOCKED                  9102
-#define PIN_FUK_ERROR                   9103
-#define WM_SIM_IMPORT                   9104
-#define IDD_DIALOG_MMS                  9105
-#define WM_MJPGTOGGLE                   9106
-#define IDD_DLG_MOVIE                   9107
-#define IDC_BUTTON_SHIFT                9108
-#define WM_SHIFTSELITEM                 9109
-#define WM_CHANGE_BATTERY               9110
-#define WM_CHANGE_BATTERYOK             9111
-#define WM_ATCOMM_ERROR                 9112
-#define IDC_SELECT_CMDAPN               9113
-#define WM_NUMBER_SELECT                9114
-#define IDC_EDIT_PINNUMBER              9115
-#define IDC_EDIT_TRANSFERNUMBER         9116
-#define IDC_DATE_SHOW                   9117
-#define IDC_TIME_SHOW                   9118
-#define IDC_EDIT_OUTLINEDIAL1           9119
-#define IDC_BLACKLIGHTWAIT_TIME         9120
-#define IDC_NIGHTLIGHTSTART_TIME        9121
-#define IDC_NIGHTLIGHTEND_TIME          9122
-#define WM_SIM_MESSAGE                  9123
-#define WM_VK_F                         9124
-#define WM_RECEIVE_BOX                  9125
-#define WM_CHANGE_DCBATTERY				9126
-#define CANCEL_KEY                      10000
-#define OK_KEY                          10001
-#define LEFT_KEY                        10002
-#define RIGHT_KEY                       10003
-#define UP_KEY                          10004
-#define DOWN_KEY                        10005
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        9087
+#define _APS_NEXT_RESOURCE_VALUE        9078
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         8065
 #define _APS_NEXT_SYMED_VALUE           101

@@ -9,7 +9,6 @@
 #include "../Data/Contact.h"
 #include "../MultimediaPhoneDlg.h"
 #include "../Data/SkinStyle.h"
-#include < Sipapi.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,22 +16,17 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define  IDC_EDIT_INPUT  1
-
 /////////////////////////////////////////////////////////////////////////////
 // CContactInfoDlg dialog
 
 CContactInfoDlg::CContactInfoDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CContactInfoDlg::IDD, pParent)
 	, ContactInfoTotal(10000)
-	, PageSize(6)
+	, PageSize(10)
 {
 	//{{AFX_DATA_INIT(CContactInfoDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-
-	m_bSelectAll = false ;
-	m_bSearch = FALSE;
 }
 
 
@@ -48,303 +42,74 @@ void CContactInfoDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CContactInfoDlg, CDialog)
 	//{{AFX_MSG_MAP(CContactInfoDlg)
 	//}}AFX_MSG_MAP
+	ON_NOTIFY(NM_CLICK, IDC_LIST_CONTACTINFO_TYPE, OnClickListType)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_CONTACTINFO_LIST, OnClickListList)
 	ON_BN_CLICKED(IDC_BUTTON_CONTACTINFO_DIAL, OnButtonDial)
 	ON_BN_CLICKED(IDC_BUTTON_CONTACTINFO_SOUND, OnButtonSound)
 	ON_BN_CLICKED(IDC_BUTTON_CONTACTINFO_NOTE, OnButtonNote)
 	ON_BN_CLICKED(IDC_BUTTON_CONTACTINFO_NEW, OnButtonNew)
 	ON_BN_CLICKED(IDC_BUTTON_CONTACTINFO_SEARCH, OnButtonSearch)
 	ON_BN_CLICKED(IDC_BUTTON_CONTACTINFO_DELETE, OnButtonDelete)
+	ON_BN_CLICKED(IDC_BUTTON_CONTACTINFO_CLOSE, OnButtonClose)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-	ON_MESSAGE(WM_MJPGTOGGLE,OnClickMJPG)
+	ON_MESSAGE(WM_LISTCTRL_CLICK, OnListCltrlClick)
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
+
+
+void CContactInfoDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+{
+	if(nChar == 'U')
+	{
+		m_lsList.m_scollbar_.DoPageUp();
+	}
+	else if(nChar == 'D')
+	{
+		m_lsList.m_scollbar_.DoPageDown();
+	}
+}
+
+void CContactInfoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
+{
+	LRESULT ret;
+	if(w == IDC_LIST_CONTACTINFO_TYPE)
+		OnClickListType(NULL, &ret);
+	else if(w == IDC_LIST_CONTACTINFO_LIST)
+		OnClickListList(NULL, &ret);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CContactInfoDlg message handlers
-
 void CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd;
-	CString content(L"");
-	CString icon ;
-
 	switch (w)
 	{
-	case 0://未接电话
-	case 1://已接电话
-	case 2://已拨电话
-	case 3://所有来电
-		m_iTabs = w ;
-		SetUpBtn(w);
-		Clear();
-		ClearCurrentPage();
-		SetContactInfoFilter(w);
-		FromContactInfoDataBase();
-		ShowTypeInfo();
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+		ShowItemsInList(w - 1);
 		break;
-
-	case 4://查找		
- 		OnButtonSearch();
-		break;
-
-	case 7: //上移
-		PageSwitch(up_page);
-		break;
-
-	case 8://下移
-		PageSwitch(down_page);
-		break;
-
-	case 1000: //返回
-		ShowWindow(SW_HIDE);
-		main->PopbackIcon();
-		break;
-
-	case 1001: //确定
-		OnBtnOK();
-		break;	
-		
-	case 11://短信息
-		if (OnBtnSMS())
-		{
-			icon = Allicon[1];
-			main->AddIcon(icon);
-		}		
-		break;
-
-	case 12://拨打
+	case 5:
 		OnButtonDial();
 		break;
-
-	case 13://删除
-		OnButtonDelete();
-		break;
-
-	case 14://听留言
+	case 6:
 		OnButtonSound();
 		break;
-
-	case 15://新建名片
+	case 7:               //新建名片
 		OnButtonNew();
 		break;
-
-	case 50://全选
-		SelectAll();
+	case 8:
+		OnButtonSearch();
 		break;
-
-	case 100://勾选
-	case 200:
-	case 300:
-	case 400:
-	case 500:
-	case 600:
-		ClickedOneItem(w,w/100-1);
+	case 9:
+		OnButtonDelete();
 		break;
-
-	case 101://勾选
-	case 102:
-	case 103:
-	case 104:
-	case 105:
-	case 106:
-	case 107:
-
-	case 201://勾选
-	case 202:
-	case 203:
-	case 204:
-	case 205:
-	case 206:
-	case 207:
-
-	case 301://勾选
-	case 302:
-	case 303:
-	case 304:
-	case 305:
-	case 306:
-	case 307:
-
-	case 401://勾选
-	case 402:
-	case 403:
-	case 404:
-	case 405:
-	case 406:
-	case 407:
-
-	case 501://勾选
-	case 502:
-	case 503:
-	case 504:
-	case 505:
-	case 506:
-	case 507:
-
-	case 601://勾选
-	case 602:
-	case 603:
-	case 604:
-	case 605:
-	case 606:
-	case 607:
-		SeeOneItem(w - w%100);
+	case 10:			 //记事
+		OnButtonNote();
 		break;
-
-	case 801://切换到字母
-		m_MJPGData_key.ShowWindow(SW_HIDE);
-		m_MJPGLetter_key.ShowWindow(SW_SHOW);
-		break;
-	case 802://删除
-		content = m_MJPGData_key.GetUnitText(800);
-		content.Delete(content.GetLength()-1);
-		m_MJPGData_key.SetUnitText(800,content,true);
-		Add(L"");
-		break;
-	case 803://清空
-		m_MJPGData_key.SetUnitText(800,L"",true);
-		m_sAddtion = "";
-		m_MJPGList.SetUnitText(5, L"0/", TRUE);
-		m_MJPGList.SetUnitText(6, L"0", TRUE);
-		Clear();
-		ClearCurrentPage();
-		break;
-
-	case 804:  //?号
-		 Add(L"?");
-		break;
-	case 810://9-0
-		m_MJPGData_key.SetUnitFont(800,font_30);
-		m_MJPGData_key.SetUnitColor(800,font_black,true);
-		Add(L"1");
-		break;
-
-	case 811:
-		Add(L"2");
-		break;
-	case 812:
-		Add(L"3");
-		break;
-	case 813:
-		Add(L"4");
-		break;	
-	case 814:
-		Add(L"5");
-		break;	
-	case 815:
-		Add(L"6");
-		break;
-	case 816:
-		Add(L"7");
-		break;	
-	case 817:
-		Add(L"8");
-		break;
-	case 818:
-		Add(L"9");
-		break;
-	case 819:
-		Add(L"0");
-		break;
-
-	case 901: //切换到数字
-		m_MJPGLetter_key.ShowWindow(SW_HIDE);
-		m_MJPGData_key.ShowWindow(SW_SHOW);
-		break;
-	case 902://删除
-		content = m_MJPGLetter_key.GetUnitText(900);
-		content.Delete(content.GetLength()-1);
-		m_MJPGLetter_key.SetUnitText(900,content,true);
-		Add(L"");
-		break;
-	case 903://清空
-		m_MJPGLetter_key.SetUnitText(900,L"",true);
-		m_sAddtion = "";
-		m_MJPGList.SetUnitText(5, L"0/", TRUE);
-		m_MJPGList.SetUnitText(6, L"0", TRUE);
-		Clear();
-		ClearCurrentPage();
-		break;
-	case 904://问号
-		Add(L"?");
-		break;
-
-	case 910://310-335,a-z
-		Add(L"a");
-		break;	
-	case 911:
-		Add(L"b");
-		break;
-	case 912:
-		Add(L"c");
-		break;
-	case 913:
-		Add(L"d");
-		break;
-	case 914:
-		Add(L"e");
-		break;
-	case 915:
-		Add(L"f");
-		break;
-	case 916:
-		Add(L"g");
-		break;
-	case 917:
-		Add(L"h");
-		break;
-	case 918:
-		Add(L"i");
-		break;
-	case 919:
-		Add(L"j");
-		break;
-	case 920:
-		Add(L"k");
-		break;
-	case 921:
-		Add(L"l");
-		break;
-	case 922:
-		Add(L"m");
-		break;
-	case 923:
-		Add(L"n");
-		break;
-	case 924:
-		Add(L"o");
-		break;
-	case 925:
-		Add(L"p");
-		break;
-	case 926:
-		Add(L"q");
-		break;
-	case 927:
-		Add(L"r");
-		break;
-	case 928:
-		Add(L"s");
-		break;
-	case 929:
-		Add(L"t");
-		break;
-	case 930:
-		Add(L"u");
-		break;
-	case 931:
-		Add(L"v");
-		break;
-	case 932:
-		Add(L"w");
-		break;
-	case 933:
-		Add(L"x");
-		break;
-	case 934:
-		Add(L"y");
-		break;
-	case 935:
-		Add(L"z");
+	case 11:			//关闭
+		OnButtonClose();
 		break;
 	}
 }
@@ -352,46 +117,188 @@ void CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 BOOL CContactInfoDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
-	// TODO: Add extra initialization here
-	MoveWindow(0, 57, 800, 480);
+	
 
+	// TODO: Add extra initialization here
 	std::string strTemp;
 	CString str;
+
+	/*
+	m_lsType.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(8, 27, 80, 198), this, IDC_LIST_CONTACTINFO_TYPE, FALSE);
+	m_lsType.SetExtendedStyle(m_lsType.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
+	m_lsType.InsertColumn(0, _T("Type"), LVCFMT_LEFT, 72);
+
+	m_pImageList = new CImageList();
+	m_pImageList->Create(16, 16, ILC_COLOR32|ILC_MASK, 4, 2); 
+	CBitmap bm;
+	bm.LoadBitmap(IDB_BITMAP1);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+	bm.LoadBitmap(IDB_BITMAP2);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+	bm.LoadBitmap(IDB_BITMAP3);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+	bm.LoadBitmap(IDB_BITMAP4);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+
+	m_lsType.SetImageList(m_pImageList, LVSIL_SMALL);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_IN);
+	str = strTemp.c_str();
+	m_lsType.InsertItem(0, str, 1);
+	//m_lsType.SetItemText(0, 1, str);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_INED);
+	str = strTemp.c_str();
+	m_lsType.InsertItem(1, str, 2);
+	//m_lsType.SetItemText(0, 1, str);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_OUT);
+	str = strTemp.c_str();
+	m_lsType.InsertItem(2, str, 3);
+	//m_lsType.SetItemText(0, 1, str);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_SEARCHRESULT);
+	str = strTemp.c_str();
+	m_lsType.InsertItem(3, str, 0);
+	//m_lsType.SetItemText(0, 1, str);
+	//m_lsType.SetScrollRagle(FALSE);
+	*/
+	m_lsList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(115, 45, 115+572, 45+360), this, IDC_LIST_CONTACTINFO_LIST, TRUE, 0, FALSE);
+	m_lsList.SetExtendedStyle(m_lsList.GetExtendedStyle()|LVS_EX_FULLROWSELECT|LVS_EX_SUBITEMIMAGES);
+	m_lsList.InsertColumn(0, _T("NameNO"), LVCFMT_LEFT, 180+10+14+20);
+	m_lsList.InsertColumn(1, _T("Time"), LVCFMT_LEFT, 180);
+	m_lsList.InsertColumn(2, _T("Duration"), LVCFMT_LEFT, 100+10-10);
+	m_lsList.InsertColumn(3, _T("Sound"), LVCFMT_LEFT, 70+10-14);
+
+//	m_NewListFont.CreatePointFont(180, L"MS Serif");
+//	m_lsList.SetFont(&m_NewListFont);
+
+
+	m_pImageList = new CImageList();
+	CBitmap bm;
+	m_pImageList->Create(32, 32, ILC_COLOR32|ILC_MASK, 6, 2); 
+	bm.LoadBitmap(IDB_BITMAP20);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+	bm.LoadBitmap(IDB_BITMAP22);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+	bm.LoadBitmap(IDB_BITMAP24);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+	bm.LoadBitmap(IDB_BITMAP21);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+	bm.LoadBitmap(IDB_BITMAP19);
+	m_pImageList->Add(&bm, RGB(255, 0, 255));
+	bm.DeleteObject();
+ 	bm.LoadBitmap(IDB_BITMAP32);
+ 	m_pImageList->Add(&bm, RGB(255, 0, 255));
+ 	bm.DeleteObject();
+
+
+	m_lsList.SetImageList(m_pImageList, LVSIL_SMALL);
+/*
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_DIAL);
+	str = strTemp.c_str();
+	m_btnDial.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 26, 471, 45), this, IDC_BUTTON_CONTACTINFO_DIAL);
+//	m_btnDial.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY);
+	str = strTemp.c_str();
+	m_btnSound.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 46, 471, 65), this, IDC_BUTTON_CONTACTINFO_SOUND);
+//	m_btnSound.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
 	
-// 	m_rEditInput = new CCERectEdit();
-// 	m_rEditInput->Create(WS_CHILD|WS_VISIBLE, CRect(461,77,32,16), this, IDC_EDIT_INPUT, 15);
-// 	m_rEditInput->SetIsAutoInput(TRUE);
-// 	m_rEditInput->MoveWindow(461, 77, 32, 16);
-// 	m_rEditInput->ShowWindow(SW_HIDE);
+// 	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_NOTE);
+// 	str = strTemp.c_str();
+// 	m_btnNote.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 66, 471, 85), this, IDC_BUTTON_CONTACTINFO_NOTE);
+// //	m_btnNote.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+	
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_NEWCARD);
+	str = strTemp.c_str();
+	m_btnNewContact.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 66, 471, 85), this, IDC_BUTTON_CONTACTINFO_NEW);
+//	m_btnNewContact.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
 
-	//创建数字键盘
-	m_MJPGData_key.Create(L"", WS_CHILD, CRect(0, 308, 800, 400), this);
-	m_MJPGData_key.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\data_key.xml");
-	m_MJPGData_key.SetMJPGRect(CRect(0, 308, 800, 400));
-	// 	
-	m_MJPGLetter_key.Create(L"", WS_CHILD, CRect(0, 308, 800, 400), this);
-	m_MJPGLetter_key.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\letter_key.xml");
- 	m_MJPGLetter_key.SetMJPGRect(CRect(0, 308, 800, 400));
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_SEARCH);
+	str = strTemp.c_str();
+	m_btnSearch.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 86, 471, 105), this, IDC_BUTTON_CONTACTINFO_SEARCH);
+//	m_btnSearch.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
 
+	strTemp = Data::LanguageResource::Get(Data::RI_RECORD_DELETE);
+	str = strTemp.c_str();
+	m_btnDelete.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 106, 471, 125), this, IDC_BUTTON_CONTACTINFO_DELETE);
+//	m_btnDelete.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_CLOSE);
+	str = strTemp.c_str();
+	m_btnClose.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 178, 471, 198), this, IDC_BUTTON_CONTACTINFO_CLOSE);
+	m_btnClose.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
+
+	m_sticPanel.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(416, 26, 472, 197), this);
+	m_sticPanel.SetColor(RGB(0, 0, 0), Data::g_allFrameInFrameLine1RGB[0][Data::g_skinstyle]);
+
+	m_sticBackground.Create(CRect(0, 0, 480, 204), this, 2);
+	
+	TextStruct ts[6];
+	memset(ts, 0, sizeof(TextStruct) * 6);
+	
+	ts[0].txtRect = CRect(0, 0, 80, 20);
+	ts[0].txtFontSize = 16;
+	ts[0].sAlign = DT_CENTER | DT_BOTTOM;
+	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_RECORD_TYPE).c_str(), Data::LanguageResource::Get(Data::RI_RECORD_TYPE).length());
+	
+	ts[1].txtRect = CRect(81, 0, 220, 20);
+	ts[1].txtFontSize = 16;
+	ts[1].sAlign = DT_CENTER | DT_BOTTOM;
+	memcpy(ts[1].sTxt, Data::LanguageResource::Get(Data::RI_RECORD_NAMENO).c_str(), Data::LanguageResource::Get(Data::RI_RECORD_NAMENO).length());
+	
+	ts[2].txtRect = CRect(220, 0, 305, 20);
+	ts[2].txtFontSize = 16;
+	ts[2].sAlign = DT_CENTER | DT_BOTTOM;
+	memcpy(ts[2].sTxt, Data::LanguageResource::Get(Data::RI_RECORD_TIME).c_str(), Data::LanguageResource::Get(Data::RI_RECORD_TIME).length());
+	
+	ts[3].txtRect = CRect(305, 0, 365, 20);
+	ts[3].txtFontSize = 16;
+	ts[3].sAlign = DT_CENTER | DT_BOTTOM;
+	memcpy(ts[3].sTxt, Data::LanguageResource::Get(Data::RI_RECORD_DURATION).c_str(), Data::LanguageResource::Get(Data::RI_RECORD_DURATION).length());
+	
+	ts[4].txtRect = CRect(366, 0, 396, 20);
+	ts[4].txtFontSize = 16;
+	ts[4].sAlign = DT_CENTER | DT_BOTTOM;
+	memcpy(ts[4].sTxt, Data::LanguageResource::Get(Data::RI_RECORD_SOUND).c_str(), Data::LanguageResource::Get(Data::RI_RECORD_SOUND).length());
+	
+	ts[5].txtRect = CRect(417, 0, 470, 20);
+	ts[5].txtFontSize = 16;
+	ts[5].sAlign = DT_CENTER | DT_BOTTOM;
+	memcpy(ts[5].sTxt, Data::LanguageResource::Get(Data::RI_RECORD_OPERATION).c_str(), Data::LanguageResource::Get(Data::RI_RECORD_OPERATION).length());
+	
+	m_sticBackground.SetTextStruct(ts, 6);
+*/
 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\通话记录界面.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));	
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\通话记录.xml");
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
 	m_pPlaySoundDlg = new CPlaySoundDlg(this);
 	m_pPlaySoundDlg->Create(CPlaySoundDlg::IDD);
 	m_pPlaySoundDlg->SetModel(1);
 
+	m_pSearchContactInfoDlg = new CContactInfoSearchDlg(this);
+	m_pSearchContactInfoDlg->Create(CContactInfoSearchDlg::IDD);
+
 	m_pPasswordDlg = new CPasswordDlg(this);
 	m_pPasswordDlg->Create(CPasswordDlg::IDD);
 
 	m_bTelephoneInUse = false;
-	
+	m_uiSelectIndex = 0;
 	m_sListFilter = "";
 	m_sListSearchFilter = "";
-	
-	m_iTabs = 3;
-	SetPageFont();
-	ShowWindow_();	
+//	m_lsType.SetItemState(0, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED);
+	m_uiType = 0;
+	ShowItemsInList(m_uiType);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -411,6 +318,319 @@ void CContactInfoDlg::SetButtonSelectedColor(CCEButtonST* button)
 	button->SetColor(CCEButtonST::BTNST_COLOR_BK_FOCUS, RGB(248,214,147));
 }
 
+void CContactInfoDlg::OnClickListType(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	// TODO: Add your control notification handler code here
+//	ShowItemsInList();
+	*pResult = 0;
+}
+
+void CContactInfoDlg::ShowItemsInList(int type)
+{
+	/*
+	POSITION pos = m_lsType.GetFirstSelectedItemPosition();
+	if (pos == NULL)
+	{
+		return;
+	}
+	int type = m_lsType.GetNextSelectedItem(pos);
+	*/
+
+	if (type == -1)
+	{
+		type = m_uiType;
+	}
+	else
+	{
+		m_uiType = type;
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		if (i == m_uiType)
+		{
+			m_MJPGList.SetUnitIsDownStatus(i, TRUE);
+		}
+		else
+		{
+			m_MJPGList.SetUnitIsDownStatus(i, FALSE);
+		}
+	}
+	m_MJPGList.Invalidate();
+
+	m_lsList.DeleteAllItems();
+	std::string filter;
+
+	if (type == 0)
+	{
+		m_sListFilter = "type = 0";
+		filter = m_sListFilter;
+	}
+	else if (type == 1)
+	{
+		m_sListFilter = "type = 1";
+		filter = m_sListFilter;
+	}
+	else if (type == 2)
+	{
+		m_sListFilter = "type = 2";
+		filter = m_sListFilter;
+	}
+	else if (type == 3)
+	{
+		if (m_sListSearchFilter == "")
+		{
+			return;
+		}
+		filter = m_sListSearchFilter;
+	}
+
+	if (Data::ContactInfo::GetDataCount("") > 0)
+	{
+		m_vCurrentResult = Data::ContactInfo::GetFromDatabase(filter, Data::dDown, Data::ContactInfo::GetCurrentId() + 1, PageSize);
+		int count = Data::ContactInfo::GetDataCount(filter);
+		m_lsList.m_scollbar_.SetRangle(0, count, PageSize);
+		ShowArrayInList(m_vCurrentResult);	
+		m_lsList.SetScrollRagle(TRUE);
+	}
+}
+
+void CContactInfoDlg::ScrollItemsInList(int step, int nPos)
+{
+	if (m_vCurrentResult.empty())
+	{
+		return;
+	}
+	
+ 	std::string filter = m_sListFilter;
+ 
+ 	if (m_uiType == 3)
+ 	{
+ 		filter = m_sListSearchFilter;
+ 	}
+
+// 	std::string s = "";
+// 	if(m_uiType < 3)
+// 	{
+// 		char txt[4];
+// 		sprintf(txt, "%d", m_uiType);
+// 		s = txt;
+// 	}
+	
+	m_vCurrentResult.clear();
+	m_vCurrentResult = Data::ContactInfo::GetFromDatabaseByTypeOffsetLength(filter, nPos, PageSize);
+
+// 	std::vector<boost::shared_ptr<Data::ContactInfo> > temp;
+// 	int currentID = 0;
+	
+	if (step == SB_LINEUP)
+	{
+// 		currentID = m_vCurrentResult[0]->id();
+// 		temp = Data::ContactInfo::GetFromDatabase(filter, Data::dUp, currentID, 1);
+// 		if (!temp.empty())
+// 		{
+// 			m_vCurrentResult.insert(m_vCurrentResult.begin(),temp[0]);
+// 			if (m_vCurrentResult.size() > PageSize)
+// 			{
+// 				m_vCurrentResult.pop_back();
+// 			}
+// 			
+ 			if (m_uiSelectIndex < m_vCurrentResult.size() - 1)
+ 			{
+ 				++m_uiSelectIndex;
+ 			}
+ //		}
+	}
+	else if (step == SB_LINEDOWN)
+	{
+// 		currentID = m_vCurrentResult[m_vCurrentResult.size() - 1]->id();
+// 		temp = Data::ContactInfo::GetFromDatabase(filter, Data::dDown, currentID, 1);
+// 		if (!temp.empty())
+// 		{
+// 			m_vCurrentResult.push_back(temp[0]);
+// 			if (m_vCurrentResult.size() > PageSize)
+// 			{
+// 				m_vCurrentResult.erase(m_vCurrentResult.begin());
+// 			}
+// 			
+ 			if (m_uiSelectIndex > 0)
+ 			{
+ 				--m_uiSelectIndex;
+			}		
+ //		}
+	}
+	else if (step == SB_PAGEUP)
+	{
+// 		currentID = m_vCurrentResult[0]->id();
+// 		temp = Data::ContactInfo::GetFromDatabase(filter, Data::dUp, currentID, PageSize);
+// 		if (temp.size() < PageSize)
+// 		{
+// 			temp.insert(temp.end(), m_vCurrentResult.begin(), m_vCurrentResult.begin() + PageSize - temp.size());
+// 		}
+// 		m_vCurrentResult = temp;
+		m_uiSelectIndex = 0;
+	}
+	else if(step == SB_PAGEDOWN)
+	{
+// 		currentID = m_vCurrentResult[m_vCurrentResult.size() - 1]->id();
+// 		temp = Data::ContactInfo::GetFromDatabase(filter, Data::dDown, currentID, PageSize);
+// 		if (temp.size() < PageSize)
+// 		{
+// 			m_vCurrentResult.insert(m_vCurrentResult.end(), temp.begin(), temp.end());
+// 			if (m_vCurrentResult.size() > PageSize)
+// 			{
+// 				m_vCurrentResult.erase(m_vCurrentResult.begin(), m_vCurrentResult.begin() + m_vCurrentResult.size() - PageSize);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			m_vCurrentResult = temp;
+// 		}
+		m_uiSelectIndex = 0;
+	}
+
+	else if(step == SB_THUMBPOSITION)
+	{
+		m_uiSelectIndex = 0;
+// 		if(m_uiType < 3)
+// 		{
+// 			char txt[4];
+// 			sprintf(txt, "%d", m_uiType);
+// 			std::string s = txt;
+// 			m_vCurrentResult.clear();
+// 			m_vCurrentResult = Data::ContactInfo::GetFromDatabaseByTypeOffsetLength(s, nPos, PageSize);
+// 		}
+
+// 		if(m_ContactInfoFilter.size()<=0)
+// 		{
+// 			m_ContactInfoFilter = Data::ContactInfo::GetFromDatabase(filter);
+// 		}
+// 		m_vCurrentResult.clear();
+// 		if (m_ContactInfoFilter.size() > nPos)
+// 		{
+// 			int nOff = m_ContactInfoFilter.size() - nPos;
+// 			if(nOff >= PageSize)
+// 			{
+// 				m_vCurrentResult.insert(m_vCurrentResult.begin(), m_ContactInfoFilter.begin() + nPos, m_ContactInfoFilter.begin() + nPos + PageSize);
+// 			}
+// 			else
+// 				m_vCurrentResult.insert(m_vCurrentResult.begin(), m_ContactInfoFilter.begin() + m_ContactInfoFilter.size() - PageSize, m_ContactInfoFilter.end());
+// 		}
+// 		else
+// 		{
+// 			m_vCurrentResult.insert(m_vCurrentResult.begin(), m_ContactInfoFilter.begin() + m_ContactInfoFilter.size() - PageSize, m_ContactInfoFilter.end());
+// 		}
+// 	
+// 		temp = Data::ContactInfo::GetFromDatabase(filter);
+// 		m_vCurrentResult.clear();
+// 		if (temp.size() > nPos)
+// 		{
+// 			int nOff = temp.size() - nPos;
+// 			if(nOff >= PageSize)
+// 			{
+// 				m_vCurrentResult.insert(m_vCurrentResult.begin(), temp.begin() + nPos, temp.begin() + nPos + PageSize);
+// 			}
+// 			else
+// 				m_vCurrentResult.insert(m_vCurrentResult.begin(), temp.begin() + temp.size() - PageSize, temp.end());
+// 		}
+// 		else
+// 		{
+// 			m_vCurrentResult.insert(m_vCurrentResult.begin(), temp.begin() + temp.size() - PageSize, temp.end());
+// 		}
+// 		temp.clear();
+	}
+	
+	ShowArrayInList(m_vCurrentResult);
+}
+
+void CContactInfoDlg::ShowArrayInList(std::vector<boost::shared_ptr<Data::ContactInfo> > array)
+{
+	m_lsList.DeleteAllItems();
+	CString temp;
+	for (int i = 0; i < (array).size(); ++i)
+	{	
+// 			if (array[i]->GetContact())
+// 			{
+// 				temp = (array[i]->GetContact()->name() + "(" + array[i]->telephoneNumber().number() + ")").c_str();
+// 			}
+// 			else
+// 			{
+// 				temp = array[i]->telephoneNumber().number().c_str();
+// 			}
+			if (array[i]->name() != "")
+			{
+				temp = (array[i]->name() + "(" + array[i]->telephoneNumber().number() + ")").c_str();
+			}
+			else
+			{
+				temp = array[i]->telephoneNumber().number().c_str();
+			}
+				
+			if (!array[i]->played())
+			{
+				m_lsList.InsertItem(i, temp, 0);
+			}
+			else
+			{
+				m_lsList.InsertItem(i, temp, 1);
+			}
+
+			temp.Format(_T("%02d-%02d %2d:%02d"),
+										array[i]->startTime().GetMonth(),
+										array[i]->startTime().GetDay(),
+										array[i]->startTime().GetHour(),
+										array[i]->startTime().GetMinute());
+
+			m_lsList.SetItemText(i, 1, temp);
+			//lxz 20090112
+			if (array[i]->duration() > 3600)
+			{
+				temp.Format(_T("%d:%02d:%02d"), array[i]->duration() / 3600 ,array[i]->duration() % 3600 / 60, array[i]->duration() % 60);
+			}
+			else
+			{
+				temp.Format(_T("%d:%02d"), array[i]->duration() / 60, array[i]->duration() % 60);
+			}
+			
+			m_lsList.SetItemText(i, 2, temp);
+		
+			if (array[i]->GetSoundsCount() > 0)
+			{
+				m_lsList.SetItem(i, 3, LVIF_TEXT | LVIF_IMAGE , _T(" "), 2, NULL, NULL, 0);
+				//m_lsList.SetItemText(i, 3, _T("Yes"));
+			}
+ 
+ 			m_lsList.SetItemData(i, array[i]->id());
+	}
+
+	if (!array.empty())
+	{
+		POSITION pos = m_lsList.GetFirstSelectedItemPosition();   
+		while (pos != NULL)
+		{   
+			int iSel = m_lsList.GetNextSelectedItem(pos);   
+			m_lsList.SetItemState(iSel, 0, LVIS_SELECTED);   
+		}
+		m_lsList.SetItemState(m_uiSelectIndex, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+// 		long l;
+// 		OnClickListList(NULL, &l);
+
+		std::string strTemp;
+		CString str;
+		
+		if (m_vCurrentResult[m_uiSelectIndex]->contactId() > 0)
+		{
+			strTemp = Data::LanguageResource::Get(Data::RI_MAIN_CARDCASEBTN);
+		}
+		else
+		{
+			strTemp = Data::LanguageResource::Get(Data::RI_RECORD_NEWCARD);
+		}
+		str = strTemp.c_str();
+		//lxz 20080623
+//		m_btnNewContact.SetWindowText(str);
+	}
+}
 
 std::string CContactInfoDlg::GetName(std::string number)
 {
@@ -436,152 +656,162 @@ std::string CContactInfoDlg::GetName(std::string number)
 	return number;
 }
 
+void CContactInfoDlg::OnClickListList(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	// TODO: Add your control notification handler code here
+	POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+	if (pos != NULL)
+	{
+		int index = m_lsList.GetNextSelectedItem (pos); 
+		m_uiSelectIndex = index;
+		std::string strTemp;
+		CString str;
+
+		if (m_vCurrentResult[index]->contactId() > 0)
+		{
+			strTemp = Data::LanguageResource::Get(Data::RI_MAIN_CARDCASEBTN);
+		}
+		else
+		{
+			strTemp = Data::LanguageResource::Get(Data::RI_RECORD_NEWCARD);
+		}
+		str = strTemp.c_str();
+
+/*		m_btnNewContact.SetWindowText(str);*/
+
+
+//		int type = m_lsType.GetNextSelectedItem(pos);		
+//		if (type == 0)
+//		{
+			if (!m_vCurrentResult[index]->played())
+			{
+				m_vCurrentResult[index]->played(true);
+				m_vCurrentResult[index]->Update();
+				ShowArrayInList(m_vCurrentResult);
+				::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
+			}
+//		}
+	}
+
+	*pResult = 0;
+}
+
 void CContactInfoDlg::OnButtonDial() 
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
-	int num = 0;
-	for (int i = 0 ; i < m_vClick.size() ;i++)
+{
+	// TODO: Add your control notification handler code here
+	POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+	if (pos != NULL)
 	{
-		if (1 == m_vClick[i])
-		{	
-			num++;
-		}	
-	}
-	
-	if (num > 1)
-	{	
-		CString title = L"不能选择多个拨打!" ;
-		main->m_pWarningNoFlashDlg->SetTitle(title);
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return ;
-	}
+		int index = m_lsList.GetNextSelectedItem (pos); 
 
-	for (i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{	
-			break ;
-		}	
+		CString number = m_lsList.GetItemText(index, 0);
+		if (number.IsEmpty())
+		{
+			return;
+		}
+		
+		std::string str = Util::StringOp::FromCString(number);
+		if (number.Right(1) != _T(")"))
+		{
+			if (str != "")
+			{
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(str);
+			}
+		}
+		else
+		{
+			int pos1 = str.find('(');
+			int pos2 = str.find(')');
+			if ((pos1 != std::string.npos) && (pos2 != std::string.npos))
+			{
+				std::string s = str.substr(pos1 + 1, pos2 - pos1 - 1);
+				if (s != "")
+				{
+					std::string filter;
+					filter = "id = " + Util::StringOp::FromInt(m_lsList.GetItemData(index));
+					std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
+					if (!result.empty() && result[0]->GetContact())
+					{
+						((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(s, result[0]->GetContact()->id());
+					}
+					else
+					{
+						((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(s);
+					}
+				}
+			}
+		}
 	}
-	std::string filter = "id = " + Util::StringOp::FromInt(m_vContactID[i]);
-	std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
-	
-	if (!result.empty() && result[0]->GetContact())
-	{
-		std::string number = result[0]->telephoneNumber().number();
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(number, result[0]->GetContact()->id());
-	}
-	else
-	{	
-		std::string number = result[0]->telephoneNumber().number();
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(number);
-	}	
-
 }
 
 void CContactInfoDlg::OnButtonSound() 
 {
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{	
-			break ;
-		}	
-	}
-	
-	//这里需要加警告框
-	
-	std::string filter = "id = ";
-	filter += Util::StringOp::FromInt(m_vContactID[i]);
-	std::vector< boost::shared_ptr<Data::ContactInfo> > result ;
-	result	= Data::ContactInfo::GetFromDatabase(filter);
+	// TODO: Add your control notification handler code here
 
-	if ( result.size() && result[0]->GetSoundsCount() > 0)
+//	if ((((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff))
+//		return;
+
+	POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+	if (pos != NULL)
 	{
-		m_pPlaySoundDlg->SetSound((int)result[0]->type(), result[0]->id(), 0, m_sListSearchFilter);
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+ 		int index = m_lsList.GetNextSelectedItem (pos);   	
+
+// 		if (!m_lsList.GetItemText(index, 3).IsEmpty())
+		if (m_vCurrentResult[index]->GetSoundsCount() > 0)
 		{
-			m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
-			std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
-			m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
-			m_pPasswordDlg->SetHWnd(this->m_hWnd);
-			m_pPasswordDlg->ShowWindow_(SW_SHOW);	
-		}
-		else
-		{
-			m_pPlaySoundDlg->StartPlay(false);
-			m_pPlaySoundDlg->ShowWindow_(TRUE);
+			//pos = m_lsType.GetFirstSelectedItemPosition();
+			//m_pPlaySoundDlg->SetSound(m_lsType.GetNextSelectedItem(pos), m_lsList.GetItemData(index), 0, m_sListSearchFilter);
+			m_pPlaySoundDlg->SetSound(m_uiType, m_lsList.GetItemData(index), 0, m_sListSearchFilter);
+			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+			{
+				m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
+				std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
+				m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
+				m_pPasswordDlg->SetHWnd(this->m_hWnd);
+				m_pPasswordDlg->ShowWindow_(SW_SHOW);	
+			}
+			else
+			{
+				m_pPlaySoundDlg->StartPlay(false);
+				m_pPlaySoundDlg->ShowWindow_(TRUE);
+			}
 		}
 	}
-
 }
 
 void CContactInfoDlg::OnButtonNote() 
 {
-
-	CMultimediaPhoneDlg *pMain = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-
+	// TODO: Add your control notification handler code here
+// 	m_pNoteDlg->ShowWindow(TRUE);
 }
 
 void CContactInfoDlg::OnButtonNew() 
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
-	int num = 0;
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{	
-			num++;
-		}	
-	}
-	
-	if (num > 1)
-	{	
-		CString title = L"不能选择多个去新联系人!" ;
-		main->m_pWarningNoFlashDlg->SetTitle(title);
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return ;
-	}
+{
+	// TODO: Add your control notification handler code here
 
 	if (Data::Contact::GetDataCount("") < ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ContactTotal)
-	{	
-		int index = -1; 
-		for (int i = 0 ; i < m_vClick.size() ;i++)
+	{
+		POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+		if (pos != NULL)
 		{
-			if (1 == m_vClick[i])
-			{	
-				index = i ;
-				break;
-			}	
-		}
-		
-
-		if (index > -1)
-		{	
-			std::string filter;
-			filter = "id = " + Util::StringOp::FromInt(m_vContactID[index]);
-			std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
-
-			//更新
-			if ( result.size() && result[0]->contactId() > 0)
+			int index = m_lsList.GetNextSelectedItem (pos); 
+			if (m_vCurrentResult[index]->contactId() > 0)
 			{
 				std::string filter;
-				filter = "id = " + Util::StringOp::FromInt(result[0]->contactId());
+				filter = "id = " + Util::StringOp::FromInt(m_vCurrentResult[index]->contactId());
 				std::vector<boost::shared_ptr<Data::Contact> > result = Data::Contact::GetFromDatabase(filter);
 				if (!result.empty())
 				{
-					//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACT);
+					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACT);
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->SetContact(result[0]);
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->ShowWindow(TRUE);
 				}
 			}
 			else
 			{
-				//插入
 				boost::shared_ptr<Data::Contact> contact(new Data::Contact);
 				contact->id(0);
-				std::string stelnum = result[0]->telephoneNumber().number();
-				CString number = Util::StringOp::ToCString(stelnum);
+				CString number = m_lsList.GetItemText(index, 0);
 				if (number.Right(1) != _T(")"))
 				{
 					if (!number.IsEmpty() && isdigit(number[0]))
@@ -596,13 +826,13 @@ void CContactInfoDlg::OnButtonNew()
 						}
 					}		
 				}
-				
-				//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACT);
+
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACT);
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->SetContact(contact);
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->ShowWindow(TRUE);
 			}
 		}
-		
+
 	}
 	else
 	{
@@ -611,63 +841,68 @@ void CContactInfoDlg::OnButtonNew()
 }
 
 void CContactInfoDlg::OnButtonSearch() 
-{	
-	CString hideIcon1 = L".\\adv\\mjpg\\k5\\common\\隐藏_fore.bmp";
-	CString hideIcon2 = L".\\adv\\mjpg\\k5\\common\\隐藏_back.bmp";
-	
-	if (!m_bSearch)
-	{	
-		m_MJPGList.SetUnitBitmap(4,hideIcon1,hideIcon2,true);
-		m_MJPGLetter_key.ShowWindow(SW_SHOW);
-		m_bSearch = true ;
-	}
-	else
-	{	
-		SetContactInfoFilter(3);
-		m_MJPGList.SetUnitBitmap(4,L"",L"",true);
-		m_MJPGLetter_key.ShowWindow(SW_HIDE);
-		m_MJPGData_key.ShowWindow(SW_HIDE);
-		m_bSearch = false ;
-		m_sAddtion = "";
-		m_MJPGData_key.SetUnitText(800,	L"",true);
-		m_MJPGLetter_key.SetUnitText(900,L"",true);
-	}
-
+{
+	// TODO: Add your control notification handler code here
+ 	m_pSearchContactInfoDlg->ShowWindow(TRUE);
 }
 
 void CContactInfoDlg::OnButtonDelete() 
 {
-	bool enble = false ;
-	int  count = 0 ;
-	
-	for (int i = 0 ; i < m_vClick.size() ;i++)
+	// TODO: Add your control notification handler code here
+	POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+	if (pos != NULL)
 	{
-		if (1 == m_vClick[i])
-		{	
-			enble = true ;
-			count++;
-		}	
-	}
-	
-	if (enble)
-	{	
-		CString title = "确认删除已选的内容吗?";
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(title,0);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 		{
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 		}
-		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->adminPassword();
+		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 		std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_CONTACTINFO);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
-
 	}
 }
 
+void CContactInfoDlg::OnButtonClose()
+{
+//	ShowItemsInList();
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
+}
+
+/*
+void CContactInfoDlg::DeleteSelectedItem(void)
+{
+	POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+	if (pos != NULL)
+	{
+		int index = m_lsList.GetNextSelectedItem (pos);   		
+// 		int contactinfoID = m_lsList.GetItemData(index);
+// 		Data::ContactInfo::Remove("id = " + Util::StringOp::FromInt(contactinfoID));
+		m_vCurrentResult[index]->Remove();
+		ShowItemsInList(m_uiType);
+		::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
+	}
+}
+*/
+void CContactInfoDlg::DeleteSelectedItem(void)
+{
+	POSITION pos = m_lsList.GetFirstSelectedItemPosition();
+	if (pos != NULL)
+	{
+		int index = m_lsList.GetNextSelectedItem (pos);   		
+		// 		int contactinfoID = m_lsList.GetItemData(index);
+		// 		Data::ContactInfo::Remove("id = " + Util::StringOp::FromInt(contactinfoID));
+		if (!m_vCurrentResult[index]->played())
+		{
+			::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
+		}
+		m_vCurrentResult[index]->Remove();
+		ShowItemsInList(m_uiType);		
+	}
+}
 
 void CContactInfoDlg::SaveContactInfo(boost::shared_ptr<Data::ContactInfo> ci)
 {
@@ -680,6 +915,18 @@ void CContactInfoDlg::SaveContactInfo(boost::shared_ptr<Data::ContactInfo> ci)
 		ci->Update();	
 	}
 
+	if (ci->type() == Data::citInNo)
+	{
+		// 		POSITION pos = m_lsType.GetFirstSelectedItemPosition();   
+		// 		while (pos != NULL)
+		// 		{   
+		// 			int iSel = m_lsType.GetNextSelectedItem(pos);   
+		// 			m_lsType.SetItemState(iSel, 0, LVIS_SELECTED);   
+		// 		}
+		// 		m_lsType.SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+	}
+	m_uiSelectIndex = 0;
+	ShowItemsInList(0);
 	int count = Data::ContactInfo::GetDataCount("");
 	if (count > ContactInfoTotal)
 	{
@@ -697,16 +944,28 @@ void CContactInfoDlg::SaveContactInfo(boost::shared_ptr<Data::ContactInfo> ci)
 void CContactInfoDlg::Search(std::string filter)
 {
 	m_sListSearchFilter = filter;
+// 	POSITION pos = m_lsType.GetFirstSelectedItemPosition();   
+// 	while (pos != NULL)
+// 	{   
+// 		int iSel = m_lsType.GetNextSelectedItem(pos);   
+// 		m_lsType.SetItemState(iSel, 0, LVIS_SELECTED);   
+// 	}
+//     m_lsType.SetItemState(m_lsType.GetItemCount() - 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+	ShowItemsInList(3);
 }
 
 void CContactInfoDlg::ShowUnconnectItems(void)
 {
-	SetUpBtn(0);
-	Clear();
-	ClearCurrentPage();
-	SetContactInfoFilter(0);
-	FromContactInfoDataBase();
-	ShowTypeInfo();
+ 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACTINFO);
+// 	POSITION pos = m_lsType.GetFirstSelectedItemPosition();   
+// 	while (pos != NULL)
+// 	{   
+// 		int iSel = m_lsType.GetNextSelectedItem(pos);   
+// 		m_lsType.SetItemState(iSel, 0, LVIS_SELECTED);   
+// 	}
+//     m_lsType.SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+		
+	ShowItemsInList(0);
 }
 
 LRESULT CContactInfoDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
@@ -715,9 +974,11 @@ LRESULT CContactInfoDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_DELETESELITEM:
-		DeleteItems();
+		DeleteSelectedItem();
 		break;
-		
+	case WM_SCROLL_EDO:
+		ScrollItemsInList(wParam, lParam);
+		break;
 	case WM_CHECKPASSWORD:
 		if(wParam == 1)
 		{
@@ -737,703 +998,4 @@ LRESULT CContactInfoDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	};
 	return CDialog::WindowProc(message, wParam, lParam);
-}
-
-
-void CContactInfoDlg::Add(CString ch)
-{
-	CString content ;
-	int index ;
-	if (m_MJPGData_key.IsWindowVisible())
-	{	
-		index = 800 ;
-		content = m_MJPGData_key.GetUnitText(800);
-		content = content + ch ;
-		m_MJPGData_key.SetUnitText(800,content,true);
-		
-	}	
-	else if (m_MJPGLetter_key.IsWindowVisible())
-	{   
-		index = 900 ;
-		content = m_MJPGLetter_key.GetUnitText(900);
-		content = content + ch ;
-		m_MJPGLetter_key.SetUnitText(900,content,true);
-		
-	}
-	
-	
-	if (content.IsEmpty())//没有内容直接返回
-	{	
-		CString page ;
-		page.Format(L"%d/%d",0,0);
-		m_MJPGList.SetUnitText(6,page,TRUE);//设置当前的页数
-		
-		Clear();
-		ClearCurrentPage();
-		return ;	
-	}
-	
-	//查询
-	std::string tempFilter;
-	std::string filter = GetPYIndex(content);
-	if (filter != "")
-	{	
-		if (800 == index)//电话号码查找
-		{
-			tempFilter = "(telephoneNumber Like '";
-			tempFilter += filter;
-			tempFilter += "%')";
-			m_sAddtion = tempFilter ;
-		}
-		
-		if (900 == index)//按字母查找
-		{
-			tempFilter = "name LIKE '";
-			tempFilter += filter;
-			tempFilter += "%'";
-			m_sAddtion = tempFilter;
-		}
-		
-	}
-	
-	m_sListFilter = m_sAddtion;
-	Clear();
-	ClearCurrentPage();
-	FromContactInfoDataBase();
-	ShowTypeInfo();
-	SetUpBtn(3);	
-}
-
-std::string CContactInfoDlg::GetPYIndex(CString content)
-{
-	std::string alias;
-	CString py = content;
-	//	GetDlgItem(IDC_STATIC_CONTACT_PINYIN)->GetWindowText(py);
-	if (!py.IsEmpty())
-	{
-		alias = Util::StringOp::FromCString(py);
-		for (int i = 0; i < alias.size(); ++i)
-		{
-			if (alias[i] == '\?')
-			{
-				alias[i] = '_';
-			}
-		}
-	}
-	return alias;
-}
-
-std::string CContactInfoDlg::GetType(std::string number)
-{
-	std::string filter;
-	int groupID ;
-	filter += "mobilesTelephone = '";
-	filter += Data::TelephoneNumber(number).ToString();
-	filter += "' OR mobilesTelephone2 = '";
-	filter += Data::TelephoneNumber(number).ToString();
-	filter += "' OR worksTelephone = '";
-	filter += Data::TelephoneNumber(number).ToString();
-	filter += "' OR worksTelephone2 = '";
-	filter += Data::TelephoneNumber(number).ToString();
-	filter += "'";
-	std::vector<boost::shared_ptr<Data::Contact> > result = Data::Contact::GetFromDatabase(filter);
-	if (!result.empty())
-	{
-		std::string name = result[0]->name();
-		groupID = result[0]->groupId();
-		filter = "id = " + Util::StringOp::FromInt(groupID);
-	}
-	
-	std::vector<boost::shared_ptr<Data::ContactGroup> > Groupresult = Data::ContactGroup::GetFromDatabase(filter);
-	
-	if (Groupresult.size() > 0)
-	{
-		return Groupresult[0]->name();	
-	}
-	
-	return "";
-}
-
-
-bool CContactInfoDlg::OnBtnSMS()
-{	
-	std::vector<CString> telNumber ;
-	std::vector<CString> vname ;
-	GetNumName(vname,telNumber);
-	if (vname.size())
-	{	
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->SetSender(vname);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->SetAppend(telNumber);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->ShowWindow(TRUE);
-		 return true ;
-	}
-	return false ;
-}
-
-
-void CContactInfoDlg::SetUpBtn(int ID)
-{
-	m_MJPGList.SetUnitIsDownStatus(ID,TRUE);
-	for (int i = 0 ; i < 4;i++)
-	{	
-		if (i != ID)
-		{
-			m_MJPGList.SetUnitIsDownStatus(i,FALSE);
-		}
-	}
-	m_MJPGList.Invalidate(FALSE);
-}
-
-void CContactInfoDlg::PageSwitch(Action action)
-{	
-	
-	if (action == up_page)
-	{
-		m_iCurrentPage--;
-		if (m_iCurrentPage < 1)
-		{	
-			m_iCurrentPage = 1;
-			return ;
-		}
-	}
-	
-	if (action == down_page)
-	{
-		m_iCurrentPage++;
-		if (m_iCurrentPage > m_iTotalPages)
-		{
-			m_iCurrentPage--;
-			return ;
-		}
-		
-	}
-	
-	ClearCurrentPage();
-	FromContactInfoDataBase();
-	ShowTypeInfo();		
-}
-
-void CContactInfoDlg::ClearCurrentPage()
-{
-	for (int i=1; i <= PageSize; i++)
-	{
-		int index = i*100;
-		for (int j=1; j<7; j++)
-		{
-			m_MJPGList.SetUnitText(index +j, L"", FALSE);
-			m_MJPGList.SetUnitIsShow(index+j, FALSE, FALSE);
-			m_MJPGList.SetUnitIsDisable(index+j, TRUE);
-			m_MJPGList.SetUnitColor(index+j,font_white,false);
-		}
-		
-		m_MJPGList.SetUnitIsShow(index, FALSE, FALSE);
-		m_MJPGList.SetUnitIsDownStatus(index,FALSE);
-		
-		m_MJPGList.SetUnitBitmap(index+7,L"",L"",false);
-		m_MJPGList.SetUnitIsShow(index+7, FALSE, FALSE);
-		m_MJPGList.SetUnitIsDisable(index+7, TRUE);
-	}
-	m_MJPGList.SetUnitIsShow(50,false,false);
-
-	m_MJPGList.Invalidate();
-}
-
-void CContactInfoDlg::ClickedOneItem(int unitID,int item)
-{	
-	
-	if (m_vClick[(m_iCurrentPage-1)*PageSize+item] == 0)//被点击了
-	{		
-		m_MJPGList.SetUnitIsDownStatus(unitID,true);		
-		m_vClick[(m_iCurrentPage-1)*PageSize+item] = 1;
-	}
-	else
-	{		
-		m_MJPGList.SetUnitIsDownStatus(unitID,false);
-		m_vClick[(m_iCurrentPage-1)*PageSize+item] = 0;
-	}
-
-	m_MJPGList.SetUnitIsShow(unitID,true,true);
-	
-}
-
-void CContactInfoDlg::SeeOneItem(int item)
-{
-	int index = item/100 - 1;
-	if ( !m_vCurrentResult[index]->played() )
-	{
-		for (int j = 1; j < 8 ;j++)
-		{
-			m_MJPGList.SetUnitColor(item+j,font_white,true);
-			m_MJPGList.SetUnitIsDisable(item+j,true);
-		}
-
-		m_vCurrentResult[index]->played(true) ;
-		m_vCurrentResult[index]->Update();
-
-		::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
-			m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
-
-	}	
-}
-
-void CContactInfoDlg::DeleteItems()
-{	
-	int npos = 0;
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{	
-		if ( 1 == m_vClick[i])
-		{	
-			Data::ContactInfo::Remove("id = " + Util::StringOp::FromInt(m_vContactID[i]));
-			
-			npos++;
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(npos);
-			
-			if (!m_sListFilter.compare("type = 0"))//未接留言
-			{
-				std::vector< boost::shared_ptr<Data::ContactInfo > > result ;
-				result = Data::ContactInfo::GetFromDatabase("id =" + Util::StringOp::FromInt(m_vContactID[i]));
-				if (result.size())
-				{
-					if (!result[0]->played())
-					{
-						::SendMessage(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
-					}
-				}
-			}
-			
-		}
-	}
-	
-	//删除容器里的数据
-	std::vector<int>::iterator it;
-	it = m_vClick.begin();	
-	std::vector<int>::iterator itID;
-	itID = m_vContactID.begin();
-	for ( it ; it < m_vClick.end() ; it)
-	{	
-		if ( 1 == (*it))
-		{
-			m_vClick.erase(it);
-			m_vContactID.erase(itID);
-		}
-		else
-		{
-			itID++ ;
-			it++;
-		}
-	}	
-		
-	//容器的末尾值也去掉，保留为页的整数
-	if ( m_vClick.size()%PageSize != 0)
-	{
-		it	 = m_vClick.end() - m_vClick.size()%PageSize ;
-		itID = m_vContactID.end() - m_vContactID.size()%PageSize ;
-		for (it ; it < m_vClick.end() ;it)
-		{
-			m_vClick.erase(it);
-			m_vContactID.erase(itID);
-		}
-	}
-	
-	
-	m_iTotalPages = Data::ContactInfo::GetDataCount(m_sListFilter)/PageSize;//总页数
-	if (Data::ContactInfo::GetDataCount(m_sListFilter)%PageSize != 0)
-	{
-		m_iTotalPages +=1;
-	}
-	if (m_iCurrentPage > m_iTotalPages)
-	{
-		m_iCurrentPage = m_iTotalPages ;	
-	}
-	
-	if ( 0 == m_iTotalPages)
-	{
-		m_iCurrentPage = 1;
-	}
-	
-	ClearCurrentPage();
-	FromContactInfoDataBase();
-	ShowTypeInfo();
-	
-}
-
-void CContactInfoDlg::SetPageFont()
-{
-	int items = 0 ;
-	for (int i = 1 ;i <= PageSize;i++)
-	{   
-		items = i * 100 ;
-		for (int j = 1 ;j < 7;j++)
-		{
-			m_MJPGList.SetUnitFont(items + j,font_18);
-			m_MJPGList.SetUnitColor(items + j,font_white,false);
-		}		
-	}
-	
-	m_MJPGList.SetUnitFont(6,font_18);
-	m_MJPGList.SetUnitColor(6,font_white,false);
-	
-	m_MJPGData_key.SetUnitFont(800,font_30);
-	m_MJPGData_key.SetUnitColor(800,font_black,true);
-	
-	m_MJPGLetter_key.SetUnitFont(900,font_30);
-	m_MJPGLetter_key.SetUnitColor(900,font_black,true);
-		
-}
-
-void CContactInfoDlg::Clear()
-{
-	if (m_vClick.size() >0)// 该项是否被点击
-	{
-		m_vClick.clear() ;
-	}
-	
-	if (m_vContactID.size() > 0)
-	{
-		m_vContactID.clear() ;	
-	}
-	
-	if (m_vCurrentResult.size() > 0)
-	{
-		m_vCurrentResult.clear();
-	}
-	m_bSelectAll = false ;
-	
-	m_iCurrentPage = 1 ;
-	m_iTotalPages  = 0 ;
-	
-	m_MJPGList.SetUnitIsDownStatus(50,false);
-
-
-}
-
-void CContactInfoDlg::SelectAll()
-{	
-	int unitID = 0 ;
-	if (!m_bSelectAll)
-	{	
-		m_bSelectAll = true ;
-		for (int i = 1 ; i <= m_vCurrentResult.size() ; i++)
-		{	
-			unitID = i * 100 ;
-			m_MJPGList.SetUnitIsDownStatus(50,true);
-			m_MJPGList.SetUnitIsDownStatus(unitID,true);		
-			
-		}
-	}
-	else
-	{	
-		m_bSelectAll = false ;
-		for (int i = 1 ; i <= m_vCurrentResult.size() ; i++)
-		{	
-			unitID = i * 100 ;
-			m_MJPGList.SetUnitIsDownStatus(50,false);
-			m_MJPGList.SetUnitIsDownStatus(unitID,false);		
-		
-		}
-	}
-	
-	//所有项全部全选
-	for (int i = 0 ; i < m_vClick.size();i++)
-	{
-		if (m_bSelectAll)
-		{
-			m_vClick[i] = 1;		
-		}
-		else
-		{
-			m_vClick[i] = 0;
-		}
-	}
-	
-	m_MJPGList.Invalidate();
-	
-}
-
-void CContactInfoDlg::SetUpPages()
-{	
-	CString page ;
-	page.Format(L"%d/%d",m_iCurrentPage,m_iTotalPages);
-	if (  0 == m_iTotalPages)
-	{
-		page.Format(L"%d/%d",0,m_iTotalPages);
-	}
-	m_MJPGList.SetUnitText(6,page,TRUE);//设置当前的页
-}
-
-void CContactInfoDlg::SetUnitStatus()
-{
-	int item  = 0;	
-	for(int i = 0; i < m_vCurrentResult.size(); ++i)
-	{	
-		item = (i +1) * 100 ;
-		if ( 1 == m_vClick[(m_iCurrentPage-1)*PageSize + i])
-		{
-			m_MJPGList.SetUnitIsDownStatus(item,true);
-		}
-		
-		if (!m_vCurrentResult[i]->played())
-		{
-			for (int j = 1; j < 8 ;j++)
-			{
-				m_MJPGList.SetUnitColor(item+j,font_blue,false);
-				m_MJPGList.SetUnitIsDisable(item+j,false);
-			}
-		}
-
-		for (int j = 0 ; j < 8 ;j++)
-		{
-			m_MJPGList.SetUnitIsShow(item+j,true,false);
-		}
-		
-		m_MJPGList.SetUnitIsDisable(item + 7 ,false);
-
-	}
-	
-	if (m_vCurrentResult.size() > 0)
-	{
-		m_MJPGList.SetUnitIsShow(50,true,false);
-	}
-}
-
-int CContactInfoDlg::GetVectorPages()
-{
-	int pages ;
-	pages = m_vClick.size()/PageSize ;
-	if ( m_vClick.size()%PageSize != 0)
-	{
-		pages += 1;
-	}
-	return pages ;
-}
-
-void CContactInfoDlg::ShowTypeInfo()
-{	
-	CString record = L".\\adv\\mjpg\\k5\\common\\png\\录音.bmp" ;
-	CString temp ;
-	int items	= 0  ;
-	int row = 100;
-	
-	SetUnitStatus();
-	SetUpPages();
-	for (int i = 0; i < m_vCurrentResult.size(); ++i)
-	{					
-		boost::shared_ptr<Data::ContactInfo> result = 
-			m_vCurrentResult[i];
-		
-		if (result->name() != "")//姓名
-		{
-			temp = result->name().c_str();
-			m_MJPGList.SetUnitText(row+2, temp, FALSE);
-		}
-		if(result->telephoneNumber().number() != "")//电话与类别
-		{
-			temp = result->telephoneNumber().number().c_str();
-			m_MJPGList.SetUnitText(row+3,temp,FALSE); 
-			
-			std::string groupName;
-			groupName = GetType(Util::StringOp::FromCString(temp));
-			m_MJPGList.SetUnitText(row+1, Util::StringOp::ToCString(groupName), 
-				FALSE);
-		}
-		
-		//wangzhenxing0925
-		//if (!array[i]->played())
-		if (result->isSound())
-		{
-			m_MJPGList.SetUnitIsDisable(row+7, FALSE);
-			m_MJPGList.SetUnitBitmap(row+7, record, L"", FALSE);
-		}
-		else
-		{
-			m_MJPGList.SetUnitIsDisable(row+7, TRUE);
-		}
-		
-		temp.Format(_T("%02d/%02d/%02d"), result->startTime().GetYear(),
-			result->startTime().GetMonth(), result->startTime().GetDay());
-		m_MJPGList.SetUnitText(row+5,temp,FALSE);
-		temp.Format(_T("%02d:%02d"), result->startTime().GetHour(), result->startTime().GetMinute());
-		m_MJPGList.SetUnitText(row+6,temp,FALSE);//通话开始时间
-		
-		//lxz 20090112
-		if (result->duration() > 3600)
-		{
-			temp.Format(_T("%d:%02d:%02d"), result->duration() / 3600 ,
-				result->duration() % 3600 / 60, result->duration() % 60);
-		}
-		else
-		{
-			temp.Format(_T("%d:%02d"), result->duration() / 60, 
-				result->duration() % 60);
-		}
-		m_MJPGList.SetUnitText(row+4,temp,FALSE);//通话时长
-		
-		row += 100;
-	}
-	
-}
-
-void CContactInfoDlg::SetContactInfoFilter(int index)
-{
-	if (index == 0)
-	{
-		m_sListFilter = "type = 0";
-	}
-	else if (index == 1)
-	{
-		m_sListFilter = "type = 1";
-	}
-	else if (index == 2)
-	{
-		m_sListFilter = "type = 2";
-	}
-	else if (index == 3)
-	{
-		m_sListFilter = "";
-	}	
-}
-
-void CContactInfoDlg::FromContactInfoDataBase()
-{	
-	if (m_vCurrentResult.size() > 0)
-	{
-		m_vCurrentResult.clear();
-	}
-	
-	if (Data::ContactInfo::GetDataCount("") > 0)
-	{
-		m_iTotalPages = Data::ContactInfo::GetDataCount(m_sListFilter)/PageSize;//总页数
-		if (Data::ContactInfo::GetDataCount(m_sListFilter)%PageSize != 0)
-		{
-			m_iTotalPages +=1;
-		}
-		
-		m_vCurrentResult = Data::ContactInfo::GetFromDatabaseByTypeOffsetLength(m_sListFilter, (m_iCurrentPage-1)*PageSize+1, PageSize);
-				
-		//是否往容器里添加数据
-		if (m_iCurrentPage > GetVectorPages())
-		{
-			for (int i = 0 ; i < m_vCurrentResult.size() ;i++)
-			{
-				if(m_bSelectAll)
-				{
-					m_vClick.push_back(1);
-				}
-				else
-				{
-					m_vClick.push_back(0);
-				}
-				m_vContactID.push_back(m_vCurrentResult[i]->id());
-			}	
-		}
-	}
-}
-
-void CContactInfoDlg::ShowRightBtn(bool bshow)
-{	
-	for (int i = 0 ; i < 5;i++)
-	{
-		m_MJPGList.SetUnitIsShow(i+11,bshow,false);
-	}
-}
-
-void CContactInfoDlg::SetType(int type)
-{
-	m_nType = type;
-}
-
-void CContactInfoDlg::GetNumName(std::vector<CString> &vname,std::vector<CString> &vnumber)
-{
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{	
-			std::string filter = "id = " + Util::StringOp::FromInt(m_vContactID[i]);
-			std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
-			
-			if (!result.empty())
-			{
-				std::string stelnum = result[0]->telephoneNumber().number();
-				CString number = Util::StringOp::ToCString(stelnum);
-				
-				std::string sname = result[0]->name();
-				CString name = Util::StringOp::ToCString(sname);
-				if (!name.IsEmpty())
-				{
-					vname.push_back(name);
-					vnumber.push_back(number);
-				}
-				else if(!number.IsEmpty())
-				{
-					vname.push_back(number);
-					vnumber.push_back(number);
-				}
-				
-			}
-		}	
-	}
-}
-void CContactInfoDlg::OnBtnOK()
-{	
-	CMultimediaPhoneDlg*main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	std::vector<CString> telNumber ;
-	std::vector<CString> vname ;
-	GetNumName(vname,telNumber);
-	if (vname.size())
-	{	
-		if (1 == m_nType)
-		{
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->SetSender(vname);
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->SetAppend(telNumber);
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->ShowWindow(TRUE);
-
-		}
-		else if( 2 == m_nType)
-		{
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMMSDlg->SetSender(vname);
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMMSDlg->SetAppend(telNumber);
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMMSDlg->ShowWindow(TRUE);
-		}
-
-	}
-	
-	if (m_nType > 0)
-	{
-		ShowWindow(SW_HIDE);			
-		main->PopbackIcon();
-		m_nType = 0;
-	}
-
-}
-
-void CContactInfoDlg::ShowWindow_()
-{
-	Clear();
-	ClearCurrentPage();
-	FromContactInfoDataBase();
-	SetUpBtn(3);
-	ShowTypeInfo();
-	ShowWindow(SW_SHOW);
-}
-
-void CContactInfoDlg::ResetTypeInfo()
-{
-	Clear();
-	ClearCurrentPage();
-	FromContactInfoDataBase();
-	SetUpBtn(m_iTabs);
-	ShowTypeInfo();
-}
-
-bool CContactInfoDlg::HaveClicked()
-{
-	bool enble = false ;	
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{	
-			enble = true ;
-		}	
-	}
-	return enble ;
 }

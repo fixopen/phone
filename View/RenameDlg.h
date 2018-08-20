@@ -1,5 +1,5 @@
-#if !defined(CRENAMEDLG_)
-#define CRENAMEDLG_
+#if !defined(AFX_RENAMEDLG_H__0A17544A_9F8E_4C81_ADA6_0A95FF826E02__INCLUDED_)
+#define AFX_RENAMEDLG_H__0A17544A_9F8E_4C81_ADA6_0A95FF826E02__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
@@ -18,7 +18,6 @@ class CRenameDlg : public CCEDialog
 {
 public:
 	CCERectEdit     m_edtName;
-	CCERectEdit     m_edtNewName;
 	CMJPGStatic		m_MJPGList;
 	CWnd			*m_pOwner;
 	CString         m_oldName;

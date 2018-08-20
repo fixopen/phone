@@ -6,7 +6,9 @@
 #endif // _MSC_VER > 1000
 // deletetipdlg.h : header file
 //
-#include "../Control/CEProcessBar.h"
+#include "../Control/CEStatic.h"
+#include "../Control/CeBtnST.h"
+#include "../Control/CELineEdit.h"
 #include "../Control/CEDialog.h"
 #include <string>
 
@@ -20,7 +22,6 @@ class CDeleteTipDlg : public CCEDialog
 // Construction
 public:
 	CDeleteTipDlg(CWnd* pParent = NULL);   // standard constructor
-	int       m_ntype;
 
 // Dialog Data
 	//{{AFX_DATA(CDeleteTipDlg)
@@ -49,23 +50,26 @@ protected:
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 private:
-
-	CMJPGStatic	 m_MJPGList;
-	HWND		 m_handle;
-	int			 m_iMaxPos ; 
-
+	CMJPGStatic		m_MJPGList;
+	
+//	CCEStatic m_sticTitle;
+//	CCEStatic m_sticTip;
+//	CCEStatic m_sticPassword;
+	CCERectEdit m_edtNewPassword1;
+//	CCEBmpButton m_btnOk;
+//	CCEBmpButton m_btnCancel;
+//	CCEFramePartStatic m_sticBackground;
+	HWND m_handle;
+	bool m_bIsPasswordModel;
+	CString m_sPassword;
+	BOOL m_bIsTipModel;
 public:
-	CCEProcessBar m_procbarSound;
-
 	void SetHWnd(HWND handle);
 	void SetPasswordModel(bool b);
 	void SetTipModel(BOOL b);
 	void SetPassword(CString password);
 	void SetDelTip(CString tips);
-	void SetTitle(CString title,int isTime = 5000);
-
-	void SetProcessMax(int max );
-	void SetProcessPos(int npos);
+	void SetTitle(CString title, BOOL isTime = TRUE);
 };
 
 //{{AFX_INSERT_LOCATION}}

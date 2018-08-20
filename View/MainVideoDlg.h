@@ -20,39 +20,30 @@ class CMainVideoDlg : public CDialog
 {
 //control
 public:
-	BOOL m_bIsPausebyEvent;
-	TCHAR		m_chDir[128];
-	
-	CCEProcessBar m_prgPlayTime;
-	CMJPGStatic		m_MJPGList;
-	CCEMoveTxtStatic *m_MoveText;
+	std::vector<CString> m_VideoList;
 
-	int m_ClickType;
+	BOOL m_bIsPausebyEvent;
+
+	TCHAR		m_chDir[128];
+	CImageList *m_pImageList;
+
+	CCEListCtrl m_lstPlayList;
+
+	CCEProcessBar m_prgPlayTime;
+	CCEProcessBar m_prgSoundSelect;
+	
+	CMJPGStatic		m_MJPGList;
+
 	int m_IsPlay;
 	BOOL m_IsSound;
 	int  m_Volume;
-	unsigned int m_pageSize;
-	unsigned int m_selectPageCount;   //被选中文件总页数
-	unsigned int m_selectCurrentPage;   //当前显示的页数
-	std::vector<CString> m_MovieList;
-	std::vector<CString> m_ShowList;
-
-	void SetVideo(CString filename);
+	void SetPlayList(TCHAR *dir, int local = 0);
+	void SetVideo(char *filename);
+	void SetCtrlEnable(BOOL flag = TRUE);
+	void StartOpenNewFile();
 	void OnExit_(){OnExit();}
 	void SetVolume();
-	void ChangeVolume(int w);
-	void OnFirst();
-	void OnLast();
-	void ShowArrayInList(std::vector<CString> fileName);
-	void PageUp();
-	void PageDown();
-	void ClearAll();
-	void CalculatePage(int dataCount);
-	void OnClickShowList(int unitNO);
-	void OnDBClickShowList(int unitNO);
-	void HandleAudio(bool bt);
-
-	afx_msg void OnPlayer();
+	void InitCtrl();
 
 public:
 	CPlayerDlg	*playerDlg_; 
@@ -84,14 +75,20 @@ protected:
 	//{{AFX_MSG(CMainVideoDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnExit();
-	afx_msg void OnStop();
+	afx_msg void OnSelectAll();
+	afx_msg void OnClearAll();
+	afx_msg void OnPlayer();
 	afx_msg void OnPre();
 	afx_msg void OnBack();
 	afx_msg void OnPlayerAll();
 	afx_msg void OnMute();
 	afx_msg void OnPregress(WPARAM w, LPARAM l);
+	afx_msg void OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized); 
+	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
 	afx_msg void OnOutEvent(WPARAM w, LPARAM l);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

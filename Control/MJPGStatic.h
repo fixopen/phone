@@ -18,8 +18,6 @@ struct MULTILINEINFO
 	int nCount;
 };
 
-enum FOCUSDIRECT{TOUP, TODOWN, TOLEFT, TORIGHT};
-
 class CMJPGStatic : public CStatic
 {
 public:
@@ -33,18 +31,18 @@ public:
 	CString  m_oldLinkFile;
 	CString	ToFileDir(CString filename);
 
- 	HDC  m_hMemDC;   //移到全局
- 	HBITMAP m_hBmp;
- 	HBITMAP m_hOldBmp;
- 	LPVOID  m_plpBits;	
-
+//	CDC *m_pMemDC;
+	HDC  m_hMemDC;
+//	CBitmap *m_pBmp;
+	HBITMAP m_hBmp;
+	HBITMAP m_hOldBmp;
 //	CBitmap *m_pOldbmp;
 //	void CreateMemDC();
 //	void ReleaseMemDC();
 	void ReleaseMemDC_HDC();
-	void CreateMemDC_HDC(CString sFilename);
+	void CreateMemDC_HDC();
 
-	int  GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINEINFO *pCount, int LineCount);
+	int GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINEINFO *pCount, int LineCount);
 	void DrawMultiLine(CDC *pdc, CString s, int nPixel, int nFontSize, CRect rt, MULTILINEINFO *pVarry, int LineCount,int nAglin1);
 	void DrawMultiLine_HDC(HDC hdc, CString s, int nPixel, int nFontSize, CRect rt, MULTILINEINFO *pVarry, int LineCount,int nAglin1);
 	void DrawUnitStatus_HDC(UNIT *pUnit, int nUintStatus);
@@ -55,8 +53,6 @@ public:
 	int FindUnitIndex(CPoint pt);
 	void InvertRect(CRect rt);
 	void InvertRect_HDC(HDC hdc, CRect rt);
-
-	void DrawGroup_HDC(int *nNO, int nCount, BOOL isShow);
 //	void DrawUnitStatus(UNIT *pUnit, int nUintStatus);
 		
 	CRect		m_rtMJPG;
@@ -67,7 +63,7 @@ public:
 	void GetCurrentLinkFile(CString &s){s = m_sCurrentLinkFile;}
 
 	BOOL SetUnitIsDownStatus(int UnitNO, BOOL isDown);
-	int SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh = TRUE, BOOL isInvalidate = FALSE);
+	BOOL SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh = TRUE, BOOL isInvalidate = FALSE);
 
 	BOOL SetUnitBitmap(int UnitNO, CString filename_up, CString filename_down, BOOL isDraw, BOOL isInvalidate = FALSE);
 	BOOL SetUnitText(int UnitNO, CString text, BOOL isDraw, BOOL isInvalidate = FALSE);
@@ -75,23 +71,9 @@ public:
 	BOOL SetUnitColor(int UnitNO, TEXTCOLOR cl, BOOL isDraw, BOOL isInvalidate = FALSE);
 	BOOL SetUnitIsTranslate(int UnitNO, BOOL isTrans);
 	BOOL SetUnitIsDisable(int UnitNO, BOOL isDisable);
-	BOOL SetUnitFont(int unitNO, TEXTSIZE nFont);
 	BOOL GetUnitIsShow(int UnitNO);
 	BOOL GetUnitIsDownStatus(int UnitNO);
 	CRect GetUnitRect(int UnitNO);
-	BOOL GetUnitIsDisable(int UnitNO);
-	BOOL SetUnitRect(int UnitNO, CRect rt);
-
-private:
-	int  m_nFocusUnit;				//当前光标
-	int  m_nRowFocusUnit;			//行光标
-	int  m_nColFocusUnit;			//列光标
-
-	BOOL InitFocusUnit();
-	int  FindRowFocusUnit(FOCUSDIRECT direct);
-	int  FindColFocusUnit(FOCUSDIRECT direct);
-	BOOL SetFocusUnit(FOCUSDIRECT direct, int noUnit);
-
 // Construction
 public:
 	CMJPGStatic();

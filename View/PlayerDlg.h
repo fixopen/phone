@@ -9,7 +9,7 @@
 
 
 #include "player.h"
-#include "../control/MJPGStatic.h"
+
 #include "../resource.h"
 /////////////////////////////////////////////////////////////////////////////
 // CPlayerDlg dialog
@@ -39,9 +39,6 @@ public:
 public:
 	CPlayerDlg( Player *player, CWnd* pParent = NULL);   // standard constructor
 	void OnOk(void);
-	CMJPGStatic m_MJPGList;
-	CPlayerDlg(CWnd* pParent = NULL);
-	
 // Dialog Data
 	//{{AFX_DATA(CPlayerDlg)
 	enum { IDD = IDD_DIALOG_PLAYER };

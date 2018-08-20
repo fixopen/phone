@@ -6,18 +6,15 @@
 #endif // _MSC_VER > 1000
 // fastdialsdlg.h : header file
 //
-#include "../Control/CEListCtrl.h"
+#include "../Control/CELineEdit.h"
 #include "../Control/CEStatic.h"
 #include "../Control/CeBtnST.h"
-#include "../Control/CELineEdit.h"
-#include "../Control/CECombobox_.h"
-#include "../Control/CERadioButton.h"
 #include "../Control/CEDialog.h"
 
 #include "../Data/Setting.h"
 
 #include "../control/MJPGStatic.h"
-#include "../Util/ATCommandWarp.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CCallSetDlg dialog
 
@@ -25,19 +22,8 @@ class CCallSetDlg : public CCEDialog
 {
 // Construction
 public:
-	PhoneCallTRans m_calltrans;
-	PhoneCallWaiting  m_callwaiting;
-	PhoneCallLimit m_calllimit;
-
-	CCERectEdit m_edtTransferNumber;
-	CCERectEdit m_edtPinNumber1;
-	CCERectEdit m_edtPinNumber2;
-	
-	int m_uiType;
-	void SetCallSetParam();
-	void ShowItemsControl();
-	
-	CMJPGStatic		m_MJPGList;
+	boost::shared_ptr<Data::Setting>  m_Data;
+	void SetCallSetParam(boost::shared_ptr<Data::Setting> data);
 	CCallSetDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -45,6 +31,7 @@ public:
 	enum { IDD = IDD_DIALOG_FASTDIALS };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
+
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -64,6 +51,9 @@ protected:
 	afx_msg void OnButtonFastDialsCancel();
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
+		
+private:
+	CMJPGStatic		m_MJPGList;
 };
 
 //{{AFX_INSERT_LOCATION}}

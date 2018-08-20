@@ -10,9 +10,6 @@
 #include "../Data/SkinStyle.h"
 #include "sip.h"
 
-// add by qi 2009_09_27
-#include "ContactDlg.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -23,11 +20,8 @@ static char THIS_FILE[] = __FILE__;
 // CContactGroupDlg dialog
 
 
-CString delfore		=	L".\\adv\\mjpg\\k5\\common\\通讯录\\删除按钮_fore.png" ;
-CString delback		=	L".\\adv\\mjpg\\k5\\common\\通讯录\\删除按钮_back.png" ;
-
 CContactGroupDlg::CContactGroupDlg(CWnd* pParent /*=NULL*/)
-	:CCEDialog(CContactGroupDlg::IDD, pParent)
+	: CDialog(CContactGroupDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CContactGroupDlg)
 		// NOTE: the ClassWizard will add member initialization here
@@ -44,7 +38,7 @@ void CContactGroupDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CContactGroupDlg, CCEDialog)
+BEGIN_MESSAGE_MAP(CContactGroupDlg, CDialog)
 	//{{AFX_MSG_MAP(CContactGroupDlg)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON_CONTACTGROUP_OK, OnButtonContactGroupOk)
@@ -81,16 +75,15 @@ void CContactGroupDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 	switch (w)
 	{
-	case 1001://确定
+	case 1:
 		OnButtonContactGroupOk();
 		break;
-	case 1000://取消
+	case 2:
 		OnButtonContactGroupCancel();
 		break;
-	case 1002://删除
+	case 3:
 		OnButtonContactGroupDelete();
 		break;
-
 	case 10:
 		{
 			if(!m_MJPGList.GetUnitIsDownStatus(5))
@@ -136,39 +129,36 @@ BOOL CContactGroupDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	std::string strTemp;
 	CString str;
-	
-	int xbegin,ybegin;
-	int width,height;
-	xbegin = 132+190;
-	ybegin = 111+105;
-	width  = 226;
-	height = 32;
-	m_edtName.Create(WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin, ybegin, xbegin+width, ybegin+height), this, IDC_EDIT_CONTACTGROUP_NAME);
+/*	
+	strTemp = Data::LanguageResource::Get(Data::RI_CARD_TYPENAME);
+	str = strTemp.c_str();
+	m_sticName.Create(str, WS_CHILD|WS_VISIBLE, CRect(112, 69, 170, 87), this);
+	m_sticName.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
+	m_sticName.SetAlign(SS_CENTER);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_CARD_RING);
+	str = strTemp.c_str();
+	m_sticRing.Create(str, WS_CHILD|WS_VISIBLE, CRect(112, 90, 170, 106), this);
+	m_sticRing.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
+	m_sticRing.SetAlign(SS_CENTER);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_CARD_SOUNDTIP);
+	str = strTemp.c_str();
+	m_sticSoudTip.Create(str, WS_CHILD|WS_VISIBLE, CRect(112, 110, 170, 126), this);
+	m_sticSoudTip.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
+	m_sticSoudTip.SetAlign(SS_CENTER);
+*/
+	m_edtName.Create(WS_CHILD|WS_VISIBLE, CRect(194+5, 134+11, 446+5, 172+11), this, IDC_EDIT_CONTACTGROUP_NAME);
 	m_edtName.SetLimitText(15);
-	
-	ybegin = 158+105;
-	m_ringEdit.Create(WS_CHILD|WS_VISIBLE,
-		CRect(xbegin, ybegin, xbegin+167, ybegin+height), this, 0xFFFF);
+
+	//m_cmbRing.Create(WS_CHILD|WS_VISIBLE, CRect(174, 90, 288, 200), this, IDC_COMBOBOX_CONTACTGROUP_RING);
+	m_ringEdit.Create(WS_CHILD|WS_VISIBLE, CRect(194+5,195+11,449+5,232+11), this, 0xFFFF);
 	m_ringEdit.SetIsAutoInput(FALSE);
-	
-	//按钮
-	m_ringButton.Create(L"",Data::g_comboxBMPID[0][Data::g_skinstyle],
-		Data::g_comboxBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE,
-		CRect(xbegin+167,ybegin,xbegin+167+58,ybegin+height+7), this, IDC_SETTING_RINGSELECT);
-	
-	m_ringList.Create(WS_CHILD|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER,
-		CRect(xbegin,ybegin+38,xbegin+226,ybegin+38+150), this, IDC_SETTING_LSTRING, TRUE, 1);
-	m_ringList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], 
-		Data::g_listctrlBackRGB2[Data::g_skinstyle]);
+	m_ringButton.Create(L"", Data::g_comboxBMPID[0][Data::g_skinstyle], Data::g_comboxBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(450+5,194+11,508+5,233+11), this, IDC_SETTING_RINGSELECT);
+	m_ringList.Create(WS_CHILD|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(194+5,244+11,508+5,410+11), this, IDC_SETTING_LSTRING, TRUE, 1);
+	m_ringList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], Data::g_listctrlBackRGB2[Data::g_skinstyle]);
 	m_ringList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 508-194-32);
 	m_ringList.ShowWindow_(SW_HIDE);
-
-	m_ringStatic.Create(L"", WS_CHILD, CRect(xbegin-2,ybegin+34-3,xbegin-2+226+8,ybegin+34-3+156), this);
-	m_ringStatic.SetBorder(TRUE);
-
-	m_cmbSoundTip.Create(WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin-4, 205+105-5, xbegin+width, 205+105-5+153), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
 	
 	m_pImageList1 = new CImageList();
 	m_pImageList1->Create(32, 32, ILC_COLOR32|ILC_MASK, 6, 6);   
@@ -193,11 +183,31 @@ BOOL CContactGroupDlg::OnInitDialog()
 	bm.DeleteObject();
 	m_ringList.SetImageList(m_pImageList1, LVSIL_SMALL);
 	
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(190, 105,190+440, 105+270), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\新建类别.xml");
-	m_MJPGList.SetMJPGRect(CRect(190, 105, 190+440, 105+270));
-	
-	MoveWindow(0,0,800,480);
+	m_ringStatic.Create(L"", WS_CHILD, CRect(192+5,242+11,516+5,412+11), this);
+	m_ringStatic.SetBorder(TRUE);
+
+	m_cmbSoundTip.Create(WS_CHILD|WS_VISIBLE, CRect(194+5, 255+11, 509+5, 410+9), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
+/*
+	strTemp = Data::LanguageResource::Get(Data::RI_COMN_OKBTN);
+	str = strTemp.c_str();
+	m_btnOk.Create(str, Data::g_buttonArcBMPALLDIALOGID[0][Data::g_skinstyle], Data::g_buttonArcBMPALLDIALOGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(415, 41, 471, 61), this, IDC_BUTTON_CONTACTGROUP_OK);
+	m_btnOk.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_COMN_CANCELBTN);
+	str = strTemp.c_str();
+	m_btnCancel.Create(str, Data::g_buttonArcBMPALLDIALOGID[0][Data::g_skinstyle], Data::g_buttonArcBMPALLDIALOGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(415, 66, 471, 86), this, IDC_BUTTON_CONTACTGROUP_CANCEL);
+	m_btnCancel.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
+
+	strTemp = Data::LanguageResource::Get(Data::RI_CARD_DELETETYPEBTN);
+	str = strTemp.c_str();
+	m_btnDelete.Create(str, Data::g_buttonArcBMPALLDIALOGID[0][Data::g_skinstyle], Data::g_buttonArcBMPALLDIALOGID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(415, 91, 471, 111), this, IDC_BUTTON_CONTACTGROUP_DELETE);
+	m_btnDelete.SetBackRGB(Data::g_allFramAngleBackLineRGB[Data::g_skinstyle]);
+
+	m_sticBackground.Create(CRect(0, 0, 480, 204), this, 1);
+*/
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\新建类别.xml");
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
 	m_pContactGroup = boost::shared_ptr<Data::ContactGroup>();
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -237,7 +247,7 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 	{
 		m_pContactGroup = boost::shared_ptr<Data::ContactGroup>(new Data::ContactGroup);
 	}
-
+	
 	std::string name = Util::StringOp::FromCString(s);
 	for (int i = 0; i < name.length(); ++i)
 	{
@@ -247,14 +257,6 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 		}
 	}
 	
-	//不能新建SIM卡组
-	if ( 0 == name.compare("SIM卡"))
-	{
-		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		main->m_pWarningNoFlashDlg->SetTitle("不能新建SIM组别");
-		return ;
-	}
-
 	m_pContactGroup->name(name);
 	
 	CString   str;  
@@ -266,7 +268,6 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 	str = Data::LanguageResource::Get(Data::RI_CARD_DEFAULT).c_str();
 	}
 	*/
-
 	if(str.Compare(Util::StringOp::ToCString(Data::LanguageResource::Get(Data::RI_CARD_DEFAULT))) != 0)
 	{
 		CString s = m_ringDir;
@@ -312,24 +313,17 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 	{
 		m_pContactGroup->Update();
 	}
-
-
-//	int sel = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->GetTypeListSelected();
-//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowTypeItems();
+	int sel = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->GetTypeListSelected();
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowTypeItems();
 	
-//	if ((sel > 0) && isInsert)
-//	{
-//		++sel;
-//	}
-//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
+	if ((sel > 0) && isInsert)
+	{
+		++sel;
+	}
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->SetTypeListSelected(sel);
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
 	
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUp();
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUpGroup();
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->FromGroupDataBase();
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowUpGroupInfo();
-
-
-	ShowWindow_(SW_HIDE);
+	ShowWindow(FALSE);
 	SipShowIM(SIPF_OFF);
 	
 	m_ringList.ShowWindow_(SW_HIDE);
@@ -338,11 +332,10 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 
 void CContactGroupDlg::OnButtonContactGroupCancel() 
 {
+	// TODO: Add your control notification handler code here
  	m_ringList.ShowWindow_(SW_HIDE);
  	m_ringStatic.ShowWindow(SW_HIDE);
-//	ShowWindow(FALSE);
-
-	ShowWindow_(SW_HIDE);
+	ShowWindow(FALSE);
 	SipShowIM(SIPF_OFF);
 }
 
@@ -351,15 +344,10 @@ void CContactGroupDlg::OnButtonContactGroupDelete()
 	// TODO: Add your control notification handler code here
 	if (m_pContactGroup->id() > 0)
 	{
-	//	std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_CONTACTGROUP);
-	//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
-		
-		CString title = "确认删除该组别吗?";
-		int count = 1 ;
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(title,0);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+		std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_CONTACTGROUP);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 	}
 
 	m_ringList.ShowWindow_(SW_HIDE);
@@ -367,10 +355,7 @@ void CContactGroupDlg::OnButtonContactGroupDelete()
 }
 
 void CContactGroupDlg::SetContactGroup(boost::shared_ptr<Data::ContactGroup> contactgroup)
-{	
-	CString editType = L".\\adv\\mjpg\\k5\\common\\通讯录\\编辑类别.bmp" ;
-	CString newType  = L".\\adv\\mjpg\\k5\\common\\通讯录\\新建类别.bmp" ;
-
+{
 	m_pContactGroup = contactgroup;
 //	AddRingTipItems();
 	std::string strTemp;
@@ -381,13 +366,8 @@ void CContactGroupDlg::SetContactGroup(boost::shared_ptr<Data::ContactGroup> con
 // 		m_sticTitle.SetWindowText(str);
 		m_edtName.SetWindowText(_T(""));
 //		m_btnDelete.ShowWindow(FALSE);
-//		m_MJPGList.SetUnitIsShow(3, TRUE);
-//		m_MJPGList.SetUnitIsShow(4, FALSE);
-		
-		m_MJPGList.SetUnitBitmap(4,newType,L"",false);
-		m_MJPGList.SetUnitBitmap(1002,L"",L"",false);
-		m_MJPGList.Invalidate();
-
+		m_MJPGList.SetUnitIsShow(3, TRUE);
+		m_MJPGList.SetUnitIsShow(4, FALSE);
 	}
 	else
 	{
@@ -396,16 +376,21 @@ void CContactGroupDlg::SetContactGroup(boost::shared_ptr<Data::ContactGroup> con
 // 		m_sticTitle.SetWindowText(str);
 		m_edtName.SetWindowText(Util::StringOp::ToCString(contactgroup->name()));
 //		m_btnDelete.ShowWindow(TRUE);
-//		m_MJPGList.SetUnitIsShow(4, TRUE);
-//		m_MJPGList.SetUnitIsShow(3, FALSE);
-
-		m_MJPGList.SetUnitBitmap(4,editType,L"",false);
-		m_MJPGList.SetUnitBitmap(1002,delfore,delback,false);
-		m_MJPGList.Invalidate();
-
+		m_MJPGList.SetUnitIsShow(4, TRUE);
+		m_MJPGList.SetUnitIsShow(3, FALSE);
 	}
 		
-
+/*
+	TextStruct ts[1];
+	memset(ts, 0, sizeof(TextStruct) * 1);
+	
+	ts[0].txtRect = CRect(8, 0, 100, 20);
+	ts[0].txtFontSize = 16;
+	ts[0].sAlign = DT_LEFT | DT_BOTTOM;
+	memcpy(ts[0].sTxt, strTemp.c_str(), strTemp.length());
+	
+	m_sticBackground.SetTextStruct(ts, 1);
+*/
 	CString ringName = Util::StringOp::ToCString(contactgroup->ringName()) ;
 	CFileStatus   status;
 	memset(m_ringDir, 0, 128*2);
@@ -469,8 +454,6 @@ void CContactGroupDlg::SetContactGroup(boost::shared_ptr<Data::ContactGroup> con
 //		m_cmbSoundTip.SelectString(0, Util::StringOp::ToCString(Data::LanguageResource::Get(Data::RI_CARD_DEFAULT)));
 		m_cmbSoundTip.SetCurSel(0);
 	}
-
-
 }
 
 void CContactGroupDlg::OnRingLst(NMHDR* pNMHDR, LRESULT* pResult)
@@ -657,17 +640,13 @@ LRESULT CContactGroupDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		std::string filter = "groupId = " + Util::StringOp::FromInt(m_pContactGroup->id());
 		Data::Contact::Remove(filter);
+
 		m_pContactGroup->Remove();
-
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(1);
-
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUp();
-
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUpGroup();
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->FromGroupDataBase();
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowUpGroupInfo();
-
-		ShowWindow_(SW_HIDE);
+		int sel = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->GetTypeListSelected();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowTypeItems();		
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->SetTypeListSelected(sel);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
+		ShowWindow(FALSE);
 	}
 	break;
 	}
