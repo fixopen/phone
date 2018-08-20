@@ -326,7 +326,7 @@ CNetStatusDlg::CNetStatusDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	m_nADSLTimeCount = 0;
 	m_bADSLISConnnect = FALSE;
-	//ADSLInit();
+	ADSLInit();
 }
 
 

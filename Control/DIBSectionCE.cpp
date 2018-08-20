@@ -794,8 +794,8 @@ BOOL CDIBSectionCE::CreatePalette()
     // Create and fill a LOGPALETTE structure with the colours used.
     PALETTEINFO PaletteInfo;
     PaletteInfo.palNumEntries = (WORD) m_iColorTableSize;
-    int i        ;            
-    for ( i = 0; i < nColours; i++)
+                        
+    for (int i = 0; i < nColours; i++)
     {
         PaletteInfo.palPalEntry[i].peRed   = pRGB[i].rgbRed;
         PaletteInfo.palPalEntry[i].peGreen = pRGB[i].rgbGreen;
@@ -956,8 +956,7 @@ UINT CDIBSectionCE::GetColorTableEntries(HDC hdc, HBITMAP hBitmap)
         UINT nIndex = 0;
         
         // The standard colours (16)
-		int i;
-        for (i = 0; i < nNumStandardColours; i++)
+        for (int i = 0; i < nNumStandardColours; i++)
         {
             if (nIndex >= nColorTableSize) 
                 break;

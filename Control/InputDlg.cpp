@@ -391,7 +391,7 @@ void CInputDlg::CreateCtrl()
 	m_oSoftkeyP.ModifyStyle(0, SS_NOTIFY);
 
 	//ENG INPUT
-	for(int i = 0; i < 48; i++)
+	for(i = 0; i < 48; i++)
 	{
 		if(i < 16)
 		{
@@ -408,7 +408,7 @@ void CInputDlg::CreateCtrl()
 		}
 	}
 
-	for(int i = 0; i < 7; i++)
+	for( i = 0; i < 7; i++)
 	{
 		r2[i+48] = CRect(x1Local[9+i]+1+m_xPoint, y1Local[0]+1+m_yPoint, x1Local[9+i+1]-1+m_xPoint, y1Local[1]-1+m_yPoint);
 	}
@@ -433,7 +433,7 @@ void CInputDlg::CreateCtrl()
 	'!', '?',',', '.','4', '5','6', 
 	VOIPINPUT_WRITE_VALUE, VOIPINPUT_PINYIN_VALUE, VOIPINPUT_ENG_VALUE, VOIPINPUT_ZIFU_VALUE,'7', '8','9'
 	}; //40
-	for(int i = 0; i < 37; i++)
+	for(i = 0; i < 37; i++)
 	{
 		if(i <= 15)
 		{

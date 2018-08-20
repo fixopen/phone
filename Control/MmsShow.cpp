@@ -737,8 +737,7 @@ void MmsShow::InitialRegion()
 	region1.top		= TEXT_TOP								;
 
 	// 目前只能显示一张图片，一个文本
-	int j;
-	for (j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
+	for (int j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
 	{   
 		if (m_cMmsPar[m_uMmsParPlay].srcs[j].region.compare("image") == 0 )
 		{

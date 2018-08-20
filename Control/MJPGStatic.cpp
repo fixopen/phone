@@ -1085,7 +1085,30 @@ void CMJPGStatic::OnLButtonDown(UINT nFlags, CPoint point)
 
 		m_nIndexSelectUnit = nIndex;
 		//InvertRect(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Rect);
-		DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 1);
+		if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Ctrltype == ctrl_unittoggle)
+		{
+		//	if(!m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_bIsDownStatus)
+			{
+				DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 1);
+				if(GetParent())
+				{
+					if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_UnitType == unit_click) //click
+					{
+						CString sDial = m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_UnitContent;
+						if(sDial != "")
+						{
+							std::string str = Util::StringOp::FromCString(sDial);
+							CString s_ = str.c_str();
+							int code = atoi(s_);
+							GetParent()->PostMessage(WM_MJPGTOGGLE, (WPARAM)code, GetDlgCtrlID());
+						}
+					}
+				}
+			}
+		}
+		else
+			DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 1);
+		
 		
 		/*
 		
@@ -1131,6 +1154,11 @@ void CMJPGStatic::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if(m_nIndexSelectUnit >= 0)
 	{
+		if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Ctrltype == ctrl_unittoggle)
+		{
+			CStatic::OnMouseMove(nFlags, point);
+		}
+
 		if(IsWindowVisible())
 			if(GetParent()->IsWindowVisible())
 			{
@@ -1162,6 +1190,13 @@ void CMJPGStatic::OnLButtonUp(UINT nFlags, CPoint point)
 	if(m_nIndexSelectUnit >= 0)
 	{
 		//InvertRect(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Rect);
+		if(m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam.m_Ctrltype == ctrl_unittoggle)
+		{
+			m_nIndexSelectUnit = -1;
+			CStatic::OnLButtonUp(nFlags, point);
+			return;
+		}
+
 		if(IsWindowVisible())
 			if(GetParent()->IsWindowVisible())
 			DrawUnitStatus_HDC(&m_currentMJPGList->items[m_nIndexSelectUnit]->unitparam, 0);
@@ -2272,9 +2307,9 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 		TRACE(L"BG %d\n", offset);
 		
 		dwStart   =   GetTickCount();
-		int size_ = m_currentMJPGList->items.size();
-		//for (int i = 0; i < m_currentMJPGList->items.size(); ++i)
-		for (int i = size_-1; i >= 0; --i)
+		//int size_ = m_currentMJPGList->items.size();
+		for (int i = 0; i < m_currentMJPGList->items.size(); ++i)
+		//for (int i = size_-1; i >= 0; --i)
 		{
 			DWORD   dwStart1   =   GetTickCount(); 
 			MJPGItem *item = m_currentMJPGList->items[i];
@@ -2300,9 +2335,9 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 		DWORD offset = GetTickCount() - dwStart;   
 		//TRACE(L"BG %d\n", offset);
 		
-		int size_ = m_currentMJPGList->items.size();
-		//for (int i = 0; i < m_currentMJPGList->items.size(); ++i)
-		for (int i = size_-1; i >= 0; --i)
+		//int size_ = m_currentMJPGList->items.size();
+		for (int i = 0; i < m_currentMJPGList->items.size(); ++i)
+		//for (int i = size_-1; i >= 0; --i)
 		{
 			DWORD  s = GetTickCount(); 
 			DWORD   dwStart   =   GetTickCount(); 
@@ -2414,7 +2449,6 @@ int CMJPGStatic::FindRowFocusUnit(FOCUSDIRECT direct)
 						sIndex += sTemp;
 					}
 				}
-				int i;
 				for(i = 0; i < nCount; i++)
 				{
 					if(Id[i] == m_nRowFocusUnit)
@@ -2463,8 +2497,7 @@ int CMJPGStatic::FindColFocusUnit(FOCUSDIRECT direct)
 				int Id[20][100];
 				memset(&Id[0][0], 0xFF, sizeof(int)*(2000));
 				CString sIndex = "";
-				int i;
-				for( i = nStart+1; i <= nEnd; i++)
+				for(int i = nStart+1; i <= nEnd; i++)
 				{
 					CString sTemp = s.Mid(i, 1);	
 					if(sTemp == L"," || sTemp == L"]")
@@ -2484,9 +2517,8 @@ int CMJPGStatic::FindColFocusUnit(FOCUSDIRECT direct)
 						sIndex += sTemp;
 					}
 				}
-				int j;
-				for(j = 0; j < rCount; j++)
-					for(int i = 0; i < 100; i++)
+				for(int j = 0; j < rCount; j++)
+					for(i = 0; i < 100; i++)
 					{
 						if(Id[j][i] == m_nColFocusUnit)
 							goto TAB;

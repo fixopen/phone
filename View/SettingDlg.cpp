@@ -21,7 +21,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg dialog
-CString s_VerSionTitle = "7.39090929";
+CString s_VerSionTitle = "7.41091012";
 CString s_VerSion = "\
 6.03090325\
 1.–ﬁ∏ƒ¡À¬º“Ù√‹¬Î.\
@@ -1546,7 +1546,7 @@ void CSettingDlg::IniCtrlData()
 
 	ip = m_ip.mask;
 	index1 = 0;
-	for(int i = 0; i < 4; i++)
+	for(i = 0; i < 4; i++)
 	{
 		int index = ip.Find('.', index1);
 		CString ss;
@@ -1564,7 +1564,7 @@ void CSettingDlg::IniCtrlData()
 
 	ip = m_ip.gw;
 	index1 = 0;
-	for(int i = 0; i < 4; i++)
+	for(i = 0; i < 4; i++)
 	{
 		int index = ip.Find('.', index1);
 		CString ss;
@@ -1582,7 +1582,7 @@ void CSettingDlg::IniCtrlData()
 
 	ip = m_ip.dns;
 	index1 = 0;
-	for(int i = 0; i < 4; i++)
+	for(i = 0; i < 4; i++)
 	{
 		int index = ip.Find('.', index1);
 		CString ss;
@@ -2439,7 +2439,7 @@ void CSettingDlg::ShowConfigItems(void)
 // 		m_sticMask.ShowWindow(TRUE);
 // 		m_sticGateway.ShowWindow(TRUE);
 // 		m_sticDNS.ShowWindow(TRUE);
-		for(int i = 0; i < 4; i++)
+		for(i = 0; i < 4; i++)
 		{
 			m_edtIP[i].ShowWindow(TRUE);
 			m_edtMask[i].ShowWindow(TRUE);

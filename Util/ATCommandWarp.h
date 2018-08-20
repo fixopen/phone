@@ -27,6 +27,9 @@ struct PhoneCallWaiting
 	BOOL isCallWaiting;
 };
 
+typedef int (*pGetVideoData)(void *pData, int length);
+typedef int (*pSendVideoData)(void *pData, int length);
+
 namespace Util
 {
 	class ATCommandWarp
@@ -94,6 +97,12 @@ namespace Util
 // 		bool PhoneVDial(char * number);						//视频拨打电话
 // 		bool PhoneVRing(char * number, int type);           //视频振铃
 // 		bool PhoneCCHL();
+
+		BOOL  m_bIsVideoRun;
+		BOOL  m_bIsVideoExit;
+
+		static int GetVideoData(void *pData, int length);
+		static int SendVideoData(void *pData, int length);
 
 		//开始视频
 		bool StartVideoPhone(Util::ComWarp *pVideoCom);
