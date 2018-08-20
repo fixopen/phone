@@ -1,0 +1,557 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{337e22a8-1b78-4a6b-ba14-b94537edc97a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Audio">
+      <UniqueIdentifier>{af8d9c49-8ddd-43fc-b4db-d00aef228703}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Video">
+      <UniqueIdentifier>{8a44f04c-0a3d-49e6-b5d1-012d4dc4f0b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Text">
+      <UniqueIdentifier>{9b5e6a0c-c190-4b53-b216-74d258c69f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Image">
+      <UniqueIdentifier>{12b6cfce-d701-4768-bd14-f4893283534e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\std">
+      <UniqueIdentifier>{c674e477-fede-41af-9c79-666fd32313bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Com">
+      <UniqueIdentifier>{d53655f2-22ac-4457-a90f-414a99576bc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Control">
+      <UniqueIdentifier>{40df8b8b-ea10-41ea-8fc9-ed87b2a6a185}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Graphics">
+      <UniqueIdentifier>{712b10c5-eb11-44ef-8007-ad283c3965ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Xml">
+      <UniqueIdentifier>{5a0828c9-b264-46d7-92a4-09cd96ed57d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\Time">
+      <UniqueIdentifier>{72acc20e-e790-4575-9a4e-1883775a1304}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Multimedia.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Multimedia.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Capture.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Decoder.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Encoder.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\MetaData.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Render.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Stream.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\AudioCapture.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\AudioDecoder.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\AudioEncoder.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\AudioMetaData.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\AudioRender.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\VideoCapture.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\VideoDecoder.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\VideoEncoder.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\VideoMetaData.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\VideoRender.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\TextCapture.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\TextDecoder.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\TextEncoder.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\TextMetaData.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\TextRender.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Image\ImageCapture.h">
+      <Filter>Util\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Image\ImageDecoder.h">
+      <Filter>Util\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Image\ImageEncoder.h">
+      <Filter>Util\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Image\ImageMetaData.h">
+      <Filter>Util\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Image\ImageRender.h">
+      <Filter>Util\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\NetworkStream.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Player.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Recorder.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\MediaList.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\StaticMediaList.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\StreamMediaList.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Fsm.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\std\c.h">
+      <Filter>Util\std</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\std\iostream.h">
+      <Filter>Util\std</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\std\other.h">
+      <Filter>Util\std</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\std\ptr.h">
+      <Filter>Util\std</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\std\std.h">
+      <Filter>Util\std</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\std\vc_attributes.h">
+      <Filter>Util\std</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\Camera.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Com\PropertyBag.h">
+      <Filter>Util\Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\Micphone.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\Speaker.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Image\Scanner.h">
+      <Filter>Util\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\Display.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\DxRender.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Video\BltRender.h">
+      <Filter>Util\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\SpeexDecoder.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Audio\SpeexEncoder.h">
+      <Filter>Util\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Observer.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Component.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Event.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\ContainerComponent.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\MediaContainer.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Control\Control.h">
+      <Filter>Util\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Control\WinControl.h">
+      <Filter>Util\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Graphics\Graphics.h">
+      <Filter>Util\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Graphics\Screen.h">
+      <Filter>Util\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Image\Image.h">
+      <Filter>Util\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\StringOp.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Thread.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\XMLParser.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Text\DocSource.h">
+      <Filter>Util\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\SmartPtr.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\Attr.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\Comment.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\DataSection.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\DocType.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\Document.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\Element.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\Node.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\ProcessingInstruction.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\Text.h">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Time\DateTime.h">
+      <Filter>Util\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Time\TimeOp.h">
+      <Filter>Util\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Time\Timer.h">
+      <Filter>Util\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Com\ComClass.h">
+      <Filter>Util\Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Com\ComContainer.h">
+      <Filter>Util\Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Com\ComObject.h">
+      <Filter>Util\Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Com\ComServer.h">
+      <Filter>Util\Com</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Com\ComSession.h">
+      <Filter>Util\Com</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Multimedia.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Capture.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Decoder.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Encoder.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\MetaData.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Render.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Stream.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\AudioCapture.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\AudioDecoder.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\AudioEncoder.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\AudioMetaData.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\AudioRender.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\VideoCapture.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\VideoDecoder.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\VideoEncoder.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\VideoMetaData.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\VideoRender.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\TextCapture.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\TextDecoder.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\TextEncoder.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\TextMetaData.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\TextRender.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Image\ImageCapture.cpp">
+      <Filter>Util\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Image\ImageDecoder.cpp">
+      <Filter>Util\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Image\ImageEncoder.cpp">
+      <Filter>Util\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Image\ImageMetaData.cpp">
+      <Filter>Util\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Image\ImageRender.cpp">
+      <Filter>Util\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\NetworkStream.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Player.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Recorder.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\MediaList.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\StaticMediaList.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\StreamMediaList.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Fsm.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\Camera.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Com\PropertyBag.cpp">
+      <Filter>Util\Com</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\Micphone.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\Speaker.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Image\Scanner.cpp">
+      <Filter>Util\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\Display.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\DxRender.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Video\BltRender.cpp">
+      <Filter>Util\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\SpeexDecoder.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Audio\SpeexEncoder.cpp">
+      <Filter>Util\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Observer.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Component.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\ContainerComponent.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Event.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\MediaContainer.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Control\Control.cpp">
+      <Filter>Util\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Control\WinControl.cpp">
+      <Filter>Util\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\Graphics.cpp">
+      <Filter>Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Graphics\Screen.cpp">
+      <Filter>Util\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Image\Image.cpp">
+      <Filter>Util\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\StringOp.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Thread.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\XMLParser.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Text\DocSource.cpp">
+      <Filter>Util\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\SmartPtr.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\Attr.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\Comment.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\DataSection.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\DocType.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\Document.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\Element.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\Node.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\ProcessingInstruction.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\Text.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Time\DataTime.cpp">
+      <Filter>Util\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Time\TimeOp.cpp">
+      <Filter>Util\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Time\Timer.cpp">
+      <Filter>Util\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Com\ComClass.cpp">
+      <Filter>Util\Com</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Com\ComContainer.cpp">
+      <Filter>Util\Com</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Com\ComGuidInit.cpp">
+      <Filter>Util\Com</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Com\ComObject.cpp">
+      <Filter>Util\Com</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Com\ComServer.cpp">
+      <Filter>Util\Com</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Com\ComSession.cpp">
+      <Filter>Util\Com</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Multimedia.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
