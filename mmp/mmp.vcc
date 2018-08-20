@@ -1,0 +1,45 @@
+; CLW file contains information for the MFC ClassWizard
+
+[General Info]
+Version=1
+LastClass=CMmpDlg
+LastTemplate=CDialog
+NewFileInclude1=#include "stdafx.h"
+NewFileInclude2=#include "mmp.h"
+
+ClassCount=3
+Class1=CMmpApp
+Class2=CMmpDlg
+
+ResourceCount=4
+Resource2=IDR_MAINFRAME
+Resource3=IDD_MMP_DIALOG
+Resource4=IDD_MMP_DIALOG (English (U.S.))
+
+[CLS:CMmpApp]
+Type=0
+HeaderFile=mmp.h
+ImplementationFile=mmp.cpp
+Filter=N
+
+[CLS:CMmpDlg]
+Type=0
+HeaderFile=mmpDlg.h
+ImplementationFile=mmpDlg.cpp
+Filter=D
+
+
+[DLG:IDD_MMP_DIALOG]
+Type=1
+ControlCount=3
+Control1=IDOK,button,1342242817
+Control2=IDCANCEL,button,1342242816
+Control3=IDC_STATIC,static,1342308352
+Class=CMmpDlg
+
+[DLG:IDD_MMP_DIALOG (English (U.S.))]
+Type=1
+Class=?
+ControlCount=1
+Control1=IDC_STATIC,static,1342177294
+

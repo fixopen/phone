@@ -1,0 +1,569 @@
+//Microsoft eMbedded Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "newres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""newres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\MultimediaPhone.rc2""  // non-Microsoft eMbedded Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""wceres.rc""         // WCE-specific components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\icon\\MultimediaPhone.ico"
+IDI_ICON1               ICON    DISCARDABLE     "res\\icon\\01-名片类别.ico"
+IDI_ICON2               ICON    DISCARDABLE     "res\\icon\\04-黑名单名片.ico"
+IDI_ICON_VIDEO          ICON    DISCARDABLE     "res\\icon\\11-桌面影院.ico"
+IDI_ICON_SAVESCREEN     ICON    DISCARDABLE     "res\\icon\\16-屏幕保护.ico"
+IDI_ICON_PHOTO          ICON    DISCARDABLE     "res\\icon\\12-电子相册.ico"
+IDI_ICON_MP3            ICON    DISCARDABLE     "res\\icon\\13-音乐播放.ico"
+IDI_ICON_CANL           ICON    DISCARDABLE     "res\\icon\\14-日历.ico"
+IDI_ICON_CALU           ICON    DISCARDABLE     "res\\icon\\15-计算器.ico"
+IDI_ICON_EXIT           ICON    DISCARDABLE     "res\\icon\\01-关闭.ico"
+IDI_ICON_CHECK1         ICON    DISCARDABLE     "res\\icon\\02-复选 选中.ico"
+IDI_ICON_PRE            ICON    DISCARDABLE     "res\\icon\\08-上一个.ico"
+IDI_ICON_CHECK0         ICON    DISCARDABLE     "res\\icon\\03-复选 未选中.ico"
+IDI_ICON_SOUNDOK        ICON    DISCARDABLE     "res\\icon\\05-声音.ico"
+IDI_ICON_NEXT           ICON    DISCARDABLE     "res\\icon\\06-下一个.ico"
+IDI_ICON_PLAY           ICON    DISCARDABLE     "res\\icon\\07-1 播放.ico"
+IDI_ICON_STOPPLAY       ICON    DISCARDABLE     "res\\icon\\07-2 暂停.ico"
+IDI_ICON_SOUNDCACEL     ICON    DISCARDABLE     "res\\icon\\05-声音1.ico"
+IDI_ICON_COMBOBOX       ICON    DISCARDABLE     "Control\\res\\COMBOBOX.ICO"
+IDI_ICON_IME            ICON    DISCARDABLE     "res\\icon\\07-输入法.ico"
+IDI_ICON_LINE           ICON    DISCARDABLE     "res\\icon\\08-通讯线路.ico"
+IDI_ICON_DESK           ICON    DISCARDABLE     "res\\icon\\01-主界面.ico"
+IDI_ICON_CONTACT        ICON    DISCARDABLE     "res\\icon\\02-电话本.ico"
+IDI_ICON_CONTACTINFO    ICON    DISCARDABLE     "res\\icon\\03-通话记录.ico"
+IDI_ICON_SOUND          ICON    DISCARDABLE     "res\\icon\\04-录音管理.ico"
+IDI_ICON_INFO           ICON    DISCARDABLE     "res\\icon\\05-信息点播.ico"
+IDI_ICON_SETTING        ICON    DISCARDABLE     "res\\icon\\06-系统设置.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_MAIN DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+    LTEXT           "timer",IDC_STATIC_TIME,41,27,107,42,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    LTEXT           "today",IDC_STATIC_TODAY,49,3,59,8,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    LTEXT           "Tel_Status",IDC_STATIC_TELSTATUS,41,77,51,8,NOT 
+                    WS_VISIBLE | WS_DISABLED
+    LTEXT           "CALLWall_Status",IDC_STATIC_CALLWALL,43,93,56,8,NOT 
+                    WS_VISIBLE | WS_DISABLED
+    LTEXT           "Line",IDC_STATIC_LINE,5,1,22,8,NOT WS_VISIBLE | 
+                    WS_DISABLED
+END
+
+IDD_DIALOG_CONTACT DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_MULTIMEDIAPHONE_DIALOG DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_INPUT DIALOG DISCARDABLE  0, 0, 275, 64
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTINFO DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SOUND DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SETTING DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_INFORMATION DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,225,0,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,225,103,50,14
+    LTEXT           "information",IDC_STATIC,54,24,64,19
+END
+
+IDD_DIALOG_PLAYSOUND DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTINFOSEARCH DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTNEW DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTGROUP DIALOG DISCARDABLE  0, 0, 275, 117
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_MAINMENU DIALOG DISCARDABLE  0, 0, 121, 115
+STYLE WS_CHILD
+FONT 10, "System"
+BEGIN
+    PUSHBUTTON      "Button1",IDC_BUTTON1,7,59,50,14,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    PUSHBUTTON      "Button2",IDC_BUTTON2,63,59,50,14,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    PUSHBUTTON      "Button3",IDC_BUTTON3,7,76,50,14,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    PUSHBUTTON      "Button4",IDC_BUTTON4,63,76,50,14,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    PUSHBUTTON      "Button5",IDC_BUTTON5,7,94,50,14,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    PUSHBUTTON      "Button6",IDC_BUTTON6,63,94,50,14,NOT WS_VISIBLE | 
+                    WS_DISABLED
+    CONTROL         152,IDC_STATIC_CUSTOMER,"Static",SS_BITMAP,7,7,109,60
+END
+
+IDD_DIALOG_CEDLG DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_TESTCEDLG DIALOG DISCARDABLE  0, 0, 275, 129
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,147,29,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,149,70,50,14
+    LTEXT           "",IDC_STATIC,67,19,158,78
+END
+
+IDD_DIALOG_PLAYER DIALOG DISCARDABLE  0, 0, 127, 65
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_VIDEO DIALOG DISCARDABLE  0, 0, 139, 115
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_PHOTO DIALOG DISCARDABLE  0, 0, 139, 115
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_MP3 DIALOG DISCARDABLE  0, 0, 139, 115
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTSEARCH DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SOUNDSEARCH DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_FASTDIALS DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_FIREWALL DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_TELEPHONE DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_NOTE DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_PASSWORD DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_DELETETIP DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_LUNARDER DIALOG DISCARDABLE  0, 0, 139, 115
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SCREENSAVE DIALOG DISCARDABLE  0, 0, 275, 135
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CACULATER DIALOG DISCARDABLE  0, 0, 139, 115
+STYLE WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_PROGRESS_BAR        BITMAP  DISCARDABLE     "Control\\res\\\\process_bar.bmp"
+IDB_VOIPINPUTPINYIN     BITMAP  DISCARDABLE     "Control\\res\\input_pinyin.bmp"
+IDB_VOIPINPUTENG        BITMAP  DISCARDABLE     "Control\\res\\input_eng.bmp"
+IDB_VOIPINPUTENG1       BITMAP  DISCARDABLE     "Control\\res\\input_eng1.bmp"
+IDB_VOIPINPUTFUHAO      BITMAP  DISCARDABLE     "Control\\res\\input_fuhao1.bmp"
+IDB_VOIPINPUTH          BITMAP  DISCARDABLE     "Control\\res\\input_write.bmp"
+IDB_BITMAP_CUSTOMER     BITMAP  DISCARDABLE     "res\\bitmap\\car4.bmp"
+IDB_VOIPPYSEARCH        BITMAP  DISCARDABLE     "Control\\res\\input_pysearch.bmp"
+IDB_BITMAP_MASK         BITMAP  DISCARDABLE     "Control\\res\\DialogMask.bmp"
+IDB_BITMAP_DOWNARROW1   BITMAP  DISCARDABLE     "Control\\res\\down_arrow2.bmp"
+IDB_BITMAP_THICK1       BITMAP  DISCARDABLE     "Control\\res\\slider2.bmp"
+IDB_BITMAP_UPARROW1     BITMAP  DISCARDABLE     "Control\\res\\up_arrow2.bmp"
+IDB_BITMAP_RADIO2       BITMAP  DISCARDABLE     "Control\\res\\Radio2.bmp"
+IDB_BITMAP_COMBOBOX     BITMAP  DISCARDABLE     "Control\\res\\combobox.bmp"
+IDB_BITMAP_RADIO1       BITMAP  DISCARDABLE     "Control\\res\\Radio1.bmp"
+IDB_BITMAP_CALCULATOR   BITMAP  DISCARDABLE     "res\\bitmap\\计算器_softkey.bmp"
+IDB_BITMAP_DOWNARROW    BITMAP  DISCARDABLE     "Control\\res\\scrollbar\\down.bmp"
+IDB_BITMAP_THICK        BITMAP  DISCARDABLE     "Control\\res\\scrollbar\\thinck.bmp"
+IDB_BITMAP_UPARROW      BITMAP  DISCARDABLE     "Control\\res\\scrollbar\\up.bmp"
+IDB_BITMAP_MAINTOGGLE   BITMAP  DISCARDABLE     "Control\\res\\statusbar\\main_toggle.bmp"
+IDB_BITMAP_MAINRECORD   BITMAP  DISCARDABLE     "Control\\res\\statusbar\\record.bmp"
+IDB_BITMAP_MAINSETTING  BITMAP  DISCARDABLE     "Control\\res\\statusbar\\set.bmp"
+IDB_BITMAP_MAINTEL      BITMAP  DISCARDABLE     "Control\\res\\statusbar\\tel.bmp"
+IDB_BITMAP_MAINCALLLIST BITMAP  DISCARDABLE     "Control\\res\\statusbar\\calllist.bmp"
+IDB_BITMAP_MAINCARD     BITMAP  DISCARDABLE     "Control\\res\\statusbar\\card.bmp"
+IDB_BITMAP_MAINDESKTOP  BITMAP  DISCARDABLE     "Control\\res\\statusbar\\desktop.bmp"
+IDB_BITMAP_MAININFO     BITMAP  DISCARDABLE     "Control\\res\\statusbar\\inf.bmp"
+IDB_BITMAP_MAININPUT    BITMAP  DISCARDABLE     "Control\\res\\statusbar\\input.bmp"
+IDB_BITMAP_MAIN         BITMAP  DISCARDABLE     "Control\\res\\statusbar\\main.bmp"
+IDB_BITMAP_MP3PROGRESS_TOP1 BITMAP  DISCARDABLE     "res\\bitmap\\progress_top_1.bmp"
+IDB_BITMAP_MP3SOUND_BOTTOM1 BITMAP  DISCARDABLE     "res\\bitmap\\sound_bottom_1.bmp"
+IDB_BITMAP_MP3SOUND_TOP1 BITMAP  DISCARDABLE     "res\\bitmap\\sound_top_1.bmp"
+IDB_BITMAP_MP3VPROGRESS_BOTTOM1 BITMAP  DISCARDABLE     "res\\bitmap\\sound_valuebottom.bmp"
+IDB_BITMAP_MP3VPROGRESS_TOP1 BITMAP  DISCARDABLE     "res\\bitmap\\sound_valuetop_1.bmp"
+IDB_BITMAP_ARC_BOTTOM1  BITMAP  DISCARDABLE     "res\\bitmap\\button_arcbottom_1.bmp"
+IDB_BITMAP_ARC_TOP1     BITMAP  DISCARDABLE     "res\\bitmap\\button_arctop_1.bmp"
+IDB_BITMAP_PLAY_BOTTOM1 BITMAP  DISCARDABLE     "res\\bitmap\\button_mp3play_bottom_1.bmp"
+IDB_BITMAP_PLAY_TOP1    BITMAP  DISCARDABLE     "res\\bitmap\\button_mp3play_top_1.bmp"
+IDB_BITMAP_MP3PROGRESS_BOTTOM1 BITMAP  DISCARDABLE     "res\\bitmap\\progress_bottom_1.bmp"
+IDB_BITMAP_MAINTIME     BITMAP  DISCARDABLE     "Control\\res\\Time\\total.bmp"
+IDB_BITMAP_MAIN_TXTBAR1 BITMAP  DISCARDABLE     "res\\bitmap\\main_txt_bar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MULTIMEDIAPHONE_DIALOG, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 134
+    END
+
+    IDD_DIALOG_INPUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 244
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 62
+    END
+
+    IDD_DIALOG_PLAYSOUND, DIALOG
+    BEGIN
+        RIGHTMARGIN, 274
+        BOTTOMMARGIN, 134
+    END
+
+    IDD_DIALOG_MAINMENU, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 113
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 108
+    END
+
+    IDD_DIALOG_CEDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_DIALOG_TESTCEDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+
+    IDD_DIALOG_PLAYER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 120
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 58
+    END
+
+    IDD_DIALOG_TELEPHONE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 258
+        BOTTOMMARGIN, 130
+    END
+
+    IDD_DIALOG_PASSWORD, DIALOG
+    BEGIN
+        RIGHTMARGIN, 187
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_DIALOG_DELETETIP, DIALOG
+    BEGIN
+        RIGHTMARGIN, 187
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_DIALOG_LUNARDER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 132
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 108
+    END
+
+    IDD_DIALOG_SCREENSAVE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_DIALOG_CACULATER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 132
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 108
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING1             "/"
+    IDS_STRING2             "类型"
+    IDS_STRING3             "姓名/号码"
+    IDS_STRING4             "时间"
+    IDS_STRING5             "时长"
+    IDS_STRING6             "留言"
+    IDS_STRING7             "未接电话"
+    IDS_STRING8             "已接电话"
+    IDS_STRING9             "已拨电话"
+    IDS_STRING10            "查找结果"
+    IDS_STRING11            "操作"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", " edo\0"
+            VALUE "FileDescription", "MultimediaPhone WCE MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "MultimediaPhone\0"
+            VALUE "LegalCopyright", "Copyright ?2007\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "MultimediaPhone.exe\0"
+            VALUE "ProductName", "MultimediaPhone Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\MultimediaPhone.rc2"  // non-Microsoft eMbedded Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "wceres.rc"         // WCE-specific components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
