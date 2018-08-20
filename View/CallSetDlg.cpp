@@ -117,6 +117,7 @@ void CCallSetDlg::OnButtonFastDialsOk()
 	PhoneCallTRans callTrans;
 	PhoneCallWaiting callWaiting;
 	PhoneCallLimit callLimit;
+
 	callTrans.isNoAswer = m_MJPGList.GetUnitIsDownStatus(11);
 	callTrans.isUncondify = m_MJPGList.GetUnitIsDownStatus(12);
 	callTrans.isBusy = m_MJPGList.GetUnitIsDownStatus(13);
@@ -165,7 +166,7 @@ void CCallSetDlg::SetCallSetParam()
 	memset(&m_calllimit, 0, sizeof(PhoneCallLimit));
 	memset(&m_callwaiting, 0, sizeof(PhoneCallWaiting));
 
-	pATCommanWarp->PhoneGetTrans(m_calltrans);
+//	pATCommanWarp->PhoneGetTrans(m_calltrans);
 	pATCommanWarp->PhoneGetCallLimit(m_calllimit);
 	int nCallWaiting; 
 	pATCommanWarp->PhoneGetCallWaiting(nCallWaiting);

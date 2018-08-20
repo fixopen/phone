@@ -80,7 +80,7 @@ int ComWarp::WriteComm(void* pData, int nLength)
 		extern VOID WriteLog(char *ptr);
 		WriteLog((char *)pData);
 //		Dprintf("Write: %d ", dwNumWrite);
-		Dprintf((char *)pData);
+//		Dprintf((char *)pData);
 	}
 	return (int)dwNumWrite;   
 }   
@@ -107,12 +107,12 @@ int ComWarp::ReadComm(void* pData, int nLength)
 			extern VOID WriteLog(char *ptr);
 			WriteLog((char *)pData);
 			
-			Dprintf((char *)pData);
+	//		Dprintf((char *)pData);
 			break;
 		}
 		else if (dwNumRead == 0)
 		{
-			TRACE(L"00000000000000000000000000000000000000000\n");
+			//TRACE(L"00000000000000000000000000000000000000000\n");
 			// Dprintf("00000000000000000000000000000000000000000\n");
 		}
 		::Sleep(0);

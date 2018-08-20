@@ -282,7 +282,8 @@ void InitImage()
 
 void  DrawImage(LPCTSTR szFileImage, CDC *pdc, CRect rect, BOOL isOffset = FALSE) 
 { 
-//	unsigned int w = DMemprintf("DrawImage 0");
+
+	//	unsigned int w = DMemprintf("DrawImage 0");
 	CRect newRect = rect;
 	if(isOffset)
 	{
@@ -800,10 +801,6 @@ void  DrawImage_HDC(LPCTSTR szFileImage, HDC pdc, CRect rect, BOOL isOffset = FA
 CMultimediaPhoneDlg::CMultimediaPhoneDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CMultimediaPhoneDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CMultimediaPhoneDlg)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
-	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	InitImage();
 	n_bklightcount = 0;
@@ -813,12 +810,26 @@ CMultimediaPhoneDlg::CMultimediaPhoneDlg(CWnd* pParent /*=NULL*/)
 	m_nTELRigster = TELRIGSTER_UN;
 	m_bIsDial = FALSE;
 	m_sMobileNumber = "";
+	m_isBattery = TRUE;
+	m_isHaveBattery = TRUE;
+	m_nBackLightStatus = 7;
+
+	m_nline = 0 ;
 }
 
 CMultimediaPhoneDlg::~CMultimediaPhoneDlg()
 {
 	for (std::map<int, CDialog*>::iterator i = panels_.begin(); i != panels_.end(); ++i)
 		delete i->second;
+
+	for (int j = 0 ; j < 3;j++)
+	{
+		if (m_phoneLine[j].pFSM)
+		{
+			delete m_phoneLine[j].pFSM;
+		}
+	}
+
 }
 
 void CMultimediaPhoneDlg::DoDataExchange(CDataExchange* pDX)
@@ -852,9 +863,6 @@ void CMultimediaPhoneDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		case 1:
 			break;
 
-		case 2:
-			OnButtonLine();		//电话状态
-			break;
 		case 3:
 			OnButtonMain();
 			//test 20090602
@@ -890,11 +898,13 @@ void CMultimediaPhoneDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			Desktop();
 			break;
 		case 15:
-			if(m_pFSM->getCurrentState() > tsHangOff)
+		//	if(m_pFSM->getCurrentState() > tsHangOff)
+			if(m_phoneLine[0].pFSM->getCurrentState() > p3gsHangOff)
 			{	
 				if (!m_pTelephoneDlg->IsWindowVisible())
 				{
 					m_pTelephoneDlg->ShowWindow_(TRUE);
+					m_MJPGList.SetUnitIsShow(15,false,true);
 					AddIcon(Allicon[0]);
 				}
 			}
@@ -913,18 +923,18 @@ void  CMultimediaPhoneDlg::SetAPN(int apn)
 	m_nAPN.apn_type = (int)apn;
 	if(apn == 0)			//CMWAP
 	{
-		strcpy(m_nAPN.dialnumber, m_pSettingDlg->m_pSetting->gprsDialnumber1_.c_str());
-		sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pSetting->gprsProxyIp1_.c_str(), m_pSettingDlg->m_pSetting->gprsProxyPort1_);
-		strcpy(m_nAPN.http, m_pSettingDlg->m_pSetting->gprsHttp1_.c_str());
+		strcpy(m_nAPN.dialnumber, m_pSettingDlg->m_pTempSetting->gprsDialnumber1_.c_str());
+		sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pTempSetting->gprsProxyIp1_.c_str(), m_pSettingDlg->m_pTempSetting->gprsProxyPort1_);
+		strcpy(m_nAPN.http, m_pSettingDlg->m_pTempSetting->gprsHttp1_.c_str());
 	}
 	else
 	{
-		strcpy(m_nAPN.dialnumber, m_pSettingDlg->m_pSetting->gprsDialnumber2_.c_str());
-		if(m_pSettingDlg->m_pSetting->gprsProxyIp2_ == "")
+		strcpy(m_nAPN.dialnumber, m_pSettingDlg->m_pTempSetting->gprsDialnumber2_.c_str());
+		if(m_pSettingDlg->m_pTempSetting->gprsProxyIp2_ == "")
 			strcpy(m_nAPN.proxy, "");
 		else
-			sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pSetting->gprsProxyIp2_.c_str(), m_pSettingDlg->m_pSetting->gprsProxyPort2_);
-		strcpy(m_nAPN.http, m_pSettingDlg->m_pSetting->gprsHttp2_.c_str());
+			sprintf(m_nAPN.proxy, "%s:%d", m_pSettingDlg->m_pTempSetting->gprsProxyIp2_.c_str(), m_pSettingDlg->m_pTempSetting->gprsProxyPort2_);
+		strcpy(m_nAPN.http, m_pSettingDlg->m_pTempSetting->gprsHttp2_.c_str());
 	}
 }
 
@@ -967,26 +977,12 @@ BOOL CMultimediaPhoneDlg::IsUnConnectNet()
 static BOOL isFirstReg = TRUE;
 void TdDoWithProc()
 {
-	/*
-	char *pBuf = new char[1024*64];
-	memset(pBuf, 0, 64*1024);
-	FILE *fl = fopen("/flashdrv/log.dat", "r+b");
-	if(fl)
-	{
-		int size = fread(pBuf, sizeof(char), 64*1024, fl);
-		fclose(fl);
-		Data::MMSData* pMMsData = MMS::MMSWarp::GetMMSWarp()->DecodeMessage((UINT8 *)pBuf, size);
-		pMMsData->Insert();
-		delete pMMsData;
-	}
-	*/
 
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	pMainDlg->SetAPN((int)CMNET);
+	CNetStatusDlg::ADSLInit();
 	while(1)
 	{
-	//	break;
-
 		::Sleep(50);
 		//pMainDlg->m_bIsDial = TRUE;
 
@@ -1009,7 +1005,8 @@ void TdDoWithProc()
 			else
 			{
 				Sleep(1000);
-			}	
+			}
+			
 		}
 		else if(pMainDlg->m_nTELRigster == TELRIGSTER_DIALED /*&& isFirstReg*/)
 		{
@@ -1049,6 +1046,7 @@ void WatchDogProc(void *)
 
 		if((watchdog_MFC && (!g_MemoryLeak)) || (g_bAdjustPanel))
 		{
+			  Dprintf("Set watchdog flag--------\r\n");
 			  pMainDlg->SetWatchDog();   //设置watchdog   移到main窗口
 			  Sleep(5);
 			  pMainDlg->SetWatchDog();   //设置watchdog   移到main窗口
@@ -1416,16 +1414,37 @@ void GIsOpenMix(BOOL isOn)
 	 {
 		waveInMessage(0, 0x10000001,0,0);
 		char *sound = "ATN'MIX=0'\r";
+		Dprintf(sound);
 		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
 	 }
-	 else
+	 else//
 	 {
 		 waveInMessage(0, 0x10000002,0,0);
 		 char *sound = "ATN'MIX=1'\r";
+		 Dprintf(sound);
 		 main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
 	 }
 	 ::Sleep(10);
 }
+
+void GMute(BOOL isOn) 
+{
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	if(isOn)
+	{
+		char *sound = "ATN'MUT=1'\r";
+		Dprintf(sound);
+		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
+	}
+	else
+	{
+		char *sound = "ATN'MUT=0'\r";
+		Dprintf(sound);
+		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
+	}
+
+}
+
 void PlayDialToneProc(void *p)
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
@@ -1468,7 +1487,7 @@ char gDiatone[64];
 void GPlayDialTone(char *dialtone) 
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int nVolume = main->m_pSettingDlg->m_pSetting->smsRingVolume_;
+	int nVolume = main->m_pSettingDlg->m_pTempSetting->smsRingVolume_;
 	UINT16 volume[] = {0xFF00, 0xcc00, 0x8800, 0x4400, 0x1000}; //(5-nVolume)*0xFFFF/5;
  	main->phone_->g_RingSound = (volume[nVolume]|(volume[nVolume]<<16));
 	if(strstr(dialtone, "dialing") > 0)
@@ -1493,6 +1512,7 @@ void GPlayDialTone(char *dialtone)
 // 		CString s = filename;
 // 		main->phone_->StartRing((LPTSTR)(LPCTSTR)filename, 1);
 // 	}
+
 }
 void GNotifyDial(BOOL isDial)
 {
@@ -1500,15 +1520,18 @@ void GNotifyDial(BOOL isDial)
 	if(!isDial)
 	{
 		char *sound = "ATN'TLK=0'\r";
+		Dprintf(sound);
 		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
 	}
 	else
 	{
 		char *sound = "ATN'TLK=1'\r";
+		Dprintf(sound);
 		main->phone_->m_pRS232->WritePort((unsigned char *)sound, strlen(sound));
 	}
 	 ::Sleep(10);
 }
+
 void GAskBatteryStatus()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
@@ -1516,6 +1539,7 @@ void GAskBatteryStatus()
 	main->phone_->m_pRS232->WritePort((unsigned char *)status, strlen(status));
 	::Sleep(10);
 }
+
 void GNotifyReady()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
@@ -1527,79 +1551,75 @@ void GNotifyReady()
 	::Sleep(10);
 }
 
-void UiProc(void *param)
+DWORD WINAPI DetectBatteryThread(LPVOID lpParameter)
 {
-	BOOL *flag = (BOOL *)param;
-	int i = 0;
-	HDC hdc = ::GetDC(0);
-	CRect rt = CRect(0, 0, 800, 480);
-	CBrush br = RGB(0, 0, 0);
-	::FillRect(hdc, &rt, (HBRUSH)br.m_hObject);
-	CGIFShow *cGifShow;
-	cGifShow = new CGIFShow(hdc);
-	if(cGifShow->Load(L"/flashdrv/开机1.gif"))
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	while (1) 
 	{
-		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		cGifShow->SetMainWnd(main);
-		cGifShow->SetPosition(0,0);
-		cGifShow->Play();
+		Sleep(100);
+		if (!main->m_isBattery) 
+		{
+			break;
+		}
+		if(main->phone_->m_BatteryStatus.batteryProccess <= 1)
+		{
+			CMainDlg *pWnd = (CMainDlg*)main->GetPanel(IDC_BUTTON_MAIN);
+			if(pWnd == NULL)
+				return 0;
+			HWND hWnd0 = ::FindWindow(L"csplayer_win0", L"csplayer window0");
+			HWND hWnd1 = ::FindWindow(L"csplayer_win1", L"csplayer window1");
+			HWND hWnd2 = ::FindWindow(L"csplayer_win2", L"csplayer window2");
+			BOOL isVisible0 = ::IsWindowVisible(hWnd0);
+			BOOL isVisible2 = ::IsWindowVisible(hWnd2);
+			BOOL flag0 = pWnd->m_mainVideoDlg_->IsWindowVisible();
+			BOOL flag2 = pWnd->m_mainPhotoDlg_->IsWindowVisible();
+			
+			main->m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);
+			if(isVisible0 && flag0)
+			{
+				main->m_pWarningNoFlashDlg->SetTitle("电池电量低! 请停止影院播放!");
+			}
+			else if(isVisible2 && flag2)
+			{
+				main->m_pWarningNoFlashDlg->SetTitle("电池电量低! 请停止相册播放!");
+			}
+			else if(hWnd1 != NULL)
+			{
+				main->m_pWarningNoFlashDlg->SetTitle("电池电量低! 请停止音乐播放!");
+			}
+			else
+			{
+				main->m_pWarningNoFlashDlg->SetTitle("电池电量低! 系统将进入待机模式, 请注意保存文件!");
+			}
+			
+			main->m_pWarningNoFlashDlg->SetHWnd(main->GetSafeHwnd());
+			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
+			break;
+		}
 	}
+	return 1;
+}
+
+void UiProc(void *param)
+{	
+	BOOL *flag = (BOOL *)param;
+
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	main->playervideo_->InitPlayer();
+	main->playervideo_->PlayerFile("\\flashdrv\\开机.mp4");
 	while(*flag)
 	{
-		::Sleep(100);
+		static bool isFirst = true;
+		if(isFirst)
+		{
+			isFirst = false;
+			Sleep(4000);
+			main->playervideo_->PausePlayer(true);
+		}
+		Sleep(1000);
 	}
-	cGifShow->Stop();
- 	::ReleaseDC(0, hdc);
-	delete cGifShow;
+	main->playervideo_->ExitPlayer();
 
-	/*
-	CDialog *pThis = (CDialog *)param;
-	CDialog* panel;
-	
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-	main->m_pContactDlg = new CContactDlg();
-	main->m_pContactDlg->Create(CContactDlg::IDD);
-	panel = main->m_pContactDlg;
-	main->panels_[IDC_BUTTON_CONTACT] = panel;
-	
-	main->m_pContactInfoDlg = new CContactInfoDlg();
-	panel = main->m_pContactInfoDlg;
-	panel->Create(CContactInfoDlg::IDD);
-	main->panels_[IDC_BUTTON_CONTACTINFO] = panel;
-	
-	main->m_pSoundDlg = new CSoundDlg();
-	panel = main->m_pSoundDlg;
-	panel->Create(CSoundDlg::IDD);
-	main->panels_[IDC_BUTTON_SOUND] = panel;
-	
-	main->m_pContactNewDlg = new CContactNewDlg(main->panels_[IDC_BUTTON_CONTACT]);
-	panel = main->m_pContactNewDlg;
-	panel->Create(CContactNewDlg::IDD);
-	main->panels_[IDC_BUTTON_CONTACTNEW] = panel;
-	
-	main->m_pContactGroupDlg = new CContactGroupDlg(main->panels_[IDC_BUTTON_CONTACT]);
-	panel = main->m_pContactGroupDlg;
-	panel->Create(CContactGroupDlg::IDD);
-	main->panels_[IDC_BUTTON_CONTACTGROUP] = panel;
-	
-	
-	main->m_pDeleteTipDlg = new CDeleteTipDlg(pThis);
-	main->m_pDeleteTipDlg->Create(CDeleteTipDlg::IDD);
-	
-	main->m_pNotebookDlg = new CNotebookDlg(pThis);
-	main->m_pNotebookDlg->Create(CNotebookDlg::IDD);
-	
-	main->m_AlarmShowDlg = new CAlarmShowDlg(pThis);
-	main->m_AlarmShowDlg->Create(CAlarmShowDlg::IDD);
-	
-	main->m_pWarningNoFlashDlg = new CWarningNoFlashDlg(pThis);
-	main->m_pWarningNoFlashDlg->Create(CWarningNoFlashDlg::IDD);
-	
-	
-	main->m_pPasswordDlg = new CPasswordDlg(pThis);
-	main->m_pPasswordDlg->Create(CPasswordDlg::IDD);
-	*/
 }
 
 BOOL isFirstGif;
@@ -1665,23 +1685,25 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 
 	m_vAllCwnd.push_back(panel);
 
-//	m_pPhone = new Logical::Phone(PickupFunc, HandsfreeFunc, HangupFunc, KeypadDialFunc, ConnectFunc, RingInFunc, RemoteHangupFunc, TimeoutFunc, ErrorFunc);
-//	m_pPhone->start();
-	//短信 电话
+	m_pContactDlg = new CContactDlg();
+	m_pContactDlg->Create(CContactDlg::IDD);
+	panel = m_pContactDlg;
+	panels_[IDC_BUTTON_CONTACT] = panel;
+	
+	m_vAllCwnd.push_back(m_pContactDlg);
 
-	/*
-	m_pComWarp = new Util::ComWarp();
-	m_pComWarp->OpenComm(L"COM4:");
-	m_pATCommandWarp = new Util::ATCommandWarp();
-	m_pATCommandWarp->Bind(m_pComWarp);
-	phone_ = Telephone::TelephoneWarp::GetTelephoneWarp();//new Telephone::TelephoneWarp();
-	m_pSMSWarp = SMS::SMSWarp::GetSMSWarp();
-	*/
+	m_pContactNewDlg = new CContactNewDlg(panels_[IDC_BUTTON_CONTACT]);
+	panel = m_pContactNewDlg;
+	panel->Create(CContactNewDlg::IDD);
+	panels_[IDC_BUTTON_CONTACTNEW] = panel;
+	
+	m_vAllCwnd.push_back(m_pContactNewDlg);
 
 #if(G3_MODULOR == 1)
- 	m_pComWarp1 = new Util::ComWarp();
+ 
+	m_pComWarp1 = new Util::ComWarp();
 	if (m_pComWarp1)
-	{
+	{		
 		if ((m_bATComm = m_pComWarp1->OpenComm(L"COM8:")))
 		{
 			m_pATCommandWarp1 = new Util::ATCommandWarp();
@@ -1694,9 +1716,24 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 				
 				extern void GNotifyReady();
 				GNotifyReady();
+
 			}
 		}
+
 	}
+
+// 	 m_pATCommandWarp1 = new Util::ATCommandWarp();
+// 	if (m_pATCommandWarp1)
+// 	{
+// 	 	//m_pATCommandWarp1->Bind(m_pComWarp1);
+// 	 	m_pSMSWarp = SMS::SMSWarp::GetSMSWarp();
+// 	 	m_pVideoComWarp = new Util::ComWarp();
+// 	 	phone_ = Telephone::TelephoneWarp::GetTelephoneWarp();//new Telephone::TelephoneWarp();
+// 	 	
+// 	 	extern void GNotifyReady();
+// 	 	GNotifyReady();
+// 
+// 	}
 
 #else
 	m_pComWarp1 = new Util::ComWarp();
@@ -1708,6 +1745,12 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	m_pSMSWarp = SMS::SMSWarp::GetSMSWarp();
 #endif
 	
+	m_pTelephoneDlg = new CTelephoneDlg();
+	m_pTelephoneDlg->Create(CTelephoneDlg::IDD);
+	m_pTelephoneDlg->ShowWindow(SW_HIDE);
+	
+	m_vAllCwnd.push_back(m_pTelephoneDlg);
+
 	InitializeCriticalSection(&csCom);
 	DWORD watchdogThreadID = 0;
 	HANDLE m_pThread1 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)WatchDogProc, 0, 0, &watchdogThreadID );
@@ -1726,160 +1769,18 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	isFirstGif = TRUE;
 	HANDLE m_uiThread = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)UiProc, &isFirstGif, 0, &uiThreadID );
 	
-//	simdevice_ = new SIMDevice(NULL);
-
-	//mainVideoDlg_ = new CMainVideoDlg();
-	//mainVideoDlg_->Create(CMainVideoDlg::IDD);
-	//playerDlg_ = new CPlayerDlg();
-	//playerDlg_->Create(CPlayerDlg::IDD);
-/*
-	ICONKEYSTRUCT softkeyval_[9];
-	softkeyval_[0].sKeyRect = CRect(3, 9, 40, 24);
-	softkeyval_[0].nKeyValue = 1;
-	softkeyval_[0].nTextId = 0;
-	softkeyval_[0].nBitmapId = 0;
-	softkeyval_[0].nAlign = IMAGE_LEFT;
-	softkeyval_[0].bToggle = FALSE;
-
-	softkeyval_[1].sKeyRect = CRect(44, 9, 59, 24);
-	softkeyval_[1].nKeyValue = 2;
-	softkeyval_[1].nTextId = 0;
-	softkeyval_[1].nBitmapId = IDB_BITMAP_MAININPUT;
-	softkeyval_[1].nAlign = IMAGE_LEFT;
-	softkeyval_[1].bToggle = FALSE;
-
-	softkeyval_[2].sKeyRect = CRect(63, 9, 78, 24);
-	softkeyval_[2].nKeyValue = 3;
-	softkeyval_[2].nTextId = 0;
-	softkeyval_[2].nBitmapId = IDB_BITMAP_MAINTEL;
-	softkeyval_[2].nAlign = IMAGE_LEFT;
-	softkeyval_[2].bToggle = FALSE;
-
-	softkeyval_[3].sKeyRect = CRect(102, 4, 166, 28);
-	softkeyval_[3].nKeyValue = 4;
-	softkeyval_[3].nTextId = Data::RI_MAIN_MAINBTN;
-	softkeyval_[3].nBitmapId = IDB_BITMAP_MAINDESKTOP;
-	softkeyval_[3].nAlign = IMAGE_LEFT;
-	softkeyval_[3].bToggle = TRUE;
-
-	softkeyval_[4].sKeyRect = CRect(169, 4, 229+1, 28);
-	softkeyval_[4].nKeyValue = 5;
-	softkeyval_[4].nTextId = Data::RI_MAIN_CARDCASEBTN;
-	softkeyval_[4].nBitmapId = IDB_BITMAP_MAINCARD;
-	softkeyval_[4].nAlign = IMAGE_LEFT;
-	softkeyval_[4].bToggle = TRUE;
-
-	softkeyval_[5].sKeyRect = CRect(232, 4, 292+1, 28);
-	softkeyval_[5].nKeyValue = 6;
-	softkeyval_[5].nTextId = Data::RI_MAIN_CALLLISTBTN;
-	softkeyval_[5].nBitmapId = IDB_BITMAP_MAINCALLLIST;
-	softkeyval_[5].nAlign = IMAGE_LEFT;
-	softkeyval_[5].bToggle = TRUE;
-
-	softkeyval_[6].sKeyRect = CRect(295, 4, 355+1, 28);
-	softkeyval_[6].nKeyValue = 7;
-	softkeyval_[6].nTextId = Data::RI_MAIN_SOUND;
-	softkeyval_[6].nBitmapId = IDB_BITMAP_MAINRECORD;
-	softkeyval_[6].nAlign = IMAGE_LEFT;
-	softkeyval_[6].bToggle = TRUE;
-
-	softkeyval_[7].sKeyRect = CRect(358, 4, 416+3, 28);
-	softkeyval_[7].nKeyValue = 8;
-	softkeyval_[7].nTextId = Data::RI_MAIN_STOCKINFOBTN;
-	softkeyval_[7].nBitmapId = IDB_BITMAP_MAININFO;
-	softkeyval_[7].nAlign = IMAGE_LEFT;
-	softkeyval_[7].bToggle = TRUE;
-
-	softkeyval_[8].sKeyRect = CRect(421, 4, 479, 28);
-	softkeyval_[8].nKeyValue = 9;
-	softkeyval_[8].nTextId = Data::RI_MAIN_SYSTTEMSETTING;
-	softkeyval_[8].nBitmapId = IDB_BITMAP_MAINSETTING;
-	softkeyval_[8].nAlign = IMAGE_LEFT;
-	softkeyval_[8].bToggle = TRUE;
-	
-	m_StatusKey.Create(IDB_BITMAP_MAIN, IDB_BITMAP_MAINTOGGLE, 3, CPoint(0, 0), 9,  softkeyval_, CRect(0, 204, 479, 233), this, WS_VISIBLE|WS_CHILD, IDC_BUTTON_TIME);
-	SetSkinStyle();
-	m_StatusKey.SetLeftTimer();
-	*/
-
-//	change by qi 2009_09_15
-//	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 420, 800, 480), this);
-//	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_telstatus.xml");
-//	m_MJPGList.SetMJPGRect(CRect(0, 420, 800, 480));
-//	m_MJPGList.SetUnitIsDownStatus(2, TRUE);
-
 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 57), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\3g_telstatus.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 57));
 	m_MJPGList.SetUnitBitmap(0,".\\adv\\mjpg\\k5\\common\\桌面.bmp","",FALSE);
 	m_MJPGList.SetUnitIsShow(10,false,false);
-
-//	m_MJPGList.SetUnitBitmap(10,".\\adv\\mjpg\\k5\\common\\png\\桌面按钮.png","",FALSE);
-//	m_MJPGList.SetUnitIsDownStatus(2, TRUE);
-
-//	change by qi 2009_09_15
-//	m_MJPGList.SetUnitIsDownStatus(2, TRUE);
-
-//	change by qi 2009_09_15
-//	m_MJPGList.SetUnitIsDisable(0, FALSE);
-//	m_MJPGList.SetUnitIsDisable(1, TRUE);
-
-
-	/*
-	m_btnTime.Create(str, WS_CHILD|WS_VISIBLE, CRect(0, 205, 41, 234), this, IDC_BUTTON_TIME);
-	m_btnIME.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(41, 205, 65, 234), this, IDC_BUTTON_IME);
-	m_btnIME.SetIcon(IDI_ICON_IME, CSize(16, 16));
-	m_btnLine.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(65, 205, 89, 234), this, IDC_BUTTON_LINE);
-	m_btnLine.SetIcon(IDI_ICON_LINE, CSize(16, 16));
-
-	strTemp = Data::LanguageResource::Get(Data::RI_MAIN_MAINBTN);
-	str = strTemp.c_str();		
-	m_btnMain.Create(str, WS_CHILD|WS_VISIBLE, CRect(91, 205, 154, 234), this, IDC_BUTTON_MAIN);
-	m_btnMain.SetWindowText(str);
-	m_btnMain.SetIcon(IDI_ICON_DESK, CSize(16, 16));
-	
-	strTemp = Data::LanguageResource::Get(Data::RI_MAIN_CARDCASEBTN);
-	str = strTemp.c_str();
-	m_btnContact.Create(str, WS_CHILD|WS_VISIBLE, CRect(156, 205, 219, 234), this, IDC_BUTTON_CONTACT);
-	m_btnContact.SetWindowText(str);
-	m_btnContact.SetIcon(IDI_ICON_CONTACT, CSize(16, 16));
-	
-	strTemp = Data::LanguageResource::Get(Data::RI_MAIN_CALLLISTBTN);
-	str = strTemp.c_str();
-	m_btnContactInfo.Create(str, WS_CHILD|WS_VISIBLE, CRect(221, 205, 284, 234), this, IDC_BUTTON_CONTACTINFO);
-	m_btnContactInfo.SetWindowText(str);
-	m_btnContactInfo.SetIcon(IDI_ICON_CONTACTINFO, CSize(16, 16));
-
-	strTemp = Data::LanguageResource::Get(Data::RI_MAIN_SOUND);
-	str = strTemp.c_str();
-	m_btnSound.Create(str, WS_CHILD|WS_VISIBLE, CRect(286, 205, 349, 234), this, IDC_BUTTON_SOUND);
-	m_btnSound.SetWindowText(str);
-	m_btnSound.SetIcon(IDI_ICON_SOUND, CSize(16, 16));
-
-	strTemp = Data::LanguageResource::Get(Data::RI_MAIN_STOCKINFOBTN);
-	str = strTemp.c_str();
-	m_btnInformation.Create(str, WS_CHILD|WS_VISIBLE, CRect(351, 205, 414, 234), this, IDC_BUTTON_INFORMATION);
-	m_btnInformation.SetWindowText(str);
-	m_btnInformation.SetIcon(IDI_ICON_INFO, CSize(16, 16));
-
-	strTemp = Data::LanguageResource::Get(Data::RI_MAIN_SYSTTEMSETTING);
-	str = strTemp.c_str();
-	m_btnSetting.Create(str, WS_CHILD|WS_VISIBLE, CRect(416, 205, 480, 234), this, IDC_BUTTON_SETTING);
-	m_btnSetting.SetWindowText(str);
-	m_btnSetting.SetIcon(IDI_ICON_SETTING, CSize(16, 16));
-	*/
+	m_MJPGList.SetUnitIsShow(15,false,false);
 
 	/*
 	设置 三个 界面
 	*/
 	
 	DWORD D = GetTickCount();
-
-	m_pTelephoneDlg = new CTelephoneDlg();
-	m_pTelephoneDlg->Create(CTelephoneDlg::IDD);
-	m_pTelephoneDlg->ShowWindow(SW_HIDE);
-	
-	m_vAllCwnd.push_back(m_pTelephoneDlg);
 
 	m_pMainDlg = new CMainDlg();
 	panel = m_pMainDlg;
@@ -1888,13 +1789,6 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	currentPanel_ = panel;
 	
 	m_vAllCwnd.push_back(m_pMainDlg);
-
- 	m_pContactDlg = new CContactDlg();
- 	m_pContactDlg->Create(CContactDlg::IDD);
- 	panel = m_pContactDlg;
- 	panels_[IDC_BUTTON_CONTACT] = panel;
-	
-	m_vAllCwnd.push_back(m_pContactDlg);
 
  	m_pContactInfoDlg = new CContactInfoDlg();
  	panel = m_pContactInfoDlg;
@@ -1910,12 +1804,6 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	
 	m_vAllCwnd.push_back(m_pSoundDlg);
 
- 	m_pContactNewDlg = new CContactNewDlg(panels_[IDC_BUTTON_CONTACT]);
- 	panel = m_pContactNewDlg;
- 	panel->Create(CContactNewDlg::IDD);
- 	panels_[IDC_BUTTON_CONTACTNEW] = panel;
-	
-	m_vAllCwnd.push_back(m_pContactNewDlg);
 
 	m_pContactGroupDlg = new CContactGroupDlg(panels_[IDC_BUTTON_CONTACT]);
 	panel = m_pContactGroupDlg;
@@ -2001,48 +1889,19 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	DWORD dend = GetTickCount()- D;
 	
 	TRACE(L"DDDDDDDDDDDD = %d",dend);
-/*
- 	m_mainLunarderDlg1_ = new CLunarderDlg(panels_[IDC_BUTTON_MAINNOTE]);
-	panel = m_mainLunarderDlg1_;
-	panel->Create(CContactGroupDlg::IDD);
-	panels_[IDC_BUTTON_MAINNOTE] = panel;
-*/
 
-
-/*
-	buttons_[IDC_BUTTON_TIME] = &m_btnTime;
-	buttons_[IDC_BUTTON_IME] = &m_btnIME;s
-	buttons_[IDC_BUTTON_LINE] = &m_btnLine;
-	buttons_[IDC_BUTTON_MAIN] = &m_btnMain;
-	buttons_[IDC_BUTTON_CONTACT] = &m_btnContact;
-	buttons_[IDC_BUTTON_CONTACTINFO] = &m_btnContactInfo;
-	buttons_[IDC_BUTTON_SOUND] = &m_btnSound;
-	buttons_[IDC_BUTTON_INFORMATION] = &m_btnInformation;
-	buttons_[IDC_BUTTON_SETTING] = &m_btnSetting;
-
-	for (std::map<int, CCEButtonST*>::iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter)
-	{
-		SetButtonDefaultColor((*iter).second);
-	}
-	*/
-
-//	change by qi 2009_09_15
 	currentPanel_->ShowWindow(SW_SHOW);
 	currentPanel_->MoveWindow(0,57,800,423);
 	
-//	m_pBtnCurrent = &m_btnMain;
-//	SetButtonSelectedColor(m_pBtnCurrent);
-
- // add by qi 2009_09_15  
-//	SetDateTime(false);
-//	SetTimer(DATE_SET_TIEMR,1000,NULL);
-
-	//and so on
-	//m_btnLine.EnableWindow(FALSE);
 	m_pFSM = new Util::FSM;
+	m_phoneLine[0].pFSM = new Util::FSM;
+	m_phoneLine[1].pFSM = new Util::FSM;
+	m_phoneLine[2].pFSM = new Util::FSM;
+
 	AddFSMRules();
 	m_uiKeyTimer = 1;
 	m_uiRingTimer = 2;
+	m_uiPSTNRingTimer = 3;
 	
 	//设置进入屏保
 	SetScreenSaveTimer();
@@ -2053,28 +1912,9 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	AddIcon(icon);
 	m_MJPGList.SetUnitIsShow(10,false,true);
 
-//	是否启动背光 lxz 20081223
-//	if(!SetNightControlBackLightTimer())
-//	ReStoreBackLight();
-
 	//设置闹铃
 	SetAlarmList();
-	//查找今天没有看过过期的闹铃
-	//m_pMainDlg->FindTodayAlarm();  移到设置当天闹铃列表中
-
-	//lxz test 20090309
-	//SetTimer(0x999, 50000, NULL);
-
 	TestDB();
-	/*
-	if (m_pATCommandWarp1->Connect(""))
-	{
-		phone_->Bind(m_pATCommandWarp1);
-		
-		m_pSMSWarp = SMS::SMSWarp::GetSMSWarp();
-		m_pSMSWarp->Bind(m_pATCommandWarp1);
-	}
-	*/
 
 	isFirstGif = FALSE;
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -2105,7 +1945,7 @@ typedef   struct   _NDISUIO_QUERY_OID{
 	UCHAR                       Data[sizeof(ULONG)]; 
 }   NDISUIO_QUERY_OID,   *PNDISUIO_QUERY_OID; 
 
-#define   CTL_CODE(DeviceType,Function,Method,Access)   (((DeviceType)<<16)|((Access)<<14)|((Function)<<2)|(Method)) 
+//#define   CTL_CODE(DeviceType,Function,Method,Access)   (((DeviceType)<<16)|((Access)<<14)|((Function)<<2)|(Method)) 
 #define   _NDISUIO_CTL_CODE(_Function,_Method,_Access)   CTL_CODE(FSCTL_NDISUIO_BASE,_Function, _Method,_Access) 
 
 #define   IOCTL_NDISUIO_QUERY_BINDING    _NDISUIO_CTL_CODE(0x203,   METHOD_BUFFERED,   FILE_ANY_ACCESS) 
@@ -2116,7 +1956,7 @@ typedef   struct   _NDISUIO_QUERY_OID{
 
 int CMultimediaPhoneDlg::CheckInternetStatus()
 {
-	if(m_pSettingDlg->m_pSetting->linkMode() == Data::lmDirect)   //网络直连
+	if(m_pSettingDlg->m_pTempSetting->linkMode() == Data::lmDirect)   //网络直连
 	{
 		m_bNetType = 0;
 		int ret = 0;
@@ -2210,7 +2050,7 @@ int CMultimediaPhoneDlg::CheckInternetStatus()
 		CloseHandle(hDevice); // What was the result?
 		return ret;
 	}
-	else if(m_pSettingDlg->m_pSetting->linkMode() == Data::lmDial)  //网络拨号
+	else if(m_pSettingDlg->m_pTempSetting->linkMode() == Data::lmDial)  //网络拨号
 	{
 		m_bNetType = 1;
 		int Statuscode;
@@ -2224,6 +2064,7 @@ int CMultimediaPhoneDlg::CheckInternetStatus()
 		}
 	}
 	
+	return 0 ;
 }
 
 void CMultimediaPhoneDlg::SetNetTelStatus()
@@ -2238,7 +2079,8 @@ void CMultimediaPhoneDlg::SetNetTelStatus()
 	static int gnNet = 0;
 	static int gnChongdian = 0;
 
-	if (m_pFSM->getCurrentState() != tsHangOff /*&& m_pTelephoneDlg->m_MJPGList.GetUnitText(100) != ""*/)   //摘机
+//	if (m_pFSM->getCurrentState() != tsHangOff /*&& m_pTelephoneDlg->m_MJPGList.GetUnitText(100) != ""*/)   //摘机
+	if (m_phoneLine[0].pFSM->getCurrentState() != p3gsHangOff)
 	{
 		if(!m_pTelephoneDlg->IsWindowVisible())
 		{
@@ -2439,10 +2281,6 @@ void CMultimediaPhoneDlg::OnButtonSetting()
 	SwitchPanel_(IDC_BUTTON_SETTING);	
 }
 
-void CMultimediaPhoneDlg::OnButtonTime() 
-{
-	// TODO: Add your control notification handler code here
-}
 
 void CMultimediaPhoneDlg::OnButtonIME() 
 {
@@ -2452,7 +2290,8 @@ void CMultimediaPhoneDlg::OnButtonIME()
 void CMultimediaPhoneDlg::OnButtonLine() 
 {
 	// TODO: Add your control notification handler code here
-	if (m_pFSM->getCurrentState() != tsHangOff )
+//	if (m_pFSM->getCurrentState() != tsHangOff )
+	if (m_phoneLine[0].pFSM->getCurrentState() != p3gsHangOff )
 	{
 		m_pTelephoneDlg->ShowWindow_(TRUE);	
 	}
@@ -2490,106 +2329,95 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 			static int gCount = 0;
 			Dprintf("player %d file start!\n", gCount++);
 		
-// 			HWND hWnd = ::FindWindow(L"csplayer_win2", L"csplayer window2"); //
-// 			if(hWnd)
-// 			{
-// 				CRect rt;
-// 				playerimage_->owner_->GetWindowRect(&rt);
-// 			
-// 				HDC hdc = ::GetDC(hWnd);
-// 				HDC hdc1 = m_pMainDlg->m_mainPhotoDlg_->GetDC()->m_hDC;
-// 				BitBlt(hdc1, rt.left, rt.top, rt.Width(), rt.Height(), hdc, 0, 0, 0);
-// 				::ReleaseDC(hWnd, hdc);
-// 			}
-			
-				
-	//		Sleep(100);
-		//	panels_[IDC_BUTTON_MAIN]->SendMessage(WM_PLAYVIDEO, 4); //播放下一个文件
 		}
 		break;
+
 	case WM_APP+60:
 		Dprintf("0:");
 		break;
-	case WM_TEL_RING:
-		//停止试听音乐
-		m_pSettingDlg->StopTryRing();
-		m_pContactGroupDlg->StopTryRing();
-		m_pMainDlg->m_mainLunarderDlg_->StopTryRing();
-	
-		//ReStoreBackLight();    //移到防火墙后  lxz 20090304
-		SendOutEvnet(WM_TEL_RING, 0);
-		Dprintf("RING \n");
-		m_pFSM->fireEvent(teRing, (void * const)wParam);
-		break;
-	case WM_TEL_HUNGOFF:
-		Dprintf("HUNG OFF \n");
-		m_pFSM->fireEvent(teHangOff, (void * const)wParam);
-		SendOutEvnet(WM_TEL_HUNGOFF, 1);
-		m_bIsHungOn = FALSE;
-		break;
-	case WM_TEL_HUNGON:
-		Dprintf("HUNG ON 0\n");
-		
-		//停止试听音乐  
-// 		m_pSettingDlg->StopTryRing();
-// 		m_pContactGroupDlg->StopTryRing();
-// 		m_pMainDlg->m_mainLunarderDlg_->StopTryRing();
 
-		ReStoreBackLight();
-		Dprintf("HUNG ON 1\n");
-		m_bIsHungOn = TRUE;
-		m_pFSM->fireEvent(teHangOn, (void * const)wParam);
-		SendOutEvnet(WM_TEL_HUNGON, 0);
+	case WM_TEL_RING:
+		HandleRing(wParam,lParam);
 		break;
+
+	case WM_TEL_HUNGOFF:
+		HandleHungOff(wParam,lParam);
+		break;
+
+	case WM_TEL_HUNGON:
+		HandleHungOn(wParam);
+		break;
+
 	case WM_TEL_CALLIDEND:
-		Dprintf("CALL ID \n");
-		m_pFSM->fireEvent(teCallID, (void * const)wParam);
+		HandleCallIDEnd(wParam,lParam);
 		break;
+
 	case WM_TEL_KEYCODE:
 		SendOutEvnet(WM_TEL_KEYCODE, 0);
 		Dprintf("%x ", wParam);
-		m_pFSM->fireEvent(teKey, (void * const)wParam);
+		m_phoneLine[0].pFSM->fireEvent(p3geKey,(void * const)wParam);
 		break;
+
 	case WM_REDIAL:
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->Redial();
 		break;
+
 	case WM_MUTE:
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->Mute();
 		break;
+
 	case WM_RKEY:
 		Dprintf("R KEY \n");
 		break;
+
 	case WM_SPEEDDIAL:
 		{
 			char c = wParam;
-			if (m_pFSM->getCurrentState() == tsHangOn)
+			std::string number ;
+//			if (m_pFSM->getCurrentState() == tsHangOn)
+			if (m_phoneLine[0].pFSM->getCurrentState() == p3gsHangOn)
 			{
-				std::vector<std::pair<std::string, std::string> > m = m_pSettingDlg->m_pSetting->speedDials();
-				if (m[c].second != "")
-				{
-					m_pTelephoneDlg->DialContact(Data::TelephoneNumber(m[c].second));
+// 				std::vector<std::pair<std::string, std::string> > m = m_pSettingDlg->m_pSetting->speedDials();
+// 				if (m[c].second != "")
+// 				{
+// 					m_pTelephoneDlg->DialContact(Data::TelephoneNumber(m[c].second));
+// 				}
+				
+				if ( 1 == c)
+				{  
+					number = "12580";
 				}
+				else if ( 2 == c)
+				{
+					number = "10086";
+				}
+				m_pTelephoneDlg->DialContact(Data::TelephoneNumber(number));
+
 			}
+
 		}
 		break;
+
 	case WM_HUNGONTORECORD:
 		Dprintf("RECORD ... \n");
-		if (m_pFSM->getCurrentState() == tsConnect)
+		if (m_phoneLine[0].pFSM->getCurrentState() == CMultimediaPhoneDlg::p3gsConnected)
 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->OnButtonTelephoneRecord();
 		break;
+
 	case WM_HUNGONINRECORD:
 		Dprintf("HUNG ON IN RECORD \n");
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HangOnInRecord(); 
 		break;
+
 	case WM_BINGJIZHAIJI:
 		Dprintf("bingjizhaiji 0---- \n");
-		if (m_pFSM->getCurrentState() == tsRing)
+		if (m_phoneLine[0].pFSM->getCurrentState() == p3gsRing)
 		{
 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HandleOff();
 			Dprintf("bingjizhaiji 1---- \n");
-		}
-		
+		}		
 		break;
+
 	case WM_KEYDOWN:
 		{
 			if(wParam != VK_F9)
@@ -2608,12 +2436,14 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 			{
 				m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_KEYDOWN, wParam, lParam);
 			}
+
 		}
 	case (WM_USER+1000):
 //		Dprintf("InputWnd click\r\n");
 		ReStoreBackLight();
 		SetScreenSaveTimer();
 		break;
+
 	case WM_TEL_STATUS: //电话状态
 		{	
 			static int status = 0 ;
@@ -2638,11 +2468,11 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 				char txt[64];
 				if ( 1 == status)
 				{
-					sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\G网%d.png", lParam);
+					sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\G网%d.bmp", lParam);
 				}
 				else if( 2 == status )
 				{
-					sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\T网%d.png", lParam);
+					sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\T网%d.bmp", lParam);
 				}
 				m_MJPGList.SetUnitBitmap(8, txt, txt, TRUE);
 
@@ -2651,36 +2481,93 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 		break;
 
 	case WM_CHANGE_BATTERY:
-		{
-		//	if(!phone_->m_BatteryStatus.isCharge)
-			{
-				if(phone_->m_BatteryStatus.batteryType == 0)//没插电源
-				{
-					m_MJPGList.SetUnitBitmap(13, "", "", TRUE);
-				}
-				else
-				{
-					char *sChongdian = ".\\adv\\mjpg\\k5\\common\\外界电源.bmp";
-					m_MJPGList.SetUnitBitmap(13, sChongdian, sChongdian, TRUE);
-				}
-
-				char txt[64];
-				sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\电池%d.png", phone_->m_BatteryStatus.batteryProccess);
-				m_MJPGList.SetUnitBitmap(11, txt, txt, TRUE);
-			}
-		}
 		break;
 	case WM_CHANGE_BATTERYOK:
 		{
+			KillTimer(0x120);
 			char txt[64];
-			sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\电池%d.png", phone_->m_BatteryStatus.batteryProccess);
+			sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\电池%d.bmp", phone_->m_BatteryStatus.batteryProccess);
 			m_MJPGList.SetUnitBitmap(11, txt, txt, TRUE);
 
 			m_pDeleteTipDlg->SetHWnd(GetSafeHwnd());
 			m_pDeleteTipDlg->SetPasswordModel(false);
 			m_pDeleteTipDlg->SetTitle("充电已完成!");
 			m_pDeleteTipDlg->ShowWindow_(TRUE);
+		}
+		break;
 
+	case WM_CHANGE_DCBATTERY:
+		{
+			if(phone_->m_BatteryStatus.typeChange == 1)
+			{
+				KillTimer(0x120);
+				m_isBattery = TRUE;
+				HANDLE hThread;
+				hThread = CreateThread(NULL, 0, DetectBatteryThread, this, 0, NULL);
+				CloseHandle(hThread);
+
+				CMainDlg *pWnd = (CMainDlg *)GetPanel(IDC_BUTTON_MAIN);
+				if(pWnd == NULL)
+					break;
+
+				HWND hWnd0 = ::FindWindow(L"csplayer_win0", L"csplayer window0");
+				HWND hWnd1 = ::FindWindow(L"csplayer_win1", L"csplayer window1");
+				HWND hWnd2 = ::FindWindow(L"csplayer_win2", L"csplayer window2");
+				BOOL isVisible0 = ::IsWindowVisible(hWnd0);
+				BOOL isVisible2 = ::IsWindowVisible(hWnd2);
+				BOOL flag0 = pWnd->m_mainVideoDlg_->IsWindowVisible();
+				BOOL flag2 = pWnd->m_mainPhotoDlg_->IsWindowVisible();
+				
+				m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);
+				if(flag0 && isVisible0)
+				{
+					m_pDeleteTipDlg->SetTitle("正在使用电池供电，播放影院会减少待机时间，是否继续？");
+				}
+				else if(hWnd1 != NULL)
+				{
+					m_pDeleteTipDlg->SetTitle("正在使用电池供电，播放mp3会减少待机时间，是否继续？");
+				}
+				else if(flag2 && isVisible2)
+				{
+					m_pDeleteTipDlg->SetTitle("正在使用电池供电，播放相册会减少待机时间，是否继续？");
+				}
+				else 
+				{
+					m_pDeleteTipDlg->SetTitle("正在使用电池供电!");
+				}
+				
+				m_pDeleteTipDlg->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+				m_pDeleteTipDlg->SetHWnd(GetSafeHwnd());
+				m_pDeleteTipDlg->SetPasswordModel(false);
+				m_pDeleteTipDlg->ShowWindow_(TRUE);
+				
+				m_MJPGList.SetUnitBitmap(13, "", "", TRUE);
+				char txt[64];
+				sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\电池%d.bmp", phone_->m_BatteryStatus.batteryProccess);
+				m_MJPGList.SetUnitBitmap(11, txt, txt, TRUE);
+			}
+			else if(phone_->m_BatteryStatus.typeChange == 0)
+			{
+				m_pMainDlg->SendMessage(WM_PLAYVIDEO, 0, 0);
+				m_pDeleteTipDlg->SetHWnd(GetSafeHwnd());
+				m_pDeleteTipDlg->SetPasswordModel(false);
+//				m_pDeleteTipDlg->SetTitle("正在使用电源供电!");
+//				m_pDeleteTipDlg->ShowWindow_(TRUE);
+				
+				char *sChongdian = ".\\adv\\mjpg\\k5\\common\\外界电源.bmp";
+				m_MJPGList.SetUnitBitmap(13, sChongdian, sChongdian, TRUE);
+				if (m_isHaveBattery)
+				{
+					SetTimer(0x120, 500, NULL);
+				}
+				else
+				{
+					KillTimer(0x120);
+				}
+				m_isBattery = FALSE;
+			}
+			SetControlBackLightTimer();
+			phone_->m_BatteryStatus.typeChange = -1;
 		}
 		break;
 
@@ -2743,23 +2630,24 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 					int index = g_iSmsID>>1;
 					if(g_iSmsID & 1)//彩信
 					{
-						//	C3GSMSDetailDlg *pWnd_ = m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg;
-						//	pWnd_->initDataBase(MMS_READ, index, FALSE);					
- 						//	pWnd_->ShowWindow(SW_SHOW);
 						
 						m_pSMSListDlg->m_pMmsReadDlg->SetMMSInfo(index,RECV_TYPE);
-						m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
-						AddIcon(Allicon[1]);
+						if (!m_pSMSListDlg->m_pMmsReadDlg->IsWindowVisible())
+						{
+							m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
+							AddIcon(Allicon[1]);
+						}
+
 					}
 					else
 					{
-						//	C3GSMSDetailDlg *pWnd_ = m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg;
- 						//	pWnd_->initDataBase(SMS_READ, index, FALSE);
- 						//	pWnd_->ShowWindow(SW_SHOW);
 						
 						m_pSMSListDlg->m_pSmsReadDlg->SetSMSInfo(index,RECV_TYPE);
-						m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
-						AddIcon(Allicon[1]);
+						if (!m_pSMSListDlg->m_pSmsReadDlg->IsWindowVisible())
+						{
+							m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
+							AddIcon(Allicon[1]);
+						}
 
 					}
  					g_iSmsID = -1;
@@ -2770,6 +2658,7 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 	case 0xCCCD:			//RASDIAL error
 		OnRasErrorCode(wParam, lParam);
 		break;
+
 	case WM_PIN_INPUT:   //输入PIN
 		{
 			if(wParam == PIN_ERROR || wParam == 0)
@@ -2786,10 +2675,11 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 			}
 		}
 		break;
+
 	case WM_SIM_MESSAGE:
 		{
-			CString nosim = L".\\adv\\mjpg\\k5\\common\\png\\sim卡1.png" ;
-			CString sim = L".\\adv\\mjpg\\k5\\common\\png\\sim卡.png";
+			CString nosim = L".\\adv\\mjpg\\k5\\common\\png\\sim卡1.bmp" ;
+			CString sim = L".\\adv\\mjpg\\k5\\common\\png\\sim卡.bmp";
 			if (wParam)
 			{
 				m_MJPGList.SetUnitBitmap(12,sim,L"",true);
@@ -2803,6 +2693,14 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 		}
 		break;
 
+	case WM_VK_F:
+		VK_F(wParam);
+		break;
+
+	case WM_RECEIVE_BOX:
+		m_pMainDlg->m_p3GSMSDlg->OnClickMJPG(2,0);
+		break;
+
 	case WM_CHAR:
 	//	VK_ESCAPE
 		{
@@ -2811,6 +2709,24 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 			Dprintf("WM_CHAR %x %x\r\n", wParam, lParam);
 		}
 		break;
+
+	case WM_CONTACT_NUM:
+//		m_nContactNum = wParam ;
+// 		if (m_nContactNum > 0)
+//		{	
+// 			m_pATCommandWarp1->ReadSimContent(1);
+// 			Sleep(50);
+// 			for (int i = 0 ; i < m_nContactNum; i++)
+// 			{	
+// 				Dprintf("Sim %d %d\r\n", i, m_nContactNum);
+// 				SetWatchDog();   //设置watchdog   移到main窗口
+// 				Sleep(50);
+// 				m_pATCommandWarp1->ReadSimContent(i+1);
+// 			}			
+// 			m_pATCommandWarp1->ResetGSM(); 			
+//		}
+		break;
+	
 	default:
 		break;
 	}
@@ -2832,70 +2748,122 @@ void CMultimediaPhoneDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialog::OnLButtonDown(nFlags, point);
 }
 
-void CMultimediaPhoneDlg::EnableLine(BOOL bEnable)
-{
-	//lxz 20080620
-//	m_StatusKey.SetEnableKey(2, bEnable);
-//	m_btnLine.EnableWindow(bEnable);
-}
-
 void CMultimediaPhoneDlg::AddFSMRules(void)
-{
+{	
+	//3g
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOff,p3geHangOn,p3gsHangOn,
+		(void (__cdecl *const )(void *)) g3HangOn);
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOff,p3geRing,p3gsRing,
+		(void (__cdecl *const )(void *)) g3Ring);
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOff,p3geCallID,p3gsRing,
+		(void (__cdecl *const )(void *)) g3CallID);
 
-//	m_pFSM->registerRule(tsRing, teHangOn, tsConnect, (void (__cdecl *const )(void *)) HangOn);
-//	m_pFSM->registerRule(tsCallID, teHangOn, tsConnect, (void (__cdecl *const )(void *)) Connect);
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOn,p3geHangOff,p3gsHangOff,
+		(void (__cdecl *const )(void *)) g3HangOff);	
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOn,p3geKey,p3gsKey,
+		(void (__cdecl *const )(void *)) g3Key);
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOn,p3geDialing,p3gsDialing,
+		(void (__cdecl *const )(void *)) g3Dialing);
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOn,p3geRing,p3gsRing,
+		(void (__cdecl *const )(void *)) g3Ring);
+	m_phoneLine[0].pFSM->registerRule(p3gsHangOn,p3geCallID,p3gsRing,
+		(void (__cdecl *const )(void *)) g3CallID);
 
-	m_pFSM->registerRule(tsHangOff, teHangOn, tsHangOn, (void (__cdecl *const )(void *)) HangOn);
-	m_pFSM->registerRule(tsHangOff, teRing, tsRing, (void (__cdecl *const )(void *)) Ring);
+	m_phoneLine[0].pFSM->registerRule(p3gsKey,p3geHangOff,p3gsHangOff,
+		(void (__cdecl *const )(void *)) g3HangOff);
+	m_phoneLine[0].pFSM->registerRule(p3gsKey,p3geKey,p3gsKey,
+		(void (__cdecl *const )(void *)) g3Key);
+	m_phoneLine[0].pFSM->registerRule(p3gsKey,p3geDialing,p3gsDialing,
+		(void (__cdecl *const )(void *)) g3Dialing);
+	m_phoneLine[0].pFSM->registerRule(p3gsKey,p3geRing,p3gsRing,
+		(void (__cdecl *const )(void *)) g3Ring);
+	m_phoneLine[0].pFSM->registerRule(p3gsKey,p3geCallID,p3gsRing,
+		(void (__cdecl *const )(void *)) g3Ring);
 
-	m_pFSM->registerRule(tsHangOff, teCallID, tsRing, (void (__cdecl *const )(void *)) CallID);
+	m_phoneLine[0].pFSM->registerRule(p3gsDialing,p3geHangOff,p3gsHangOff,
+		(void (__cdecl *const )(void *)) g3HangOff);
+	m_phoneLine[0].pFSM->registerRule(p3gsDialing,p3geConnected,p3gsConnected,
+		(void (__cdecl *const )(void *)) g3Contect);//对方接听
 
-	m_pFSM->registerRule(tsRing, teHangOn, tsConnect, (void (__cdecl *const )(void *)) Connect);
-	m_pFSM->registerRule(tsRing, teHangOff, tsHangOff, (void (__cdecl *const )(void *)) HangOff);
-	m_pFSM->registerRule(tsRing, teRing, tsRing, (void (__cdecl *const )(void *)) Ring);
-	m_pFSM->registerRule(tsRing, teCallID, tsRing, (void (__cdecl *const )(void *)) CallID);	
-//  m_pFSM->registerRule(tsRing, teCallID, tsCallID, (void (__cdecl *const )(void *)) CallID);	
- 
-//  m_pFSM->registerRule(tsCallID, teHangOn, tsConnect, (void (__cdecl *const )(void *)) Connect);
-//  m_pFSM->registerRule(tsCallID, teHangOff, tsHangOff, (void (__cdecl *const )(void *)) HangOff);
-// 	m_pFSM->registerRule(tsCallID, teRing, tsCallID, (void (__cdecl *const )(void *)) Ring);
+	m_phoneLine[0].pFSM->registerRule(p3gsRing,p3geHangOff,p3gsHangOff,
+		(void (__cdecl *const )(void *)) g3HangOff);
+	m_phoneLine[0].pFSM->registerRule(p3gsRing,p3geHangOn,p3gsConnected,
+		(void (__cdecl *const )(void *)) g3Contect);//我接听
+	m_phoneLine[0].pFSM->registerRule(p3gsRing,p3geRing,p3gsRing,
+		(void (__cdecl *const )(void *)) g3Ring);
+	m_phoneLine[0].pFSM->registerRule(p3gsRing,p3geCallID,p3gsRing,
+		(void (__cdecl *const )(void *)) g3Ring);
 
-	m_pFSM->registerRule(tsConnect, teCallID, tsConnect, (void (__cdecl *const )(void *)) CallID);
-	m_pFSM->registerRule(tsConnect, teHangOff, tsHangOff, (void (__cdecl *const )(void *)) HangOff);
+	m_phoneLine[0].pFSM->registerRule(p3gsConnected,p3geHangOff,p3gsHangOff,
+		(void (__cdecl *const )(void *)) g3HangOff);
+	m_phoneLine[0].pFSM->registerRule(p3gsConnected,p3geKey,p3gsConnected,
+		(void (__cdecl *const )(void *)) g3SubDial);
+	m_phoneLine[0].pFSM->registerRule(p3gsConnected,p3geHold,p3gsHold,
+		(void (__cdecl *const )(void *)) g3Hold);
 
-	m_pFSM->registerRule(tsConnect, teKey, tsConnect, (void (__cdecl *const )(void *)) SubKey);
+	m_phoneLine[0].pFSM->registerRule(p3gsHold,p3geHangOff,p3gsHangOff,
+		(void (__cdecl *const )(void *)) g3HangOff);//
+	m_phoneLine[0].pFSM->registerRule(p3gsHold,p3geConnected,p3gsConnected,
+		(void (__cdecl *const )(void *)) g3Contected);
 
-	m_pFSM->registerRule(tsHangOn, teHangOff, tsHangOff, (void (__cdecl *const )(void *)) HangOff);
-	m_pFSM->registerRule(tsHangOn, teKey, tsKey, (void (__cdecl *const )(void *)) Key);
-	m_pFSM->registerRule(tsKey, teConnect, tsConnect, (void (__cdecl *const )(void *)) Connect);//拨打时，超时即为接通
-	m_pFSM->registerRule(tsKey, teHangOff, tsHangOff, (void (__cdecl *const )(void *)) HangOff);
-	m_pFSM->registerRule(tsKey, teKey, tsKey, (void (__cdecl *const )(void *)) Key);
-		
-	m_pFSM->setStartState(tsHangOff);
+	m_phoneLine[0].pFSM->registerRule(p3gsPstn,p3geRing,p3gsRing,
+		(void (__cdecl *const )(void *)) g3Ring);//
+	m_phoneLine[0].pFSM->registerRule(p3gsPstn,p3geCallID,p3gsRing,
+		(void (__cdecl *const )(void *)) g3CallID);
+	m_phoneLine[0].pFSM->registerRule(p3gsPstn,p3geHangOff,p3gsHangOff,
+		(void (__cdecl *const )(void *)) g3HangOff);//
+	
+	m_phoneLine[0].pFSM->setStartState(p3gsHangOff);
+	
+	//pstn
+	m_phoneLine[2].pFSM->registerRule(pstnsHangOff,pstne3gRing,pstns3gRing,
+		(void (__cdecl *const )(void *)) pstn3gRing);
+	m_phoneLine[2].pFSM->registerRule(pstnsHangOff,pstneRing,pstnsRing,
+		(void (__cdecl *const )(void *)) pstnRing);
+	m_phoneLine[2].pFSM->registerRule(pstnsHangOff,pstneCallID,pstnsRing,
+		(void (__cdecl *const )(void *)) pstnCallID);
 
+	m_phoneLine[2].pFSM->registerRule(pstns3gRing,pstneHangOff,pstnsHangOff,
+		(void (__cdecl *const )(void *)) pstnHangOff);
+	m_phoneLine[2].pFSM->registerRule(pstns3gRing,pstneRing,pstnsRing,
+		(void (__cdecl *const )(void *)) pstnRing);
+	m_phoneLine[2].pFSM->registerRule(pstns3gRing,pstneCallID,pstnsRing,
+		(void (__cdecl *const )(void *)) pstnCallID);
+
+	m_phoneLine[2].pFSM->registerRule(pstnsRing,pstneHangOff,pstnsHangOff,
+		(void (__cdecl *const )(void *)) pstnHangOff);
+	m_phoneLine[2].pFSM->registerRule(pstnsRing,pstneHangOn,pstnsConnected,
+		(void (__cdecl *const )(void *)) pstnContect);
+	m_phoneLine[2].pFSM->registerRule(pstnsRing,pstneRing,pstnsRing,
+		(void (__cdecl *const )(void *)) pstnRing);
+	m_phoneLine[2].pFSM->registerRule(pstnsRing,pstneCallID,pstnsRing,
+		(void (__cdecl *const )(void *)) pstnCallID);
+	
+	m_phoneLine[2].pFSM->registerRule(pstnsConnected,pstneHangOff,pstnsHangOff,
+		(void (__cdecl *const )(void *)) pstnHangOff);
+	m_phoneLine[2].pFSM->registerRule(pstnsConnected,pstneHold,pstnsHold,
+		(void (__cdecl *const )(void *)) pstnHold);
+
+	m_phoneLine[2].pFSM->registerRule(pstnsHold,pstneHangOff,pstnsHangOff,
+		(void (__cdecl *const )(void *)) pstnHangOff);
+	m_phoneLine[2].pFSM->registerRule(pstnsHold,pstneConnected,pstnsConnected,
+		(void (__cdecl *const )(void *)) pstnContect);
+
+	m_phoneLine[2].pFSM->setStartState(pstnsHangOff);
+	
+	
 }
 
 void CMultimediaPhoneDlg::HangOff(void* param)
 {
-//	::KillTimer((theApp.m_pMainWnd)->m_hWnd, 0x123);
-//	::SetTimer((theApp.m_pMainWnd)->m_hWnd, 0x123, 50, NULL);    //挂机   lxz
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->OnTimer(0x123);
-
-// 	::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer);
-// 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->EnableLine(FALSE);
-// 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HangOff_(param);
-// 
-// 	//未接接听，自动关闭窗口时模拟挂机事件
-// 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->SendOutEvnet(WM_TEL_HUNGOFF, 1);
 }
 
 void CMultimediaPhoneDlg::HangOn(void* param)
 {
-	::KillTimer((theApp.m_pMainWnd)->m_hWnd, 0x124);
-	::SetTimer((theApp.m_pMainWnd)->m_hWnd, 0x124, 50, NULL);		//摘机
+	//::KillTimer((theApp.m_pMainWnd)->m_hWnd, 0x124);
+	//::SetTimer((theApp.m_pMainWnd)->m_hWnd, 0x124, 50, NULL);		//摘机
 
-// 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->EnableLine(TRUE);
-// 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HangOn_(param);
 }
 
 void CMultimediaPhoneDlg::Key(void* param)
@@ -2904,8 +2872,10 @@ void CMultimediaPhoneDlg::Key(void* param)
 	::SetTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer, KEYTIMEOUT, 0);
 	
 //	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->Key_(param); old 
-// add by qi 2009_11_05 new
+
+	// add by qi 2009_11_05 new	
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelphoneDialDlg->Key_(param);
+
 }
 
 void CMultimediaPhoneDlg::SubKey(void* param)
@@ -2923,7 +2893,6 @@ void CMultimediaPhoneDlg::Ring(void* param)
 	::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer);
 	::SetTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer, RINGTIMEOUT, 0);
 
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->EnableLine(TRUE);
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->Ring_(param);
 }
 
@@ -2963,30 +2932,28 @@ void CMultimediaPhoneDlg::OnTimer(UINT nIDEvent)
 	if (nIDEvent == ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer)
 	{
 		::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer);
-		m_pFSM->fireEvent(teConnect, 0);
+		//m_pFSM->fireEvent(teConnect, 0);
 	}
 	else if (nIDEvent == ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer)
 	{
 		::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer);
-// 		if ((m_pFSM->getCurrentState() == tsCallID) || (m_pFSM->getCurrentState() == tsRing))
-		if (m_pFSM->getCurrentState() == tsRing)
+		if (m_phoneLine[0].pFSM->getCurrentState() == p3gsRing)
 		{
-			m_pFSM->fireEvent(teHangOff, 0);
+			m_phoneLine[0].pFSM->fireEvent(p3geHangOff, 0);
 		}
 	}
+	else if (nIDEvent == ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiPSTNRingTimer)
+	{
+		::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiPSTNRingTimer);
+		if (m_phoneLine[2].pFSM->getCurrentState() == pstnsRing)
+		{
+			m_phoneLine[2].pFSM->fireEvent(pstneHangOff, 0);
+		}
 
+	}
 	else if(nIDEvent == IDT_CONTROLBACKLIGHT_TIME+1)
 	{
 		//lxz test 数据库 内存泄露
-	//	SetAlarmList();
-	//	m_pMainDlg->FindTodayAlarm();
-	//	std::vector<boost::shared_ptr<Data::Scheduler> > result = Data::Scheduler::GetFromDatabase("");
-/*
-		std::string order = "startTime";
-    	std::string filter = "startTime BETWEEN '20090201000000' AND '20090201235959'";
-		std::vector<boost::shared_ptr<Data::Scheduler> > result = Data::Scheduler::GetFromDatabaseByOrder(filter, order); 
-*/
-//		std::vector<boost::shared_ptr<Data::Contact> > lResult = Data::Contact::GetFromDatabase("");
 
 		extern VOID WriteLog(CHAR* str);
 		char restartTimer[64];
@@ -3001,16 +2968,16 @@ void CMultimediaPhoneDlg::OnTimer(UINT nIDEvent)
 
 		gIsToLight = FALSE;
 		SetNightControlBackLightTimer();
+
 	}
 
-	else if(nIDEvent == IDT_CONTROLBACKLIGHT_TIME)		//进入黑屏
+	else if(nIDEvent == IDT_CONTROLBACKLIGHT_TIME)//进入黑屏
 	{
 		KillTimer(IDT_CONTROLBACKLIGHT_TIME);
-		
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(0);
+		SetTimer(0x121, 500, NULL);
 		Dprintf("Black BackLight\r\n");
 	}
-	else if(nIDEvent == IDT_MAIN_SAVESCREEN_TIME)		//进入屏保
+	else if(nIDEvent == IDT_MAIN_SAVESCREEN_TIME)//进入屏保
 	{
 		//lxz 20080623
 		//return;
@@ -3023,9 +2990,10 @@ void CMultimediaPhoneDlg::OnTimer(UINT nIDEvent)
 			return;
 
 		KillTimer(IDT_MAIN_SAVESCREEN_TIME);
-		int type = (int)m_pSettingDlg->m_pSetting->screenSaverContent();
-		pWnd->m_mainScreenSaveDlg_->SetSaveScreenType(type, TRUE);	  //1 图片屏保   0  时间屏保
-		pWnd->SendMessage(WM_CHANGEWINDOW, (WPARAM)6, SW_SHOW);   //切换到屏保
+		int type = (int)m_pSettingDlg->m_pTempSetting->screenSaverContent();
+		pWnd->m_mainScreenSaveDlg_->SetSaveScreenType(type, TRUE);//1 图片屏保 0 时间屏保
+		pWnd->SendMessage(WM_CHANGEWINDOW, (WPARAM)6, SW_SHOW); //切换到屏保
+
 	}
 	else if(nIDEvent == IDT_ALARMTIME)		//设置闹铃
 	{
@@ -3057,18 +3025,17 @@ void CMultimediaPhoneDlg::OnTimer(UINT nIDEvent)
 		::KillTimer((theApp.m_pMainWnd)->m_hWnd, 0x123);
 
 		::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer);
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->EnableLine(FALSE);
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HangOff_(NULL);
 		
-		//未接接听，自动关闭窗口时模拟挂机事件
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->SendOutEvnet(WM_TEL_HUNGOFF, 1);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->HungOff();
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HangOff_(NULL);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->SendOutEvnet(WM_TEL_HUNGOFF, 1);//未接接听，自动关闭窗口时模拟挂机事件
+
 	}
 	else if(nIDEvent == 0x124)		//摘机
 	{
 		::KillTimer((theApp.m_pMainWnd)->m_hWnd, 0x124);
-
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->EnableLine(TRUE);
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HangOn_(NULL);
+
 	}
 	else if(nIDEvent == 0x125)
 	{
@@ -3076,39 +3043,33 @@ void CMultimediaPhoneDlg::OnTimer(UINT nIDEvent)
 		//	SetNetTelStatus();   //20090221
 
 	}
-
-
-	/* 改成消息检测
-	else if(nIDEvent == IDT_DETECTUSB)	//检测SD, USB
+	else if(nIDEvent == 0x120)
 	{
-		BOOL bIsHaveUSB = DetectDIR(L"UsbDisk");
-		BOOL bIsSD = DetectDIR(L"StorageCard");
-		int flag = 0;
-		if(bIsHaveUSB != m_bIsHaveUSB)
+		static unsigned int index = 0;
+		char txt[64];
+		sprintf(txt, ".\\adv\\mjpg\\k5\\common\\png\\电池%d.bmp", index++);
+		m_MJPGList.SetUnitBitmap(11, txt, txt, TRUE);
+		if(index > 5)
 		{
-			if(bIsHaveUSB)
-				flag = 0x8000;
-			else 
-				flag = 0x8004;
-			m_bIsHaveUSB = bIsHaveUSB;
-		}
-
-		else if( bIsSD != m_bIsSD)
-		{
-			if(bIsSD)
-				flag = 0x8000;
-			else 
-				flag = 0x8004;
-			m_bIsSD = bIsSD;
-		}
-		if(flag != 0)
-		{
-			m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_DEVICECHANGE, flag, 0);
-			m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_DEVICECHANGE, flag, 0);
-			m_pMainDlg->m_mainVideoDlg_->SendMessage(WM_DEVICECHANGE, flag, 0);
+			index = 0;
 		}
 	}
-	*/
+	else if(nIDEvent == 0x121)
+	{
+		static int v = 7 - m_pSettingDlg->m_pTempSetting->blackLightValue();
+		if(v >= 0)
+		{
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(v);
+			v--;
+		}
+		else
+		{
+			v = 7 - m_pSettingDlg->m_pTempSetting->blackLightValue();
+			KillTimer(0x121);
+		}
+
+	}
+
 	CDialog::OnTimer(nIDEvent);
 }
 
@@ -3116,14 +3077,11 @@ void CMultimediaPhoneDlg::OnMainSoftKey(WPARAM w, LPARAM l)
 {
 	switch(w)
 	{
-	case 1:
-		OnButtonTime();
-		break;
 	case 2:
 		OnButtonIME();
 		break;
 	case 3:
-		OnButtonLine();
+	//	OnButtonLine();
 		break;
 	case 4:
 		OnButtonMain();
@@ -3147,23 +3105,6 @@ void CMultimediaPhoneDlg::OnMainSoftKey(WPARAM w, LPARAM l)
 
 }
 
-void CMultimediaPhoneDlg::SetSkinStyle()
-{
-	/*
-	m_StatusKey.m_pKeys[1].nBitmapId = Data::g_mainstatusIMEBmpID[Data::g_skinstyle];
-	m_StatusKey.m_pKeys[2].nBitmapId = Data::g_mainstatusTELBmpID[Data::g_skinstyle];
-	m_StatusKey.m_pKeys[3].nBitmapId = Data::g_mainstatusDesktopBmpID[Data::g_skinstyle];
-	m_StatusKey.m_pKeys[4].nBitmapId = Data::g_mainstatusCardBmpID[Data::g_skinstyle];
-	m_StatusKey.m_pKeys[5].nBitmapId = Data::g_mainstatusCalllistBmpID[Data::g_skinstyle];
-	m_StatusKey.m_pKeys[6].nBitmapId = Data::g_mainstatusRecordBmpID[Data::g_skinstyle];
-	m_StatusKey.m_pKeys[7].nBitmapId = Data::g_mainstatusInfoBmpID[Data::g_skinstyle];
-	m_StatusKey.m_pKeys[8].nBitmapId = Data::g_mainstatusSettingBmpID[Data::g_skinstyle];
-
-	m_StatusKey.m_BitmapToggleID = Data::g_mainstatusToggleBmpID[Data::g_skinstyle];
-	m_StatusKey.m_BitmapID = Data::g_mainstatusMainBmpID[Data::g_skinstyle];
-	m_StatusKey.m_clrBack = Data::g_mainstatusBackRGB[Data::g_skinstyle];
-	*/
-}
 
 //振铃 摘机 按键等外部事情发送给 屏保 MP3 VIDEO 听留言窗口
 void CMultimediaPhoneDlg::SendOutEvnet(WPARAM w, LPARAM l)
@@ -3197,7 +3138,6 @@ void CMultimediaPhoneDlg::SendOutEvnet(WPARAM w, LPARAM l)
 			break;
 		case WM_TOUCH_CLICK:
 			{
-	//			pWnd->m_mainScreenSaveDlg_->SendMessage(WM_OUTEVENT, w, isShow);
 			}
 			break;
 	}
@@ -3213,46 +3153,31 @@ void CMultimediaPhoneDlg::OnEvent(WPARAM w, LPARAM l)
 BOOL CMultimediaPhoneDlg::SetNightControlBackLightTimer()
 {
 	BOOL ret = FALSE;
-	BOOL flag2 = m_pSettingDlg->m_pSetting->isNightControlBlackLight();
-	BOOL flag1 = m_pSettingDlg->m_pSetting->isContrlBlackLight();
+	BOOL flag2 = m_pSettingDlg->m_pTempSetting->isNightControlBlackLight();
+	BOOL flag1 = m_pSettingDlg->m_pTempSetting->isContrlBlackLight();
 	if(flag2)
 	{
-		CTime t1 = m_pSettingDlg->m_pSetting->nightControlBlackLightStartTime();
-		CTime t2 = m_pSettingDlg->m_pSetting->nightControlBlackLightEndTime();
+		int t1 = m_pSettingDlg->m_pTempSetting->nightControlBlackLightStartTime();
+		int t2 = m_pSettingDlg->m_pTempSetting->nightControlBlackLightEndTime();
 		
 		SYSTEMTIME sTime;
+		int sStartTime[] = {18, 19, 20, 21, 22};
+		int sEndTime[] = {5, 6, 7, 8, 9};
 		GetLocalTime(&sTime);
-		CTime tm = CTime(sTime);
-		CTime tStart = CTime(tm.GetYear(), tm.GetMonth(), tm.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond());
-		CTime tEnd = CTime(tm.GetYear(), tm.GetMonth(), tm.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond());
-		if(tStart > tEnd)
+		if((sTime.wHour >= sStartTime[t1] && sTime.wHour < 24) || (sTime.wHour < sEndTime[t2] && sTime.wHour >= 0))
 		{
-			if(tm >= tStart || tm <= tEnd)
-			{
-				SetTimer(IDT_CONTROLBACKLIGHT_TIME, 30*1000, NULL);   
-				Dprintf("Set NightControlBackLightTimer %d\r\n", 30000);
-				ret = TRUE;
-				return ret;
-			}
+			SetTimer(IDT_CONTROLBACKLIGHT_TIME, 30*1000, NULL);   
+			Dprintf("Set NightControlBackLightTimer %d\r\n", 30000);
+			ret = TRUE;
+			return ret;
 		}
-		else 
-		{
-			if(tm > tStart && tm < tEnd)
-			{
-				SetTimer(IDT_CONTROLBACKLIGHT_TIME, 30*1000, NULL);   
-				Dprintf("Set NightControlBackLightTimer %d\r\n", 30000);
-				ret = TRUE;
-				return ret;
-			}
-		}
-		
-		if(!gIsToLight)
+		else if(!gIsToLight && !m_isBattery)
 		{
 			gIsToLight = TRUE;	
 			KillTimer(IDT_CONTROLBACKLIGHT_TIME);
 			if(!flag1)				//黑屏唤醒一次
 			{
-				int v = m_pSettingDlg->m_pSetting->blackLightValue();
+				int v = m_pSettingDlg->m_pTempSetting->blackLightValue();
 				v = 7-v;
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(v);
 				Dprintf("Night BackLight to Light\r\n");
@@ -3265,20 +3190,24 @@ BOOL CMultimediaPhoneDlg::SetNightControlBackLightTimer()
 void CMultimediaPhoneDlg::SetControlBackLightTimer()
 {
 	KillTimer(IDT_CONTROLBACKLIGHT_TIME);
-	BOOL flag1 = m_pSettingDlg->m_pSetting->isContrlBlackLight();
-	if(flag1)
+	BOOL flag1 = m_pSettingDlg->m_pTempSetting->isContrlBlackLight();
+	if(m_isBattery || flag1)
 	{
 		CMainDlg *pWnd = (CMainDlg *)GetPanel(IDC_BUTTON_MAIN);
 		if(pWnd == NULL)
 			return;
-		HWND hWnd = ::FindWindow(L"csplayer_win0", L"csplayer window0");
-		BOOL flag2 = ::IsWindowVisible(hWnd);
-		BOOL flag3 = pWnd->m_mainVideoDlg_->IsWindowVisible();
-		if(flag2 && flag3)
+		HWND hWnd0 = ::FindWindow(L"csplayer_win0", L"csplayer window0");
+		HWND hWnd1 = ::FindWindow(L"csplayer_win1", L"csplayer window1");
+		HWND hWnd2 = ::FindWindow(L"csplayer_win2", L"csplayer window2");
+		BOOL isVisible0 = ::IsWindowVisible(hWnd0);
+		BOOL isVisible2 = ::IsWindowVisible(hWnd2);
+		BOOL flag0 = pWnd->m_mainVideoDlg_->IsWindowVisible();
+		BOOL flag2 = pWnd->m_mainPhotoDlg_->IsWindowVisible();
+		if((isVisible0 && flag0) || (isVisible2 && flag2) || hWnd1 != NULL)
 			return;
-
+		
 		int nTimer_[] = {60*1000, 5*60*1000, 10*60*1000, 30*60*1000};
-		int nTimer = m_pSettingDlg->m_pSetting->contrlBlackLightWaitTime();
+		int nTimer = m_pSettingDlg->m_pTempSetting->contrlBlackLightWaitTime();
 		SetTimer(IDT_CONTROLBACKLIGHT_TIME, nTimer[nTimer_], NULL);
 		Dprintf("Set ControlBackLightTimer %d\r\n", nTimer[nTimer_]);
 	}
@@ -3298,11 +3227,17 @@ BOOL CMultimediaPhoneDlg::ReStoreBackLight()
 		SetScreenSaveTimer();
 
 		//恢复背光
-		int v = m_pSettingDlg->m_pSetting->blackLightValue();
+		int v = m_pSettingDlg->m_pTempSetting->blackLightValue();
 		v = 7-v;
 		if(v == 0)
 			v = 1;
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(v);
+		int loop = 0;
+		while(loop <= v)
+		{
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetBackLight(loop);
+			Sleep(500);
+			loop++;
+		}
 		return TRUE;
 	}
 	return FALSE;
@@ -3327,7 +3262,7 @@ void CMultimediaPhoneDlg::SetScreenSaveTimer()
  	HWND hIEWnd = ::FindWindow(TEXT("iExplore"), NULL);
 	
 	KillTimer(IDT_MAIN_SAVESCREEN_TIME);
-	BOOL flag1 = m_pSettingDlg->m_pSetting->isUseScreenSaver();
+	BOOL flag1 = m_pSettingDlg->m_pTempSetting->isUseScreenSaver();
 	BOOL flag2 = FALSE;
 	if(hWnd)
 		flag2 = ::IsWindowVisible(hWnd);
@@ -3335,11 +3270,16 @@ void CMultimediaPhoneDlg::SetScreenSaveTimer()
 	if(pWnd->m_mainVideoDlg_)
 		flag3 = pWnd->m_mainVideoDlg_->IsWindowVisible();
 	BOOL flag4 = FALSE;
-	if(m_pFSM->getCurrentState() != tsHangOff)
+
+	if (m_phoneLine[0].pFSM != NULL)
+	{
+		if(m_phoneLine[0].pFSM->getCurrentState() != CMultimediaPhoneDlg::p3gsHangOff)
 		flag4 = TRUE;
+	}
+
 	if(flag1)
 	{
-		CTimeSpan nTimer = m_pSettingDlg->m_pSetting->screenSaverDuration();
+		CTimeSpan nTimer = m_pSettingDlg->m_pTempSetting->screenSaverDuration();
 		int nSecond = nTimer.GetTotalSeconds();
 		if(flag2 && flag3)    //video 
 		{
@@ -3672,16 +3612,16 @@ void CMultimediaPhoneDlg::SMSSpecRing(int type, CString s)
 	UINT16 volume[] = {0xFF00, 0xcc00, 0x8800, 0x4400, 0x1000}; //(5-nVolume)*0xFFFF/5;
 	if(type == 0)
 	{
-		if(m_pSettingDlg->m_pSetting->isSmsRing_)
+		if(m_pSettingDlg->m_pTempSetting->isSmsRing_)
 		{
 			CFileStatus status;
 			CString filename = "/flashdrv/my_ring/甜蜜.wav";
-			if(CFile::GetStatus(LPCTSTR(Util::StringOp::ToCString(m_pSettingDlg->m_pSetting->smsRingFilename_)),status))
+			if(CFile::GetStatus(LPCTSTR(Util::StringOp::ToCString(m_pSettingDlg->m_pTempSetting->smsRingFilename_)),status))
 			{
-				filename = m_pSettingDlg->m_pSetting->smsRingFilename_.c_str();
+				filename = m_pSettingDlg->m_pTempSetting->smsRingFilename_.c_str();
 			}
 
-			int nVolume = m_pSettingDlg->m_pSetting->smsRingVolume_;
+			int nVolume = m_pSettingDlg->m_pTempSetting->smsRingVolume_;
  			phone_->g_RingSound = (volume[nVolume]|(volume[nVolume]<<16));
 			phone_->StartRing((LPTSTR)(LPCTSTR)filename, 1);
 		}
@@ -3690,18 +3630,18 @@ void CMultimediaPhoneDlg::SMSSpecRing(int type, CString s)
 	{
 		CFileStatus status;
 		CString filename = "/flashdrv/my_ring/甜蜜.wav";
-		if(CFile::GetStatus(LPCTSTR(Util::StringOp::ToCString(m_pSettingDlg->m_pSetting->specodeRingFilename_)),status))
+		if(CFile::GetStatus(LPCTSTR(Util::StringOp::ToCString(m_pSettingDlg->m_pTempSetting->specodeRingFilename_)),status))
 		{
-			filename = m_pSettingDlg->m_pSetting->specodeRingFilename_.c_str();
+			filename = m_pSettingDlg->m_pTempSetting->specodeRingFilename_.c_str();
 		}
 		
-		int nVolume = m_pSettingDlg->m_pSetting->specodeRingVolume_;
+		int nVolume = m_pSettingDlg->m_pTempSetting->specodeRingVolume_;
 		phone_->g_RingSound = (volume[nVolume]|(volume[nVolume]<<16));
 		phone_->StartRing((LPTSTR)(LPCTSTR)filename, 1);
 	}
 	else if(type == 2)	//振铃
 	{
-		int nVolume = m_pSettingDlg->m_pSetting->soundVolume();
+		int nVolume = m_pSettingDlg->m_pTempSetting->soundVolume();
 		phone_->g_RingSound = (volume[nVolume]|(volume[nVolume]<<16));
 		phone_->StartRing((LPTSTR)(LPCTSTR)s);
 	}
@@ -3714,12 +3654,12 @@ void CMultimediaPhoneDlg::doWithSMS(WPARAM wParam, LPARAM lParam)
 		Data::Message* pMsg = (Data::Message *)lParam;
 		BOOL flag = FALSE;
 	//	for(int i = 0 ; i < SPECODE_MAX; i++)
-		std::string sCode = m_pSettingDlg->m_pSetting->speCode1_;
+		std::string sCode = m_pSettingDlg->m_pTempSetting->speCode1_;
 		if(pMsg->remote.address.substr(0, 6) == sCode.substr(0, 6))
 		{
 		//	if(pMsg->remote.address == gpChaSpecod[i])
 			{
-				if(pMsg->remote.address == m_pSettingDlg->m_pSetting->speCode3_)   //家庭留言
+				if(pMsg->remote.address == m_pSettingDlg->m_pTempSetting->speCode3_)   //家庭留言
 				{
 					pMsg->group = Data::Message::gReMoteSMS;
 					pMsg->Insert();
@@ -3729,7 +3669,8 @@ void CMultimediaPhoneDlg::doWithSMS(WPARAM wParam, LPARAM lParam)
 					SMSSpecRing(1, "");
 					
 					if (!m_pMainDlg->m_mainMp3Dlg_->IsWindowVisible() && 
-						!m_pMainDlg->m_mainVideoDlg_->IsWindowVisible())
+						!m_pMainDlg->m_mainVideoDlg_->IsWindowVisible()&&
+						!playervideo_->isPlaying_ && !playerimage_->isPlaying_)
 					{
 						m_pDeleteTipDlg->SetHWnd(GetSafeHwnd());
 						m_pDeleteTipDlg->SetPasswordModel(false);
@@ -3824,7 +3765,8 @@ void CMultimediaPhoneDlg::doWithSMS(WPARAM wParam, LPARAM lParam)
 					SMSSpecRing(0, "");
 
 					if (!m_pMainDlg->m_mainMp3Dlg_->IsWindowVisible() && 
-						!m_pMainDlg->m_mainVideoDlg_->IsWindowVisible())
+						!m_pMainDlg->m_mainVideoDlg_->IsWindowVisible()&&
+						!playervideo_->isPlaying_ && !playerimage_->isPlaying_ )
 					{
 						m_pDeleteTipDlg->SetHWnd(GetSafeHwnd());
 						m_pDeleteTipDlg->SetPasswordModel(false);
@@ -3848,7 +3790,8 @@ void CMultimediaPhoneDlg::doWithSMS(WPARAM wParam, LPARAM lParam)
 		SMSSpecRing(0, "");
 		
 		if (!m_pMainDlg->m_mainMp3Dlg_->IsWindowVisible() && 
-			!m_pMainDlg->m_mainVideoDlg_->IsWindowVisible())
+			!m_pMainDlg->m_mainVideoDlg_->IsWindowVisible()&&
+			!playervideo_->isPlaying_ && !playerimage_->isPlaying_)
 		{
 			m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
 			m_pDeleteTipDlg->SetPasswordModel(false);
@@ -3896,6 +3839,7 @@ void CMultimediaPhoneDlg::doWithSMS(WPARAM wParam, LPARAM lParam)
 			m_pDeleteTipDlg->ShowWindow_(TRUE);
 			
 		}
+
 	}
 }
 
@@ -3954,7 +3898,7 @@ void CMultimediaPhoneDlg::Net3GHungOff()
 	if(m_nTELRigster >= TELRIGSTER_DIALED)
 	{
 		CNetStatusDlg::ADSLHungUp();
-		m_MJPGList.SetUnitBitmap(12, "", "", TRUE);
+		m_MJPGList.SetUnitBitmap(14, "", "", TRUE);
 		Sleep(3000);
 		SetAPN((int)CMWAP);
 	}
@@ -3979,32 +3923,23 @@ void CMultimediaPhoneDlg:: doSerachrTDNet()
 
 	int ret = m_pATCommandWarp1->Connect("");	
 	
-	static bool bBind = false ;
-	
-	if (!bBind)
-	{
-		bBind = true ;
-		phone_->Bind(m_pATCommandWarp1);
-		m_pSMSWarp->Bind(m_pATCommandWarp1);
-	}
-
 	if (ret == 1)    //1 成功    
-	{
+	{	
+		static bool bBind = false ;		
+		if (!bBind)
+		{
+			bBind = true ;
+			phone_->Bind(m_pATCommandWarp1);
+			m_pSMSWarp->Bind(m_pATCommandWarp1);
+		}
+
 		DWORD offset = GetTickCount() - dwStart;   
 	   	Dprintf("3G 搜网 %d Ok\r\n", offset);
 
 		m_nTELRigster = TELRIGSTER_TD;
 
-//		m_pSMSWarp->SetCenterAddress(m_pSettingDlg->m_pSetting->speCode12_);		//设置短信中心号码
-		m_pSMSWarp->SetOTANumber(m_pSettingDlg->m_pSetting->speCode11_);			//设置OTA号码
-		
+		m_pSMSWarp->SetOTANumber(m_pSettingDlg->m_pTempSetting->speCode11_);			//设置OTA号码		
 		m_sMobileNumber = phone_->GetNumber();
-// 		if(m_sMobileNumber == "")    //lxz 20090827
-// 		{
-// 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"请设置SIM卡的本机手机号码!", 15000);
-// 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
-// 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
-// 		}
 		
 //		add by qi 2009_08_03
 //		std::vector<Util::ATCommandWarp::SIM_FORMAT> vGsim;
@@ -4013,10 +3948,10 @@ void CMultimediaPhoneDlg:: doSerachrTDNet()
 //		sim.telnum ="13681209927" ;
 //		vGsim.push_back(sim);
 //		m_pATCommandWarp1->Save2Sim(vGsim);
-//		m_pATCommandWarp1->ReadSimPhoneInfo(vGsim);//取出sim卡里的信息电话和姓名
-//		InsertSimToContact(vGsim);
-// 		m_pContactDlg->ShowItemsInList();
-
+		
+//		RemoveSIMGroup();
+		m_pATCommandWarp1->SimContactNum();//取出sim卡里的信息电话和姓名
+//		Sleep(1000);
 
 	}
 	else if(ret == 2) //2   需要注册码
@@ -4027,6 +3962,7 @@ void CMultimediaPhoneDlg:: doSerachrTDNet()
 	{
 	//	m_nTELRigster = TELRIGSTER_FAILED;
 	}
+
 }
 
 //手机注册
@@ -4167,6 +4103,11 @@ void CMultimediaPhoneDlg::ParseSmil(CString FilePath, MMS::MMSWarp::MMS_SubmitRe
 void CMultimediaPhoneDlg:: doWithDownLoad()
 {
 	/*std::string filter = "state = '" + Util::StringOp::FromInt(Date::OtaMessage::stUnDownload) + "'";*/
+	if(isFirstGif)
+	{
+		Sleep(100);
+		return;
+	}
 
 	//
 	BOOL flag = FALSE;
@@ -4508,44 +4449,10 @@ void CMultimediaPhoneDlg::GetDataFromContact(std::vector<Util::ATCommandWarp::SI
 		}
  	}
 } 
+
 void CMultimediaPhoneDlg::InsertSimToContact(const std::vector<Util::ATCommandWarp::SIM_FORMAT> vsim)
 {	
-	m_nSIMID = -1;
-	std::vector<boost::shared_ptr<Data::ContactGroup> > result;
-	if (Data::ContactGroup::GetDataCount("") > 0)//查找
-	{
-		result = Data::ContactGroup::GetFromDatabase("");
-		for (int i = 0; i < result.size(); ++i)
-		{
-			if( "SIM卡" == result[i]->name())
-			{
-				m_nSIMID = result[i]->id();
-				m_pContactDlg->SetSimID(m_nSIMID);
-				break;
-			}
-		}
-	}
-
-	if(m_nSIMID == -1)//只能进来一次
-	{
-		//创建SIM卡类别
-		boost::shared_ptr<Data::ContactGroup> m_pContactGroup = boost::shared_ptr<Data::ContactGroup>(new Data::ContactGroup);
-		m_pContactGroup->name("SIM卡");
-		m_pContactGroup->ringName("默认");
-		m_pContactGroup->tipName("默认");
-		m_pContactGroup->Insert();
-		m_nSIMID = m_pContactGroup->id();
-		m_pContactDlg->SetSimID(m_nSIMID);
-	}
-	
-	//SIM组里有信息，先删除掉
-	std::vector<boost::shared_ptr<Data::Contact> > result1 = Data::Contact::GetFromDatabase("groupId = " + Util::StringOp::FromInt(m_nSIMID));
-	if (!result1.empty())
-	{
-		for(int i = 0; i < result1.size(); i++)
-			result1[i]->Remove();
-	}
-	
+		
 	//把SIM 信息插入到 Contact-sim卡组里
 	for (int i = 0 ; i < vsim.size() ; i++)
 	{
@@ -4553,7 +4460,7 @@ void CMultimediaPhoneDlg::InsertSimToContact(const std::vector<Util::ATCommandWa
 		pContact = boost::shared_ptr<Data::Contact>(new Data::Contact);
 		pContact->name(vsim[i].name);
 		
-		std::string name = vsim[i].name ;
+		//std::string name = vsim[i].name ;
 
 		pContact->alias(GetAlias(pContact->name()));
 		pContact->mobilesTelephone(Data::TelephoneNumber(vsim[i].telnum));	
@@ -4571,12 +4478,79 @@ void CMultimediaPhoneDlg::InsertSimToContact(const std::vector<Util::ATCommandWa
 		pContact->memo(vsim[i].id);
 		pContact->type(Data::ctNormal);
 		pContact->groupId(m_nSIMID);
-		pContact->Insert();	
+		pContact->Insert();
 
+		Sleep(10);
+				
 	}
 
+}
+
+void CMultimediaPhoneDlg::RemoveSIMGroup()
+{
+	//SIM组里有信息，先删除掉
+	m_nSIMID = -1;
+	std::vector<boost::shared_ptr<Data::ContactGroup> > result;
+	if (Data::ContactGroup::GetDataCount("") > 0)//查找
+	{
+		result = Data::ContactGroup::GetFromDatabase("");
+		for (int i = 0; i < result.size(); ++i)
+		{
+			if( "SIM卡" == result[i]->name())
+			{
+				m_nSIMID = result[i]->id();
+				m_pContactDlg->SetSimID(m_nSIMID);
+				break;
+			}
+		}
+	}
+	
+	if(m_nSIMID == -1)//只能进来一次
+	{
+		//创建SIM卡类别
+		boost::shared_ptr<Data::ContactGroup> m_pContactGroup = boost::shared_ptr<Data::ContactGroup>(new Data::ContactGroup);
+		m_pContactGroup->name("SIM卡");
+		m_pContactGroup->ringName("默认");
+		m_pContactGroup->tipName("默认");
+		m_pContactGroup->Insert();
+		m_nSIMID = m_pContactGroup->id();
+		m_pContactDlg->SetSimID(m_nSIMID);
+	}
+
+	std::vector<boost::shared_ptr<Data::Contact> > result1 = Data::Contact::GetFromDatabase("groupId = " + Util::StringOp::FromInt(m_nSIMID));
+	if (!result1.empty())
+	{
+		for(int i = 0; i < result1.size(); i++)
+			result1[i]->Remove();
+	}
 
 }
+
+void CMultimediaPhoneDlg::VK_F(WPARAM w)
+{
+	m_pMainDlg->OnClickMJPGToApp(w,0);
+}
+
+void CMultimediaPhoneDlg::AddAudio(bool badd)
+{	
+
+	if (m_pMainDlg->m_mainMp3Dlg_->IsWindowVisible())
+	{
+		m_pMainDlg->m_mainMp3Dlg_->HandleAudio(badd);				
+	}
+	else if (m_pMainDlg->m_mainVideoDlg_->IsWindowVisible())
+	{
+		m_pMainDlg->m_mainVideoDlg_->HandleAudio(badd);
+	}
+	else if ( m_pTelephoneDlg->IsWindowVisible() )
+	{
+		m_pTelephoneDlg->HandleAudio(badd);
+	}
+	
+}
+
+
+
 std::string CMultimediaPhoneDlg::GetAlias(std::string name)
 {
 	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->m_pPinYinIndex == NULL)
@@ -4593,7 +4567,7 @@ std::string CMultimediaPhoneDlg::GetAlias(std::string name)
 			
 			if(index >= 0 && index < 6768)
 			{
-				alias += ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->m_pPinYinIndex[index];	
+				alias += m_pContactNewDlg->m_pPinYinIndex[index];	
 			}
 			else
 			{
@@ -4640,8 +4614,16 @@ std::string CMultimediaPhoneDlg::GetName(std::string number)
 
 }
 
-void CMultimediaPhoneDlg::AddIcon(CString icon)
-{
+void CMultimediaPhoneDlg::AddIcon(CString icon,bool bjudge )
+{	
+	if (!bjudge)
+	{	
+		CString Ticon = m_vIcon[m_vIcon.size() -1] ;
+		if ( 0 == Ticon.Compare(icon))
+		{
+			return ;
+		}
+	}
 	m_vIcon.push_back(icon);//链接图标	
 	m_MJPGList.SetUnitBitmap(0,icon,L"",true);
 	
@@ -4701,12 +4683,253 @@ bool CMultimediaPhoneDlg::GetSimStatus()
 	return m_bInsertSim ;
 }
 
+void CMultimediaPhoneDlg::g3HangOn(void* param)
+{	
+	::KillTimer((theApp.m_pMainWnd)->m_hWnd, 0x124);
+	::SetTimer((theApp.m_pMainWnd)->m_hWnd, 0x124, 50, NULL);//摘机
+
+}
+
+void CMultimediaPhoneDlg::g3HangOff(void* param)
+{	
+	//int type = (int)param;
+	if ( 1 == (int)param )//只处理3G相关的数据
+	{
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->G3HangOff();	
+	}
+	else
+	{
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->OnTimer(0x123);	
+	}
+}
+
+void CMultimediaPhoneDlg::g3Key(void* param)
+{
+	::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer);
+	::SetTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiKeyTimer, KEYTIMEOUT, 0);	
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelphoneDialDlg->Key_(param);	
+}
+
+void CMultimediaPhoneDlg::g3Dialing(void* param)
+{
+		
+}
+
+void CMultimediaPhoneDlg::g3Ring(void* param)
+{
+	::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer);
+	::SetTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer, RINGTIMEOUT, 0);
+	
+// 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
+// 		m_phoneLine[2].pFSM->setStartState(pstns3gRing);
+
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->Ring_(param);
+	
+}
+
+void CMultimediaPhoneDlg::g3CallID(void* param)
+{
+	::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer);
+	::SetTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiRingTimer, RINGTIMEOUT, 0);
+	
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->CallID_(param);	
+}
+
+void CMultimediaPhoneDlg::g3Contect(void* param)
+{
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->Connect_(param);
+
+}
+
+void CMultimediaPhoneDlg::g3Contected(void* param)
+{
+
+}
+
+void CMultimediaPhoneDlg::g3SubDial(void* param)
+{
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->SubKey_(param);
+}
+
+void CMultimediaPhoneDlg::g3Active(void* param)
+{
+	
+}
+
+void CMultimediaPhoneDlg::g3Hold(void* param)
+{
+	
+}
+
+void CMultimediaPhoneDlg::pstn3gRing(void* param)
+{
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
+		m_phoneLine[2].pFSM->setStartState(pstns3gRing);
+}
+
+void CMultimediaPhoneDlg::pstnRing(void* param)
+{
+	::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiPSTNRingTimer);
+	::SetTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiPSTNRingTimer, RINGTIMEOUT, 0);
+	
+// 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
+// 		m_phoneLine[0].pFSM->setStartState(p3gsPstn);
+
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->pstnRing_(param);
+	
+}
+
+void CMultimediaPhoneDlg::pstnHangOff(void* param)
+{	
+	Dprintf("PSTN HangOff \n");
+
+	if ( 3 == (int)param )//只处理pstn的功能
+	{
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->PstnHangOff_(NULL);
+	}
+	else
+	{
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->PstnHangOff_(NULL);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->HangOff_(NULL);
+	}
+
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->SendOutEvnet(WM_TEL_HUNGOFF, 1);
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_bIsHungOn = FALSE;
+
+}
+
+void CMultimediaPhoneDlg::pstnContect(void* param)
+{
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->PstnContect_(param);
+
+}
+
+void CMultimediaPhoneDlg::pstnHold(void* param)
+{
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
+		m_phoneLine[2].pFSM->setStartState(pstnsHold);
+}
+
+void CMultimediaPhoneDlg::pstnCallID(void* param)
+{
+	::KillTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiPSTNRingTimer);
+	::SetTimer((theApp.m_pMainWnd)->m_hWnd, ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_uiPSTNRingTimer, RINGTIMEOUT, 0);	
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pTelephoneDlg->pstnCallID_(param);
+
+}
+
+void CMultimediaPhoneDlg::HandleHungOn(WPARAM wParam)
+{
+	ReStoreBackLight();
+	Dprintf("HUNG ON 1\n");
+	m_bIsHungOn = TRUE;
+	
+	if (m_phoneLine[2].pFSM->getCurrentState() == pstnsRing &&
+		m_phoneLine[0].pFSM->getCurrentState() == p3gsRing)//3g and pstn Ring
+	{
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(FALSE);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PSTNHangOn();
+		m_phoneLine[2].pFSM->fireEvent(pstneHangOn,((void * const)wParam));
+	}
+	else if (m_phoneLine[2].pFSM->getCurrentState() == pstnsRing || 
+		m_phoneLine[2].pFSM->getCurrentState() == pstnsConnected)// pstn
+	{
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(FALSE);
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PSTNHangOn();
+		m_phoneLine[2].pFSM->fireEvent(pstneHangOn,((void * const)wParam));
+	}
+	else //3g
+	{
+		Telephone::TelephoneWarp::GetTelephoneWarp()->PSTNHangoff();
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(TRUE);
+		m_phoneLine[0].pFSM->fireEvent(p3geHangOn,((void * const)wParam));
+
+	}
+	SendOutEvnet(WM_TEL_HUNGON, 0);
+
+
+// 	if ( m_phoneLine[2].pFSM->getCurrentState() == pstnsRing &&
+// 		m_phoneLine[0].pFSM->getCurrentState() != p3gsRing )//pstn来电
+// 	{	
+// 		
+// 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(FALSE);
+// 		m_phoneLine[2].pFSM->fireEvent(pstneHangOn,((void * const)wParam));
+// 		
+// 	}
+// 	else  
+// 	{	
+// 		if (m_phoneLine[0].pFSM->getCurrentState() != p3gsPstn )
+// 		{
+// 			Telephone::TelephoneWarp::GetTelephoneWarp()->PSTNHangoff();
+// 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SWitchPhone3G(TRUE);
+// 			m_phoneLine[0].pFSM->fireEvent(p3geHangOn,((void * const)wParam));
+// 		}
+// 
+// 	}
+
+}
+
+void CMultimediaPhoneDlg::HandleCallIDEnd(WPARAM wParam ,LPARAM lParam)
+{	
+	Dprintf("CALL ID \n");
+	if (lParam == 3)
+	{
+		m_phoneLine[(int)lParam-1].pFSM->fireEvent(pstneCallID,(void * const)wParam);
+	}
+	else
+	{
+		m_phoneLine[(int)lParam-1].pFSM->fireEvent(p3geCallID,(void * const)wParam);
+	}
+	
+}
+
+void CMultimediaPhoneDlg::HandleRing(WPARAM wParam ,LPARAM lParam)
+{
+	//停止试听音乐
+	m_pSettingDlg->StopTryRing();
+	m_pContactGroupDlg->StopTryRing();
+	m_pMainDlg->m_mainLunarderDlg_->StopTryRing();	
+	SendOutEvnet(WM_TEL_RING, 0);
+	Dprintf("RING \n");
+	if ( 3 == lParam )
+	{
+		m_phoneLine[(int)lParam-1].pFSM->fireEvent(pstneRing,(void * const)wParam);
+	}
+	else
+	{
+		m_phoneLine[(int)lParam-1].pFSM->fireEvent(p3geRing,(void * const)wParam);
+	}
+
+}
+
+void CMultimediaPhoneDlg::HandleHungOff(WPARAM wParam ,LPARAM lParam)
+{	
+	Dprintf("HUNG OFF \n");
+	if ( 1 == wParam )//3g off
+	{
+		m_phoneLine[0].pFSM->fireEvent(p3geHangOff,(void * const)wParam);
+	}
+	else if ( 3 == wParam )//pstn off
+	{
+		m_phoneLine[2].pFSM->fireEvent(pstnsHangOff,(void * const)wParam);//
+	}
+	else//全部挂断
+	{
+		m_phoneLine[2].pFSM->fireEvent(pstnsHangOff,NULL);//
+		m_phoneLine[0].pFSM->fireEvent(p3geHangOff,NULL);//
+	}
+	SendOutEvnet(WM_TEL_HUNGOFF, 1);
+	m_bIsHungOn = FALSE;
+
+}
+
 void CMultimediaPhoneDlg::AddDesktopBtn()
 {	
 	CString desktop_fore = L".\\adv\\mjpg\\k5\\common\\桌面按钮_fore.png";
 	CString desktop_back = L".\\adv\\mjpg\\k5\\common\\桌面图标_back.png";
 	m_MJPGList.SetUnitBitmap(10,desktop_fore,desktop_back,false);
 	m_MJPGList.SetUnitIsShow(10,true,true);
+
 }
 
 void CMultimediaPhoneDlg::PopbackIcon()

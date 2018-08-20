@@ -543,6 +543,8 @@ IDB_BITMAP_COMBOX1_FORE BITMAP  DISCARDABLE     "res\\下拉1_fore.bmp"
 IDB_BITMAP_COMBOX1_BACK BITMAP  DISCARDABLE     "res\\下拉1_back.bmp"
 IDB_BITMAP_COMBOX_FORE  BITMAP  DISCARDABLE     "res\\下拉_fore.bmp"
 IDB_BITMAP_COMBOX_BACK  BITMAP  DISCARDABLE     "res\\下拉_back.bmp"
+IDB_BITMAP_CONTACTNEW   BITMAP  DISCARDABLE     "res\\联系人下拉_fore.bmp"
+IDB_BITMAP_CONTACTNEW1  BITMAP  DISCARDABLE     "res\\联系人下拉_back.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

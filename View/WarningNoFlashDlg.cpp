@@ -74,7 +74,6 @@ void CWarningNoFlashDlg::RemoveThread(void *type_)
 		Data::Contact::Remove("");
 		Data::ContactGroup::Remove("");
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowTypeItems();
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->SetTypeListSelected(0);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
 		count = Data::Contact::GetDataCount("");
 		text.Format(_T("%d"), count);

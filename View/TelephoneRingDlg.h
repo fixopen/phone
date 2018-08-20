@@ -54,8 +54,12 @@ public:
 	CMJPGStatic		m_MJPGList;
 
 	void	HangOff_();
-	void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number);
-	void	HandleOn();  
+	void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number, int unitNo = 100);
+	void	HandleOn();
+	void	Switch();
+	void	HideContact(int uintNo,bool bshow = true );
+	void    InitData();
+	void	ClearData(int unitNo);
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -653,7 +653,9 @@ int C3GHomeJoyDlg::SetPlayList(TCHAR *dir, int type)
 		char filename[128];
 		int i = wcstombs( filename, FindFileData.cFileName, 128);
 		filename[i] = '\0';
-		if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")||strstr(filename, ".wav")||strstr(filename, ".WAV"))
+		if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")
+			||strstr(filename, ".wav")||strstr(filename, ".WAV")
+			||strstr(filename, ".mid")||strstr(filename, ".MID"))
 		{
 			m_fileMp3.push_back(FindFileData.cFileName);
 			m_isFileSelect.push_back(0);
@@ -670,7 +672,9 @@ int C3GHomeJoyDlg::SetPlayList(TCHAR *dir, int type)
 		{
 			i = wcstombs( filename, FindFileData.cFileName, /*wcslen(FindFileData.cFileName)*/128);
 			filename[i] = '\0';
-			if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")||strstr(filename, ".wav")||strstr(filename, ".WAV"))
+			if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")
+				||strstr(filename, ".wav")||strstr(filename, ".WAV")
+				||strstr(filename, ".mid")||strstr(filename, ".MID"))
 			{
 				m_fileMp3.push_back(FindFileData.cFileName);
 				m_isFileSelect.push_back(0);
@@ -827,6 +831,15 @@ void C3GHomeJoyDlg::PageDown()
 
 void C3GHomeJoyDlg::OnClickDelete()
 {
+	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
+	HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
+	if(hWnd)
+	{
+		main->m_pWarningNoFlashDlg->SetTitle(L"该文件正在被另一个程序使用！无法删除！");
+		main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
+		main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
+		return;
+	}
 	if (0 == m_firstSelPage)
 		return;
 	int count = 0;
@@ -835,16 +848,16 @@ void C3GHomeJoyDlg::OnClickDelete()
 		if(1 == m_isFileSelect[i] && i >= m_fileDir.size())
 			count++;
 	}
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要删除已选文件吗？", 0);
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
-	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+	main->m_pDeleteTipDlg->SetTitle(L"确定要删除已选文件吗？", 0);
+	main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+	main->m_pDeleteTipDlg->SetProcessMax(count);
+	if (main->m_pSettingDlg->m_pTempSetting->isAdmin() && !main->m_pSettingDlg->m_bLogin)
 	{
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
+		main->m_pDeleteTipDlg->SetPasswordModel(true);
 	}
-	std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
+	std::string pw = main->m_pSettingDlg->m_pTempSetting->adminPassword();
+	main->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
+	main->m_pDeleteTipDlg->ShowWindow_(TRUE);
 }
 extern void DeleteDirectory(CString SrcDir, BOOL isShow = TRUE);
 void C3GHomeJoyDlg::DeleteSelectedItem()
@@ -986,14 +999,23 @@ void C3GHomeJoyDlg::OnShiftFile()
 {
 	g_destDir = L"";
 	g_showDir = L"";
+	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 
+	HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
+	if(hWnd)
+	{
+		main->m_pWarningNoFlashDlg->SetTitle(L"该文件正在被另一个程序使用！无法转移！");
+		main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
+		main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
+		return;
+	}
 	if (0 == m_firstSelPage)
 		return;
 	if(!DetectDIR(_T("\\StorageCard")) && !DetectDIR(_T("\\UsbDisk")))
 	{
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
+		main->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
+		main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
+		main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
 		return;
 	}
 
@@ -1035,7 +1057,6 @@ void C3GHomeJoyDlg::OnShiftFile()
 		g_destDir = _T("/FlashDrv/MY_MUSIC/");
 	}
 
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	main->CancelBalckLightSaveTimer();
 	main->m_pShiftFileDlg->m_shiftProc->SetPos(0);
 	main->m_pShiftFileDlg->SetHWnd(this->GetSafeHwnd());
@@ -1157,18 +1178,25 @@ void C3GHomeJoyDlg::SetUnitIsAvailable(int type)
 LRESULT C3GHomeJoyDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
 	// TODO: Add your specialized code here and/or call the base class	
+	HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
 	switch (message)
 	{
 	case WM_DELETESELITEM:
-		DeleteSelectedItem();
+		if(hWnd == NULL)
+		{
+			DeleteSelectedItem();
+		}
 		break;
 	case WM_SHIFTSELITEM:
-		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
-		m_isSelectAll = FALSE;
-		SetPlayList(m_chDir, m_uiType);
-		SetInitShow();
-		AddFileMp3();
-		ShowArrayInList();
+		if(hWnd == NULL)
+		{
+			m_MJPGList.SetUnitIsDownStatus(50, FALSE);
+			m_isSelectAll = FALSE;
+			SetPlayList(m_chDir, m_uiType);
+			SetInitShow();
+			AddFileMp3();
+			ShowArrayInList();
+		}
 		break;
 	};
 	return CDialog::WindowProc(message, wParam, lParam);
@@ -1294,19 +1322,22 @@ void C3GHomeJoyDlg::OnPlayer(int index)
 			
 			main->m_pMainDlg->m_mainMp3Dlg_->m_MP3List.push_back(txt);
 			main->m_pMainDlg->m_mainMp3Dlg_->m_ShowList.push_back(m_fileMp3[loop]);
-			nFileSelected++;
+			if((m_fileMp3[loop].Right(4) != L".mid") && (m_fileMp3[loop].Right(4) != L".MID"))
+			{
+				nFileSelected++;
+			}
 		}
 	}
 	
-	main->m_pMainDlg->m_mainMp3Dlg_->CalculatePage(nFileSelected);
+	main->m_pMainDlg->m_mainMp3Dlg_->CalculatePage(main->m_pMainDlg->m_mainMp3Dlg_->m_MP3List.size());
 	main->m_pMainDlg->m_mainMp3Dlg_->ShowArrayInList(main->m_pMainDlg->m_mainMp3Dlg_->m_ShowList);
 	
 	if(nFileSelected > 0)
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		main->playeraudio_->SetImageList(main->m_pMainDlg->m_mainMp3Dlg_->m_MP3List, index);
-		m_MJPGList.Invalidate();
 	}
+	m_MJPGList.Invalidate();
 	gPlayIndex = 1;
 }
 

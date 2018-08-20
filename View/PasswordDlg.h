@@ -61,7 +61,6 @@ private:
 	
 	PASSWORD_TYPE m_passwordType;
 	CString		  m_password;
-	const char		  *m_tempPassword;
 	int			  m_nStep;
 	HWND		  m_Owner;
 

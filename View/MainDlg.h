@@ -131,6 +131,7 @@ public:
 
 	CMJPGStatic		m_MJPGList;
 	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnClickMJPGToApp(WPARAM w, LPARAM l);
 
 	/*
 	CCEStatic	m_TelStatusStatic;
@@ -149,6 +150,8 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
+
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -163,7 +166,6 @@ protected:
 	afx_msg void OnPlayPhoto(WPARAM w, LPARAM l);
 	afx_msg void OnStaticClick(WPARAM w, LPARAM l);
 	afx_msg void OnMJPGShowHalf(WPARAM w, LPARAM l);
-	afx_msg void OnClickMJPGToApp(WPARAM w, LPARAM l);
 	afx_msg void OnSetAdmin(WPARAM w, LPARAM l);
 	afx_msg void OnUnSetAdmin(WPARAM w, LPARAM l);
 	afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );

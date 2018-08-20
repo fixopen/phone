@@ -15,22 +15,28 @@
 #include "../resource.h"
 #include "PlayerDlg.h"
 
+//#include "MidiPlayerControl.h"
+//#pragma comment(lib, "SDL.lib")
+
 /////////////////////////////////////////////////////////////////////////////
 // CMainMp3Dlg dialog
 
 class CMainMp3Dlg : public CDialog
 {
 public:
-	BOOL m_bIsPausebyEvent;
-	TCHAR		m_chDir[128];
+	BOOL				m_bIsPausebyEvent;
+	TCHAR				m_chDir[128];
 	
-	CCEProcessBar m_prgPlayTime;
-	CMJPGStatic		m_MJPGList;
-	CCEMoveTxtStatic *m_MoveText;
+	CCEProcessBar		m_prgPlayTime;
+	CMJPGStatic			m_MJPGList;
+	CCEMoveTxtStatic	*m_MoveText;
 	
-	int m_ClickType;
-	int m_IsPlay;
-	int m_PreOrBack;  //0代表正常，1代表前一首，2代表下一首
+	BOOL m_isMidiMusic;
+	BOOL m_isMidiInit;
+	BOOL m_isPlayerShow;
+	int  m_ClickType;
+	int  m_IsPlay;
+	int  m_PreOrBack;  //0代表正常，1代表前一首，2代表下一首
 	BOOL m_IsSound;
 	int  m_Volume;
 	BOOL m_isAllScreenPlay;
@@ -43,7 +49,6 @@ public:
 	//local 0初级阶段
 	void SetMP3(CString filename);
 	void OnExit_(BOOL isStopMusic);
-	void SetVolume();
 	void ChangeVolume(int w);
 	void OnFirst();
 	void OnLast();
@@ -54,6 +59,9 @@ public:
 	void CalculatePage(int dataCount);
 	void OnClickShowList(int unitNO);
 	void OnDBClickShowList(int unitNO);
+
+	void HandleAudio(bool bt);
+
 
 public:
 	CPlayerDlg	*playerDlg_; 
@@ -70,7 +78,8 @@ public:
 	enum { IDD = IDD_DIALOG_CACULATER };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-
+private:
+//	MediaPlayer::MidiPlayer *pTheMidiPlayer;
 
 // Overrides
 	// ClassWizard generated virtual function overrides

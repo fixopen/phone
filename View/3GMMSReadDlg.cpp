@@ -23,7 +23,6 @@ CMMSReadDlg::CMMSReadDlg(CWnd* pParent /*=NULL*/)
 
 }
 
-
 void CMMSReadDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -68,11 +67,11 @@ void CMMSReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	switch(w)
 	{
 	case  1://回复
-		Replay();
+	//	Replay();
 		break;
 	
 	case  2://回拨
-		DialBack();
+	//	DialBack();
 		break;
 	
 	case  3://转发
@@ -80,11 +79,11 @@ void CMMSReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	
 	case  4://存成草稿
-		SaveDraft();
+	//	SaveDraft();
 		break;
 
 	case  5://提取号码
-		NumberExtract();
+	//	NumberExtract();
 		break;
 	
 	case  20://向上翻找内容
@@ -110,6 +109,7 @@ void CMMSReadDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 void CMMSReadDlg::SetMMSInfo(int id,SMSBOX_TYPE type)					
 {	
+
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd; 
 	CString recIcon = L"" ;//收件人图标
 	CString sendIcon = L".\\adv\\mjpg\\k5\\common\\短信\\发件人1.bmp";//发件人图标
@@ -147,6 +147,20 @@ void CMMSReadDlg::SetMMSInfo(int id,SMSBOX_TYPE type)
 	
 		m_MJPGList.SetUnitText(31,temp,false);//收件人或者发件人
 
+		if ( SEND_TYPE == type || type == DRAFT_TYPE)
+		{	
+			std::string name ;
+			std::string number = Util::StringOp::FromCString(temp);;
+			main->m_pSMSListDlg->AnalyseSender(number,name);
+			
+			temp  = Util::StringOp::ToCString(name);
+			if (temp.Mid(temp.GetLength()-1) = L";")
+			{
+				temp = temp.Mid(0,temp.GetLength()-1);
+			}
+			m_MJPGList.SetUnitText(31,temp,false);
+		}
+
 		temp = Util::StringOp::ToCString(m_pMMSData->Subject);
 		m_MJPGList.SetUnitText(32,temp,false);//主题
 
@@ -165,6 +179,7 @@ void CMMSReadDlg::SetMMSInfo(int id,SMSBOX_TYPE type)
 		CTime tm = CTime(1970, 1, 1, 0, 0, 0);
 		tm += CTimeSpan(0, 0, 0, m_pMMSData->DateAndTime);
 		temp = Util::StringOp::FromTimestampFormat(tm).c_str();
+		temp = temp.Mid(2);
 		m_MJPGList.SetUnitText(33, temp, false);//时间
 		
 		m_MJPGList.Invalidate();
@@ -287,7 +302,7 @@ void CMMSReadDlg::NumberExtract()
 	}
 	
 	if (vNumber.size())
-	{
+	{	
 		main->m_pSMSListDlg->m_pNumberExtractDlg->SetNumber(vNumber);
 		main->m_pSMSListDlg->m_pNumberExtractDlg->ShowNumber();
 		main->m_pSMSListDlg->m_pNumberExtractDlg->ShowWindow_(SW_SHOW);

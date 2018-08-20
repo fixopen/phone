@@ -36,7 +36,7 @@ CContactDlg::CContactDlg(CWnd* pParent /*=NULL*/)
 	,m_iUpCurrentPage(1)
 	,m_sSimName("SIM卡")
 	,m_iBindCount(3)
-	,m_iSimID(1)
+	,m_iSimID(-1)
 	,m_defGroupID(0)
 	,m_iFriendID(3)
 	,m_iClassMate(4)
@@ -430,76 +430,7 @@ BOOL CContactDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	std::string strTemp;
 	CString str;
-/*
-	m_lsType.m_nLineHeight = 30;
-	m_lsType.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(1, 46, 112, 348), this, IDC_LIST_CONTACT_TYPE, FALSE);
-	m_lsType.SetExtendedStyle(m_lsType.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-	m_lsType.InsertColumn(0, _T("Type"), LVCFMT_LEFT, 110);
 
-	m_pImageList = new CImageList();
-	m_pImageList->Create(32, 32, ILC_COLOR32|ILC_MASK, 12, 2);   
-    
-	CBitmap bm;
-	bm.LoadBitmap(IDB_BITMAP5);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP1);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP9);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP10);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP11);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP12);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP13);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP14);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP15);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP16);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP17);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP18);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-
-//	m_lsType.SetImageList(m_pImageList, LVSIL_SMALL);
-	
-	m_lsList.Create(WS_CHILD|WS_VISIBLE|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER, CRect(115, 45, 115+572, 45+303), this, IDC_LIST_CONTACT_LIST, TRUE, 0, FALSE);
-	m_lsList.SetExtendedStyle(m_lsList.GetExtendedStyle()|LVS_EX_FULLROWSELECT);
-	m_lsList.InsertColumn(0, _T("Name"), LVCFMT_LEFT, 120+22+34);
-	m_lsList.InsertColumn(1, _T("Company"), LVCFMT_LEFT, 180+60);
-//	m_lsList.InsertColumn(2, _T("Department"), LVCFMT_LEFT, 120);
-	m_lsList.InsertColumn(2, _T("Duty"), LVCFMT_LEFT, 150-22+26);
-
-	m_pImageList = new CImageList();
-	m_pImageList->Create(32, 32, ILC_COLOR32|ILC_MASK, 3, 2);   
-	bm.LoadBitmap(IDB_BITMAP8);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP7);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-	bm.LoadBitmap(IDB_BITMAP6);
-	m_pImageList->Add(&bm, RGB(255, 0, 255));
-	bm.DeleteObject();
-
-	m_lsList.SetImageList(m_pImageList, LVSIL_SMALL);
-*/
 	CRect rectKey[29];
 	UINT16 uiKey[29];
 	int offsetX = 0;
@@ -534,77 +465,6 @@ BOOL CContactDlg::OnInitDialog()
 //  change by qi 2009_09_17
 //	m_skSoftKey.Create(IDB_VOIPPYSEARCH, CPoint(0,0), 29, rectKey, uiKey, CRect(0, 346, 800, 420),this,WS_CHILD|WS_VISIBLE, IDC_SOFTKEY_CONTACT_PYSEARCH);
 
-/*
-	strTemp = Data::LanguageResource::Get(Data::RI_CARD_NEWCARDBTN);
-	str = strTemp.c_str();
-	m_btnNewContact.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 26, 471, 45), this, IDC_BUTTON_CONTACT_NEW);
-	m_btnNewContact.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
-
-	strTemp = Data::LanguageResource::Get(Data::RI_CARD_NEWTYPEBTN);
-	str = strTemp.c_str();
-	m_btnNewType.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 46, 471, 65), this, IDC_BUTTON_CONTACT_NEWTYPE);
-	m_btnNewType.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
-	
-	strTemp = Data::LanguageResource::Get(Data::RI_CARD_EDITTYPEBTN);
-	str = strTemp.c_str();
-	m_btnEditType.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 66, 471, 85), this, IDC_BUTTON_CONTACT_EDITTYPE);
-	m_btnEditType.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
-	
-	strTemp = Data::LanguageResource::Get(Data::RI_COMN_FINDBTN);
-	str = strTemp.c_str();
-	m_btnSearch.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 86, 471, 105), this, IDC_BUTTON_CONTACT_SEARCH);
-	m_btnSearch.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
-		
-	strTemp = Data::LanguageResource::Get(Data::RI_SOUND_PLAY_CLOSE);
-	str = strTemp.c_str();
-	m_btnClose.Create(str, Data::g_buttonRectBMPID[0][Data::g_skinstyle], Data::g_buttonRectBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE, CRect(417, 138, 471, 157), this, IDC_BUTTON_CONTACT_CLOSE);
-	m_btnClose.SetBackRGB(Data::g_allFramBackRGB[Data::g_skinstyle]);
-
-	m_sticPanel.Create(_T(""), WS_CHILD|WS_VISIBLE, CRect(416, 26, 472, 157), this);
-	m_sticPanel.SetColor(RGB(0, 0, 0), Data::g_allFrameInFrameLine1RGB[0][Data::g_skinstyle]);
-
-	m_sticBackground.Create(CRect(0, 0, 480, 204), this, 2);
-
-	TextStruct ts[6];
-	memset(ts, 0, sizeof(TextStruct) * 6);
-
-	ts[0].txtRect = CRect(0, 0, 100, 20);
-	ts[0].txtFontSize = 16;
-	ts[0].sAlign = DT_CENTER | DT_BOTTOM;
-	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_CARD_TYPESTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_TYPESTC).length());
-	
-	ts[1].txtRect = CRect(112, 0, 170, 20);
-	ts[1].txtFontSize = 16;
-	ts[1].sAlign = DT_CENTER | DT_BOTTOM;
-	memcpy(ts[1].sTxt, Data::LanguageResource::Get(Data::RI_CARD_NAMESTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_NAMESTC).length());
-	
-	ts[2].txtRect = CRect(170, 0, 266, 20);
-	ts[2].txtFontSize = 16;
-	ts[2].sAlign = DT_CENTER | DT_BOTTOM;
-	memcpy(ts[2].sTxt, Data::LanguageResource::Get(Data::RI_CARD_COMPANYSTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_COMPANYSTC).length());
-
-	ts[3].txtRect = CRect(266, 0, 336, 20);
-	ts[3].txtFontSize = 16;
-	ts[3].sAlign = DT_CENTER | DT_BOTTOM;
-	memcpy(ts[3].sTxt, Data::LanguageResource::Get(Data::RI_CARD_DEPARTSTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_DEPARTSTC).length());
-	
-	ts[4].txtRect = CRect(336, 0, 396, 20);
-	ts[4].txtFontSize = 16;
-	ts[4].sAlign = DT_CENTER | DT_BOTTOM;
-	memcpy(ts[4].sTxt, Data::LanguageResource::Get(Data::RI_CARD_TITLESTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_TITLESTC).length());
-	
-	ts[5].txtRect = CRect(417, 0, 470, 20);
-	ts[5].txtFontSize = 16;
-	ts[5].sAlign = DT_CENTER | DT_BOTTOM;
-	memcpy(ts[5].sTxt, Data::LanguageResource::Get(Data::RI_CARD_OPERATORSTC).c_str(), Data::LanguageResource::Get(Data::RI_CARD_OPERATORSTC).length());
-	
-	m_sticBackground.SetTextStruct(ts, 6);
-*/
-
-//	change by qi 2009_09_17
-// 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
-// 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\通讯录.xml");
-// 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
 //  add by qi 2009_09_17
 
@@ -642,9 +502,6 @@ BOOL CContactDlg::OnInitDialog()
 	
 	m_simImportDlg.Create(CSIMImportDlg::IDD);
 	m_simImportDlg.ShowWindow(SW_HIDE);
-
-//	m_pSimImportDlg.Create(CSIMImportDlg::IDD);
-//	m_pSimImportDlg.ShowWindow(SW_HIDE);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -953,7 +810,7 @@ void CContactDlg::OnButtonContactEdittype()
 	{
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactGroupDlg->SetContactGroup(result[0]);
 		::SetFocus(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactGroupDlg->m_hWnd);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactGroupDlg->ShowWindow_(TRUE);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactGroupDlg->ShowWindow_(SW_SHOW);
 	}
 	
 }
@@ -1028,16 +885,6 @@ int CContactDlg::GetTypeListSelected(void)
 	return -1;
 }
 
-void CContactDlg::SetTypeListSelected(int index)
-{
-	POSITION pos = m_lsType.GetFirstSelectedItemPosition();   
-	while (pos != NULL)
-	{   
-		int iSel = m_lsType.GetNextSelectedItem(pos);   
-		m_lsType.SetItemState(iSel, 0, LVIS_SELECTED);   
-	}
-    m_lsType.SetItemState(index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-}
 
 void CContactDlg::Search(std::string filter)
 {
@@ -1062,8 +909,15 @@ LRESULT CContactDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 			ScrollItemsInList(wParam, lParam);
 			break;
 
-		case WM_DELETESELITEM:		
-			DeleteItems();		
+		case WM_DELETESELITEM:
+			if (m_bSelectAll)
+			{
+				DeleteAll();
+			}
+			else
+			{
+				DeleteItems();	
+			}
 			break;
 
 		case WM_SIM_IMPORT:
@@ -1072,6 +926,10 @@ LRESULT CContactDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 
 		case WM_NUMBER_SELECT:
 			HandleNumber(lParam);
+			break;
+
+		case WM_SIM_CAPACITY:
+			m_nSimCapacity = wParam ;
 			break;
 
 		default:
@@ -1168,7 +1026,6 @@ void CContactDlg::PageSwitch(Action action)
 
 void CContactDlg::ClickedOneItem(int unitID,int item)
 {	
-
 	if (m_vClick[(m_iCurrentPage-1)*PageSize+item] == 0)//被点击了
 	{		
 		m_MJPGList.SetUnitIsDownStatus(unitID,true);		
@@ -1181,6 +1038,33 @@ void CContactDlg::ClickedOneItem(int unitID,int item)
 	}
 
 	m_MJPGList.SetUnitIsShow(unitID,true,true);
+
+}
+
+void CContactDlg::DeleteAll()
+{	
+	if (m_iCurrentGroupID == m_iSimID)
+	{		
+		std::vector< boost::shared_ptr<Data::Contact> > result ;
+		result = Data::Contact::GetFromDatabase(m_sListFilter);
+		
+		for (int i = 0 ;i < result.size() ;i++)
+		{
+			int id = atoi(CString(result[i]->memo().c_str()));
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pATCommandWarp1->DeleteSim(id);						
+	
+		}
+
+	}
+	Data::Contact::Remove(m_sListFilter);
+	
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(1);
+
+	m_iCurrentPage = 1;
+	Clear();
+	ClearCurrentPage();
+	FromContactDataBase();
+	ShowGroupInfo();
 
 }
 
@@ -1495,8 +1379,9 @@ void CContactDlg::HandleSimImport(WPARAM wp)
 	}
 	
 	//SIM卡的容量
-	int capacity = main->m_pATCommandWarp1->GetSimCapacity();
-	if (  0 == capacity)//没有SIM返回
+	main->m_pATCommandWarp1->GetSimCapacity();
+
+	if (  0 == m_nSimCapacity)//没有SIM返回
 	{	
 		main->m_pWarningNoFlashDlg->SetTitle(L"SIM卡不存在!");
 		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
@@ -1519,7 +1404,7 @@ void CContactDlg::HandleSimImport(WPARAM wp)
 	{
 		vID[0] = 1 ; 
 	}
-
+	
 	for (int i = 0 ; i < m_vClick.size() ; i++)//获得姓名 和 电话
 	{
 		if ( 1 == m_vClick[i])
@@ -1533,7 +1418,7 @@ void CContactDlg::HandleSimImport(WPARAM wp)
 				bool bEmpty = false  ;
 				
 				sim.name	= result[0]->name();//名片里一定有名字
-				sim.id		= 1;
+				sim.id		= "0";
 				
 				tel[0]		= result[0]->mobilesTelephone().number();
 				tel[1]		= result[0]->mobilesTelephone2().number();
@@ -1556,7 +1441,7 @@ void CContactDlg::HandleSimImport(WPARAM wp)
 							}
 							sim.id = Util::StringOp::FromInt(pos+1);
 												
-							if (pos >= capacity)
+							if (pos >= m_nSimCapacity)
 							{	
 								main->m_pWarningNoFlashDlg->SetTitle(L"超过SIM卡容量，不能导入");
 								main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
@@ -1587,7 +1472,7 @@ void CContactDlg::HandleSimImport(WPARAM wp)
 						}
 						sim.id = Util::StringOp::FromInt(pos+1);
 
-						if (pos >= capacity)
+						if (pos >= m_nSimCapacity)
 						{	
 							main->m_pWarningNoFlashDlg->SetTitle(L"超过SIM卡容量，不能导入");
 							main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
@@ -1704,10 +1589,21 @@ void CContactDlg::ShowDeleteDlg()
 	{	
 		CString title = "确认删除已选的内容吗?";
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(title,0);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+		
+		if (m_bSelectAll)
+		{
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(1);
+
+		}
+		else
+		{
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+		
+		}
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
 	}
+
 }
 
 void CContactDlg::OnBtnEditContact(int item)
@@ -2275,6 +2171,7 @@ void CContactDlg::HandleNumber(LPARAM lParam)
 	{
 		Contact2Sms();
 	}
+
 }
 void CContactDlg::SetSimID(int id)
 {
@@ -2314,6 +2211,11 @@ void CContactDlg::BackupSim()
 		}
 	}
 
+}
+
+int CContactDlg::GetSimCapacity()
+{
+	return m_nSimCapacity;
 }
 
 void CContactDlg::ShowWindow_()

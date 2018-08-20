@@ -87,11 +87,6 @@ BOOL CContactSearchDlg::OnInitDialog()
 	m_sticNumber.SetColor(RGB(0, 0, 0), Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
 	m_sticNumber.SetAlign(SS_CENTER);
 
-	strTemp = Data::LanguageResource::Get(Data::RI_CARD_FIND_COMPANY);
-	str = strTemp.c_str();
-	m_sticCompany.Create(str, WS_CHILD|WS_VISIBLE, CRect(50, 133, 144, 151), this);
-	m_sticCompany.SetColor(RGB(0, 0, 0), Data::g_partFrameInRectBackRGB[Data::g_skinstyle]);
-	m_sticCompany.SetAlign(SS_CENTER);
 
 	strTemp = Data::LanguageResource::Get(Data::RI_CARD_FIND_DUTY);
 	str = strTemp.c_str();

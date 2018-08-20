@@ -280,6 +280,10 @@
 #define IDC_BUTTON_CONTACTINFO_CLOSE    3223
 #define IDC_BUTTON_SOUND_CLOSE          3224
 #define IDC_BUTTON_NOTE_CLOSE           3225
+#define WM_CLCK							4000
+#define WM_CCFC							4002
+#define WM_SIM_CAPACITY					4003
+#define WM_CONTACT_NUM					4004
 #define IDT_GETINFO_TIIMER              8000
 #define IDT_PAUSE_PLAYER                8001
 #define WM_CHANGEWINDOW                 8001
@@ -579,7 +583,9 @@
 #define WM_TEL_STATUS                   9084
 #define IDB_BITMAP_COMBOX_BACK          9084
 #define IDC_RADIO_SETTING_RECORDAUTO    9085
+#define IDB_BITMAP_CONTACTNEW           9085
 #define IDC_RADIO_SETTING_RECORDMANUL   9086
+#define IDB_BITMAP_CONTACTNEW1          9086
 #define IDC_RADIO_SETTING_RECORDHIGHT   9087
 #define IDC_RADIO_SETTING_RECORDMIDDLE  9088
 #define WM_LISTCTRL_CLICKSUBITEM        9089
@@ -617,6 +623,9 @@
 #define IDC_NIGHTLIGHTSTART_TIME        9121
 #define IDC_NIGHTLIGHTEND_TIME          9122
 #define WM_SIM_MESSAGE                  9123
+#define WM_VK_F                         9124
+#define WM_RECEIVE_BOX                  9125
+#define WM_CHANGE_DCBATTERY				9126
 #define CANCEL_KEY                      10000
 #define OK_KEY                          10001
 #define LEFT_KEY                        10002
@@ -628,7 +637,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        9085
+#define _APS_NEXT_RESOURCE_VALUE        9087
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         8065
 #define _APS_NEXT_SYMED_VALUE           101

@@ -2,6 +2,7 @@
 #define SMSWarp_h
 
 #include "ATCommandWarp.h"
+#include "../UTIL_/Observer.h"
 //#include "../MMS/MMSWarp.h"
 
 // 用户信息编码方式 
@@ -19,7 +20,7 @@
 
 namespace SMS
 {
-	class SMSWarp
+	class SMSWarp:public Util::Observer
 	{
 	public:
 		SMSWarp();
@@ -29,6 +30,9 @@ namespace SMS
 		void Bind(Util::ATCommandWarp* at);
 		void Bind_(Util::ATCommandWarp* at);
 		void SetOTANumber(std::string number);
+		virtual void Update(std::string const& data) ; 
+		void ParseCMS(std::string const& data);
+		bool m_bParseCMS;
 
 	private:
 		Util::ATCommandWarp* m_pAT;
@@ -142,6 +146,7 @@ namespace SMS
 		BOOL GetRecvMessage(SM_PARAM* pSmParam);	// 从接收队列中取一条短消息 
 
 		static UINT SmThread(LPVOID lpParam);	// 短消息收发处理子线程 
+		SM_BUFF buff;           // 接收短消息列表的缓冲区   
 
 		void Send(std::string number, std::string content);
 		void SetCenterAddress();
@@ -149,6 +154,12 @@ namespace SMS
 		void MapMessage(SM_PARAM* sms);//格式转换
 		void ReceiveCallback(SMS_TYPE type, void* msg);
 		void SendCallback(bool send,SM_PARAM *sm);//发送结果通知APP
+
+		void  State_(void);	
+		void  PhoneNettype_(void);		
+		void  SignalQuality_(void);
+		
+
 	};
 }
 

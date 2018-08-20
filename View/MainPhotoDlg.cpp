@@ -123,7 +123,7 @@ void CMainPhotoDlg::OnExit()
 //²¥·Å
 void CMainPhotoDlg::OnPlayer(int index)
 {
-	if (g_isAutoPlay)   ////
+	if (g_isAutoPlay)
 	{
 		playerDlg_->StopTimer();
 		g_isAutoPlay = FALSE;
@@ -344,7 +344,8 @@ void CMainPhotoDlg::OnTimer(UINT nIDEvent)
 		KillTimer(0x100);
 		if(IsWindowVisible())
 		{
-			OnPlayer(-1);
+			playerDlg_->ShowWindow(SW_SHOW);
+			playerDlg_->SetResumeTimer();
 		}
 	}
 	else if(nIDEvent == 100)
@@ -352,6 +353,15 @@ void CMainPhotoDlg::OnTimer(UINT nIDEvent)
 		KillTimer(100);
 		if(memcmp(m_chDir, _T("/flashdrv/my_photo/"), wcslen(m_chDir)*2) == 0)
  			main->m_pMainDlg->m_p3GHomePicDlg->SetPlayList(_T("/flashdrv/my_photo/"));
+	}
+	else if(nIDEvent == 0x101)
+	{
+		KillTimer(0x101);
+		if(0 == main->phone_->m_BatteryStatus.batteryType)
+		{
+			main->phone_->m_BatteryStatus.typeChange = 1;
+			::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_CHANGE_DCBATTERY, 0, 0);
+		}
 	}
 	
 	CDialog::OnTimer(nIDEvent);

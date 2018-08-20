@@ -18,6 +18,7 @@ static char THIS_FILE[] = __FILE__;
 
 static int gMp3PuaseCount = 0;
 int gPlayIndex = 0;
+
 /////////////////////////////////////////////////////////////////////////////
 // CMainMp3Dlg dialog
 
@@ -31,6 +32,9 @@ CMainMp3Dlg::CMainMp3Dlg(CWnd* pParent /*=NULL*/)
 	m_ClickType = 0;
 	m_IsPlay = 0;
 	m_IsSound = TRUE;
+	m_isMidiMusic = FALSE;
+	m_isMidiInit = FALSE;
+	m_isPlayerShow = FALSE;
 	m_Volume = SOUND_DEFAULT_VOLUME;
 	m_bIsPausebyEvent = FALSE;
 	m_pageSize = 5;
@@ -82,7 +86,7 @@ void CMainMp3Dlg::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
 {
 	if(nState & WA_ACTIVE )
 	{
-		//SetPlayList(_T("/flashdrv/my_music/"), 0);
+		
 	}
 }
 
@@ -109,6 +113,12 @@ BOOL CMainMp3Dlg::OnInitDialog()
 	playerDlg_->Create(CPlayerDlg::IDD, this);
 	playerDlg_->ReSetWindowsRect(CRect(36, 52, 474, 320));
 	
+//	pTheMidiPlayer = MediaPlayer::MidiPlayer::GetMidiPlayer();
+//	if(!pTheMidiPlayer)
+//	{
+//		Dprintf(L"无法生成MID播放器");
+//	}
+	
 	//wangzhenxing0922
 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\音乐播放.xml");
@@ -132,12 +142,59 @@ BOOL CMainMp3Dlg::OnInitDialog()
 
 void CMainMp3Dlg::SetMP3(CString filename)
 {
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	char filename_[128];
 	std::string str = Util::StringOp::FromCString(filename);
 	sprintf(filename_, "%s", str.c_str());
-	playerDlg_->SetParam(filename_, mtAudio);
-	playerDlg_->ReSetWindowsRect(CRect(0, 0, 0, 0));
-	
+	OnStop();
+	if((m_ShowList[gPlayIndex-1].Right(4) == ".mid") || (m_ShowList[gPlayIndex-1].Right(4) == ".MID"))
+	{
+		if(!m_isMidiInit)
+		{
+//			pTheMidiPlayer->Init();
+			m_isMidiInit = TRUE;
+		}
+//		if(pTheMidiPlayer->OpenSong(filename_))
+// 		{
+// 			if(!m_isMidiMusic)
+// 			{
+// 				m_IsSound = !m_IsSound;
+// 				m_isMidiMusic = TRUE;
+// 				OnMute();
+// 			}
+// 			pTheMidiPlayer->StartPlay();
+// 		}
+
+		m_isMidiMusic = TRUE;
+
+	}
+	else
+	{
+		if(m_isMidiMusic)
+		{
+			m_IsSound = !m_IsSound;
+			m_isMidiMusic = FALSE;
+			OnMute();
+		}
+		m_isMidiMusic = FALSE;
+		playerDlg_->SetParam(filename_, mtAudio);
+		playerDlg_->ReSetWindowsRect(CRect(0, 0, 0, 0));
+		if(!m_isPlayerShow)
+		{
+			m_isPlayerShow = TRUE;
+			playerDlg_->Show();
+		}
+		else
+		{
+			main->playeraudio_->PlayerFile(filename_);
+		}
+
+	}
+	KillTimer(IDT_GETINFO_TIIMER);
+	m_MoveText->KillTimer(0xFFF0);  //设置定时前先杀死
+	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
+	m_MoveText->SetTimer(0xFFF0, 100, NULL);
+	m_IsPlay = 1;  //设置为播放状态
 	if ((gPlayIndex > 0) && (0 == gPlayIndex%m_pageSize))
 	{
 		m_MJPGList.SetUnitColor(25, font_blue, TRUE);
@@ -153,7 +210,19 @@ void CMainMp3Dlg::OnExit_(BOOL isStopMusic)
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	if(isStopMusic)
 	{
+		if(m_isMidiMusic)
+		{
+			if(m_isMidiInit)
+			{
+//				pTheMidiPlayer->CloseSong();
+//				pTheMidiPlayer->DeInit();
+				m_isMidiInit = FALSE;
+			}
+			m_isMidiMusic = FALSE;
+		}
+
 		main->playeraudio_->ExitPlayer();
+		m_isPlayerShow = FALSE;
 		KillTimer(IDT_GETINFO_TIIMER);
 		m_MoveText->KillTimer(0xFFF0);
 		m_MoveText->m_nCount = 0;
@@ -174,16 +243,24 @@ void CMainMp3Dlg::OnExit_(BOOL isStopMusic)
 
 void CMainMp3Dlg::OnExit()
 {
-	OnExit_(TRUE);
+	if(m_IsPlay == 1)
+	{
+		OnExit_(FALSE);
+	}
+	else
+	{
+		OnExit_(TRUE);
+	}
 }
 
 //播放
 void CMainMp3Dlg::OnPlayer()
 {
-	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	if(main->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || main->m_pTelephoneDlg->m_bRecording)
 		return;
 
-	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->GetIsRecordStatus())
+	if(main->m_pTelephoneDlg->GetIsRecordStatus())
 			return;
 
 	if(m_IsPlay == 0)
@@ -191,7 +268,7 @@ void CMainMp3Dlg::OnPlayer()
 		
 		char *buffer = new char[1024*10];
 		memset(buffer, 0, 1024*10);
-		int nFileSelected = m_MP3List.size();
+		int nMp3FileSelected = m_MP3List.size();
 		
 		char txt[128];
 		strcpy(txt, "[Playlist]\r\n");
@@ -200,13 +277,19 @@ void CMainMp3Dlg::OnPlayer()
 		{
 			std::string str = Util::StringOp::FromCString(m_MP3List[i]);
 			sprintf(txt, "File%d=%s\r\nLength%d=255\r\n", i, str.c_str(), i);
-			if(strlen(buffer) < (1024*8))
- 				strcat(buffer, txt);
+			if(strlen(buffer) < (1024*8) && m_MP3List[i].Right(4) != ".mid" && m_MP3List[i].Right(4) != ".MID")
+			{
+				strcat(buffer, txt);
+			}
+			else if(m_MP3List[i].Right(4) == ".mid" || m_MP3List[i].Right(4) == ".MID")
+			{
+				nMp3FileSelected--;
+			}
 		}
-		sprintf(txt, "NumberOfEntries=%d\r\nVersion=2\r\n", nFileSelected);
+		sprintf(txt, "NumberOfEntries=%d\r\nVersion=2\r\n", nMp3FileSelected);
 		strcat(buffer, txt);
 		
-		if(nFileSelected > 0)
+		if(m_MP3List.size() > 0)
 		{
 			FILE *file;
 			file = fopen("/flashdrv/my_music/playlist.pls", "w+b");
@@ -222,7 +305,6 @@ void CMainMp3Dlg::OnPlayer()
 				m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 				m_MoveText->m_nCount = 0;
 				SetMP3(m_MP3List[gPlayIndex-1]);
-				playerDlg_->Show();
 				m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 				m_MoveText->SetTimer(0xFFF0, 100, NULL);
 				SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
@@ -231,6 +313,12 @@ void CMainMp3Dlg::OnPlayer()
 			m_IsPlay = 1;
  			m_MJPGList.SetUnitIsDownStatus(3, TRUE);
  			m_MJPGList.SetUnitIsShow(3, TRUE);
+			
+			if(0 == main->phone_->m_BatteryStatus.batteryType)
+			{
+				main->phone_->m_BatteryStatus.typeChange = 1;
+				::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_CHANGE_DCBATTERY, 0, 0);
+			}
 		}
 	}
 	else if(m_IsPlay == 1)
@@ -239,6 +327,7 @@ void CMainMp3Dlg::OnPlayer()
 		m_MJPGList.SetUnitIsShow(3, TRUE);
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		main->playeraudio_->PausePlayer(TRUE);
+//		pTheMidiPlayer->Pause();
 		m_IsPlay = 2;
 		KillTimer(IDT_GETINFO_TIIMER);
 	}
@@ -250,18 +339,31 @@ void CMainMp3Dlg::OnPlayer()
 			
 			CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 			m_bIsPausebyEvent = FALSE;
-			main->playeraudio_->SetOwner(playerDlg_);
-			main->playeraudio_->InitPlayer();
-			
-			main->playeraudio_->isActiveMode_ = 1;
-			main->playeraudio_->ResumePlayer();
+			if(m_isMidiMusic)
+			{
+//				pTheMidiPlayer->Resume();
+			}
+			else
+			{
+				main->playeraudio_->SetOwner(playerDlg_);
+				main->playeraudio_->InitPlayer();
+				main->playeraudio_->isActiveMode_ = 1;
+				main->playeraudio_->ResumePlayer();
+			}
 			gMp3PuaseCount = 0;
 		}
 
 		m_MJPGList.SetUnitIsDownStatus(3, TRUE);
 		m_MJPGList.SetUnitIsShow(3, TRUE);
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		main->playeraudio_->PausePlayer(FALSE);
+		if(m_isMidiMusic)
+		{
+//			pTheMidiPlayer->Resume();
+		}
+		else
+		{
+			main->playeraudio_->PausePlayer(FALSE);
+		}
 		m_IsPlay = 1;
 		SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
 		SetTimer(0x100, 200, NULL);
@@ -276,10 +378,11 @@ void CMainMp3Dlg::OnStop()
 	{
 		m_prgPlayTime.SetPos(0);
 		m_IsPlay = 0;
-		m_bIsPausebyEvent = TRUE;
 		m_MJPGList.SetUnitIsDownStatus(3, FALSE);
 		m_MJPGList.SetUnitIsShow(3, TRUE);
 		m_MJPGList.SetUnitText(31, L"00:00:00", TRUE);
+//		pTheMidiPlayer->StopPlay();  //停止时把两种播放器都关掉
+//		pTheMidiPlayer->CloseSong();
 		main->playeraudio_->StopPlayer();
 		KillTimer(IDT_GETINFO_TIIMER);
 		m_MoveText->KillTimer(0xFFF0);
@@ -294,9 +397,6 @@ void CMainMp3Dlg::OnPre()
 	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
 		return;
 	//wangzhenxing1013
-	
-	KillTimer(IDT_GETINFO_TIIMER);
-	m_MoveText->KillTimer(0xFFF0);
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 
@@ -309,16 +409,15 @@ void CMainMp3Dlg::OnPre()
 	{
 		OnLast();
 	}
-	else if (0 == gPlayIndex%m_pageSize)
+	else
+	{
+		SetMP3(m_MP3List[gPlayIndex-1]);
+		m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
+	}
+	if ((gPlayIndex != 0)&&(0 == gPlayIndex%m_pageSize))
 	{
 		PageUp();
 	}
-	SetMP3(m_MP3List[gPlayIndex-1]);
-	playerDlg_->Show();
-	m_IsPlay = 1;
-	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
-	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
-	m_MoveText->SetTimer(0xFFF0, 100, NULL);
 }
 //后一条
 void CMainMp3Dlg::OnBack()
@@ -326,8 +425,6 @@ void CMainMp3Dlg::OnBack()
 	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
 		return;
 	//wangzhenxing1013
-	KillTimer(IDT_GETINFO_TIIMER);
-	m_MoveText->KillTimer(0xFFF0);
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 	
@@ -343,31 +440,25 @@ void CMainMp3Dlg::OnBack()
 	{
 		OnFirst();
 	}
-	
-	SetMP3(m_MP3List[gPlayIndex-1]);
-	playerDlg_->Show();
-	m_IsPlay = 1;
-	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
-	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
-	m_MoveText->SetTimer(0xFFF0, 100, NULL);
+	else
+	{
+		SetMP3(m_MP3List[gPlayIndex-1]);
+		m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
+	}
 }
 
 void CMainMp3Dlg::OnFirst()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	KillTimer(IDT_GETINFO_TIIMER);
-	m_MoveText->KillTimer(0xFFF0);
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 	
-	main->playeraudio_->First();
+	gPlayIndex = 1;
+	SetMP3(m_MP3List[gPlayIndex-1]);
 	m_selectCurrentPage = 1;
 	CString str;
 	str.Format(L"%d", m_selectCurrentPage);
 	m_MJPGList.SetUnitText(40, str, TRUE);
-	
-	gPlayIndex = 1;
-	m_IsPlay = 1;
+
 	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 	m_MJPGList.SetUnitIsDisable(9, TRUE);
 	if (m_selectCurrentPage < m_selectPageCount)
@@ -375,27 +466,20 @@ void CMainMp3Dlg::OnFirst()
 		m_MJPGList.SetUnitIsDisable(10, FALSE);
 	}
 	ShowArrayInList(m_ShowList);
-	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
-	m_MoveText->SetTimer(0xFFF0, 100, NULL);
 }
 
 void CMainMp3Dlg::OnLast()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-	KillTimer(IDT_GETINFO_TIIMER);
-	m_MoveText->KillTimer(0xFFF0);
 	m_MoveText->SetTxt(L"", 22, RGB(255,255,255));
 	m_MoveText->m_nCount = 0;
 
-	main->playeraudio_->Last();
+	gPlayIndex = m_MP3List.size();
+	SetMP3(m_MP3List[gPlayIndex-1]);
 	m_selectCurrentPage = m_selectPageCount;
 	CString str;
 	str.Format(L"%d", m_selectCurrentPage);
 	m_MJPGList.SetUnitText(40, str, TRUE);
 	
-	gPlayIndex = m_MP3List.size();
-	m_IsPlay = 1;
 	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 	m_MJPGList.SetUnitIsDisable(10, TRUE);
 	if (m_selectCurrentPage > 1)
@@ -403,8 +487,6 @@ void CMainMp3Dlg::OnLast()
 		m_MJPGList.SetUnitIsDisable(9, FALSE);
 	}
 	ShowArrayInList(m_ShowList);
-	SetTimer(IDT_GETINFO_TIIMER, 1000, NULL);
-	m_MoveText->SetTimer(0xFFF0, 100, NULL);
 }
 
 //打开播放列表
@@ -414,6 +496,7 @@ void CMainMp3Dlg::OnOpenFile()
 
 	m_bIsPausebyEvent = FALSE;
 	main->playeraudio_->ExitPlayer();
+	m_isPlayerShow = FALSE;
 	m_IsPlay = 0;
 	KillTimer(IDT_GETINFO_TIIMER);
 	m_prgPlayTime.SetPos(0);
@@ -426,28 +509,37 @@ void CMainMp3Dlg::OnMute()
 	if(m_IsSound)
 	{
 		ChangeVolume(0);
-		main->playeraudio_->SetVolume(0);
+		if(m_isMidiMusic)
+		{
+//			pTheMidiPlayer->SetVolume(0);
+		}
+		else
+		{
+			main->playeraudio_->SetVolume(0);
+		}
 		m_MJPGList.SetUnitIsDownStatus(50, TRUE);
 		m_MJPGList.SetUnitIsShow(50, TRUE);
 	}
 	else
 	{
 		ChangeVolume(m_Volume+50);
-		main->playeraudio_->SetVolume(m_Volume);
+		if(m_isMidiMusic)
+		{
+//			pTheMidiPlayer->SetVolume(m_Volume*10);
+		}
+		else
+		{
+			main->playeraudio_->SetVolume(m_Volume);
+		}
 		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
 		m_MJPGList.SetUnitIsShow(50, TRUE);
 	}
-	m_IsSound = !m_IsSound;
-}
+	for(int i=51; i<=60; i++)
+	{
+		m_MJPGList.SetUnitIsDisable(i, m_IsSound);
+	}
 
-//
-void CMainMp3Dlg::SetVolume()
-{
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int index = main->m_pSettingDlg->m_pSetting->sysVolume();
-	int Volume[] = {10, 8, 6, 4, 2};
-	main->playeraudio_->SetVolume(Volume[index]);
-	m_Volume = Volume[index];
+	m_IsSound = !m_IsSound;
 }
 
 void CMainMp3Dlg::ChangeVolume(int w)
@@ -482,7 +574,32 @@ void CMainMp3Dlg::OnPregress(WPARAM w, LPARAM l)
 	else if(l == IDC_PROGRESS_MP3TIME)
 	{
 		int percent = m_prgPlayTime.GetPercent();
-		main->playeraudio_->PlayPos(percent);
+		int time = 0;
+		if(m_isMidiMusic)
+		{
+			unsigned int n1 = 0;
+			unsigned int n2 = 0;
+			int per = 0;
+	//		pTheMidiPlayer->GetTimeLength(n2);
+	//		pTheMidiPlayer->GetCurrentTime(n1);
+			per = (n1*100)/n2;
+			if(per > percent)
+			{
+				per = ((per - percent)*(n2))/100;
+	//			pTheMidiPlayer->Backward(per);
+			}
+			else
+			{
+				per = (percent - per)*n2/100;
+//				pTheMidiPlayer->Foreward(per);
+			}
+//			pTheMidiPlayer->GetCurrentTime(n1);
+			time = n1/1000;
+		}
+		else
+		{
+			main->playeraudio_->PlayPos(percent);
+		}
 	}
 }
 
@@ -508,26 +625,44 @@ void CMainMp3Dlg::OnTimer(UINT nIDEvent)
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		MEDIA_INFO info;
-		main->playeraudio_->GetVideoFileInfo(&info);
-
-		int Hour,Min,Sec;
-		int tick = info.nTick;
-		Hour = tick / 3600 / TICKSPERSEC;
-		tick -= Hour * 3600 * TICKSPERSEC;
-		Min = tick / 60 / TICKSPERSEC;
-		tick -= Min * 60 * TICKSPERSEC;
-		Sec = tick / TICKSPERSEC;
-
-		int Hour1,Min1,Sec1;
-		tick = info.nDuration;
-		Hour1 = tick / 3600 / TICKSPERSEC;
-		tick -= Hour1 * 3600 * TICKSPERSEC;
-		Min1 = tick / 60 / TICKSPERSEC;
-		tick -= Min1 * 60 * TICKSPERSEC;
-		Sec1 = tick / TICKSPERSEC;
-
-		int n1 = Hour*3600+Min*60+Sec;
-		int n2 = Hour1*3600+Min1*60+Sec1;
+		unsigned int n1 = 0;
+		unsigned int n2 = 0;
+		int Hour = 0,Min = 0,Sec = 0;
+		int Hour1 = 0,Min1 = 0,Sec1 = 0;
+		if(m_isMidiMusic)
+		{
+			UpdateData(TRUE);
+	//		pTheMidiPlayer->GetTimeLength(n2);
+	//		pTheMidiPlayer->GetCurrentTime(n1);
+			n1 = n1/1000;
+			n2 = n2/1000;
+			Hour = n1/3600;
+			Min = (n1-Hour*3600)/60;
+			Sec = (n1-Hour*3600-Min*60);
+			Hour1 = n2/3600;
+			Min1 = (n2-Hour1*3600)/60;
+			Sec1 = (n2-Hour1*3600-Min1*60);
+		}
+		else
+		{
+			main->playeraudio_->GetVideoFileInfo(&info);
+			
+			int tick = info.nTick;
+			Hour = tick / 3600 / TICKSPERSEC;
+			tick -= Hour * 3600 * TICKSPERSEC;
+			Min = tick / 60 / TICKSPERSEC;
+			tick -= Min * 60 * TICKSPERSEC;
+			Sec = tick / TICKSPERSEC;
+			
+			tick = info.nDuration;
+			Hour1 = tick / 3600 / TICKSPERSEC;
+			tick -= Hour1 * 3600 * TICKSPERSEC;
+			Min1 = tick / 60 / TICKSPERSEC;
+			tick -= Min1 * 60 * TICKSPERSEC;
+			Sec1 = tick / TICKSPERSEC;
+		}
+		n1 = Hour*3600+Min*60+Sec;
+		n2 = Hour1*3600+Min1*60+Sec1;
 
 		m_prgPlayTime.SetParam(0, 0, n2, 1, 1, IDB_PROGRESS_TIME1, IDB_PROGRESS_TIME2);
 		m_prgPlayTime.SetPos(n1);
@@ -542,7 +677,7 @@ void CMainMp3Dlg::OnTimer(UINT nIDEvent)
 
 		if(((n1 >= (n2 - 3)) && n1 != 0) || n2 == 0)		//换到下一首
 		{
-			if(main->playeraudio_->isPlaying_)
+			if(main->playeraudio_->isPlaying_ || m_isMidiMusic)
 			{
  				m_MJPGList.SetUnitColor(((gPlayIndex)%m_pageSize)+20, font_red, TRUE);
 				m_MJPGList.SetUnitText(((gPlayIndex)%m_pageSize)+20, m_ShowList[gPlayIndex-1], TRUE);
@@ -560,11 +695,13 @@ void CMainMp3Dlg::OnTimer(UINT nIDEvent)
 						OnFirst();
 					}
 				}
- 				std::string s = Util::StringOp::FromCString(m_MP3List[gPlayIndex-1]);
- 				char filename_[128];
-				sprintf(filename_, "%s", s.c_str());
- 				SetMP3(filename_);
-				playerDlg_->Show();
+				else
+				{
+					std::string s = Util::StringOp::FromCString(m_MP3List[gPlayIndex-1]);
+					char filename_[128];
+					sprintf(filename_, "%s", s.c_str());
+					SetMP3(filename_);
+				}
 				m_MoveText->m_nCount = 0;
 				m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));
 			}
@@ -590,11 +727,17 @@ void CMainMp3Dlg::OnTimer(UINT nIDEvent)
 			gMp3PuaseCount = 0;
 			Dprintf("Mp3 resume!\r\n");
 			m_bIsPausebyEvent = FALSE;
-			main->playeraudio_->SetOwner(playerDlg_);
-			main->playeraudio_->InitPlayer();
-
-			main->playeraudio_->isActiveMode_ = 1;
-			main->playeraudio_->ResumePlayer();
+			if(m_isMidiMusic)
+			{
+//				pTheMidiPlayer->Resume();
+			}
+			else
+			{
+				main->playeraudio_->SetOwner(playerDlg_);
+				main->playeraudio_->InitPlayer();
+				main->playeraudio_->isActiveMode_ = 1;
+				main->playeraudio_->ResumePlayer();
+			}
 
 			if(m_IsPlay == 2)
 			{
@@ -614,7 +757,11 @@ void CMainMp3Dlg::OnTimer(UINT nIDEvent)
 		gMp3PuaseCount++;
 		KillTimer(1002);
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		if(main->playeraudio_->isPlaying_ )
+		if(m_isMidiMusic)
+		{
+//			pTheMidiPlayer->Pause();
+		}
+		else if(main->playeraudio_->isPlaying_ )
 		{
 			KillTimer(IDT_GETINFO_TIIMER);
 			main->playeraudio_->ExitPlayer(TRUE);
@@ -735,7 +882,15 @@ void CMainMp3Dlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			m_Volume = w - 50;
 			ChangeVolume(w);
-			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->playeraudio_->SetVolume(m_Volume);
+			if(m_isMidiMusic)
+			{
+//				pTheMidiPlayer->SetVolume(m_Volume*10);
+			}
+			else
+			{
+				((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->playeraudio_->SetVolume(m_Volume);
+			}
+
 		}
 		break;
 	case 100:		   //进度条
@@ -744,6 +899,31 @@ void CMainMp3Dlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnExit();
 		break;
 	}
+}
+
+void CMainMp3Dlg::HandleAudio(bool bt)
+{	
+	if (bt)
+	{
+		m_Volume++;
+		if (m_Volume > 10)
+		{
+			m_Volume = 10;
+			return ;
+		}
+	}
+	else
+	{	m_Volume--;
+	if (m_Volume < 0)
+	{
+		m_Volume = 0 ;
+		return ;
+	}
+	}
+	
+	ChangeVolume(m_Volume + 50);
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->playeraudio_->SetVolume(m_Volume);
+	
 }
 
 void CMainMp3Dlg::CalculatePage(int dataCount)
@@ -898,7 +1078,6 @@ void CMainMp3Dlg::OnDBClickShowList(int unitNO)
 	m_MJPGList.SetUnitColor((gPlayIndex%m_pageSize)+20, font_red, TRUE);
 	gPlayIndex = (m_selectCurrentPage-1)*m_pageSize + unitNO - 20;
 	SetMP3(m_MP3List[gPlayIndex-1]);
-	playerDlg_->Show();
 	m_IsPlay = 1;
 	m_MoveText->m_nCount = 0;
 	m_MoveText->SetTxt(m_ShowList[gPlayIndex-1], 22, RGB(255,255,255));

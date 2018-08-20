@@ -74,6 +74,9 @@ bool Player::InitPlayer()
 
 			SetVolume(gVoiceVolume);
 			Sleep(10);
+				
+			extern void GMute(BOOL isOn);
+			GMute(FALSE);
 
 			RETAILMSG(1, (TEXT("playinit ok-----\r\n")));
 			return true;
@@ -145,6 +148,8 @@ bool Player::ExitPlayer(BOOL flag)
 	
 		isPlayerRun = FALSE;
 		plyExit(mt_);
+		extern void GMute(BOOL isOn);
+		GMute(TRUE);
 
 		if(flag)
 		{
@@ -217,6 +222,10 @@ bool Player::PlayerFile(char *filename)
 			CRect rt;
 			owner_->GetWindowRect(&rt);
 			plySetWndPos(rt.left, rt.top, rt.Width(), rt.Height(), mt_);
+		}
+		else
+		{
+			plySetWndPos(0, 0, 800, 480, mt_);
 		}
 		if (plyOpen((LPTSTR)(LPCTSTR)s/*.GetBuffer(256)*/, mt_) == 0)
 		{

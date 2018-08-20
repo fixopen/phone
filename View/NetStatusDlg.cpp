@@ -23,7 +23,7 @@ UINT WM_RASEVENT; //= ::RegisterWindowMessageA(RASDIALEVENT);
 CString const GetPPPoEIP()
 {
 	HKEY hKey = NULL;
-	LONG hRes = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Comm\\Serial Cable on VCOM3:(PS)\\Parms\\TcpIp"), 0, 0, &hKey);
+	LONG hRes = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Comm\\Serial Cable on LC6311 VCOM7:(PS)\\Parms\\TcpIp"), 0, 0, &hKey);
 	DWORD dwType = REG_MULTI_SZ;
 	TCHAR ipAddr[20] = {0};
 	DWORD dwSize = sizeof(ipAddr);
@@ -73,7 +73,7 @@ bool CNetStatusDlg::ADSLInit()
 	entry.dwFramingProtocol = RASFP_Ppp;
 
 	wsprintf(entry.szDeviceType, L"modem");
-	wsprintf(entry.szDeviceName, L"Serial Cable on VCOM3:(PS)");
+	wsprintf(entry.szDeviceName, L"Serial Cable on LC6311 VCOM7:(PS)");
 
 	wsprintf(entry.szLocalPhoneNumber,/* L"*99***1#"*/L"*98*1#");
 	entry.dwCountryID = 0;
@@ -158,7 +158,7 @@ bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, C
 	entry.dwFramingProtocol = RASFP_Ppp;
 	
 	wsprintf(entry.szDeviceType, L"modem");
-	wsprintf(entry.szDeviceName, L"Serial Cable on VCOM3:(PS)");
+	wsprintf(entry.szDeviceName, L"Serial Cable on LC6311 VCOM7:(PS)");
 	
 	wsprintf(entry.szLocalPhoneNumber,telcode);
 	entry.dwCountryID = 0;
@@ -516,8 +516,8 @@ void CNetStatusDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 3:
 		if(!m_bADSLISConnnect)
 		{
-			char *user = (char *)main->m_pSettingDlg->m_pSetting->dialUsername().c_str();
-			char *pwd =  (char *)main->m_pSettingDlg->m_pSetting->dialPassword().c_str();
+			char *user = (char *)main->m_pSettingDlg->m_pTempSetting->dialUsername().c_str();
+			char *pwd =  (char *)main->m_pSettingDlg->m_pTempSetting->dialPassword().c_str();
 		//	int ret = /*m_bADSLISConnnect =*/ ADSLDial(user, pwd, this, CMWAP);
 			KillTimer(1);
 			SetTimer(1, 1000, NULL);

@@ -160,7 +160,7 @@ void CScreenSaveDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CScreenSaveDlg::GetPassWord()
 {
-	std::string strTemp = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->screenSaverPassword();
+	std::string strTemp = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->screenSaverPassword();
 	m_password = strTemp.c_str();
 }
 
@@ -169,7 +169,7 @@ BOOL CScreenSaveDlg::IsHaveScreenPwnd()
 	//lxz ²»Ê¹ÓÃÃÜÂë
 	return FALSE;
 
-	bool ret = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isUseScreenSaverPassword();
+	bool ret = ((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isUseScreenSaverPassword();
 	return ret;
 }
 

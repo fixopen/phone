@@ -54,11 +54,7 @@ BOOL CMMSDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-//	m_pSMSListDlg = new C3GSMSListDlg(this);
-//	m_pSMSListDlg->Create(C3GSMSListDlg::IDD);
 
-//	m_pSMSDetailDlg = new C3GSMSDetailDlg(this);
-//	m_pSMSDetailDlg->Create(C3GSMSDetailDlg::IDD);
 	
 	int height;
 	m_senderEdit1.Create(WS_CHILD|WS_VISIBLE|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(28, 120, 28+189, 120+29), this, 0xFFFF);
@@ -137,6 +133,8 @@ void CMMSDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	CString icon ;
 	std::vector<CString > vnum;
+	SipShowIM(SIPF_OFF);
+
 	switch(w)
 	{
 	case 0:	
@@ -623,8 +621,28 @@ void CMMSDlg::SaveDraft()
 		std::string RecipientAddress ;
 		for (int i = 0 ; i < m_mapTelnum.size() ;i++)
 		{	
-			RecipientAddress += ",";
+
+			bool bname = false ;
+			for (int j = 0 ; j < m_mapTelnum[i].GetLength();j++)
+			{
+				if (m_mapTelnum[i].GetAt(j) < '0' || m_mapTelnum[i].GetAt(j) > '9')
+				{   
+					bname = true ;
+					break ;
+				}
+			}
+			
+			if (bname)
+			{
+				RecipientAddress += Util::StringOp::FromCString(m_vTelnum[i])+";";
+			}
+			else
+			{
+				RecipientAddress += Util::StringOp::FromCString(m_mapTelnum[i])+";";
+			}
+
 			RecipientAddress += Util::StringOp::FromCString(m_mapTelnum[i]); //To-value = Encoded-string-value
+			RecipientAddress += ";";
 		}	
 		m_pMMSData->RecipientAddress = RecipientAddress;
 
@@ -710,39 +728,23 @@ void CMMSDlg::SetMmsContent(boost::shared_ptr<Data::MMSData> pmmsdata,bool baddn
 		std::vector<CString> vNumber ;
 		std::string address = pmmsdata->RecipientAddress ;
 		std::string contact ;
+		
 		if (!address.empty())
 		{
-			if (address.find(',') != std::string::npos)
+			while (address.find(';') != std::string::npos)
 			{	
 				size_t pos ;
-				while (address.find(',') != std::string::npos)
-				{
-					pos = address.find(',');
-					if (pos != std::string::npos)
-					{
-						address	 = address.substr(1);
-						pos = address.find(',');
-						if (pos != std::string::npos)
-						{	
-							contact	= address.substr(0,pos);
-							vNumber.push_back(Util::StringOp::ToCString(contact));
-							address.substr(pos);
-						}
-						else
-						{	
-							contact	= address.substr(0);
-							vNumber.push_back(Util::StringOp::ToCString(contact));
-							break;
-						}
-					}		 
-				}			
+				pos = address.find(';');
+				if (pos != std::string::npos)
+				{	
+					contact	= address.substr(0,pos);
+					vNumber.push_back(Util::StringOp::ToCString(contact));
+					address.substr(pos+1);
+				}
+				
 			}
-			else//¾ÍÒ»¸öºÅÂë£¬
-			{
-				vNumber.push_back(Util::StringOp::ToCString(address));	
-			}
-
 		}
+
 		SetSender(vNumber);
 	}
 
@@ -752,9 +754,10 @@ void CMMSDlg::OnBtnPicture()
 {
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	
-	main->m_pMainDlg->m_p3GHomePicDlg->ShowWindow_(SW_SHOW);
+	main->m_pMainDlg->m_p3GHomePicDlg->ShowWindow_(SW_SHOW,false);
 	main->m_pMainDlg->m_p3GHomePicDlg->m_callType = 1;
 	main->AddIcon(Allicon[6]);
+
 }
 
 void CMMSDlg::InsertPicture(CString path)

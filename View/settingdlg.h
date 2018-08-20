@@ -94,7 +94,6 @@ protected:
 	afx_msg void OnAdjustTouchPanel();
 	afx_msg void OnSettingSaveScreenPassword();
 	afx_msg void OnSettingAdminPassword();
-	afx_msg void OnSetSaveScreenPassWordOK(WPARAM w, LPARAM l);
 	
 	afx_msg void OnBackup();
 	afx_msg void OnRestore();
@@ -188,8 +187,8 @@ public:
 	//·À»ðÇ½
 	CCEComboBox_ m_cmbTime;
 	void OnButtonFireWallOk();
-	void SetParameters(int type, int duration);
-	int GetFirewallType();
+	void SetFirewallParam(bool enable, int type, int duration);
+	int  GetFirewallType();
 	void BrushWindow(void);
 	//ÁåÉù
 	CCERectEdit m_edtRingNumber[3];

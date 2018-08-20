@@ -321,7 +321,6 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 //	{
 //		++sel;
 //	}
-//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->SetTypeListSelected(sel);
 //	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
 	
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUp();
@@ -330,7 +329,7 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowUpGroupInfo();
 
 
-	ShowWindow(FALSE);
+	ShowWindow_(SW_HIDE);
 	SipShowIM(SIPF_OFF);
 	
 	m_ringList.ShowWindow_(SW_HIDE);
@@ -668,7 +667,7 @@ LRESULT CContactGroupDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->FromGroupDataBase();
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowUpGroupInfo();
 
-		ShowWindow(FALSE);
+		ShowWindow_(SW_HIDE);
 	}
 	break;
 	}

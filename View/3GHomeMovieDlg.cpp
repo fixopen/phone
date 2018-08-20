@@ -114,6 +114,7 @@ void C3GHomeMovieDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			pMainDlg->m_pMainDlg->m_mainVideoDlg_->OnOpenFile();
 			pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
+			pMainDlg->m_pMainDlg->m_mainVideoDlg_->SetTimer(100,500,NULL);
 			OnPlayer();
 		}
 		break;
@@ -682,11 +683,11 @@ void C3GHomeMovieDlg::OnClickDelete()
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要删除已选文件吗？", 0);
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
-	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 	{
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 	}
-	std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+	std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->adminPassword();
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 }

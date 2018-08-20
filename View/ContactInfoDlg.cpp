@@ -499,10 +499,10 @@ void CContactInfoDlg::OnButtonSound()
 	if ( result.size() && result[0]->GetSoundsCount() > 0)
 	{
 		m_pPlaySoundDlg->SetSound((int)result[0]->type(), result[0]->id(), 0, m_sListSearchFilter);
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 		{
 			m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
-			std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
+			std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
 			m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 			m_pPasswordDlg->SetHWnd(this->m_hWnd);
 			m_pPasswordDlg->ShowWindow_(SW_SHOW);	
@@ -521,9 +521,6 @@ void CContactInfoDlg::OnButtonNote()
 
 	CMultimediaPhoneDlg *pMain = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 
-	//ÐèÒª´«ËÍºÅÂë
-	pMain->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg->initDataBase(SMS_NEW, -1);
-	pMain->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg->ShowWindow(SW_SHOW);
 }
 
 void CContactInfoDlg::OnButtonNew() 
@@ -658,11 +655,11 @@ void CContactInfoDlg::OnButtonDelete()
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(title,0);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 		{
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 		}
-		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->adminPassword();
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 		std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_CONTACTINFO);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
@@ -683,8 +680,6 @@ void CContactInfoDlg::SaveContactInfo(boost::shared_ptr<Data::ContactInfo> ci)
 		ci->Update();	
 	}
 
-	//m_uiSelectIndex = 0;
-	//ShowItemsInList(0);
 	int count = Data::ContactInfo::GetDataCount("");
 	if (count > ContactInfoTotal)
 	{
@@ -964,11 +959,11 @@ void CContactInfoDlg::ClickedOneItem(int unitID,int item)
 void CContactInfoDlg::SeeOneItem(int item)
 {
 	int index = item/100 - 1;
-	if (!m_vCurrentResult[index]->played() && !m_sListFilter.compare("type = 0"))
+	if ( !m_vCurrentResult[index]->played() )
 	{
 		for (int j = 1; j < 8 ;j++)
 		{
-			m_MJPGList.SetUnitColor(item+j,font_white,false);
+			m_MJPGList.SetUnitColor(item+j,font_white,true);
 			m_MJPGList.SetUnitIsDisable(item+j,true);
 		}
 
@@ -977,6 +972,7 @@ void CContactInfoDlg::SeeOneItem(int item)
 
 		::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
 			m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
+
 	}	
 }
 

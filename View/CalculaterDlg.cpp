@@ -115,7 +115,7 @@ BOOL CCalculaterDlg::OnInitDialog()
 	m_IsError = FALSE; //2005.5.19 zmy
 
 //  wangzhenxing1102
-	CRect r(49, 30, 537, 85);
+	CRect r(51, 30, 532, 82);
 	m_NumFont.CreateFont(30,                        // nHeight
 		0,                         // nWidth
 		0,                         // nEscapement
@@ -152,18 +152,18 @@ BOOL CCalculaterDlg::OnInitDialog()
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
 	   _T("ËÎÌו"));
 
-	m_edtTransferNum1.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(633,145,749,168), this, 0xFFFF);
+	m_edtTransferNum1.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(623,152,740,175), this, 0xFFFF);
 	m_edtTransferNum1.SetFont(&m_TransFont);
 	m_edtTransferNum1.SetLimitDiagital();
 	m_edtTransferNum1.ShowWindow(SW_HIDE);
 	
-	m_edtTransferNum2.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(633,202,749,225), this, 0xFFFF);
+	m_edtTransferNum2.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(623,205,740,228), this, 0xFFFF);
 	m_edtTransferNum2.SetFont(&m_TransFont);
 	m_edtTransferNum2.SetLimitDiagital();
 	m_edtTransferNum2.ShowWindow(SW_HIDE);
 
-	m_cmbType1.CreateEx(WS_CHILD|WS_VISIBLE, CRect(633, 117, 749, 360), this, 0xFFFF, 20, 36, 26, 1);
-	m_cmbType2.CreateEx(WS_CHILD|WS_VISIBLE, CRect(633, 172, 749, 400), this, 0xFFFF, 20, 36, 26, 1);
+	m_cmbType1.CreateEx(WS_CHILD|WS_VISIBLE, CRect(623, 129, 740, 360), this, 0xFFFF, 20, 36, 26, 1);
+	m_cmbType2.CreateEx(WS_CHILD|WS_VISIBLE, CRect(623, 181, 740, 400), this, 0xFFFF, 20, 36, 26, 1);
 	m_cmbType1.ShowWindow(SW_HIDE);
 	m_cmbType2.ShowWindow(SW_HIDE);
 

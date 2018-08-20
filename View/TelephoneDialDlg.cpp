@@ -20,9 +20,7 @@ static char THIS_FILE[] = __FILE__;
 CTelephoneDialDlg::CTelephoneDialDlg(CWnd* pParent /*=NULL*/)
 	: CCEDialog(CTelephoneDialDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CTelephoneDialDlg)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
+	m_bSoftware = false;	
 }
 
 
@@ -102,12 +100,16 @@ void CTelephoneDialDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				{	
 					std::string number = Util::StringOp::FromCString(s);
 					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->PhoneDialTone(TRUE, (char *)number.c_str());
+				
 				}
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->phone_->PhoneDialTone(FALSE, NULL);
 
 				pMainDlg->m_pTelephoneDlg->FromTelDial(m_spContactInfo,m_sTelephoneNumber);
 				pMainDlg->m_pTelephoneDlg->ShowWindow_(SW_SHOW);
 				pMainDlg->phone_->DialNumber((char*)(Util::StringOp::FromCString(s)).c_str());
+				
+				ShowWindow_(SW_HIDE);
+				pMainDlg->PopbackIcon();
 
 			}
 		}
@@ -131,6 +133,10 @@ void CTelephoneDialDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		pMainDlg->m_pTelephoneDlg->Redial();
 		break;
 
+	case 20://删除一个号码
+		DeleteNum();
+		break;
+
 	case 21:
 		m_p10ContactInfoDlg->Show10ContactInfo();
 		break;
@@ -140,8 +146,16 @@ void CTelephoneDialDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			ShowWindow(SW_HIDE);
 			KillTimer(IDT_AUTO_DIAL);
-			pMainDlg->m_pTelephoneDlg->HangOff_(NULL);
 			
+		//	pMainDlg->phone_->HungOff();//挂断3G模块
+		//	pMainDlg->m_pTelephoneDlg->HangOff_(NULL);//
+		//	pMainDlg->m_phoneLine[0].pFSM->setStartState(CMultimediaPhoneDlg::p3gsHangOff);
+
+		//	::KillTimer(pMainDlg->m_hWnd, pMainDlg->m_uiKeyTimer);
+		//	pMainDlg->SendOutEvnet(WM_TEL_HUNGOFF, 1);//未接接听，自动关闭窗口时模拟挂机事件
+			
+			::PostMessage(pMainDlg->m_hWnd, WM_TEL_HUNGOFF, 0, 0);
+
 			if (m_spContactInfo)//号没拨出去删除
 			{
 				m_spContactInfo->Remove();
@@ -158,7 +172,16 @@ void CTelephoneDialDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 void CTelephoneDialDlg::Key_(void* param)
 {
-	
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+
+//	if(main->m_pTelephoneDlg->m_nTelStatus == TEL_FROMCONNECTED) //正在通话
+	if(main->m_phoneLine[0].pFSM->getCurrentState() 
+		== CMultimediaPhoneDlg::p3gsConnected)
+	{
+		main->m_pTelephoneDlg->Key_(param);
+		return;
+	}
+
 	if(param == NULL)
 		return;
 	BOOL flag = FALSE;
@@ -210,6 +233,17 @@ void CTelephoneDialDlg::HangOff_()
 {
 	m_spContactInfo = boost::shared_ptr<Data::ContactInfo>();
 	m_MJPGList.SetUnitText(100,L"",true);
+}
+
+void CTelephoneDialDlg::DeleteNum()
+{	
+	CString num = m_MJPGList.GetUnitText(100);
+	if (!num.IsEmpty())
+	{
+		num = num.Mid(0,num.GetLength()-1);
+		m_MJPGList.SetUnitText(100,num,true);
+		m_sTelephoneNumber = Util::StringOp::FromCString(num );
+	}
 }
 
 void CTelephoneDialDlg::SetTel(CString tel)

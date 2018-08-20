@@ -50,6 +50,9 @@ public:
 	void CalculatePage(int dataCount);
 	void OnClickShowList(int unitNO);
 	void OnDBClickShowList(int unitNO);
+	void HandleAudio(bool bt);
+
+	afx_msg void OnPlayer();
 
 public:
 	CPlayerDlg	*playerDlg_; 
@@ -81,7 +84,6 @@ protected:
 	//{{AFX_MSG(CMainVideoDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnExit();
-	afx_msg void OnPlayer();
 	afx_msg void OnStop();
 	afx_msg void OnPre();
 	afx_msg void OnBack();

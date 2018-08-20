@@ -191,12 +191,7 @@ BOOL CMainDlg::OnInitDialog()
 //	OnTimer(2);
 
 	SetPhotoList();
-	SetWeather();
 	SetUpInfo();
-
-
-//	for(int i = 12; i < 20; i++)
-//	m_MJPGList.SetUnitIsTranslate(i, TRUE);
 
 //	m_FrameStatic.Create(CRect(0, 0, 480, 204), this, 0);
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -234,9 +229,12 @@ void CMainDlg::doReadSMS()
 		main->m_pSMSListDlg->m_pMmsReadDlg->SetMMSInfo(mmsFileresult[0]->id(),RECV_TYPE);
 //		mmsFileresult[0]->isRead = TRUE;
 //		mmsFileresult[0]->Update();
-		main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
+		if (!main->m_pSMSListDlg->m_pMmsReadDlg->IsWindowVisible())
+		{
+			main->m_pSMSListDlg->m_pMmsReadDlg->ShowWindow(SW_SHOW);
+			main->AddIcon(Allicon[1]);
+		}
 
-		main->AddIcon(Allicon[1]);
 
 	}
 	else if(m_nSMSCount > 0)
@@ -244,10 +242,11 @@ void CMainDlg::doReadSMS()
 		main->m_pSMSListDlg->m_pSmsReadDlg->SetSMSInfo(smsFileresult[0]->id(),RECV_TYPE);
 	//	smsFileresult[0]->state = Data::Message::sReaded;
 	//	smsFileresult[0]->Update();
-		main->m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
-
-		main->AddIcon(Allicon[1]);
-
+		if (!main->m_pSMSListDlg->m_pSmsReadDlg->IsWindowVisible())
+		{
+			main->m_pSMSListDlg->m_pSmsReadDlg->ShowWindow(SW_SHOW);
+			main->AddIcon(Allicon[1]);
+		}
 	}
 	else
 	{
@@ -258,19 +257,7 @@ void CMainDlg::doReadSMS()
 
 void CMainDlg::doReadLeaveHome()
 {
-	CSMSDlg *pWnd_ = m_p3GSMSDlg;
-	if(m_nSMSLeaveCount > 0)
-	{
-		pWnd_->m_pSMSDetailDlg->initDataBase(SMS_READ, smsLeaveresult[0]->id(), FALSE);
-		smsLeaveresult[0]->state = Data::Message::sReaded;
-		smsLeaveresult[0]->Update();
-		pWnd_->m_pSMSDetailDlg->ShowWindow(SW_SHOW);
-	}
-	else
-	{
-//		pWnd_->m_pSMSListDlg->initType(HOME_RECORD_TYPE, HOME_TYPE);
-//		pWnd_->m_pSMSListDlg->ShowWindow(SW_SHOW);
-	}
+
 }
 
 void CMainDlg::SetUpInfo(BOOL isDraw)
@@ -298,11 +285,11 @@ void CMainDlg::SetUpInfo(BOOL isDraw)
 	static int nFresh = 0;
 
 	CString sRss = ".\\adv\\mjpg\\k5\\common\\png\\我的订阅.bmp";
-	CString sTel = ".\\adv\\mjpg\\k5\\common\\png\\电话小标.png";
-	CString sTel1 = ".\\adv\\mjpg\\k5\\common\\png\\电话小标1.png";
+	CString sTel = ".\\adv\\mjpg\\k5\\common\\png\\电话图标.bmp";
+	CString sTel1 = ".\\adv\\mjpg\\k5\\common\\png\\电话图标1.bmp";
 
-	CString sSms = ".\\adv\\mjpg\\k5\\common\\png\\未读留言.png";
-	CString sSms1 = ".\\adv\\mjpg\\k5\\common\\png\\未读留言1.png";
+	CString sSms = ".\\adv\\mjpg\\k5\\common\\png\\收件箱图标.bmp";
+	CString sSms1 = ".\\adv\\mjpg\\k5\\common\\png\\收件箱图标1.bmp";
 
 	if(nFresh++ % 2)
 	{
@@ -1174,7 +1161,8 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 	switch (w)
 	{
 	case 1:	//电话
-			if(main->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff)
+		//	if(main->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff)
+			if(main->m_phoneLine[0].pFSM->getCurrentState() != CMultimediaPhoneDlg::p3gsHangOff)
 			{
 				main->m_pTelephoneDlg->ShowWindow_(TRUE);
 				icon = Allicon[0];
@@ -1184,8 +1172,20 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		
 		//		extern void GNotifyDial(BOOL isDial);
 		//		GNotifyDial(1);
+
+				void GIsOpenMix(BOOL isOn);
+				GIsOpenMix(1);
+				
+				main->phone_->Free(Telephone::TelephoneWarp::FreeOn);
+
+				extern void GMute(BOOL isOn);
+				GMute(FALSE);//打开speeker
+				
+				if(main->m_nTELRigster >= TELRIGSTER_TD)
+				Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);
+
 				main->m_pTelphoneDialDlg->m_bSoftware = true ;
-				main->SendMessage(WM_TEL_HUNGON);
+				main->SendMessage(WM_TEL_HUNGON,1,1);
 
 			}
 			//icon = L".\\adv\\mjpg\\k5\\common\\电话\\电话图标.bmp";
@@ -1200,7 +1200,6 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 			main->m_pContactDlg->ShowRightBtn(true);
 			main->m_pContactDlg->ShowWindow_();
 			icon = Allicon[2];
-
 			break;
 
 	case 4:	//通话记录
@@ -1259,7 +1258,7 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 	if (!icon.IsEmpty())
 	{
 		main->AddDesktopBtn();
-		main->AddIcon(icon);//添加图标	
+		main->AddIcon(icon,false);//添加图标	
 	}
 
 	m_MJPGList.m_nIndexSelectUnit = -1;

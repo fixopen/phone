@@ -56,7 +56,7 @@ BEGIN_MESSAGE_MAP(C3GHomePicDlg, CDialog)
 	ON_MESSAGE(WM_MJPGTOGGLE, OnClickMJPG)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 	ON_MESSAGE(WM_USB_MSG, OnDeviceChange)
-//	ON_WM_TIMER()
+	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -77,6 +77,7 @@ BOOL C3GHomePicDlg::OnInitDialog()
 	m_MJPGList.SetUnitText(8, L"当前页", TRUE);
 	m_MJPGList.SetUnitIsDisable(1, TRUE);
 	m_MJPGList.SetUnitIsDisable(2, TRUE);
+
 	m_uiType = 0;
 	ShowItemsInList(m_uiType);
 	PostMessage(WM_USB_MSG, 0x8000, 0);
@@ -673,11 +674,11 @@ void C3GHomePicDlg::OnClickDelete()
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要删除已选文件吗？", 0);
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
-	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 	{
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 	}
-	std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+	std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->adminPassword();
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 }
@@ -943,10 +944,31 @@ void C3GHomePicDlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 }
 
-void C3GHomePicDlg::ShowWindow_(int nCmdShow)
+void C3GHomePicDlg::ShowWindow_(int nCmdShow, BOOL isBtnShow)
 {
 	ShowItemsInList(m_uiType);
 	ShowWindow(nCmdShow);
+	if(isBtnShow)
+	{
+		SetTimer(0x11, 200, NULL);
+	}
+	else
+	{
+		m_MJPGList.SetUnitIsShow(10, FALSE);
+		m_MJPGList.SetUnitIsShow(11, FALSE);
+		m_MJPGList.SetUnitIsShow(12, FALSE);
+	}
+}
+
+void C3GHomePicDlg::OnTimer(UINT nIDEvent)
+{
+	if(0x11 == nIDEvent)
+	{
+		KillTimer(0x11);
+		m_MJPGList.SetUnitIsShow(10, TRUE);
+		m_MJPGList.SetUnitIsShow(11, TRUE);
+		m_MJPGList.SetUnitIsShow(12, TRUE);
+	}
 }
 
 void C3GHomePicDlg::OnOK_()
@@ -1044,5 +1066,7 @@ void C3GHomePicDlg::OnPlayer(int index)
 		}
 	}
 	main->m_pMainDlg->m_mainPhotoDlg_->playerDlg_->SetResumeTimer();
+//	main->m_pMainDlg->m_mainPhotoDlg_->playerDlg_->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
 	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitIsDownStatus(3, TRUE);
+	main->m_pMainDlg->m_mainPhotoDlg_->SetTimer(0x101, 500, NULL);
 }

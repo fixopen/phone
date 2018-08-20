@@ -141,7 +141,21 @@ void CSMSReadDlg::SetSMSInfo(int id,SMSBOX_TYPE type)
 		{
 			temp = Util::StringOp::ToCString(m_pMessage->remote.address);
 		}
-		m_MJPGList.SetUnitText(31,temp,false);//收件人或者发件人
+
+		m_MJPGList.SetUnitText(31,temp,false);//收件人或者发件人	
+		if ( SEND_TYPE == type || DRAFT_TYPE == type)
+		{	
+			std::string name ;
+			std::string number = Util::StringOp::FromCString(temp);;
+			main->m_pSMSListDlg->AnalyseSender(number,name);
+			
+			temp  = Util::StringOp::ToCString(name);
+			if (temp.Mid(temp.GetLength()-1) = L";")
+			{
+				temp = temp.Mid(0,temp.GetLength()-1);
+			}
+			m_MJPGList.SetUnitText(31,temp,false);
+		}
 
 		temp = Util::StringOp::ToCString(m_pMessage->unicodeData);
 		m_MJPGList.SetUnitText(32,temp,false);//主题
@@ -151,6 +165,7 @@ void CSMSReadDlg::SetSMSInfo(int id,SMSBOX_TYPE type)
 		m_MJPGList.SetUnitText(33,temp,false);//主题
 
 		m_MJPGList.Invalidate();
+
 	}
 
 	if ( RECV_TYPE == m_nBoxType )

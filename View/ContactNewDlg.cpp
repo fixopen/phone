@@ -130,6 +130,7 @@ void CContactNewDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	}
 }
+
 BOOL CContactNewDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
@@ -148,8 +149,8 @@ BOOL CContactNewDlg::OnInitDialog()
 	height = 34;
 	yspace = 16; 
 	
-	m_cmbType.Create(WS_CHILD|WS_VISIBLE, CRect(xbegin+width, ybegin-2, xbegin+width+148, ybegin-2+342), this, IDC_COMBOBOX_CONTACTNEW_TYPE);
-	m_cmbGroup.Create(WS_CHILD|WS_VISIBLE, CRect(397, ybegin+yspace+height-3, 397+237, ybegin+yspace+height-3+342), this, IDC_COMBOBOX_CONTACTNEW_GROUP);
+	m_cmbType.CreateEx(WS_CHILD|WS_VISIBLE, CRect(xbegin+width, ybegin-2, xbegin+width+136, ybegin-2+342), this, IDC_COMBOBOX_CONTACTNEW_TYPE,24,24,32,-1);
+	m_cmbGroup.CreateEx(WS_CHILD|WS_VISIBLE, CRect(397, ybegin+yspace+height-3, 397+237, ybegin+yspace+height-3+342), this, IDC_COMBOBOX_CONTACTNEW_GROUP,24,24,32,-1);
 	
 	m_cmbType.AddString(CString(Data::LanguageResource::Get(Data::RI_CARD_COMNSTC).c_str()));
 	m_cmbType.AddString(CString(Data::LanguageResource::Get(Data::RI_CARD_VIPSTC).c_str()));
@@ -439,7 +440,7 @@ void CContactNewDlg::OnButtonContactNewOk()
 			}
 			
 			//获得SIM卡的容量，如果容量满了,警告
-			int capacity = main->m_pATCommandWarp1->GetSimCapacity();
+			int capacity = main->m_pContactDlg->GetSimCapacity();
 			if (id >= capacity)
 			{
 				main->m_pWarningNoFlashDlg->SetTitle(L"SIM卡已满!");

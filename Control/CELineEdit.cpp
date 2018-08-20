@@ -210,6 +210,7 @@ void CCELineEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		Invalidate();
 		CEdit::OnChar(nChar, nRepCnt, nFlags);
+		GetParent()->SendMessage(WM_CHARNUMBER, 0, 0);
 	}
 }
 

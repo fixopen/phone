@@ -49,6 +49,7 @@ public:
 	void NarrowPicture();
 	void RotatePicture();
 	afx_msg void OnOpenFile();
+	afx_msg void OnPlayer(int index = 0);
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 public:
@@ -79,7 +80,6 @@ protected:
 	//{{AFX_MSG(CMainPhotoDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnExit();
-	afx_msg void OnPlayer(int index = 0);
 	afx_msg void OnPre();
 	afx_msg void OnBack();
 	afx_msg void OnPlayerAll();

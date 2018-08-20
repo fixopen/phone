@@ -28,7 +28,6 @@ private:
 	HWND			m_handle;
 	CMJPGStatic		m_MJPGList;
 	CCEProcessBar	m_procbar;
-	void WriteSIMTelPhoneBOOK(CString name, CString telcode);
 
 	boost::shared_ptr<Data::Contact> m_pContact;
 

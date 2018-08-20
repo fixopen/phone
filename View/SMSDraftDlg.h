@@ -106,7 +106,6 @@ protected:
 	virtual BOOL OnInitDialog();
 //	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnListCltrlClick(WPARAM w, LPARAM l);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

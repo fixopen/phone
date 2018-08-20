@@ -136,21 +136,29 @@ void C10ContactInfoDlg::ShowContactInfo()
 		m_MJPGList.SetUnitIsShow(i*10+2,true,false);//ÏÔÊ¾¸Ãunit
 	}
 	m_MJPGList.Invalidate();
+
 }
 
 void C10ContactInfoDlg::ClickOneItem(int item)
 {	
 
-	if (m_iUnitNo > -1)
-	{	
-		m_MJPGList.SetUnitIsDownStatus(m_iUnitNo,false);
-	//	m_MJPGList.SetUnitIsShow(m_iUnitNo,true,true);
-	}
+// 	if (m_iUnitNo > -1)
+// 	{	
+// 		m_MJPGList.SetUnitIsDownStatus(m_iUnitNo,false);
+// 		m_MJPGList.SetUnitIsShow(m_iUnitNo,true,true);
+// 	}
 
 	m_MJPGList.SetUnitIsDownStatus(item,true);
-//	m_MJPGList.SetUnitIsShow(item,true,true);
+	m_MJPGList.SetUnitIsShow(item,true,true);
+	
+	ShowWindow(SW_HIDE);
+	CString tel = m_MJPGList.GetUnitText(item-2);
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->SetTel(tel);
+
+
 	m_iUnitNo = item ;
-	m_MJPGList.Invalidate();
+//	m_MJPGList.Invalidate();
+
 }
 void C10ContactInfoDlg::Show10ContactInfo()
 {	
@@ -183,17 +191,16 @@ void C10ContactInfoDlg::ClearPage()
 		m_MJPGList.SetUnitIsShow(item+2,false,false);
 		item += 10;
 	}
-//	m_MJPGList.Invalidate();
 }
 
 void C10ContactInfoDlg::OnBtnOK()
 {
-	if (m_iUnitNo > -1)
-	{	
+	//if (m_iUnitNo > -1)
+	//{	
 		ShowWindow(SW_HIDE);
-		CString tel = m_MJPGList.GetUnitText(m_iUnitNo-2);
-		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->SetTel(tel);
-	}
+	//	CString tel = m_MJPGList.GetUnitText(m_iUnitNo-2);
+	//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->SetTel(tel);
+	//}
 }
 
 

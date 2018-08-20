@@ -23,6 +23,7 @@ namespace Util
 					(jumpTable.second)(param);
 			}
 		}
+
     }
 
     void FSM::setStartState(int const startState)

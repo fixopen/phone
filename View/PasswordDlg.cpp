@@ -18,7 +18,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPasswordDlg dialog
-
+std::string  g_tempPassword = "";
 
 CPasswordDlg::CPasswordDlg(CWnd* pParent /*=NULL*/)
 	: CCEDialog(CPasswordDlg::IDD, pParent)
@@ -28,7 +28,6 @@ CPasswordDlg::CPasswordDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	m_passwordType = SETTINGPLAY_PASSWORD;
 	m_password = "";
-	m_tempPassword = "";
 	m_nStep = 0;
 	m_Owner = NULL;
 }
@@ -344,8 +343,7 @@ void CPasswordDlg::SettingOK()
 			ShowWindow_(FALSE);
 			if(m_Owner)
 			{
-				std::string strtemp = Util::StringOp::FromCString(s2);
-				m_tempPassword = strtemp.c_str();
+				g_tempPassword = Util::StringOp::FromCString(s2);
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要更改密码吗？", 0);
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
@@ -796,7 +794,7 @@ LRESULT CPasswordDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	switch(message)
 	{
 	case WM_DELETESELITEM:
-		::SendMessage(m_Owner, WM_SETTINGPASSWORD, (WPARAM)m_tempPassword, m_passwordType);
+		::SendMessage(m_Owner, WM_SETTINGPASSWORD, 0, m_passwordType);
 		break;
 	}
 	return CDialog::WindowProc(message, wParam, lParam);

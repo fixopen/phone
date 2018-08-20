@@ -7,6 +7,7 @@
 // YHTelDlg.h : header file
 //
 
+
 /////////////////////////////////////////////////////////////////////////////
 // C3GSMSDlg dialog
 #include "../control/MJPGStatic.h"
@@ -20,7 +21,6 @@ class CSMSDlg : public CDialog
 // Construction
 public:
 //	C3GSMSListDlg   *m_pSMSListDlg;
-	C3GSMSDetailDlg *m_pSMSDetailDlg;
 
 	CMJPGStatic		m_MJPGList;
 	CSMSDlg(CWnd* pParent = NULL);   // standard constructor
@@ -57,6 +57,8 @@ private:
 	std::map<int,CString>	m_mapTelnum;//保存联系人的电话
 	int						m_iCurrentPage;//当前在第几页
 	int const				pageSize;
+	int						m_charNumber;
+	int						m_msgNumber;
 	C10PhrasesDlg			*m_p10PhrasesDlg;//10条通话记录
 	enum Action{
 		up_page,
@@ -84,13 +86,17 @@ public:
 	void SetMessge(boost::shared_ptr<Data::Message> pmessage);
 	void ShowWindow_(int nCmdShow );
 	void GetSender(std::vector<CString> &telnum);
+	
+	void OnCharNumberChange();
+
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(C3GSMSDlg)
 	virtual BOOL OnInitDialog();
 //	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

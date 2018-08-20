@@ -95,7 +95,7 @@ BOOL CLunarderDlg::OnInitDialog()
  	m_cmbRing.Create(WS_CHILD, CRect(202, 122, 413, 300), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
  	SetRingLst();
  
- 	m_alarmEdit.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(201, 215, 558, 364), this, 0xFFFF);
+ 	m_alarmEdit.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(203, 217, 554, 360), this, 0xFFFF);
  	m_alarmEdit.SetLimitText(768);
 
 	m_editTaboo.Create(WS_CHILD|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(42, 94, 617, 394), this, 0xFFFF);
@@ -110,8 +110,6 @@ BOOL CLunarderDlg::OnInitDialog()
 	m_bIsMainLunder = TRUE;
 	SYSTEMTIME curtime;
 	GetLocalTime(&curtime);
-//	m_dtDateShow.SetTime(curtime);
-//	m_dtTimeShow.SetTime(curtime);
 	SetData(curtime.wYear, curtime.wMonth, curtime.wDay);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control

@@ -523,18 +523,6 @@ int CCardSelectDlg::GetTypeListSelected(void)
 	return -1;
 }
 
-void CCardSelectDlg::SetTypeListSelected(int index)
-{
-	POSITION pos = m_lsType.GetFirstSelectedItemPosition();   
-	while (pos != NULL)
-	{   
-		int iSel = m_lsType.GetNextSelectedItem(pos);   
-		m_lsType.SetItemState(iSel, 0, LVIS_SELECTED);   
-	}
-    m_lsType.SetItemState(index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-
-}
-
 
 LRESULT CCardSelectDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {

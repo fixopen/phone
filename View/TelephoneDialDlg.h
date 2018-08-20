@@ -63,6 +63,7 @@ public:
 	void	Key_(void* param);
 	void	HangOff_();
 	void    SetTel(CString tel);
+	void	DeleteNum();
 	void    ShowWindow_(int nCmdShow);
 };
 

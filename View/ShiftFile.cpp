@@ -232,8 +232,8 @@ void CShiftFile::OnClickOk()
 {
 	g_isShift = TRUE;
 	HANDLE hThread;
-// 	hThread = CreateThread(NULL, 0, ShiftFileProc, this, 0, NULL);
-// 	CloseHandle(hThread);	
+ 	hThread = CreateThread(NULL, 0, ShiftFileProc, this, 0, NULL);
+ 	CloseHandle(hThread);	
 
 	SetTimer(0x10, 1000, NULL);
 	Sleep(1000);

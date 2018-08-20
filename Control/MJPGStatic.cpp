@@ -267,7 +267,7 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 	}
 	return nLineCount;
 	*/
-    if(rt.Width() ==0 || (rt.Width()-MULITI_RECT_OFFSET*2) < height)
+  if(rt.Width() ==0 || (rt.Width()-MULITI_RECT_OFFSET*2) < height)
 		return 0;
 	TEXTMETRIC tm;
 	int nCount = (rt.Width()-MULITI_RECT_OFFSET*2)/(height/2);
@@ -334,13 +334,13 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 					{
 						i++;
 						n++;
-						if(IsBiaodianFuhao(s.GetAt(i)))
+						if((i < nLength) && IsBiaodianFuhao(s.GetAt(i)))
 						{
 							n++;
 							i++;
 						}
 
-						i--;   //正好符号换行多加了一个字符   lxz 20081105
+						i--; //正好符号换行多加了一个字符 lxz 20081105
 					}
 					pCount[nLineCount].nCount = n;     //自动折行了，不能加1;
 					n = 0;
@@ -352,11 +352,11 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 					{
 						n++;
 						i++;
-						if(IsBiaodianFuhao(s.GetAt(i)))
+						if((i < nLength) && IsBiaodianFuhao(s.GetAt(i)))
 						{
 							n++;
 							i++;
-							if(IsBiaodianFuhao(s.GetAt(i)))
+							if((i < nLength) && IsBiaodianFuhao(s.GetAt(i)))
 							{
 								n++;
 								i++;
@@ -378,7 +378,7 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 				nChar += 1;
 				if(nChar == nCount)
 				{
-					if(IsBiaodianFuhao(s.GetAt(i+1)))			//符号显示在上一行上
+					if(IsBiaodianFuhao(s.GetAt(i+1)))//符号显示在上一行上
 					{
 						n++;
 						i++;
@@ -396,6 +396,7 @@ int CMJPGStatic::GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINE
 		}
 	}
 	return nLineCount;
+	
 }
 
 void TrimRinghtEnterChar(CString &s)
@@ -2352,7 +2353,6 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 #endif
 	}
 	/*
-	int ret1 = DMemprintf("MJPGPage 3");
 	if(ret1 != ret)
 	{
 	//wprintf(L"%s\n", sFile);

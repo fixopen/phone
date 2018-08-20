@@ -45,6 +45,7 @@ namespace Util
 			int frameHeadPos_;
 			bool isFirstPacket_;
 		};
+
 	private:
 		OnSerialPortDataReceived onSerialPortDataReceived_;
 		boost::shared_ptr<ReadThread> readThread_;

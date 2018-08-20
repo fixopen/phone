@@ -116,7 +116,6 @@ public:
 	void ShowItemsInList(void);
 	void ShowTypeItems(void);
 	int	 GetTypeListSelected(void);
-	void SetTypeListSelected(int index);
 	void Search(std::string filter);
 
 //add by qi 2009_09_17
@@ -139,6 +138,7 @@ private:
 	std::vector<CString>			m_vName;//保存名字
 	CString							m_sName;//联系人的名字
 	
+	int								m_nSimCapacity;//SIM卡容量
 	int								m_iSelectNum;//选择的号码数
 	int								m_ntype;//类型
 	int								m_iCurrentGroupID;//当前的组ID
@@ -166,6 +166,7 @@ public:
 	void ClearCurrentPage();
 	void ClickedOneItem(int unitID,int item);//这行被点击之后，重新设置这行的信息
 	void DeleteItems();
+	void DeleteAll();
 	void SetPageFont();//设置界面的字体和颜色
 	void SelectAll();//全部勾选
 	void InsertInfo(std::string name , std::string phone);//插入信息
@@ -203,6 +204,7 @@ public:
 	void SetSimID(int id);
 	int	 GetSimID();
 	void BackupSim();
+	int  GetSimCapacity();
 	std::string GetContactName(std::string const number);
 };
 

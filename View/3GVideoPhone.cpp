@@ -101,12 +101,11 @@ bool C3GVideoPhone::InitData(void)
 	m_uiTipTimer = 3;
 	m_uiInNoCount = 0;
 	m_uiRecordCound = 0;
-//	m_bAutoRecord = FALSE;
+	
 	m_bHasCallID = FALSE;
 	m_bPlayingLeaveWord = FALSE;
 	m_bFirwall = FALSE;
 	m_bRingPlayed = FALSE;	
-//	m_spSimAddr = boost::shared_ptr<Data::SimAddr>(new Data::SimAddr);
 
 	m_spContactInfo = boost::shared_ptr<Data::ContactInfo>();
 	m_spSoundSegment = boost::shared_ptr<Data::SoundSegment>();
@@ -127,18 +126,6 @@ bool C3GVideoPhone::InitData(void)
 	m_waveform.nBlockAlign=m_waveform.nChannels * m_waveform.wBitsPerSample / 8;
 	m_waveform.nAvgBytesPerSec=m_waveform.nBlockAlign * m_waveform.nSamplesPerSec;
 	m_waveform.cbSize=0;	
-
-// 	m_pWaveHdr1 = reinterpret_cast<PWAVEHDR>(malloc(sizeof(WAVEHDR)));
-// 	m_pWaveHdr2 = reinterpret_cast<PWAVEHDR>(malloc(sizeof(WAVEHDR)));
-// 	m_pBuffer1=(PBYTE)malloc(INP_BUFFER_SIZE);
-// 	m_pBuffer2=(PBYTE)malloc(INP_BUFFER_SIZE);
-// 	
-// 	if (!m_pBuffer1 || !m_pBuffer2)
-// 	{
-// 		if (m_pBuffer1) free(m_pBuffer1);
-// 		if (m_pBuffer2) free(m_pBuffer2);
-// 		Dprintf("buffer malloc error!\n");
-// 	}
 
 	for (int i = 0; i < WAVE_BUFFER_COUNT; ++i)
 	{
@@ -283,7 +270,7 @@ void C3GVideoPhone::ChangeVolume(int w)
 
 std::string C3GVideoPhone::GetSoundPath(void)
 {
-	path = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->soundPath();
+	path = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->soundPath();
 	
 	BOOL DetectDIR(TCHAR *sDir);
 	if (path == ssStorageCardRecordPath)
@@ -322,7 +309,7 @@ void C3GVideoPhone::OnButtonTelephoneRecord()
 		GetDiskFreeSpaceEx(Util::StringOp::ToCString(path), &freeBytes, &totalBytes, NULL);
 
 		int secondBytes = SECONDBYTES8;
-		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isDeleteProtect())
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isDeleteProtect())
 		{
 			secondBytes = SECONDBYTES8;
 		}
@@ -364,7 +351,7 @@ void C3GVideoPhone::OnButtonTelephoneRecord()
 			t = CTime::GetCurrentTime();
 			CString filename;
 			
-			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isDeleteProtect())
+			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isDeleteProtect())
 			{
 				m_pOggCodec->SetQuality(8);
 				filename.Format(_T("%02d%02d%02dHQ.spx"), t.GetHour(), t.GetMinute(), t.GetSecond());
@@ -407,7 +394,7 @@ void C3GVideoPhone::OnButtonTelephoneRecord()
 				//m_sticRecord.ShowWindow(TRUE);
 				//m_btnRecord.SetWindowText(m_strStopRecord);
 				
-				if (((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isMustRecord())
+				if (((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->isMustRecord())
 				{
 					m_MJPGList.SetUnitIsShow(2, FALSE);
 					m_MJPGList.SetUnitIsShow(8, FALSE);

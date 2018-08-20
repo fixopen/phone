@@ -40,7 +40,7 @@ public:
 	void OnOK_();
 	void OnPlayer(int index = 0);
 	void FindSelectPage();
-	void ShowWindow_(int nCmdShow);
+	void ShowWindow_(int nCmdShow, BOOL isBtnShow = TRUE);
 	void AddFilePicture();
 	void SetInitShow();
 
@@ -81,7 +81,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(C3GHomePicDlg)
 	virtual BOOL OnInitDialog();
-//	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 

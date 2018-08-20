@@ -20,13 +20,13 @@ static char THIS_FILE[] = __FILE__;
 
 #define  ALL_SENDER  20
 
-
 CSMSDlg::CSMSDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CSMSDlg::IDD, pParent)
 ,pageSize(5)
 {
 	m_iCurrentPage	= 0 ;
-
+	m_msgNumber		= 1 ;
+	m_charNumber	= 0 ;
 }
 
 
@@ -42,6 +42,8 @@ void CSMSDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CSMSDlg, CDialog)
 	//{{AFX_MSG_MAP(C3GSMSDlg)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
+	ON_MESSAGE(WM_CHARNUMBER, OnCharNumberChange)
+
 //	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -66,11 +68,6 @@ BOOL CSMSDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-//	m_pSMSListDlg = new C3GSMSListDlg(this);
-//	m_pSMSListDlg->Create(C3GSMSListDlg::IDD);
-
-	m_pSMSDetailDlg = new C3GSMSDetailDlg(this);
-	m_pSMSDetailDlg->Create(C3GSMSDetailDlg::IDD);
 	
 	int height;
 	m_senderEdit1.Create(WS_CHILD|WS_VISIBLE|ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN , CRect(28, 120, 28+189, 120+29), this, 0xFFFF);
@@ -146,11 +143,41 @@ BOOL CSMSDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialog::PreTranslateMessage(pMsg);
 
 }
+
+void CSMSDlg::OnCharNumberChange()
+{
+	m_charNumber = m_contentEdit.GetWindowTextLength();
+	CString number;
+	if(m_charNumber <= 70)
+	{
+		number.Format(_T("%d/70"), m_charNumber);
+		m_MJPGList.SetUnitText(8, number, TRUE);
+		m_MJPGList.SetUnitText(7, L"1", TRUE);
+	}
+	else
+	{
+		if(0 == (m_charNumber%67))
+		{
+			m_msgNumber = m_charNumber/67;
+		}
+		else
+		{
+			m_msgNumber = m_charNumber/67 + 1;
+		}
+		number.Format(_T("%d"), m_msgNumber);
+		m_MJPGList.SetUnitText(7, number, TRUE);
+		m_charNumber -= (m_msgNumber-1)*67;
+		number.Format(_T("%d/67"), m_charNumber);
+		m_MJPGList.SetUnitText(8, number, TRUE);
+	}
+}
+
 void CSMSDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
 	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	CString icon ;
 	std::vector<CString> vnum;
+	SipShowIM(SIPF_OFF);
 	switch(w)
 	{
 	case 0:
@@ -239,8 +266,6 @@ void CSMSDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 	default:
 	    break;
-
-		SipShowIM(SIPF_OFF);
 
 	}
 
@@ -529,7 +554,12 @@ void CSMSDlg::SendSMS()//短消息
 			}
 			
 			if (bname)
-			{
+			{	
+				if ( 0 == m_vTelnum[i].GetLength())
+				{	
+					Dprintf("NO NAME !\r\n");
+					return;
+				}
 				address += Util::StringOp::FromCString(m_vTelnum[i])+";";
 			}
 			else
@@ -581,8 +611,27 @@ void CSMSDlg::SaveDraft()
 		std::string address ;//保存收件人，每个联系人用逗号隔开
 		for (int i = 0 ; i < m_mapTelnum.size(); i++)
 		{	
-			address += ",";
-			address += Util::StringOp::FromCString(m_mapTelnum[i]);
+			bool bname = false ;
+			for (int j = 0 ; j < m_mapTelnum[i].GetLength();j++)
+			{
+				if (m_mapTelnum[i].GetAt(j) < '0' || m_mapTelnum[i].GetAt(j) > '9')
+				{   
+					bname = true ;
+					break ;
+				}
+			}
+			
+			if (bname)
+			{
+				address += Util::StringOp::FromCString(m_vTelnum[i])+";";
+			}
+			else
+			{
+				address += Util::StringOp::FromCString(m_mapTelnum[i])+";";
+			}
+// 			address += Util::StringOp::FromCString(m_mapTelnum[i]);
+// 			address += ";";
+
 		}
 		pMessage->remote.address = address ;
 		
@@ -671,7 +720,7 @@ void CSMSDlg::ShowWindow_(int nCmdShow )
 		m_mapTelnum.clear();
 	}
 
-	m_contentEdit.SetWindowText(L"");
+	OnCharNumberChange();
 
 	m_senderEdit1.SetWindowText(L"");
 	m_senderEdit2.SetWindowText(L"");
@@ -701,26 +750,16 @@ void CSMSDlg::SetMessge(boost::shared_ptr<Data::Message> pmessage)
 	std::string address = pmessage->remote.address ;
 	std::string contact ;
 	size_t pos ;
-	while (address.find(',') != std::string::npos)
+	while (address.find(';') != std::string::npos)
 	{
-		pos = address.find(',');
+		pos = address.find(';');
 		if (pos != std::string::npos)
-		{
-			address	 = address.substr(1);
-			pos = address.find(',');
-			if (pos != std::string::npos)
-			{	
-				contact	= address.substr(0,pos);
-				vcontact.push_back(Util::StringOp::ToCString(contact));
-				address.substr(pos);
-			}
-			else
-			{	
-				contact	= address.substr(0);
-				vcontact.push_back(Util::StringOp::ToCString(contact));
-				break;
-			}
-		}		 
+		{	
+			contact	= address.substr(0,pos);
+			vcontact.push_back(Util::StringOp::ToCString(contact));
+			address.substr(pos+1);
+		}
+				 
 	}
 	
 	SetSender(vcontact);
@@ -731,4 +770,32 @@ void CSMSDlg::SetMessge(boost::shared_ptr<Data::Message> pmessage)
 	m_contentEdit.SetWindowText(Util::StringOp::ToCString(content));
 	m_contentEdit.SetReadOnly(false);
 
+}
+
+LRESULT CSMSDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch(message)
+	{
+	case WM_SMS_SENDRESULT:
+		if(lParam == 1)
+		{
+			if (m_mapTelnum.size())
+			{
+				m_mapTelnum.clear();
+			}
+			m_contentEdit.SetWindowText(L"");
+			m_senderEdit1.SetWindowText(L"");
+			m_senderEdit2.SetWindowText(L"");
+			m_senderEdit3.SetWindowText(L"");
+			m_senderEdit4.SetWindowText(L"");
+			m_senderEdit5.SetWindowText(L"");
+			
+			m_msgNumber = 1;
+			m_charNumber = 0;
+			m_MJPGList.SetUnitText(7, L"1", TRUE);
+			m_MJPGList.SetUnitText(8, L"0/70", TRUE);
+		}
+		break;
+	}
+	return CDialog::WindowProc(message, wParam, lParam);
 }

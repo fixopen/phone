@@ -50,22 +50,12 @@ protected:
 		
 private:
 	CMJPGStatic		m_MJPGList;
-/*
-	CCEStatic m_sticTitle;
-	CCEStatic m_sticTip;
-	CCEStatic m_sticName;
-	CCEStatic m_sticNumber;
-	CCEStatic m_sticCompany;
-	CCEStatic m_sticDuty;
-	*/
+
 	CCERectEdit m_edtName;
 	CCERectEdit m_edtNumber;
 	CCERectEdit m_edtCompany;
 	CCERectEdit m_edtDuty;
 
-//	CCEBmpButton m_btnSearch;
-//	CCEBmpButton m_btnCancel;
-//	CCEFramePartStatic m_sticBackground;
 };
 
 //{{AFX_INSERT_LOCATION}}

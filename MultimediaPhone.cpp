@@ -101,7 +101,6 @@ BOOL CMultimediaPhoneApp::InitInstance()
 
 	AfxEnableControlContainer();
 
-// 	unsigned int w_ = DMemprintf("test 0");
 // 	for(int i = 0; i < 20; i++)
 // 	{
 // 	//	unsigned int w = DMemprintf("test 0");
@@ -279,6 +278,19 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 		if(((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_nBackLightStatus == 0)  //为黑
 			return TRUE;
 		ret = CWinApp::PreTranslateMessage(pMsg);
+	}
+	else if (pMsg->message == WM_KEYDOWN)
+	{
+		if ( pMsg->wParam == VK_F1)//音量增加 +
+		{
+			((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->AddAudio(true);
+		}
+		else if (pMsg->wParam == VK_F2)//音量减 -
+		{
+			((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->AddAudio(false);
+
+		}
+
 	}
 	else
 		ret = CWinApp::PreTranslateMessage(pMsg);

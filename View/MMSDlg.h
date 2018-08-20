@@ -23,7 +23,6 @@ class CMMSDlg : public CDialog
 // Construction
 public:
 //	C3GSMSListDlg   *m_pSMSListDlg;
-	C3GSMSDetailDlg *m_pSMSDetailDlg;
 
 	CMJPGStatic		m_MJPGList;
 	CMMSDlg(CWnd* pParent = NULL);   // standard constructor

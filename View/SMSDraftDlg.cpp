@@ -28,7 +28,7 @@ CDraftDlg::CDraftDlg(CWnd* pParent /*=NULL*/)
 	m_iTurnOverPages = 0 ;
 	m_bSelectAll = false ;
 	m_nPageSize = PAGE_COUNT;
-	m_strHomeRecordeTelCode = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->speCode3_.c_str();
+	m_strHomeRecordeTelCode = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->speCode3_.c_str();
 }
 
 
@@ -45,7 +45,6 @@ BEGIN_MESSAGE_MAP(CDraftDlg, CDialog)
 	//{{AFX_MSG_MAP(C3GSMSListDlg)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 	ON_MESSAGE(WM_MJPGTOGGLE, OnClickMJPG)
-	ON_MESSAGE(WM_LISTCTRL_CLICKSUBITEM, OnListCltrlClick)
 //	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -298,6 +297,7 @@ void CDraftDlg::FromDataBase()
 
 void CDraftDlg::ShowArrayInList()
 {	
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	int icurrentPageItems = GetCurrentItems();//当前页有几行
 	int ibeginID = 30 ;
 	int addItems = 0;
@@ -308,9 +308,18 @@ void CDraftDlg::ShowArrayInList()
 	if(m_nSMSType == MMS_TYPE)	//彩信
 	{
 		for (int i = 0; i < icurrentPageItems; ++i)
-		{				
-			temp = Util::StringOp::ToCString(m_vMMSDataCurrentResult[i]->RecipientAddress);			
-		
+		{					
+			std::string number ;
+			std::string name ;
+			number = m_vMMSDataCurrentResult[i]->RecipientAddress;//在发件箱里，表示是否发送成功。收件箱里表示是否阅读
+			main->m_pSMSListDlg->AnalyseSender(number,name);
+			
+			temp = Util::StringOp::ToCString(name);
+			if (temp.Mid(temp.GetLength()-1) = L";")
+			{
+				temp = temp.Mid(0,temp.GetLength()-1);
+			}
+
 			m_MJPGList.SetUnitText(ibeginID+addItems+1,temp,false);//收件人或者发件人
 
 			temp = Util::StringOp::ToCString(m_vMMSDataCurrentResult[i]->Subject);
@@ -329,8 +338,18 @@ void CDraftDlg::ShowArrayInList()
 	{
 		for (int i = 0; i < icurrentPageItems; ++i)
 		{	
-			temp = Util::StringOp::ToCString(m_vMessageCurrentResult[i]->remote.address);//在发件箱里，表示是否发送成功。收件箱里表示是否阅读
-						
+			
+			std::string number ;
+			std::string name ;
+			number = m_vMessageCurrentResult[i]->remote.address;//在发件箱里，表示是否发送成功。收件箱里表示是否阅读
+			main->m_pSMSListDlg->AnalyseSender(number,name);
+			
+			temp = Util::StringOp::ToCString(name);
+			if (temp.Mid(temp.GetLength()-1) = L";")
+			{
+				temp = temp.Mid(0,temp.GetLength()-1);
+			}
+			
 			m_MJPGList.SetUnitText(ibeginID+addItems+1,temp,false);//收件人或者发件人
 
 			temp = Util::StringOp::ToCString(m_vMessageCurrentResult[i]->unicodeData);
@@ -363,141 +382,6 @@ LRESULT CDraftDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	return CDialog::WindowProc(message, wParam, lParam);
-}
-
-void CDraftDlg::OnListCltrlClick(WPARAM w, LPARAM l)
-{
-	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	if(l == 7)    //详情
-	{
-		if(w >= 0 && w <= (PAGE_COUNT-1))
-		{
-			C3GSMSDetailDlg *pWnd_ = pMainDlg->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg;
-			if((m_nBoxType == DRAFT_TYPE) || (m_nBoxType == SEND_TYPE))
-			{
-				if(m_nSMSType == MMS_TYPE)
-				{
-					pWnd_->initDataBase(MMS_READ, m_vMMSDataCurrentResult[w]->id(), FALSE);
-					pWnd_->ShowWindow(SW_SHOW);
-				}
-				else
-				{
-					pWnd_->initDataBase(SMS_READ, m_vMessageCurrentResult[w]->id(), FALSE);
-					pWnd_->ShowWindow(SW_SHOW);
-				}
-
-			}
-			else
-			{
-				if(m_nSMSType == MMS_TYPE)
-				{
-					pWnd_->initDataBase(MMS_READ, m_vMMSDataCurrentResult[w]->id(), FALSE);
-					m_vMMSDataCurrentResult[w]->isRead = TRUE;
-					m_vMMSDataCurrentResult[w]->Update();
-					pWnd_->ShowWindow(SW_SHOW);
-					ShowArrayInList();
-				}
-				else
-				{
-					pWnd_->initDataBase(SMS_READ, m_vMessageCurrentResult[w]->id(), FALSE);
-					m_vMessageCurrentResult[w]->state = Data::Message::sReaded;
-					m_vMessageCurrentResult[w]->Update();
-					pWnd_->ShowWindow(SW_SHOW);
-					ShowArrayInList();
-				}
-			}
-		}
-	}
-	else if(l == 6)	//删除
-	{
-		if(w >= 0 && w <= (PAGE_COUNT-1))
-		{
-			m_nSelectItem = w;
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
-			std::string strTemp = ".\\adv\\mjpg\\k1\\common\\确定删除吗.bmp";
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
-		}
-	}
-	else if(l == 5)	//回复  发送
-	{
-		if(w >= 0 && w <= (PAGE_COUNT-1))
-		{
-			CString sTelcode = "";
-			CString sContent = "";
-			C3GSMSDetailDlg *pWnd_ = pMainDlg->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg;
-			if((m_nBoxType == DRAFT_TYPE) || (m_nBoxType == SEND_TYPE))  //发送
-			{
-				if(m_nSMSType == MMS_TYPE)
-				{
-					//todo:彩信
-				}
-				else
-				{
-					sTelcode = m_vMessageCurrentResult[w]->remote.address.c_str();
-					sContent = m_vMessageCurrentResult[w]->unicodeData.c_str();
-
-					pWnd_->initDataBase(SMS_NEW, -1, FALSE);
-					pWnd_->SetSMSDetail(sTelcode, sContent);
-					pWnd_->ShowWindow(SW_SHOW);
-				}		
-			}
-			else
-			{
-				if(m_nSMSType == MMS_TYPE)
-				{
-					sTelcode = m_vMMSDataCurrentResult[w]->SenderAddress.c_str();
-				}
-				else
-				{
-					sTelcode = m_vMessageCurrentResult[w]->remote.address.c_str();
-				}	
-				
-				pWnd_->initDataBase(SMS_NEW, -1, FALSE);
-				pWnd_->SetSMSDetail(sTelcode, sContent);
-				pWnd_->ShowWindow(SW_SHOW);
-			}
-		}
-	}
-	else if(l == 4)	//转发
-	{
-		if(w >= 0 && w <= (PAGE_COUNT-1))
-		{
-			CString sTelcode = "";
-			CString sContent = "";
-			C3GSMSDetailDlg *pWnd_ = pMainDlg->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg;
-			if(m_nSMSType == MMS_TYPE)
-			{
-			//	sTelcode = m_vMMSDataCurrentResult[w]->unicodeData.c_str();
-			}
-			else
-			{
-				sContent = m_vMessageCurrentResult[w]->unicodeData.c_str();
-				pWnd_->initDataBase(SMS_NEW, -1, FALSE);
-				pWnd_->SetSMSDetail(sTelcode, sContent);
-				pWnd_->ShowWindow(SW_SHOW);
-			}	
-		}
-	}
-	else if(l == 3)	//回电
-	{
-		if(w >= 0 && w <= (PAGE_COUNT-1))
-		{
-			CString sTelcode = "";
-			if(m_nSMSType == MMS_TYPE)
-			{
-				sTelcode = m_vMMSDataCurrentResult[w]->SenderAddress.c_str();
-			}
-			else
-			{
-				sTelcode = m_vMessageCurrentResult[w]->remote.address.c_str();
-			}
-			if(sTelcode != "")
-			{
-				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(Util::StringOp::FromCString(sTelcode), -1);
-			}
-		}
-	}
 }
 
 void CDraftDlg::SetUpBtn(int ID)

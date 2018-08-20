@@ -138,7 +138,7 @@ void CMainMenuDlg::SetVideo()
 void CMainMenuDlg ::OnScreenSaveBtn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int type = (int)main->m_pSettingDlg->m_pSetting->screenSaverContent();
+	int type = (int)main->m_pSettingDlg->m_pTempSetting->screenSaverContent();
 	((CMainDlg *)(main->GetPanel(IDC_BUTTON_MAIN)))->m_mainScreenSaveDlg_->SetSaveScreenType(type, TRUE);	  //1 图片屏保   0  时间屏保
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)5, SW_SHOW);   //切换到互联网
 }

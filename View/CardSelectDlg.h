@@ -75,19 +75,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	CMJPGStatic		m_MJPGList;
-	/*
-	CCEStatic	m_sticTypeTitle;
-	CCEStatic	m_sticName;
-	CCEStatic	m_sticCompany;
-	CCEStatic	m_sticDepartment;
-	CCEStatic	m_sticDuty;
-	CCEStatic	m_sticOperation;
-	CCEStatic	m_sticSepLine1;
-	CCEStatic	m_sticSepLine2;
-*/	CCEStatic   m_sticPinYin;
-/*	CCEStatic   m_sticPanel;
-	CCEFrameStatic m_sticBackground;
-*/
+
+	CCEStatic   m_sticPinYin;
 	CCEListCtrl	m_lsType;
 	CCEListCtrl	m_lsList;
 	CSoftKey    m_skSoftKey;
@@ -131,7 +120,6 @@ public:
 	void ShowItemsInList(void);
 	void ShowTypeItems(void);
 	int  GetTypeListSelected(void);
-	void SetTypeListSelected(int index);
 	void Search(std::string filter);
 
 	// add by qi 2009_08_05

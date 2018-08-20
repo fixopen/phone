@@ -1044,6 +1044,7 @@ int HttpProcesse(void *pParam)
     Transport.Close();
 	delete pHttpParam;
 	return ret;
+
 }
 
 /*

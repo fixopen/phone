@@ -193,7 +193,7 @@ bool CRecordSoundDlg::RecStart(void)
 	GetDiskFreeSpaceEx(Util::StringOp::ToCString(path), &freeBytes, &totalBytes, NULL);
 	
 	int secondBytes = SECONDBYTES8;
-	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isDeleteProtect())
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isDeleteProtect())
 	{
 		secondBytes = SECONDBYTES8;
 	}
@@ -233,7 +233,7 @@ bool CRecordSoundDlg::RecStart(void)
 	t = CTime::GetCurrentTime();
 	CString filename;
 	
-	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isDeleteProtect())
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isDeleteProtect())
 	{
 		m_pOggCodec->SetQuality(8);
 		filename.Format(_T("%02d%02d%02dHQ.spx"), t.GetHour(), t.GetMinute(), t.GetSecond());
@@ -681,7 +681,7 @@ void CRecordSoundDlg::ShowWindow_(int cmdshow)
 	if(cmdshow > 0)
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-		m_nSoundindex = main->m_pSettingDlg->m_pSetting->sysVolume();
+		m_nSoundindex = main->m_pSettingDlg->m_pTempSetting->sysVolume();
 		DWORD volume[] = {0xFF00FF00, 0xcc00cc00, 0x88008800, 0x44004400, 0x10001000}; 
 		waveOutSetVolume(NULL, volume[m_nSoundindex]);
 	}

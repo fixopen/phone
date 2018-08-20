@@ -833,10 +833,10 @@ void CContactInfoDlg::OnButtonSound()
 			}
 		}
 	}
-	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 	{
 		m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
-		std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
+		std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
 		m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 		m_pPasswordDlg->SetHWnd(this->m_hWnd);
 		m_pPasswordDlg->ShowWindow_(SW_SHOW);	
@@ -850,27 +850,7 @@ void CContactInfoDlg::OnButtonSound()
 
 void CContactInfoDlg::OnButtonNote() 
 {
-	// TODO: Add your control notification handler code here
-// 	m_pNoteDlg->ShowWindow(TRUE);
 
-	CMultimediaPhoneDlg *pMain = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	std::vector<CString> number;
-	for (int i=0; i<m_vCurrentResult.size(); i++)
-	{
-		int index = (m_currentPage-1)*PageSize+i;
-		if (1 == m_ItemChecked[index])
-		{
-			number.push_back(m_MJPGList.GetUnitText((i+1)*100+3));
-		}
-	}
-	if (number.empty())
-	{
-		return;
-	}
-
-	//ÐèÒª´«ËÍºÅÂë
-	pMain->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg->initDataBase(SMS_NEW, -1);
-	pMain->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg->ShowWindow(SW_SHOW);
 }
 
 void CContactInfoDlg::OnButtonNew() 
@@ -981,11 +961,11 @@ void CContactInfoDlg::OnButtonDelete()
 		if (1 == m_ItemChecked[(m_currentPage-1)*PageSize+i])
 		{
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+			if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 			{
 				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 			}
-			std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+			std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->adminPassword();
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 			std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_CONTACTINFO);
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());

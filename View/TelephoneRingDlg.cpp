@@ -50,6 +50,9 @@ BOOL CTelephoneRingDlg::OnInitDialog()
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\电话接听.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 	
+	HideContact(100,false);
+	HideContact(200,false);
+
 	MoveWindow(0,57,800,423);
 
 	return TRUE ;
@@ -71,43 +74,120 @@ void CTelephoneRingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 	case 3://拒接
 		HangOff_();
-		break;	
+		break;
 		
+	case 4://切换
+		
+		break;
+
 	default:
 		break;
 	}
+
 }
 
 void CTelephoneRingDlg::HangOff_()
 {	
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
-	main->PopbackIcon();
-
 	
-	ShowWindow_(SW_HIDE);
-	main->m_pTelephoneDlg->HandleOff();
+	if (main->m_phoneLine[0].pFSM->getCurrentState() == CMultimediaPhoneDlg::p3gsRing 
+		&& main->m_phoneLine[2].pFSM->getCurrentState() == CMultimediaPhoneDlg::pstnsRing)
+	{
+		if ( m_MJPGList.GetUnitIsShow(100))//3g
+		{	
+			::PostMessage(main->m_hWnd, WM_TEL_HUNGOFF, 1, 0);
+			//main->phone_->Hangup();
+
+		}
+		else//pstn
+		{	
+			::PostMessage(main->m_hWnd, WM_TEL_HUNGOFF, 3, 0);
+			//main->phone_->PSTNHangoff_();
+		}	
+	}
+	else
+	{
+		main->PopbackIcon();	
+		ShowWindow_(SW_HIDE);
+		main->m_pTelephoneDlg->HandleOff();
+	}
+
 }
+
 
 void CTelephoneRingDlg::OnTimer(UINT nIDEvent) 
 {
 	CCEDialog::OnTimer(nIDEvent);
 }
 
-void CTelephoneRingDlg::ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number)
+void CTelephoneRingDlg::ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number,int unitNo)
+{	
+
+	m_MJPGList.SetUnitText(unitNo, CString(contact->name().c_str()), TRUE);	
+	m_MJPGList.SetUnitText(unitNo+3, CString(contact->company().c_str()), TRUE);
+	m_MJPGList.SetUnitText(unitNo+4, CString(contact->department().c_str()), TRUE);
+	m_MJPGList.SetUnitText(unitNo+5, CString(contact->email().c_str()), TRUE);
+	m_MJPGList.SetUnitText(unitNo+6, CString(contact->duty().c_str()), TRUE);
+	m_MJPGList.SetUnitText(unitNo+7, CString(contact->memo().c_str()), TRUE);
+
+}
+
+void CTelephoneRingDlg::HideContact(int uintNo,bool bshow )
 {
-	CString str = CString(contact->name().c_str());
-	str += _T("(");
-	str += CString(number.c_str());
-	str += _T(")");
-	
-	m_MJPGList.SetUnitText(100, str, TRUE);
-	m_MJPGList.SetUnitText(101, CString(contact->company().c_str()), TRUE);
-	m_MJPGList.SetUnitText(102, CString(contact->department().c_str()), TRUE);
-	m_MJPGList.SetUnitText(103, CString(contact->duty().c_str()), TRUE);
+	for (int i = 0 ; i < 8 ; i++)
+	{
+		m_MJPGList.SetUnitIsShow(uintNo+i,!bshow,true);		
+	}
+}
+
+void CTelephoneRingDlg::Switch()
+{	
+	if ( m_MJPGList.GetUnitIsShow(100) )
+	{	
+		HideContact(100,true);
+		HideContact(200,false);
+	}
+	else
+	{	
+		HideContact(100,false);
+		HideContact(200,true);
+	}
 
 }
 
 void CTelephoneRingDlg::HandleOn()
+{	
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	extern void GMute(BOOL isOn);
+	GMute(FALSE);//打开speeker
+	main->phone_->Free(Telephone::TelephoneWarp::FreeOn);//按过免提
+	if(main->m_nTELRigster >= TELRIGSTER_TD)
+	Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(true);//切换到免提
+
+	if ( m_MJPGList.GetUnitIsShow(100) )
+	{	
+		::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 1, 0);
+		main->phone_->HungOn(TRUE);
+	}
+	else
+	{
+		main->phone_->PSTNHangOn();	
+	}
+
+}
+
+void CTelephoneRingDlg::ClearData(int unitNo)
+{	
+	for (int i = 0 ; i < 8;i++)
+	{
+		m_MJPGList.SetUnitText(unitNo+i,L"", TRUE);	
+	}
+
+}
+
+void CTelephoneRingDlg::InitData()
 {
-	::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_HUNGON, 0, 0);	
+	m_MJPGList.SetUnitIsShow(4,false,true);
+	m_MJPGList.SetUnitIsShow(5,false,true);
+
 }

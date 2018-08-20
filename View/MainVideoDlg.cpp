@@ -84,7 +84,7 @@ void CMainVideoDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CMainVideoDlg::SetVolume()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int index = main->m_pSettingDlg->m_pSetting->sysVolume();
+	int index = main->m_pSettingDlg->m_pTempSetting->sysVolume();
 	int Volume[] = {10, 8, 6, 4, 2};
 	main->playervideo_->SetVolume(Volume[index]);
 	m_Volume = Volume[index];
@@ -176,10 +176,11 @@ void CMainVideoDlg::OnExit()
 //²¥·Å
 void CMainVideoDlg::OnPlayer()
 {
-	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->m_bRecording)
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	if(main->m_pSoundDlg->m_pRecordSoundDlg->m_bISRecording || main->m_pTelephoneDlg->m_bRecording)
 		return;
 
-	if(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->GetIsRecordStatus())
+	if(main->m_pTelephoneDlg->GetIsRecordStatus())
 		return;
 	
 	if(m_IsPlay == 0)
@@ -227,6 +228,12 @@ void CMainVideoDlg::OnPlayer()
 			m_IsPlay = 1;
 			m_MJPGList.SetUnitIsDownStatus(3, TRUE);
 			m_MJPGList.SetUnitIsShow(3, TRUE);
+
+			if(0 == main->phone_->m_BatteryStatus.batteryType)
+			{
+				main->phone_->m_BatteryStatus.typeChange = 1;
+				::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_CHANGE_DCBATTERY, 0, 0);
+			}
 		}
 	}
 	else if(m_IsPlay == 1)
@@ -818,6 +825,32 @@ void CMainVideoDlg::ShowArrayInList(std::vector<CString> fileName)
 		}
 		m_MJPGList.Invalidate();
 	}
+}
+
+void CMainVideoDlg::HandleAudio(bool bt)
+{	
+	if (bt)
+	{
+		m_Volume++;
+		if (m_Volume > 10)
+		{
+			m_Volume = 10;
+			return ;
+		}
+	}
+	else
+	{	
+		m_Volume--;
+		if (m_Volume < 0)
+		{
+			m_Volume = 0 ;
+			return ;
+		}
+	}
+	
+	ChangeVolume(m_Volume + 50);
+	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->playervideo_->SetVolume(m_Volume);
+	
 }
 
 void CMainVideoDlg::PageUp()

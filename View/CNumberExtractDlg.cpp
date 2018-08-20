@@ -115,6 +115,9 @@ void CNumberExtractDlg::SetMainWnd(CWnd *pwnd)
 
 void CNumberExtractDlg::SetNumber(std::vector<CString> vNumber)
 {	
+	m_nItem		= -1;
+	m_ncontact  = -1;
+
 	if (m_vNumber.size())
 	{
 		m_vNumber.clear();
@@ -220,7 +223,7 @@ void CNumberExtractDlg::OnBtnOk()
 
 void CNumberExtractDlg::NewContact()
 {
-	if (m_nItem && m_ncontact )
+	if (m_nItem > -1 && m_ncontact > -1 )
 	{		
 		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd ;
 		std::string number = Util::StringOp::FromCString(m_MJPGList.GetUnitText(m_nItem+1));
@@ -256,7 +259,7 @@ void CNumberExtractDlg::NewContact()
 
 void CNumberExtractDlg::OldContact()
 {
-	if (m_nItem && m_ncontact )
+	if (m_nItem  > -1 && m_ncontact > -1 )
 	{
 		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg *)theApp.m_pMainWnd ;
 		
@@ -271,6 +274,7 @@ void CNumberExtractDlg::OldContact()
 		ShowWindow_(SW_HIDE);
 		main->AddIcon(Allicon[2]);
 	}
+
 }
 
 int CNumberExtractDlg::GetItems()

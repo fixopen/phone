@@ -9,14 +9,12 @@
 #include "../Control/CEStatic.h"
 #include "../Control/CeBtnST.h"
 #include "../Control/CEDialog.h"
-//#include "NoteDlg.h"
 #include "../Data/ContactInfo.h"
 #include "../Data/SoundSegment.h"
 #include "../inc/SABTD.h"
 #include "../Util/OggCodec.h"
 
 #include "../control/MJPGStatic.h"
-//#include "../Data/SimAddr.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -73,7 +71,6 @@ protected:
 	//}}AFX_MSG
 	afx_msg void OnButtonTelephoneHide();
 	afx_msg void OnButtonTelephoneNote();
-//	afx_msg void OnButtonTelephoneRecord();
 	afx_msg void OnButtonTelephoneHandle();
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnTelStatus(WPARAM w, LPARAM l);
@@ -83,30 +80,12 @@ private:
 
 	std::string path;
 	char m_chDialNumber[64];
-
-	CCEStatic m_sticTitle;
-	CCEStatic m_sticNameNo;
-	CCEStatic m_sticCompany;
-	CCEStatic m_sticDepartment;
-	CCEStatic m_sticDuty;
-	CCEStatic m_sticRecordCaption;
-	CCEStatic m_sticRecord;
-	CCEStatic m_sticDurationCaption;
-	CCEStatic m_sticDuration;
 	
-// 	CCEBmpButton m_btnHide;
-// 	CCEBmpButton m_btnNote;
-// 	CCEBmpButton m_btnRecord;
-// 	CCEBmpButton m_btnHandle;
-// 	CCEBmpButton m_btnRecordTip;
 	CCEFramePartStatic m_sticBackground;
-
-//	CNoteDlg* m_pNoteDlg;
-//	boost::shared_ptr<Data::SimAddr> m_spSimAddr;
-
 
 	boost::shared_ptr<Data::ContactInfo> m_spContactInfo;
 	boost::shared_ptr<Data::SoundSegment> m_spSoundSegment;
+	boost::shared_ptr<Data::ContactInfo> m_spPstnContactInfo;
 	std::vector<boost::shared_ptr<Data::SoundSegment> >m_vSoundSegment;
 	CString m_strRecord;
 	CString m_strStopRecord;
@@ -120,7 +99,6 @@ private:
 	UINT m_uiTipTimer;
 	UINT m_uiInNoCount;
 	UINT m_uiRecordCound;
-//	BOOL m_bAutoRecord;
 	BOOL m_bHasCallID;
 	BOOL m_bFirwall;
 	UINT m_uiRemainRecordSecond;
@@ -129,8 +107,30 @@ private:
 	std::string m_sRingFilename;
 	std::string m_sDialNumber;
 	std::string m_sOutLine;
+	std::string m_sTel;
+	std::string m_sCity;
 	BOOL m_bRing;
 	BOOL m_bRingPlayed;
+
+private:
+	UINT m_uiPstnRingCount;
+	UINT m_uiIPstngnoreRingCount;
+	UINT m_uiPstnTelephoneTimer ;
+	UINT m_uPstnTelSecondOff;
+	UINT m_uiPstnTelephoneSecond;
+
+	BOOL m_bPstnFirwall ;
+	BOOL m_bPstnHasCallID ;
+	BOOL m_bPstnRingPlayed;
+	BOOL m_bPstnRing;
+
+
+	std::string m_sPstnRingFilename;
+	std::string m_sPstnTel;
+	std::string m_sPstnCity;
+
+
+	
 private:
 	volatile BOOL m_bEnding;
 	BOOL m_bPlaying;
@@ -141,11 +141,6 @@ private:
 	
 	PBYTE m_pBuffer[WAVE_BUFFER_COUNT];
 	PWAVEHDR m_pWaveHdr[WAVE_BUFFER_COUNT];
-
-// 	PBYTE m_pBuffer1;
-// 	PBYTE m_pBuffer2;
-// 	PWAVEHDR m_pWaveHdr1;
-// 	PWAVEHDR m_pWaveHdr2;
 	
 	CFile m_fWav;	
 	WAVEFORMATEX m_waveform;
@@ -162,6 +157,7 @@ private:
 	std::string GetSoundPath(void);
 
 	OggCodec* m_pOggCodec;
+	int  m_Volume ;
 
 public:
 	void HandleOn(void);
@@ -175,7 +171,7 @@ public:
 	void Ring_(void* param);
 	void CallID_(void* param);
 	std::vector<boost::shared_ptr<Data::Contact> > FindCallContact(std::string number);
-	void ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number);
+	void ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number,int uintNo = 100);
 	void DialContact(Data::TelephoneNumber telephoneNumber, int contactId = 0);
 
 	void Mute(void);
@@ -184,17 +180,24 @@ public:
 	void HangOnToRecord(void);
 
 	UINT GetUnconnectCount(void);
-//	void ClearUnconnectCount(void);
 	UINT GetRecordCount(void); 
-//	void ClearRecordCount(void);
 
 	BOOL GetIsRecordStatus(){return m_bRecording;}
 
 	//add by qi 2009_11_04
+	void pstnRing_(void* param);
+	void pstnCallID_(void* param);
+	void PstnContect_(void* param);
+	void PstnHangOff_(void* param);
+
+	void G3HangOff();//单独挂断3G
+
 	void FromTelDial(boost::shared_ptr<Data::ContactInfo> pContactInfo,std::string tel);//把电话拨打界面的信息传过来
 	void SetVolume(unsigned int volume);
 	void VolumeSwitch();
+	void HandleAudio(bool bt);
 	void Dialback(std::string telnum);
+
 };
 
 //{{AFX_INSERT_LOCATION}}

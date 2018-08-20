@@ -386,6 +386,7 @@ namespace Data
                 log_(errorMessage);
                 if (indication_)
                     indication_(errorMessage);
+
             }
 			if (errorMessage) {
 				sqlite3_free(errorMessage);

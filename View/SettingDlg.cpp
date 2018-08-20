@@ -23,7 +23,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg dialog
-CString s_VerSionTitle = "7.37090731";
+CString s_VerSionTitle = "20100107";
 CString s_VerSion = "\
 6.03090325\
 1.修改了录音密码.\
@@ -91,6 +91,8 @@ CString s_VerSion = "\
 \t5.手写笔迹不圆滑\r\n";
 
 extern BOOL DetectDIR(TCHAR *sDir);
+extern std::string  g_tempPassword;
+
 CSettingDlg::CSettingDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CSettingDlg::IDD, pParent)
 {
@@ -141,7 +143,6 @@ BEGIN_MESSAGE_MAP(CSettingDlg, CDialog)
 	ON_BN_CLICKED(IDC_SETTING_RESTORE, OnRestore)
 	ON_BN_CLICKED(IDC_SETTING_OUT, OnFileOut)
 
-	ON_MESSAGE(WM_SETTINGPASSWORD, OnSetSaveScreenPassWordOK)
 	ON_MESSAGE(WM_CHECKPASSWORD, OnCheckPWD)
 	ON_MESSAGE(WM_STATIC_CLICK, OnStaticClick)
 
@@ -195,7 +196,6 @@ void CSettingDlg::SetShowTimer()
 	m_edtADSLName.ShowWindow(FALSE);
 	m_edtADSLPassword.ShowWindow(FALSE);
 	m_cmbSMSRing.ShowWindow(FALSE);
-	m_cmbSpecRing.ShowWindow(FALSE);
 	m_cmbTime.ShowWindow(FALSE);
 
 	for(int i = 0; i < 4; i++)
@@ -400,14 +400,13 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 103:		//防火墙设置
 		m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\防火墙.xml");
 		SetPageTab(1);
-		SetParameters(/*m_pTempSetting->isFirewall(),*/ m_pTempSetting->firewallType(), m_pTempSetting->blockAllTimeDuration().GetTotalSeconds());
+		SetFirewallParam(m_pTempSetting->isFirewall(), m_pTempSetting->firewallType(), m_pTempSetting->blockAllTimeDuration().GetTotalSeconds());
 		m_MJPGList.Invalidate();
 		m_clickType = 103;
 		SetShowTimer();
 		break;
 	case 117:
 	case 118:
-	case 119:
 		{
 			UINT16 volume[] = {0xFF00, 0xdd00, 0xbb00, 0xaa00, 0x8800, 0x6600, 0x4400, 0x2200, 0x1600, 0x1000};
 			int nVolume;
@@ -420,10 +419,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			else if(118 == w)
 			{
 				m_cmbSMSRing.GetWindowText(str);
-			}
-			else if(119 == w)
-			{
-				m_cmbSpecRing.GetWindowText(str);
 			}
 			
 			if(str == "")
@@ -477,7 +472,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 111:
 	case 112:
-	case 113:
 		if (m_MJPGList.GetUnitIsDownStatus(w))
 		{
 			if (111 == w)
@@ -490,13 +484,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				m_cmbSMSRing.EnableWindow(FALSE);
 				m_pTempSetting->isSmsRing_ = 0;
 			}
-			else if (113 == w)
-			{
-				m_cmbSpecRing.EnableWindow(FALSE);
-				m_pTempSetting->isSpecodeRing_ = 0;
-			}
-			
-			m_MJPGList.SetUnitIsDisable(w+3, TRUE);
 			
 			for (int i=w*10; i<(w+1)*10; i++)
 			{
@@ -518,13 +505,6 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				m_cmbSMSRing.EnableWindow(TRUE);
 				m_pTempSetting->isSmsRing_ = 1;
 			}
-			else if (113 == w)
-			{
-				m_cmbSpecRing.EnableWindow(TRUE);
-				m_pTempSetting->isSpecodeRing_ = 1;
-			}
-			
-			m_MJPGList.SetUnitIsDisable(w+3, FALSE);
 			
 			for (int i=w*10; i<(w+1)*10; i++)
 			{
@@ -588,6 +568,19 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 134:
 		m_pPinSetDlg->SetCallSetParam();
 		m_pPinSetDlg->ShowWindow(SW_SHOW);
+		break;
+	case 140:		//是否开启防火墙
+		if(m_MJPGList.GetUnitIsDownStatus(w))
+		{
+			m_MJPGList.SetUnitIsDownStatus(w, FALSE);
+			m_pTempSetting->isFirewall(false);
+		}
+		else
+		{
+			m_MJPGList.SetUnitIsDownStatus(w, TRUE);
+			m_pTempSetting->isFirewall(true);
+		}
+		m_MJPGList.SetUnitIsShow(w, TRUE);
 		break;
 	case 141:
 	case 142:
@@ -675,14 +668,14 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			m_MJPGList.SetUnitIsDownStatus(w+1, FALSE);
 			m_MJPGList.SetUnitIsShow(w+1, TRUE);
 			m_ip.isDHCP = 1;
-			m_pSetting->ipMode(Data::imAuto);
+			m_pTempSetting->ipMode(Data::imAuto);
 		}
 		else if(203 == w)
 		{
 			m_MJPGList.SetUnitIsDownStatus(w-1, FALSE);
 			m_MJPGList.SetUnitIsShow(w-1, TRUE);
 			m_ip.isDHCP = 0;
-			m_pSetting->ipMode(Data::imManual);
+			m_pTempSetting->ipMode(Data::imManual);
 		}
 		m_MJPGList.SetUnitIsDownStatus(w, TRUE);
 		m_MJPGList.SetUnitIsShow(w, TRUE);
@@ -831,15 +824,11 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 401:
 		if (m_MJPGList.GetUnitIsDownStatus(w))
 		{
-			m_cmbBlackLightWaitTime.EnableWindow(FALSE);
-			m_MJPGList.SetUnitIsDisable(w+2, TRUE);
 			m_MJPGList.SetUnitIsDownStatus(w, FALSE);
 			m_pTempSetting->isContrlBlackLight_ = false;
 		}
 		else
 		{
-			m_cmbBlackLightWaitTime.EnableWindow(TRUE);
-			m_MJPGList.SetUnitIsDisable(w+2, FALSE);
 			m_MJPGList.SetUnitIsDownStatus(w, TRUE);
 			m_pTempSetting->isContrlBlackLight_ = true;
 		}
@@ -848,19 +837,11 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 402:
 		if (m_MJPGList.GetUnitIsDownStatus(w))
 		{
-			m_cmbNightBlackLightStartTime.EnableWindow(FALSE);
-			m_cmbNightBlackLightEndTime.EnableWindow(FALSE);
-			m_MJPGList.SetUnitIsDisable(w+2, TRUE);
-			m_MJPGList.SetUnitIsDisable(w+3, TRUE);
 			m_MJPGList.SetUnitIsDownStatus(w, FALSE);
 			m_pTempSetting->isNightControlBlackLight_ = false;
 		}
 		else
 		{
-			m_cmbNightBlackLightStartTime.EnableWindow(TRUE);
-			m_cmbNightBlackLightEndTime.EnableWindow(TRUE);
-			m_MJPGList.SetUnitIsDisable(w+2, FALSE);
-			m_MJPGList.SetUnitIsDisable(w+3, FALSE);
 			m_MJPGList.SetUnitIsDownStatus(w, TRUE);
 			m_pTempSetting->isNightControlBlackLight_ = true;
 		}
@@ -981,7 +962,6 @@ BOOL CSettingDlg::OnInitDialog()
 	//铃声
 	m_cmbRing.CreateEx(WS_CHILD|WS_VISIBLE, CRect(167, 174, 374, 400), this, IDC_COMBOBOX_SETTING_RING, 22, 55, 26);
 	m_cmbSMSRing.CreateEx(WS_CHILD|WS_VISIBLE, CRect(167, 260, 374, 450), this, IDC_COMBOBOX_SETTING_SMSRING, 22, 55, 26);
-	m_cmbSpecRing.CreateEx(WS_CHILD|WS_VISIBLE, CRect(167, 344, 374, 470), this, IDC_COMBOBOX_SETTING_SPECRING, 22, 55, 26);
 	//防火墙
 	m_cmbTime.CreateEx(WS_CHILD|WS_VISIBLE, CRect(374, 295, 500, 470), this, IDC_COMBO_FIREWALL_TIME, 22, 55, 26);
 	m_cmbTime.AddString(_T("30分钟"));
@@ -1467,17 +1447,6 @@ void CSettingDlg::OnAdjustTouchPanel()
 	RegCloseKey(hKey);
 }
 
-void CSettingDlg::OnSetSaveScreenPassWordOK(WPARAM w, LPARAM l)
-{
-	if(l == SETTINGPLAY_PASSWORD)
-		m_pTempSetting->playRecordPassword((char *)w);
-	else if(l== SETTINGSUPPER_PASSWORD)
-		m_pTempSetting->adminPassword((char *)w);
-	else if(l == SETTINGSCREEN_PASSWORD)
-		m_pTempSetting->screenSaverPassword((char *)w);
-	m_pTempSetting->Update();
-}
-
 void CSettingDlg::OnSettingAdminPassword()
 {
 	m_passwordDlg->SettingType(SETTINGSUPPER_PASSWORD);
@@ -1564,7 +1533,6 @@ void CSettingDlg::ShowConfigItems(void)
 	m_edtADSLName.ShowWindow(FALSE);
 	m_edtADSLPassword.ShowWindow(FALSE);
 	m_cmbSMSRing.ShowWindow(FALSE);
-	m_cmbSpecRing.ShowWindow(FALSE);
 	m_cmbTime.ShowWindow(FALSE);
 
 	for(int i = 0; i < 4; i++)
@@ -1595,7 +1563,6 @@ void CSettingDlg::ShowConfigItems(void)
 	case 1:
 		m_cmbRing.ShowWindow(TRUE);
 		m_cmbSMSRing.ShowWindow(TRUE);
-		m_cmbSpecRing.ShowWindow(TRUE);
 		break;
 	case 2:
 		m_edtADSLName.ShowWindow(TRUE);
@@ -1658,7 +1625,6 @@ void CSettingDlg::ShowConfigItems(void)
 	case 100:		//铃声设置
 		m_cmbRing.ShowWindow(TRUE);
 		m_cmbSMSRing.ShowWindow(TRUE);
-		m_cmbSpecRing.ShowWindow(TRUE);
 		break;
 	case 101:		//号码设置
 		m_edtLocalAreaNumber.ShowWindow(TRUE);
@@ -2132,10 +2098,11 @@ void CSettingDlg::OnButtonFireWallOk()
 
 void CSettingDlg::BrushWindow(void)
 {
-	SetParameters(m_pTempSetting->firewallType(), m_pTempSetting->blockAllTimeDuration().GetTotalSeconds());
+	SetFirewallParam(m_pTempSetting->isFirewall(), m_pTempSetting->firewallType(), m_pTempSetting->blockAllTimeDuration().GetTotalSeconds());
 }
-void CSettingDlg::SetParameters(int type, int duration)
+void CSettingDlg::SetFirewallParam(bool enable, int type, int duration)
 {
+	m_MJPGList.SetUnitIsDownStatus(140, enable);
 	for (int i=141; i<=144; i++)
 	{
 		m_MJPGList.SetUnitIsDownStatus(i, FALSE);
@@ -2184,18 +2151,12 @@ void CSettingDlg::OnComboSelect(WPARAM w, LPARAM l)
 		m_cmbSMSRing.GetWindowText(s);
 		m_pTempSetting->smsRingFilename_ = Util::StringOp::FromCString(sFile + s);
 	}
-	else if(w == IDC_COMBOBOX_SETTING_SPECRING || w == IDC_COMBOBOX_SETTING_SPECRINGV)
-	{
-		m_cmbSpecRing.GetWindowText(s);
-		m_pTempSetting->specodeRingFilename_ = Util::StringOp::FromCString(sFile + s);
-	}
 }
 
 void CSettingDlg::SetRingLst(TCHAR *dir)
 {
  	m_cmbRing.ResetContent();
  	m_cmbSMSRing.ResetContent();
- 	m_cmbSpecRing.ResetContent();
 	
 	CString sDir = "/flashdrv/my_ring/*.*";
 	WIN32_FIND_DATA FindFileData;			//查找文件时要使用的数据结构
@@ -2218,7 +2179,6 @@ void CSettingDlg::SetRingLst(TCHAR *dir)
 		{
 			m_cmbRing.AddString(FindFileData.cFileName);
  			m_cmbSMSRing.AddString(FindFileData.cFileName);
- 			m_cmbSpecRing.AddString(FindFileData.cFileName);
 		}
 		else if(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
@@ -2235,7 +2195,6 @@ void CSettingDlg::SetRingLst(TCHAR *dir)
 			{
  				m_cmbRing.AddString(FindFileData.cFileName);
  				m_cmbSMSRing.AddString(FindFileData.cFileName);
- 				m_cmbSpecRing.AddString(FindFileData.cFileName);
 			}
 			else if(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
@@ -2297,21 +2256,6 @@ void CSettingDlg::SetRingSetParam(boost::shared_ptr<Data::Setting> data)
 	m_cmbSMSRing.SetWindowText_(filename);
 	nVolume = data->smsRingVolume_;
 	ChangeVolume(nVolume+1120-1, 1);
-
-	if (data->isSpecodeRing_)
-	{
-		m_MJPGList.SetUnitIsDownStatus(113, TRUE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsDownStatus(113, FALSE);
-	}
-	s = Util::StringOp::ToCString(data->specodeRingFilename_);
-	filename = "";
-	FindFileEx(s, path, filename);
-	m_cmbSpecRing.SetWindowText_(filename);
-	nVolume = data->specodeRingVolume_;
-	ChangeVolume(nVolume+1130-1, 2);
 }
 
 void CSettingDlg::ChangeVolume(int w, const int type)
@@ -2417,14 +2361,19 @@ LRESULT CSettingDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_SETTINGPASSWORD:
-		if(lParam == SETTINGSUPPER_PASSWORD)
+		if(lParam == SETTINGPLAY_PASSWORD)
 		{
-			m_pTempSetting->adminPassword(Util::StringOp::FromInt(wParam));
+			m_pTempSetting->playRecordPassword(g_tempPassword);
+		}
+		else if(lParam == SETTINGSUPPER_PASSWORD)
+		{
+			m_pTempSetting->adminPassword(g_tempPassword);
 		}
 		else if(lParam == SETTINGSCREEN_PASSWORD)
 		{
-			m_pTempSetting->screenSaverPassword(Util::StringOp::FromInt(wParam));
+			m_pTempSetting->screenSaverPassword(g_tempPassword);
 		}
+		m_pTempSetting->Update();
 		break;
 	}	
 	return CDialog::WindowProc(message, wParam, lParam);

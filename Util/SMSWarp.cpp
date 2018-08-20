@@ -8,7 +8,7 @@
 #undef atoi
 using namespace SMS;
 
-SMSWarp::SMSWarp()
+SMSWarp::SMSWarp():Util::Observer()
 {
 	m_nSendIn = 0;   
 	m_nSendOut = 0;   
@@ -17,9 +17,10 @@ SMSWarp::SMSWarp()
 
 	m_hKillThreadEvent = CreateEvent(NULL, TRUE, FALSE, NULL);   
 	m_hThreadKilledEvent = CreateEvent(NULL, TRUE, FALSE, NULL);   
-
+	
 	InitializeCriticalSection(&m_csSend);   
-	InitializeCriticalSection(&m_csRecv);   
+	InitializeCriticalSection(&m_csRecv); 
+	
 }
 SMSWarp::~SMSWarp()
 {
@@ -54,8 +55,27 @@ void SMSWarp::Bind_(Util::ATCommandWarp* at)
 void SMSWarp::Bind(Util::ATCommandWarp* at)
 {
 	m_pAT = at;
-	// 启动子线程    
-	AfxBeginThread(SmThread, this, THREAD_PRIORITY_NORMAL);   
+	// 启动子线程  
+	Util::ATCommand::Instance()->RegisterObserver(this);
+	AfxBeginThread(SmThread, this, THREAD_PRIORITY_NORMAL);  
+
+}
+
+void SMSWarp::Update(std::string const& data)
+{
+	if (data.find("+CMS ERROR" )!= std::string::npos
+		|| data.find("+CMGL")  != std::string::npos
+		|| data.find("+CMGS:") != std::string::npos)
+	{
+		strcpy(buff.data,(char *)data.c_str());
+		m_bParseCMS = true;
+	}
+
+}
+
+void SMSWarp::ParseCMS(std::string const& data)
+{		
+
 }
 
 void SMSWarp::SetOTANumber(std::string number)
@@ -360,41 +380,43 @@ int Findlinefonrbuff(char *buf, int maxLineCount, int *pLineCount)
 {
 	int i = 0;
 	unsigned char *ptr = (unsigned char *)buf;
-	int ncount = 0;
-	BOOL isHanzi = FALSE;
 	int jcount = 0;
-	pLineCount[i++] = ncount;
+	int ncount = 0;
+	int maxCount = maxLineCount;
+	pLineCount[i++] = jcount;
+	while(*ptr++ != '\0')
+	{
+		jcount++;
+	}
+	if(jcount < 0x46)
+	{
+		maxCount = 0x46;
+	}
+	jcount = 0;
+	ptr = (unsigned char *)buf;
 	while(*ptr != '\0')
 	{
-		if(*ptr >= 0xA0)
+		if(*ptr >= 0xA0)  //汉字
 		{
 			ptr++;
 			ncount++;
-			isHanzi = TRUE;
 		}
-		else
-		{
-
-		}
-		jcount++;
 		ptr++;
+		jcount++;
 		ncount++;
-		if(jcount == maxLineCount)
+		if(jcount >= maxCount)
 		{
-			jcount = 0;
 			pLineCount[i] = ncount;
 			i++;
+			jcount = 0;
 		}
 	}
 	if(jcount != 0)
 	{
-	//	jcount = 0;
 		pLineCount[i] = ncount;
 		i++;
 	}
-
-	if(i == 3 && jcount == 3)
-		i = 2;
+	
 	return (i-1);
 }
 
@@ -901,8 +923,10 @@ int SMSWarp::gsmSendMessage(SM_PARAM* pSrc, SM_BUFF* pBuff)
 		//{   
 		//	return WriteComm(pdu, strlen(pdu));     // 得到肯定回答，继续输出PDU串    
 		//}   
-		if (m_pAT->SmsSend(nPduLength / 2 - nSmscLength))
-		{
+//		if (m_pAT->SmsSend(nPduLength / 2 - nSmscLength))
+		{	
+			m_pAT->SmsSend(nPduLength / 2 - nSmscLength);
+			Sleep(1000);
 			pBuff->len = m_pAT->SmsSend(pdu[i].buff, strlen(pdu[i].buff), pBuff->data, 16384);
 		}
 	}
@@ -914,13 +938,8 @@ int SMSWarp::gsmSendMessage(SM_PARAM* pSrc, SM_BUFF* pBuff)
 // 用+CMGL代替+CMGR，可一次性读出全部短消息    
 int SMSWarp::gsmReadMessageList(SM_BUFF* pBuff)   
 {   
-//	return WriteComm("AT+CMGL=0\r", 10);   
-//	return m_pAT->SmsReadList();
-	pBuff->len = m_pAT->SmsReadList(pBuff->data, 16384);
-	Dprintf("pBuff->len %d\r", pBuff->len);
-	Dprintf("pBuff->data: %x %s\r", pBuff->data, (char *)pBuff->data);
-	pBuff->len = strlen((char *)pBuff->data);
-	return pBuff->len;
+	m_pAT->SmsReadList(pBuff->data, 16384);
+	return 1;
 }   
 
 // 删除短消息，仅发送命令，不读取应答    
@@ -940,7 +959,7 @@ int SMSWarp::gsmDeleteMessage(int index, SM_BUFF* pBuff)
 // 输出: pBuff - 接收应答缓冲区    
 // 返回: GSM MODEM的应答状态, GSM_WAIT/GSM_OK/GSM_ERR    
 // 备注: 可能需要多次调用才能完成读取一次应答，首次调用时应将pBuff初始化    
-int SMSWarp::gsmGetResponse(SM_BUFF* pBuff)   
+int SMSWarp::gsmGetResponse(SM_BUFF* pBuff)  
 {   
 	int nLength;        // 串口收到的数据长度    
 	int nState;   
@@ -948,13 +967,14 @@ int SMSWarp::gsmGetResponse(SM_BUFF* pBuff)
 	// 从串口读数据，追加到缓冲区尾部    
 //	nLength = ReadComm(&pBuff->data[pBuff->len], 128);
 	
-//0526	
+//	0526	
 // 	nLength = m_pAT->SmsReadResponse(&pBuff->data[pBuff->len], 16384 - pBuff->len);
 // 	pBuff->len += nLength;   
 
 	// 确定GSM MODEM的应答状态    
 	nState = GSM_WAIT;   
-	if (/*(nLength > 0) && */(pBuff->len >= 4))   //0526
+//	if (/*(nLength > 0) && */(pBuff->len >= 4))   //0526
+	if ( (strlen(pBuff->data) >= 4) )   //0526
 	{   
 // 		if (strncmp(&pBuff->data[pBuff->len - 4], "OK\r\n", 4) == 0)
 		if (strstr(pBuff->data, "\r\nOK\r\n") != NULL)
@@ -1083,14 +1103,29 @@ BOOL SMSWarp::GetRecvMessage(SM_PARAM* pparam)
 	return fSuccess;   
 }   
 
+void SMSWarp::State_(void)
+{
+	m_pAT->PhoneState();
+}
+
+void SMSWarp::PhoneNettype_(void)
+{
+	m_pAT->PhoneNettype();
+}
+
+void SMSWarp::SignalQuality_(void)
+{
+	m_pAT->PhoneSignalQuality();
+}
 
 UINT SMSWarp::SmThread(LPVOID lParam)   
 {   
+
 	SMSWarp* p=(SMSWarp *)lParam;   // this    
 	int nMsg;               // 收到短消息条数    
 	int nDelete;            // 目前正在删除的短消息编号    
-	SM_BUFF buff;           // 接收短消息列表的缓冲区   
-	buff.data = (char*)malloc(16384);
+//	SM_BUFF buff;           // 接收短消息列表的缓冲区   
+	p->buff.data = (char*)malloc(16384);
 	SM_PARAM param[MAX_SM_SEND];    // 发送/接收短消息缓冲区    
 	enum {   
 		stBeginRest,                // 开始休息/延时    
@@ -1101,7 +1136,7 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 		stReadMessageResponse,      // 读取短消息列表到缓冲区    
 		stDeleteMessageRequest,     // 删除短消息    
 		stExitThread                // 退出    
-	} nState;               // 处理过程的状态    
+	} nState;						// 处理过程的状态    
 
 	// 初始状态    
 	nState = stBeginRest;   
@@ -1109,15 +1144,20 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 	// 发送和接收处理的状态循环    
 	while (nState != stExitThread)   
 	{   
-		switch(nState)   
+		switch(nState)
 		{   
 		case stBeginRest:   
 			TRACE(L"SMS State=stBeginRest\n");    
-			Sleep(2500);
+			Sleep(1500);
+
+			p->State_();
+			p->PhoneNettype_();
+			p->SignalQuality_();
+
 			nState = stContinueRest; 
 			EnterCriticalSection(&csCom);
 			TRACE(L"SMS Enter\n");
-			break;   
+			break;
 
 		case stContinueRest:   
 			TRACE(L"SMS State=stContinueRest\n");    
@@ -1133,48 +1173,55 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 
 		case stSendMessageRequest:   
 			TRACE(L"SMS State=stSendMessageRequest\n");    
-			buff.len = 0;
-			memset(buff.data, 0, 16384);   
+			p->buff.len = 0;
+			memset(p->buff.data, 0, 16384);   
 			::SendMessage(theApp.m_pMainWnd->m_hWnd, WM_SMS_SENDPRO, (WPARAM)&param, (LPARAM)0);
-			p->gsmSendMessage(param, &buff);   
+			p->gsmSendMessage(param, &(p->buff));
+			p->m_bParseCMS = false;
 			nState = stSendMessageResponse;   
 			break;   
 
 		case stSendMessageResponse:   
-			TRACE(L"SMS State=stSendMessageResponse\n");    
-			switch (p->gsmGetResponse(&buff))   
-			{   
-			case GSM_OK:    
-				TRACE(L"Send  GSM_OK \n"); //需要通知APP，方式待定
-				p->SendCallback(true,param);
-				break;
-			case GSM_ERR:   
-				TRACE(L"Send  GSM_ERR \n");    
-				p->SendCallback(false,param);
-				break;   
-			default:   
-				if (strstr(buff.data, "+CMGS:") != NULL)//+CMGS:
-				{
-					TRACE(L"Send  GSM_WAIT \n"); 
-					p->SendCallback(true,param);
-				}
-				else  
+			TRACE(L"SMS State=stSendMessageResponse\n");
+			
+			if (p->m_bParseCMS)
+			{
+				switch (p->gsmGetResponse(&(p->buff)))   
 				{   
-					TRACE(L"Send  Timeout!\n");    
+				case GSM_OK:    
+					TRACE(L"Send  GSM_OK \n"); //需要通知APP，方式待定
+					p->SendCallback(true,param);
+					break;
+				case GSM_ERR:   
+					TRACE(L"Send  GSM_ERR \n");    
 					p->SendCallback(false,param);
-				}   
+					break;   
+				default:   
+					if (strstr(p->buff.data, "+CMGS:") != NULL)//+CMGS:
+					{
+						TRACE(L"Send  GSM_WAIT \n"); 
+						p->SendCallback(true,param);
+					}
+					else  
+					{   
+						TRACE(L"Send  Timeout!\n");    
+						p->SendCallback(false,param);
+					}
+				 
+				}
+
+				LeaveCriticalSection(&csCom);
+				TRACE(L"SMS Leave\n");
+				nState = stBeginRest; 
 			} 
-			LeaveCriticalSection(&csCom);
-			TRACE(L"SMS Leave\n");
-			nState = stBeginRest;  
 			break;   
 
 		case stReadMessageRequest:   
 			
 			TRACE(L"SMS State=stReadMessageRequest\n");    
-			buff.len = 0;
-			memset(buff.data, 0, 16384);   
-			p->gsmReadMessageList(&buff);   
+			p->buff.len = 0;
+			memset(p->buff.data, 0, 16384);   
+			p->gsmReadMessageList(&(p->buff));   
 			nState = stReadMessageResponse;   
 			break;   
 
@@ -1182,10 +1229,10 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 			TRACE(L"SMS State=stReadMessageResponse\n");  
 			
 			Sleep(1000);   
-			switch (p->gsmGetResponse(&buff))   
+			switch (p->gsmGetResponse(&(p->buff)))   
 			{   
 			case GSM_OK:    
-				nMsg = p->gsmParseMessageList(param, &buff);   
+				nMsg = p->gsmParseMessageList(param, &(p->buff));   
 				TRACE(L"Read  GSM_OK %d\n", nMsg);    
 				if (nMsg > 0)   
 				{   
@@ -1202,7 +1249,8 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 					TRACE(L"SMS Leave\n");
 					nState = stBeginRest;  
 				}   
-				break;   
+				break;
+
 			default:   
 				TRACE(L"Read  GSM_ERR \n");    
 				LeaveCriticalSection(&csCom);
@@ -1214,12 +1262,12 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 
 		case stDeleteMessageRequest:   
 			TRACE(L"SMS State=stDeleteMessageRequest\n");    
-			buff.len = 0;
-			memset(buff.data, 0, 16384);   
+			p->buff.len = 0;
+			memset(p->buff.data, 0, 16384);   
    
 			while (nDelete < nMsg)
 			{
-				p->gsmDeleteMessage(param[nDelete].index, &buff);   
+				p->gsmDeleteMessage(param[nDelete].index, &(p->buff));   
 				nDelete++;   
 				Sleep(300);
 			}
@@ -1227,7 +1275,8 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 			LeaveCriticalSection(&csCom);
 			TRACE(L"SMS Leave\n");
 			nState = stBeginRest;   
-			break;     
+			break; 
+			
 		}   
 
 		// 检测是否有关闭本线程的信号    
@@ -1235,7 +1284,7 @@ UINT SMSWarp::SmThread(LPVOID lParam)
 		if (dwEvent == WAIT_OBJECT_0)  nState = stExitThread;   
 	}   
 
-	free(buff.data);
+	free(p->buff.data);
 	// 置该线程结束标志    
 	SetEvent(p->m_hThreadKilledEvent);   
 
@@ -1300,7 +1349,7 @@ void SMSWarp::Send(std::string number, std::string content)
 
 void SMSWarp::SetCenterAddress()
 {
-	m_strCenterAddress = ((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->speCode12_;
+	m_strCenterAddress = ((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->speCode12_;
 //	m_pAT->SmsCenterAddress(address);
 }
 

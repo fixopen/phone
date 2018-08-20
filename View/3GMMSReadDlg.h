@@ -20,6 +20,9 @@ public:
 //	C3GSMSListDlg   *m_pSMSListDlg;
 
 	CMJPGStatic		m_MJPGList;
+	
+	CMJPGStatic		m_MJPGList2;
+
 	CMMSReadDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -53,6 +56,7 @@ public:
 	void DialBack();//回拨
 	void SaveDraft(void);//存成草稿
 	void NumberExtract();//号码提取 
+	void MMSDetails(int id,SMSBOX_TYPE type);
 	void MMSPreview(std::wstring path,std::wstring title);//彩信预览
 
 protected:
