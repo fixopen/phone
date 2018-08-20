@@ -1,0 +1,16 @@
+ /*
+			 if(!(m_pDeleteTipDlg->IsWindowVisible()||
+				 m_pContactDlg->m_pContactSearchDlg->IsWindowVisible()||
+				 m_pContactInfoDlg->m_pPlaySoundDlg->IsWindowVisible()||
+				 m_pContactInfoDlg->m_pPasswordDlg->IsWindowVisible()||
+				 m_pContactInfoDlg->m_pSearchContactInfoDlg->IsWindowVisible()||
+				 m_pContactInfoDlg->m_pDetailTip->IsWindowVisible()||
+				 m_pSoundDlg->m_pPlaySoundDlg->IsWindowVisible()||
+				 m_pSoundDlg->m_pPasswordDlg->IsWindowVisible()||
+				 m_pSoundDlg->m_pRecordSoundDlg->IsWindowVisible()||
+				 m_pSoundDlg->m_pSoundSearchDlg->IsWindowVisible()||
+				 m_pSoundDlg->m_psoundTipDlg->IsWindowVisible()||
+				 m_pSoundDlg->m_pDetailTip->IsWindowVisible()||
+				 m_pSettingDlg->m_pFastDialsDlg->IsWindowVisible()||
+				 m_pSettingDlg->m_pPasswordDlg->IsWindowVisible()))
+				 */

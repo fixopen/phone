@@ -1,0 +1,2 @@
+1.use speex and ogg;
+2.play problem :WIN_Audio_close? will be modify;
