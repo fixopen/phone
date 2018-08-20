@@ -10,27 +10,15 @@ namespace Xml {
     Node::~Node() {
     }
 
-    bool const Node::hasChild(std::wstring const& name) const {
-        return hasChild(name, 0);
-    }
-
-    bool const Node::hasChild(std::wstring const& name, int const index) const {
-        int pos = 0;
-        bool result = false;
+    Node const& Node::operator[](std::wstring const& name) const {
+        Node* result = 0;
         for (size_t i = 0; i < children_.size(); ++i) {
             if (children_[i]->name() == name) {
-                if (pos == index) {
-                    result = true;
-                    break;
-                }
-                ++pos;
+                result = children_[i].get();
+                break;
             }
         }
-        return result;
-    }
-
-    Node const& Node::operator[](std::wstring const& name) const {
-        return operator()(name, 0);
+        return *result;
     }
 
     Node const& Node::operator()(std::wstring const& name, int const index) const {
@@ -48,10 +36,6 @@ namespace Xml {
         return *result;
     }
 
-    std::wstring const Node::ToString() const {
-        std::wstring result;
-        return result;
-    }
     std::wstring const& Node::name() const {
         return nodeName_;
     }

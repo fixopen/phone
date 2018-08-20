@@ -11,11 +11,8 @@ namespace Xml {
     public:
         Node(Node const* const parent = nullParent);
         virtual ~Node();
-        bool const hasChild(std::wstring const& name) const;
-        bool const hasChild(std::wstring const& name, int const index) const;
         virtual Node const& operator[](std::wstring const& name) const;
         Node const& operator()(std::wstring const& name, int const index) const;
-        virtual std::wstring const ToString() const;
         std::wstring const& name() const;
         void name(std::wstring const& name);
         std::wstring const& value() const;
@@ -23,7 +20,6 @@ namespace Xml {
         Node* const Parent() const;
         void appendChild(Node* const child);
         void removeChild(Node const* const child);
-        void* ext;
         static Node const* const nullParent;
     private:
         std::wstring nodeName_;

@@ -531,18 +531,6 @@
 				RelativePath=".\Telephone\TelephoneWarp.h"
 				>
 			</File>
-			<Filter
-				Name="Data"
-				>
-				<File
-					RelativePath=".\Telephone\Data\ContactInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Telephone\Data\ContactInfo.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="MMS"
@@ -551,48 +539,36 @@
 				RelativePath=".\MMS\ReadMe.txt"
 				>
 			</File>
-			<Filter
-				Name="Data"
-				>
-			</Filter>
-			<Filter
-				Name="Logical"
-				>
-				<File
-					RelativePath=".\MMS\Logical\MMSHistory.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MMS\Logical\MMSHistory.h"
-					>
-				</File>
-				<File
-					RelativePath=".\MMS\Logical\MMSWarp.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MMS\Logical\MMSWarp.h"
-					>
-				</File>
-				<File
-					RelativePath=".\MMS\Logical\SMILParser.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MMS\Logical\SMILParser.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="View"
-				>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="SMS"
 			>
 			<File
 				RelativePath=".\SMS\ReadMe.txt"
+				>
+			</File>
+			<File
+				RelativePath=".\SMS\SMSHistory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SMS\SMSHistory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SMS\SMSParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SMS\SMSParser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SMS\SMSWarp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SMS\SMSWarp.h"
 				>
 			</File>
 			<Filter
@@ -614,54 +590,6 @@
 					RelativePath=".\SMS\Data\Message.h"
 					>
 				</File>
-				<File
-					RelativePath=".\SMS\Data\OTAData.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|IngenicMedia (MIPSII)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\SMS\Data\OTAData.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Logical"
-				>
-				<File
-					RelativePath=".\SMS\Logical\SMSHistory.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SMS\Logical\SMSHistory.h"
-					>
-				</File>
-				<File
-					RelativePath=".\SMS\Logical\SMSParser.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SMS\Logical\SMSParser.h"
-					>
-				</File>
-				<File
-					RelativePath=".\SMS\Logical\SMSWarp.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SMS\Logical\SMSWarp.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="View"
-				>
 			</Filter>
 		</Filter>
 		<Filter
@@ -679,18 +607,6 @@
 				RelativePath=".\Weather\Weather.h"
 				>
 			</File>
-			<Filter
-				Name="Data"
-				>
-			</Filter>
-			<Filter
-				Name="Logical"
-				>
-			</Filter>
-			<Filter
-				Name="View"
-				>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="AccountBill"
@@ -946,14 +862,6 @@
 			<File
 				RelativePath=".\Xml\Node.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|IngenicMedia (MIPSII)"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Xml\Node.h"
@@ -984,109 +892,17 @@
 			Name="Contact"
 			>
 			<File
+				RelativePath=".\Contact\Contact.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Contact\Contact.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Contact\ReadMe.txt"
 				>
 			</File>
-			<Filter
-				Name="Data"
-				>
-				<File
-					RelativePath=".\Contact\Data\Contact.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|IngenicMedia (MIPSII)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\Contact.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\ContactGroup.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\ContactGroup.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\Picture.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\Picture.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\SoundSegment.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\SoundSegment.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\TelephoneNumber.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Contact\Data\TelephoneNumber.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="Multimedia"
-			>
-			<File
-				RelativePath=".\Multimedia\ReadMe.txt"
-				>
-			</File>
-			<Filter
-				Name="Data"
-				>
-			</Filter>
-			<Filter
-				Name="Logical"
-				>
-				<File
-					RelativePath=".\Multimedia\Logical\Classifier.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Multimedia\Logical\Classifier.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="View"
-				>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="MenuManager"
-			>
-			<File
-				RelativePath=".\MenuManager\ReadMe.txt"
-				>
-			</File>
-			<Filter
-				Name="Data"
-				>
-			</Filter>
-			<Filter
-				Name="Logical"
-				>
-			</Filter>
-			<Filter
-				Name="View"
-				>
-			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

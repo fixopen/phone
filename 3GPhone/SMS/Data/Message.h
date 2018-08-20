@@ -47,7 +47,7 @@ namespace SMS {
             void Update() const; //sync to database
             void Insert(); //insert new instance to database
             void Remove() const; //delete self from database
-            static void Remove(std::wstring const& filter); //delete from database
+            static void Remove(std::wstring filter); //delete from database
             static Message const Parse(std::string const& content);
 
             std::string const ToString() const;
@@ -111,9 +111,7 @@ namespace SMS {
                     unsigned char timezone;
                 } timestamp;
             //} timeInfo;
-            std::string defaultData;
-            std::string binaryData;
-            std::wstring unicodeData;
+            std::wstring data;
         private:
             static void modifyFieldByDB_(int argc, char** argv, char** columnName, Util::shared_ptr<Message> item);
         };

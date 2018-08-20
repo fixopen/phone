@@ -8,31 +8,6 @@ namespace Util {
 
 namespace SMS {
     namespace Data {
-        std::string const TrimF(std::string const& v) {
-            std::string result = v;
-            if (v[v.length() -1] == 'F') {
-                result = v.substr(0, v.length() - 1);
-            }
-            return result;
-        }
-
-        std::string const Reverse(std::string const& v) {
-            std::string result;
-            for (size_t i = 0; i < v.length(); i += 2) {
-                result += v[i + 1];
-                result += v[i];
-            }
-            return result;
-        }
-
-        std::string const PaddingAndReverse(std::string const& v) {
-            std::string r = v;
-            if (v.length() % 2) {
-                r += 'F';
-            }
-            return Reverse(r);
-        }
-
         AddressType::AddressType()
         : mustSet(true)
         , typeOfNumber(tInternationNumber)
@@ -55,12 +30,8 @@ namespace SMS {
 
         std::string const Endpoint::ToString() const {
             std::string result;
-            char l[3] = {0};
-            sprintf(l, "%02X", addressLength);
-            result += Reverse(l);
-            char c = addressType.ToString();
-            sprintf(l, "%02X", c);
-            result += l;
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(addressLength)));
+            result += addressType.ToString();
             result += PaddingAndReverse(address);
             return result;
         }
@@ -71,27 +42,27 @@ namespace SMS {
 
         void Message::Update() const {
             std::wstring cmd = L"UPDATE ";
-            cmd += tableName_;
-            cmd += L" SET [smscAddressType] = ";
-            cmd += smsc.addressType;
-            cmd += L", [smscAddress] = '";
-            cmd += Util::StringOp::FromUTF8(smsc.address);
-            cmd += L"', [type] = ";
-            cmd += Util::StringOp::FromInt(type);
-            cmd += L" WHERE id = ";
-            cmd += Util::StringOp::FromInt(id());
+            //cmd += tableName_;
+            //cmd += L" SET [mobileNumber] = '";
+            //cmd += static_cast<LPCTSTR>(mobileNumber);
+            //cmd += L"', [nickname] = '";
+            //cmd += static_cast<LPCTSTR>(nickname);
+            //cmd += L"', [type] = ";
+            //cmd += Util::StringOp::FromInt(type);
+            //cmd += L" WHERE id = ";
+            //cmd += Util::StringOp::FromInt(id());
             ExecCommand(cmd);
         }
 
         void Message::Insert() {
             std::wstring cmd = L"INSERT INTO ";
             cmd += tableName_;
-            cmd += L" ( mobileNumber, nickname, type ) VALUES ( '";
-            cmd += static_cast<LPCTSTR>(mobileNumber);
-            cmd += L"', '";
-            cmd += static_cast<LPCTSTR>(nickname);
-            cmd += L"', ";
-            cmd += Util::StringOp::FromInt(type);
+            //cmd += L" ( mobileNumber, nickname, type ) VALUES ( '";
+            //cmd += static_cast<LPCTSTR>(mobileNumber);
+            //cmd += L"', '";
+            //cmd += static_cast<LPCTSTR>(nickname);
+            //cmd += L"', ";
+            //cmd += Util::StringOp::FromInt(type);
             cmd += L" )";
             ExecCommand(cmd);
             id(GetCurrentId());
@@ -102,7 +73,12 @@ namespace SMS {
             Remove(filter);
         }
 
-        void Message::Remove(std::wstring const& filter) {
+        void Message::Remove(std::wstring filter) {
+            //std::vector<Util::shared_ptr<Message> > customers = Select(filter);
+            //for (size_t i = 0; i < customers.size(); ++i) {
+            //    std::wstring f = L"customerId = " + Util::StringOp::FromInt(customers[i]->id());
+            //    Message::Remove(f);
+            //}
             RemoveDatasByFilter(filter);
         }
 
@@ -138,23 +114,10 @@ namespace SMS {
             pos += 14;
             size_t dataCount = Util::StringOp::ToInt(content.substr(pos, 2), 16);
             pos += 2;
-            switch (result.encoding.encoding) {
-            case Encoding::DefaultAlphabet:
-                break;
-            case Encoding::OctetBit:
-                result.binaryData = content.substr(pos, dataCount);
-                break;
-            case Encoding::UnicodeCodeSet:
-                for (size_t i = 0; i < dataCount; ++i) {
-                    wchar_t c = Util::StringOp::ToInt(content.substr(pos, 2), 16);
-                    pos += 2;
-                    result.unicodeData += c;
-                }
-                break;
-            case Encoding::Reserved:
-                break;
-            default:
-                break;
+            for (size_t i = 0; i < dataCount; ++i) {
+                wchar_t c = Util::StringOp::ToInt(content.substr(pos, 2), 16);
+                pos += 2;
+                result.data += c;
             }
             return result;
         }
@@ -162,49 +125,18 @@ namespace SMS {
         std::string const Message::ToString() const {
             std::string result;
             result += smsc.ToString();
-            char l[3] = {0};
-            char c = flag.ToString();
-            sprintf(l, "%02X", c);
-            result += l;
-            sprintf(l, "%02X", reference);
-            result += l;
+            result += flag.ToString();
+            result += reference;
             result += remote.ToString();
-            sprintf(l, "%02X", uplevelProtocol);
             result += uplevelProtocol;
-            c = encoding.ToString();
-            sprintf(l, "%02X", c);
-            result += l;
-            sprintf(l, "%02X", validityPeriod);
+            result += encoding.ToString();
             result += validityPeriod;
-            switch (encoding.encoding) {
-            case Encoding::DefaultAlphabet:
-                sprintf(l, "%02X", defaultData.length());
-                result += l;
-                result += defaultData;
-                break;
-            case Encoding::OctetBit:
-                sprintf(l, "%02X", binaryData.length());
-                result += l;
-                result += binaryData;
-                break;
-            case Encoding::UnicodeCodeSet:
-                sprintf(l, "%02X", unicodeData.length());
-                result += l;
-                for (size_t i = 0; i < unicodeData.length(); ++i) {
-                    char c[3] = {0};
-                    sprintf(c, "%02X", unicodeData[i] >> 8);
-                    result += c;
-                    sprintf(c, "%02X", unicodeData[i] << 8 >> 8);
-                    result += c;
-                }
-                break;
-            case Encoding::Reserved:
-                //error
-                break;
-            default:
-                //error
-                break;
-            }
+            wchar_t l = static_cast<wchar_t>(data.length());
+            char f = l >> 8;
+            result += f;
+            char n = l << 8 >> 8;
+            result += n;
+            result += Util::StringOp::ToUTF8(data);
             return result;
         }
 
@@ -258,43 +190,33 @@ namespace SMS {
         Message::SMSCTimestamp::SMSCTimestamp(std::string const& v)
         : timezone(0) {
             if (v != "") {
-                year = Util::StringOp::ToInt(Reverse(v.substr(0, 2)));
-                month = Util::StringOp::ToInt(Reverse(v.substr(2, 2)));
-                day = Util::StringOp::ToInt(Reverse(v.substr(4, 2)));
-                hour = Util::StringOp::ToInt(Reverse(v.substr(6, 2)));
-                minite = Util::StringOp::ToInt(Reverse(v.substr(8, 2)));
-                second = Util::StringOp::ToInt(Reverse(v.substr(10, 2)));
-                timezone = Util::StringOp::ToInt(Reverse(v.substr(12, 2)));
+                year = Util::StringOp::ToInt(v.substr(0, 2));
+                month = Util::StringOp::ToInt(v.substr(2, 2));
+                day = Util::StringOp::ToInt(v.substr(4, 2));
+                hour = Util::StringOp::ToInt(v.substr(6, 2));
+                minite = Util::StringOp::ToInt(v.substr(8, 2));
+                second = Util::StringOp::ToInt(v.substr(10, 2));
+                timezone = Util::StringOp::ToInt(v.substr(12, 2));
             }
         }
 
         std::string const Message::SMSCTimestamp::ToString() const {
             std::string result;
-            char l[3] = {0};
-            sprintf(l, "%02X", Util::StringOp::FromInt(year));
-            result += Reverse(l);
-            sprintf(l, "%02X", Util::StringOp::FromInt(month));
-            result += Reverse(l);
-            sprintf(l, "%02X", Util::StringOp::FromInt(day));
-            result += Reverse(l);
-            sprintf(l, "%02X", Util::StringOp::FromInt(hour));
-            result += Reverse(l);
-            sprintf(l, "%02X", Util::StringOp::FromInt(minite));
-            result += Reverse(l);
-            sprintf(l, "%02X", Util::StringOp::FromInt(second));
-            result += Reverse(l);
-            sprintf(l, "%02X", Util::StringOp::FromInt(timezone));
-            result += Reverse(l);
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(year)));
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(month)));
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(day)));
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(hour)));
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(minite)));
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(second)));
+            result += Reverse(Util::StringOp::ToUTF8(Util::StringOp::FromInt(timezone)));
             return result;
         }
 
         void Message::modifyFieldByDB_(int argc, char** argv, char** columnName, Util::shared_ptr<Message> item) {
             item->id(atoi(argv[Util::BaseData::GetIndexByName(argc, columnName, "id")]));
-            //item->mobileNumber = Util::StringOp::FromUTF8(argv[GetIndexByName(argc, columnName, "mobileNumber")]).c_str();
-            //item->nickname = Util::StringOp::FromUTF8(argv[GetIndexByName(argc, columnName, "nickname")]).c_str();
-            //item->type = static_cast<Type>(atoi(argv[GetIndexByName(argc, columnName, "type")]));
-
-            //argv[GetIndexByName(argc, columnName, "type")];
+            //item->mobileNumber = Util::StringOp::FromUTF8(argv[Util::BaseData::GetIndexByName(argc, columnName, "mobileNumber")]).c_str();
+            //item->nickname = Util::StringOp::FromUTF8(argv[Util::BaseData::GetIndexByName(argc, columnName, "nickname")]).c_str();
+            //item->type = static_cast<Type>(atoi(argv[Util::BaseData::GetIndexByName(argc, columnName, "type")]));
         }
     }
 }
