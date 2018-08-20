@@ -23,40 +23,40 @@ namespace Util {
     //}
 
     bool RS232::OpenPort(unsigned int portNo, unsigned int baud, unsigned int parity, unsigned int databits, unsigned int stopbits) {
-        // ÒÑ¾­´ò¿ªµÄ»°£¬Ö±½Ó·µ»Ø
+        // å·²ç»æ‰“å¼€çš„è¯ï¼Œç›´æŽ¥è¿”å›ž
         if (handle_ != INVALID_HANDLE_VALUE) {
-            Log::Log("´®¿ÚÒÑ¾­´ò¿ª£¬Ö±½Ó·µ»Ø");
+            Log::Log("ä¸²å£å·²ç»æ‰“å¼€ï¼Œç›´æŽ¥è¿”å›ž");
             return true;
         }
         //ASSERT(portNo > 0 && portNo < 5);
 
         TCHAR szPort[15] = {0};	
-        //ÉèÖÃ´®¿ÚÃû
+        //è®¾ç½®ä¸²å£å
         wsprintf(szPort, L"COM%d:", portNo);
         Log::Log(szPort);
-        //´ò¿ª´®¿Ú
-        handle_ = ::CreateFile(szPort, GENERIC_READ | GENERIC_WRITE/*ÔÊÐí¶ÁºÍÐ´*/, 0/*¶ÀÕ¼·½Ê½£¨¹²ÏíÄ£Ê½£©*/, NULL, OPEN_EXISTING, 0, NULL);
+        //æ‰“å¼€ä¸²å£
+        handle_ = ::CreateFile(szPort, GENERIC_READ | GENERIC_WRITE/*å…è®¸è¯»å’Œå†™*/, 0/*ç‹¬å æ–¹å¼ï¼ˆå…±äº«æ¨¡å¼ï¼‰*/, NULL, OPEN_EXISTING, 0, NULL);
 
         if (handle_ == INVALID_HANDLE_VALUE) {
-            // ÎÞÐ§¾ä±ú,·µ»Ø¡£		
-            Log::Log("CreateFile ·µ»ØÎÞÐ§¾ä±ú");
+            // æ— æ•ˆå¥æŸ„,è¿”å›žã€‚		
+            Log::Log("CreateFile è¿”å›žæ— æ•ˆå¥æŸ„");
             return false;
         }
 
-        // µÃµ½´ò¿ª´®¿ÚµÄµ±Ç°ÊôÐÔ²ÎÊý£¬ÐÞ¸ÄºóÔÙÖØÐÂÉèÖÃ´®¿Ú¡£
-        // ÉèÖÃ´®¿ÚµÄ³¬Ê±ÌØÐÔÎªÁ¢¼´·µ»Ø¡£
+        // å¾—åˆ°æ‰“å¼€ä¸²å£çš„å½“å‰å±žæ€§å‚æ•°ï¼Œä¿®æ”¹åŽå†é‡æ–°è®¾ç½®ä¸²å£ã€‚
+        // è®¾ç½®ä¸²å£çš„è¶…æ—¶ç‰¹æ€§ä¸ºç«‹å³è¿”å›žã€‚
         DCB commParam;
         if (!GetCommState(handle_, &commParam)) {
-            Log::Log("»ñÈ¡´®¿Ú²ÎÊýÊ§°Ü");
+            Log::Log("èŽ·å–ä¸²å£å‚æ•°å¤±è´¥");
             return false;
         }
 
-        commParam.BaudRate = baud;					// ÉèÖÃ²¨ÌØÂÊ 
-        commParam.fBinary = TRUE;					// ÉèÖÃ¶þ½øÖÆÄ£Ê½£¬´Ë´¦±ØÐëÉèÖÃTRUE
-        commParam.fParity = TRUE;					// Ö§³ÖÆæÅ¼Ð£Ñé
-        commParam.ByteSize = databits;				// Êý¾ÝÎ»,·¶Î§:4-8
-        commParam.Parity = NOPARITY;				// Ð£ÑéÄ£Ê½
-        commParam.StopBits = stopbits;				// Í£Ö¹Î»
+        commParam.BaudRate = baud;					// è®¾ç½®æ³¢ç‰¹çŽ‡ 
+        commParam.fBinary = TRUE;					// è®¾ç½®äºŒè¿›åˆ¶æ¨¡å¼ï¼Œæ­¤å¤„å¿…é¡»è®¾ç½®TRUE
+        commParam.fParity = TRUE;					// æ”¯æŒå¥‡å¶æ ¡éªŒ
+        commParam.ByteSize = databits;				// æ•°æ®ä½,èŒƒå›´:4-8
+        commParam.Parity = NOPARITY;				// æ ¡éªŒæ¨¡å¼
+        commParam.StopBits = stopbits;				// åœæ­¢ä½
         commParam.fOutxCtsFlow = FALSE;				// No CTS output flow control
         commParam.fOutxDsrFlow = FALSE;				// No DSR output flow control
         commParam.fDtrControl = DTR_CONTROL_ENABLE;
@@ -69,14 +69,14 @@ namespace Util {
         commParam.fNull = FALSE;					// Disable null stripping
         commParam.fRtsControl = RTS_CONTROL_ENABLE;
         // RTS flow control
-        commParam.fAbortOnError = FALSE;			// µ±´®¿Ú·¢Éú´íÎó£¬²¢²»ÖÕÖ¹´®¿Ú¶ÁÐ´
+        commParam.fAbortOnError = FALSE;			// å½“ä¸²å£å‘ç”Ÿé”™è¯¯ï¼Œå¹¶ä¸ç»ˆæ­¢ä¸²å£è¯»å†™
 
         if (!SetCommState(handle_, &commParam)) {
             Log::Log("SetCommState error");
             return false;
         }
 
-        //ÉèÖÃ´®¿Ú¶ÁÐ´Ê±¼ä
+        //è®¾ç½®ä¸²å£è¯»å†™æ—¶é—´
         COMMTIMEOUTS commTimeOuts;
         GetCommTimeouts(handle_, &commTimeOuts);
         commTimeOuts.ReadIntervalTimeout = MAXDWORD;
@@ -86,20 +86,20 @@ namespace Util {
         commTimeOuts.WriteTotalTimeoutConstant = 1000;
 
         if (!SetCommTimeouts(handle_, &commTimeOuts)) {
-            Log::Log("SetCommTimeouts ·µ»Ø´íÎó");
+            Log::Log("SetCommTimeouts è¿”å›žé”™è¯¯");
             return false;
         }
 
-        //Ö¸¶¨¶Ë¿Ú¼à²âµÄÊÂ¼þ¼¯
+        //æŒ‡å®šç«¯å£ç›‘æµ‹çš„äº‹ä»¶é›†
         SetCommMask(handle_, EV_RXCHAR);
 
-        //·ÖÅäÉè±¸»º³åÇø
+        //åˆ†é…è®¾å¤‡ç¼“å†²åŒº
         SetupComm(handle_, 512, 512);
 
-        //³õÊ¼»¯»º³åÇøÖÐµÄÐÅÏ¢
+        //åˆå§‹åŒ–ç¼“å†²åŒºä¸­çš„ä¿¡æ¯
         PurgeComm(handle_, PURGE_TXCLEAR | PURGE_RXCLEAR);
 
-        //Log::Log("´®¿Ú´ò¿ª³É¹¦");
+        //Log::Log("ä¸²å£æ‰“å¼€æˆåŠŸ");
 
         return true;
     }
@@ -132,17 +132,17 @@ namespace Util {
     }
 
     void RS232::ClosePort(void) {
-        //±íÊ¾´®¿Ú»¹Ã»ÓÐ´ò¿ª
+        //è¡¨ç¤ºä¸²å£è¿˜æ²¡æœ‰æ‰“å¼€
         if (handle_ == INVALID_HANDLE_VALUE) {
             return;
         }
 
-        //¹Ø±Õ¶ÁÏß³Ì
+        //å…³é—­è¯»çº¿ç¨‹
         readThread_->willStop();
         ::Sleep(60);
         readThread_->stop();
 
-        //¹Ø±Õ´®¿Ú
+        //å…³é—­ä¸²å£
         if (!CloseHandle (handle_)) {
             handle_ = INVALID_HANDLE_VALUE;
             return;
@@ -157,11 +157,11 @@ namespace Util {
     }
 
     int const RS232::ReadThread::run() {
-        //¼ì²é´®¿ÚÊÇ·ñ´ò¿ª¡£
+        //æ£€æŸ¥ä¸²å£æ˜¯å¦æ‰“å¼€ã€‚
         //ASSERT(serialPort_->handle_ != INVALID_HANDLE_VALUE);
         //Log::Log("serial port thread is run");
 
-        //Çå¿Õ´®¿Ú
+        //æ¸…ç©ºä¸²å£
         ::PurgeComm(serialPort_->handle_, PURGE_RXCLEAR | PURGE_TXCLEAR);
         ::SetCommMask(serialPort_->handle_, EV_RXCHAR | EV_CTS | EV_DSR);
         DWORD evtMask = 0;

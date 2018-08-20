@@ -5,8 +5,8 @@ namespace Contact_{
 		std::wstring TelephoneNumber::ipPrefix_;
 		std::wstring TelephoneNumber::outlinePrefix_;
 		std::wstring TelephoneNumber::virtualPrefix_;
-		std::vector<std::wstring> TelephoneNumber::worldNotionalNumbers_; //ËùÓĞ¹ú¼Ò±àºÅ
-		std::vector<std::wstring> TelephoneNumber::chinaRegionNumbers_; //ÖĞ¹úËùÓĞÇøºÅ
+		std::vector<std::wstring> TelephoneNumber::worldNotionalNumbers_; //æ‰€æœ‰å›½å®¶ç¼–å·
+		std::vector<std::wstring> TelephoneNumber::chinaRegionNumbers_; //ä¸­å›½æ‰€æœ‰åŒºå·
 		//std::string TelephoneNumber::thisNationalNumber_ = "86";
 		//std::string TelephoneNumber::thisRegionNumber_ = "10";
 		TelephoneNumber TelephoneNumber::ThisTelephoneNumber;

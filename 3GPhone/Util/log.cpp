@@ -89,7 +89,7 @@ namespace Util {
         }
 
         std::string const Formatter::Format(Entry const& entry) {
-            std::string result = entry.what;
+            std::string result;
             //convert to string
             return result;
         }
@@ -167,47 +167,25 @@ namespace Util {
             return result;
         }
 
-        int const AddSource(Source* const processor) {
-            ++currentId;
-            processor->id_ = currentId;
-            sources.push_back(processor);
-            return currentId;
-        }
-
         int const AddProcess(Processor* const processor, int const previousNode) {
             ++currentId;
             processor->id_ = currentId;
-            if (firstNode) {
-                Processor* node = FindNodeById(firstNode, previousNode);
-                node->AddNext(processor);
+            Source* source = dynamic_cast<Source*>(processor);
+            if (source) {
+                sources.push_back(source);
             } else {
-                firstNode = processor;
-                for (size_t i = 0; i < sources.size(); ++i) {
-                    sources[i]->AddNext(firstNode);
+                if (firstNode) {
+                    Processor* node = FindNodeById(firstNode, previousNode);
+                    node->AddNext(processor);
+                } else {
+                    firstNode = processor;
+                    for (size_t i = 0; i < sources.size(); ++i) {
+                        sources[i]->AddNext(firstNode);
+                    }
                 }
             }
             return currentId;
         }
-
-        //int const AddProcess(Processor* const processor, int const previousNode) {
-        //    ++currentId;
-        //    processor->id_ = currentId;
-        //    Source* source = dynamic_cast<Source*>(processor);
-        //    if (source) {
-        //        sources.push_back(source);
-        //    } else {
-        //        if (firstNode) {
-        //            Processor* node = FindNodeById(firstNode, previousNode);
-        //            node->AddNext(processor);
-        //        } else {
-        //            firstNode = processor;
-        //            for (size_t i = 0; i < sources.size(); ++i) {
-        //                sources[i]->AddNext(firstNode);
-        //            }
-        //        }
-        //    }
-        //    return currentId;
-        //}
 
         Processor* const RemoveProcess(int const id) {
             Processor* node = FindNodeById(firstNode, id);

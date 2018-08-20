@@ -14,10 +14,10 @@ namespace Contact_{
 			ptPng,
 			ptJpeg,
 
-			ptPhoto, //照片
-			ptNote, //通话记事
-			ptDraw, //绘图创作
-			ptIcon, //界面图符
+			ptPhoto, //鐓х墖
+			ptNote, //閫氳瘽璁颁簨
+			ptDraw, //缁樺浘鍒涗綔
+			ptIcon, //鐣岄潰鍥剧
 		};
 
 		class Picture : public Util::DataAccess<Picture> {

@@ -10,7 +10,6 @@
 #include "../../Contact/Data/Picture.h"
 #include "../../Contact/Data/TelephoneNumber.h"
 #include "../../Contact/Data/Contact.h"
-
 #include "../../Util/Data.h"
 #include "../../Util/DateTime.h"
 #include "../../Util/SmartPtr.h"

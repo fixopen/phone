@@ -5,18 +5,18 @@
 #include "../../Util/HTTPTransport.h"
 #include "../Data/Message.h"
 
-// ÓÃ»§ĞÅÏ¢±àÂë·½Ê½ 
+// ç”¨æˆ·ä¿¡æ¯ç¼–ç æ–¹å¼ 
 #define GSM_7BIT		0 
 #define GSM_8BIT		4 
 #define GSM_UCS2		8 
 
-// Ó¦´ğ×´Ì¬ 
-#define GSM_WAIT		0		// µÈ´ı£¬²»È·¶¨
+// åº”ç­”çŠ¶æ€ 
+#define GSM_WAIT		0		// ç­‰å¾…ï¼Œä¸ç¡®å®š
 #define GSM_OK			1		// OK
 #define GSM_ERR			-1		// ERROR
 
-#define MAX_SM_SEND		128		// ·¢ËÍ¶ÓÁĞ³¤¶È
-#define MAX_SM_RECV		128		// ½ÓÊÕ¶ÓÁĞ³¤¶È
+#define MAX_SM_SEND		128		// å‘é€é˜Ÿåˆ—é•¿åº¦
+#define MAX_SM_RECV		128		// æ¥æ”¶é˜Ÿåˆ—é•¿åº¦
 
 namespace SMS
 {
@@ -32,23 +32,23 @@ namespace SMS
 	private:
 		Util::ATCommandWarp* m_pAT;
 	public:
-		// ¶ÌÏûÏ¢²ÎÊı½á¹¹£¬±àÂë/½âÂë¹²ÓÃ
-		// ÆäÖĞ£¬×Ö·û´®ÒÔ'\0'½áÎ²
+		// çŸ­æ¶ˆæ¯å‚æ•°ç»“æ„ï¼Œç¼–ç /è§£ç å…±ç”¨
+		// å…¶ä¸­ï¼Œå­—ç¬¦ä¸²ä»¥'\0'ç»“å°¾
 		typedef struct { 
-			char SCA[16];			// ¶ÌÏûÏ¢·şÎñÖĞĞÄºÅÂë(SMSCµØÖ·)
-			char TPA[16];			// Ä¿±êºÅÂë»ò»Ø¸´ºÅÂë(TP-DA»òTP-RA)
-			char TP_PID;			// ÓÃ»§ĞÅÏ¢Ğ­Òé±êÊ¶(TP-PID)
-			char TP_DCS;			// ÓÃ»§ĞÅÏ¢±àÂë·½Ê½(TP-DCS)
-			char TP_SCTS[16];		// ·şÎñÊ±¼ä´Á×Ö·û´®(TP_SCTS), ½ÓÊÕÊ±ÓÃµ½
-			char TP_UD[160];		// Ô­Ê¼ÓÃ»§ĞÅÏ¢(±àÂëÇ°»ò½âÂëºóµÄTP-UD)
-			short index;			// ¶ÌÏûÏ¢ĞòºÅ£¬ÔÚ¶ÁÈ¡Ê±ÓÃµ½
+			char SCA[16];			// çŸ­æ¶ˆæ¯æœåŠ¡ä¸­å¿ƒå·ç (SMSCåœ°å€)
+			char TPA[16];			// ç›®æ ‡å·ç æˆ–å›å¤å·ç (TP-DAæˆ–TP-RA)
+			char TP_PID;			// ç”¨æˆ·ä¿¡æ¯åè®®æ ‡è¯†(TP-PID)
+			char TP_DCS;			// ç”¨æˆ·ä¿¡æ¯ç¼–ç æ–¹å¼(TP-DCS)
+			char TP_SCTS[16];		// æœåŠ¡æ—¶é—´æˆ³å­—ç¬¦ä¸²(TP_SCTS), æ¥æ”¶æ—¶ç”¨åˆ°
+			char TP_UD[160];		// åŸå§‹ç”¨æˆ·ä¿¡æ¯(ç¼–ç å‰æˆ–è§£ç åçš„TP-UD)
+			short index;			// çŸ­æ¶ˆæ¯åºå·ï¼Œåœ¨è¯»å–æ—¶ç”¨åˆ°
 
-			char Type;	//ÏûÏ¢ÀàĞÍ
-			unsigned int MMS_Size;   //²ÊĞÅ´óĞ¡
-			unsigned int MMS_Expiry; //²ÊĞÅÓĞĞ§ÆÚ
+			char Type;	//æ¶ˆæ¯ç±»å‹
+			unsigned int MMS_Size;   //å½©ä¿¡å¤§å°
+			unsigned int MMS_Expiry; //å½©ä¿¡æœ‰æ•ˆæœŸ
 		} SM_PARAM;
 
-		// ¶ÁÈ¡Ó¦´ğµÄ»º³åÇø
+		// è¯»å–åº”ç­”çš„ç¼“å†²åŒº
 		typedef struct {
 			int len;
 			char data[16384];
@@ -88,27 +88,27 @@ namespace SMS
 
 		int gsmParseMessageList(SM_PARAM* pMsg, SM_BUFF* pBuff); 
 		//////////////////////////////////////////////////////////////////////////
-		int m_nSendIn;		// ·¢ËÍ¶ÓÁĞµÄÊäÈëÖ¸Õë 
-		int m_nSendOut;		// ·¢ËÍ¶ÓÁĞµÄÊä³öÖ¸Õë 
+		int m_nSendIn;		// å‘é€é˜Ÿåˆ—çš„è¾“å…¥æŒ‡é’ˆ 
+		int m_nSendOut;		// å‘é€é˜Ÿåˆ—çš„è¾“å‡ºæŒ‡é’ˆ 
 
-		int m_nRecvIn;		// ½ÓÊÕ¶ÓÁĞµÄÊäÈëÖ¸Õë 
-		int m_nRecvOut;		// ½ÓÊÕ¶ÓÁĞµÄÊä³öÖ¸Õë 
+		int m_nRecvIn;		// æ¥æ”¶é˜Ÿåˆ—çš„è¾“å…¥æŒ‡é’ˆ 
+		int m_nRecvOut;		// æ¥æ”¶é˜Ÿåˆ—çš„è¾“å‡ºæŒ‡é’ˆ 
 
-		SM_PARAM m_SmSend[MAX_SM_SEND];		// ·¢ËÍ¶ÌÏûÏ¢¶ÓÁĞ 
-		SM_PARAM m_SmRecv[MAX_SM_SEND];		// ½ÓÊÕ¶ÌÏûÏ¢¶ÓÁĞ 
+		SM_PARAM m_SmSend[MAX_SM_SEND];		// å‘é€çŸ­æ¶ˆæ¯é˜Ÿåˆ— 
+		SM_PARAM m_SmRecv[MAX_SM_SEND];		// æ¥æ”¶çŸ­æ¶ˆæ¯é˜Ÿåˆ— 
 
-		CRITICAL_SECTION m_csSend;		// Óë·¢ËÍÏà¹ØµÄÁÙ½ç¶Î 
-		CRITICAL_SECTION m_csRecv;		// Óë½ÓÊÕÏà¹ØµÄÁÙ½ç¶Î 
+		CRITICAL_SECTION m_csSend;		// ä¸å‘é€ç›¸å…³çš„ä¸´ç•Œæ®µ 
+		CRITICAL_SECTION m_csRecv;		// ä¸æ¥æ”¶ç›¸å…³çš„ä¸´ç•Œæ®µ 
 
-		HANDLE m_hKillThreadEvent;		// Í¨Öª×ÓÏß³Ì¹Ø±ÕµÄÊÂ¼ş 
-		HANDLE m_hThreadKilledEvent;	// ×ÓÏß³ÌĞû¸æ¹Ø±ÕµÄÊÂ¼ş 
+		HANDLE m_hKillThreadEvent;		// é€šçŸ¥å­çº¿ç¨‹å…³é—­çš„äº‹ä»¶ 
+		HANDLE m_hThreadKilledEvent;	// å­çº¿ç¨‹å®£å‘Šå…³é—­çš„äº‹ä»¶ 
 
-		void PutSendMessage(SM_PARAM* pSmParam);	// ½«¶ÌÏûÏ¢·ÅÈë·¢ËÍ¶ÓÁĞ 
-		BOOL GetSendMessage(SM_PARAM* pSmParam);	// ´Ó·¢ËÍ¶ÓÁĞÖĞÈ¡Ò»Ìõ¶ÌÏûÏ¢ 
-		void PutRecvMessage(SM_PARAM* pSmParam, int nCount);	// ½«¶ÌÏûÏ¢·ÅÈë½ÓÊÕ¶ÓÁĞ 
-		BOOL GetRecvMessage(SM_PARAM* pSmParam);	// ´Ó½ÓÊÕ¶ÓÁĞÖĞÈ¡Ò»Ìõ¶ÌÏûÏ¢
+		void PutSendMessage(SM_PARAM* pSmParam);	// å°†çŸ­æ¶ˆæ¯æ”¾å…¥å‘é€é˜Ÿåˆ— 
+		BOOL GetSendMessage(SM_PARAM* pSmParam);	// ä»å‘é€é˜Ÿåˆ—ä¸­å–ä¸€æ¡çŸ­æ¶ˆæ¯ 
+		void PutRecvMessage(SM_PARAM* pSmParam, int nCount);	// å°†çŸ­æ¶ˆæ¯æ”¾å…¥æ¥æ”¶é˜Ÿåˆ— 
+		BOOL GetRecvMessage(SM_PARAM* pSmParam);	// ä»æ¥æ”¶é˜Ÿåˆ—ä¸­å–ä¸€æ¡çŸ­æ¶ˆæ¯
 
-		static UINT SmThread(LPVOID lpParam);	// ¶ÌÏûÏ¢ÊÕ·¢´¦Àí×ÓÏß³Ì 
+		static UINT SmThread(LPVOID lpParam);	// çŸ­æ¶ˆæ¯æ”¶å‘å¤„ç†å­çº¿ç¨‹ 
 
 	};
 }
@@ -135,18 +135,18 @@ namespace SMS {
     }
 }
 
-// ÓÃ»§ĞÅÏ¢±àÂë·½Ê½ 
+// ç”¨æˆ·ä¿¡æ¯ç¼–ç æ–¹å¼ 
 #define GSM_7BIT		0 
 #define GSM_8BIT		4 
 #define GSM_UCS2		8 
 
-// Ó¦´ğ×´Ì¬ 
-#define GSM_WAIT		0		// µÈ´ı£¬²»È·¶¨
+// åº”ç­”çŠ¶æ€ 
+#define GSM_WAIT		0		// ç­‰å¾…ï¼Œä¸ç¡®å®š
 #define GSM_OK			1		// OK
 #define GSM_ERR			-1		// ERROR
 
-#define MAX_SM_SEND		128		// ·¢ËÍ¶ÓÁĞ³¤¶È
-#define MAX_SM_RECV		128		// ½ÓÊÕ¶ÓÁĞ³¤¶È
+#define MAX_SM_SEND		128		// å‘é€é˜Ÿåˆ—é•¿åº¦
+#define MAX_SM_RECV		128		// æ¥æ”¶é˜Ÿåˆ—é•¿åº¦
 
 namespace SMS
 {
@@ -162,23 +162,23 @@ namespace SMS
 	private:
 		Util::ATCommandWarp* m_pAT;
 	public:
-		// ¶ÌÏûÏ¢²ÎÊı½á¹¹£¬±àÂë/½âÂë¹²ÓÃ
-		// ÆäÖĞ£¬×Ö·û´®ÒÔ'\0'½áÎ²
+		// çŸ­æ¶ˆæ¯å‚æ•°ç»“æ„ï¼Œç¼–ç /è§£ç å…±ç”¨
+		// å…¶ä¸­ï¼Œå­—ç¬¦ä¸²ä»¥'\0'ç»“å°¾
 		typedef struct { 
-			char SCA[16];			// ¶ÌÏûÏ¢·şÎñÖĞĞÄºÅÂë(SMSCµØÖ·)
-			char TPA[16];			// Ä¿±êºÅÂë»ò»Ø¸´ºÅÂë(TP-DA»òTP-RA)
-			char TP_PID;			// ÓÃ»§ĞÅÏ¢Ğ­Òé±êÊ¶(TP-PID)
-			char TP_DCS;			// ÓÃ»§ĞÅÏ¢±àÂë·½Ê½(TP-DCS)
-			char TP_SCTS[16];		// ·şÎñÊ±¼ä´Á×Ö·û´®(TP_SCTS), ½ÓÊÕÊ±ÓÃµ½
-			char TP_UD[160];		// Ô­Ê¼ÓÃ»§ĞÅÏ¢(±àÂëÇ°»ò½âÂëºóµÄTP-UD)
-			short index;			// ¶ÌÏûÏ¢ĞòºÅ£¬ÔÚ¶ÁÈ¡Ê±ÓÃµ½
+			char SCA[16];			// çŸ­æ¶ˆæ¯æœåŠ¡ä¸­å¿ƒå·ç (SMSCåœ°å€)
+			char TPA[16];			// ç›®æ ‡å·ç æˆ–å›å¤å·ç (TP-DAæˆ–TP-RA)
+			char TP_PID;			// ç”¨æˆ·ä¿¡æ¯åè®®æ ‡è¯†(TP-PID)
+			char TP_DCS;			// ç”¨æˆ·ä¿¡æ¯ç¼–ç æ–¹å¼(TP-DCS)
+			char TP_SCTS[16];		// æœåŠ¡æ—¶é—´æˆ³å­—ç¬¦ä¸²(TP_SCTS), æ¥æ”¶æ—¶ç”¨åˆ°
+			char TP_UD[160];		// åŸå§‹ç”¨æˆ·ä¿¡æ¯(ç¼–ç å‰æˆ–è§£ç åçš„TP-UD)
+			short index;			// çŸ­æ¶ˆæ¯åºå·ï¼Œåœ¨è¯»å–æ—¶ç”¨åˆ°
 
-			char Type;	//ÏûÏ¢ÀàĞÍ
-			unsigned int MMS_Size;   //²ÊĞÅ´óĞ¡
-			unsigned int MMS_Expiry; //²ÊĞÅÓĞĞ§ÆÚ
+			char Type;	//æ¶ˆæ¯ç±»å‹
+			unsigned int MMS_Size;   //å½©ä¿¡å¤§å°
+			unsigned int MMS_Expiry; //å½©ä¿¡æœ‰æ•ˆæœŸ
 		} SM_PARAM;
 
-		// ¶ÁÈ¡Ó¦´ğµÄ»º³åÇø
+		// è¯»å–åº”ç­”çš„ç¼“å†²åŒº
 		typedef struct {
 			int len;
 			char data[16384];
@@ -218,27 +218,27 @@ namespace SMS
 
 		int gsmParseMessageList(SM_PARAM* pMsg, SM_BUFF* pBuff); 
 		//////////////////////////////////////////////////////////////////////////
-		int m_nSendIn;		// ·¢ËÍ¶ÓÁĞµÄÊäÈëÖ¸Õë 
-		int m_nSendOut;		// ·¢ËÍ¶ÓÁĞµÄÊä³öÖ¸Õë 
+		int m_nSendIn;		// å‘é€é˜Ÿåˆ—çš„è¾“å…¥æŒ‡é’ˆ 
+		int m_nSendOut;		// å‘é€é˜Ÿåˆ—çš„è¾“å‡ºæŒ‡é’ˆ 
 
-		int m_nRecvIn;		// ½ÓÊÕ¶ÓÁĞµÄÊäÈëÖ¸Õë 
-		int m_nRecvOut;		// ½ÓÊÕ¶ÓÁĞµÄÊä³öÖ¸Õë 
+		int m_nRecvIn;		// æ¥æ”¶é˜Ÿåˆ—çš„è¾“å…¥æŒ‡é’ˆ 
+		int m_nRecvOut;		// æ¥æ”¶é˜Ÿåˆ—çš„è¾“å‡ºæŒ‡é’ˆ 
 
-		SM_PARAM m_SmSend[MAX_SM_SEND];		// ·¢ËÍ¶ÌÏûÏ¢¶ÓÁĞ 
-		SM_PARAM m_SmRecv[MAX_SM_SEND];		// ½ÓÊÕ¶ÌÏûÏ¢¶ÓÁĞ 
+		SM_PARAM m_SmSend[MAX_SM_SEND];		// å‘é€çŸ­æ¶ˆæ¯é˜Ÿåˆ— 
+		SM_PARAM m_SmRecv[MAX_SM_SEND];		// æ¥æ”¶çŸ­æ¶ˆæ¯é˜Ÿåˆ— 
 
-		CRITICAL_SECTION m_csSend;		// Óë·¢ËÍÏà¹ØµÄÁÙ½ç¶Î 
-		CRITICAL_SECTION m_csRecv;		// Óë½ÓÊÕÏà¹ØµÄÁÙ½ç¶Î 
+		CRITICAL_SECTION m_csSend;		// ä¸å‘é€ç›¸å…³çš„ä¸´ç•Œæ®µ 
+		CRITICAL_SECTION m_csRecv;		// ä¸æ¥æ”¶ç›¸å…³çš„ä¸´ç•Œæ®µ 
 
-		HANDLE m_hKillThreadEvent;		// Í¨Öª×ÓÏß³Ì¹Ø±ÕµÄÊÂ¼ş 
-		HANDLE m_hThreadKilledEvent;	// ×ÓÏß³ÌĞû¸æ¹Ø±ÕµÄÊÂ¼ş 
+		HANDLE m_hKillThreadEvent;		// é€šçŸ¥å­çº¿ç¨‹å…³é—­çš„äº‹ä»¶ 
+		HANDLE m_hThreadKilledEvent;	// å­çº¿ç¨‹å®£å‘Šå…³é—­çš„äº‹ä»¶ 
 
-		void PutSendMessage(SM_PARAM* pSmParam);	// ½«¶ÌÏûÏ¢·ÅÈë·¢ËÍ¶ÓÁĞ 
-		BOOL GetSendMessage(SM_PARAM* pSmParam);	// ´Ó·¢ËÍ¶ÓÁĞÖĞÈ¡Ò»Ìõ¶ÌÏûÏ¢ 
-		void PutRecvMessage(SM_PARAM* pSmParam, int nCount);	// ½«¶ÌÏûÏ¢·ÅÈë½ÓÊÕ¶ÓÁĞ 
-		BOOL GetRecvMessage(SM_PARAM* pSmParam);	// ´Ó½ÓÊÕ¶ÓÁĞÖĞÈ¡Ò»Ìõ¶ÌÏûÏ¢
+		void PutSendMessage(SM_PARAM* pSmParam);	// å°†çŸ­æ¶ˆæ¯æ”¾å…¥å‘é€é˜Ÿåˆ— 
+		BOOL GetSendMessage(SM_PARAM* pSmParam);	// ä»å‘é€é˜Ÿåˆ—ä¸­å–ä¸€æ¡çŸ­æ¶ˆæ¯ 
+		void PutRecvMessage(SM_PARAM* pSmParam, int nCount);	// å°†çŸ­æ¶ˆæ¯æ”¾å…¥æ¥æ”¶é˜Ÿåˆ— 
+		BOOL GetRecvMessage(SM_PARAM* pSmParam);	// ä»æ¥æ”¶é˜Ÿåˆ—ä¸­å–ä¸€æ¡çŸ­æ¶ˆæ¯
 
-		static UINT SmThread(LPVOID lpParam);	// ¶ÌÏûÏ¢ÊÕ·¢´¦Àí×ÓÏß³Ì 
+		static UINT SmThread(LPVOID lpParam);	// çŸ­æ¶ˆæ¯æ”¶å‘å¤„ç†å­çº¿ç¨‹ 
 
 	};
 }

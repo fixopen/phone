@@ -1,106 +1,104 @@
 #include "xmlLoad.h"
-#include "../Xml/Text.h"
-#include "../Xml/DocType.h"
-#include "../Xml/DataSection.h"
-#include "../Xml/Comment.h"
-//#include "../Xml/DocType.h"
+#include "Xml/Text.h"
+#include "Xml/DocType.h"
+#include "Xml/DataSection.h"
+#include "Xml/Comment.h"
+//#include "Xml/DocType.h"
 
 #include <exception>
-#include <cstdlib>
 #include <cctype>
-//#include <locale>
 
 namespace Util {
     xmlLoad::xmlLoad()
-    : parent_(0)
-    , doc_(0)
-    , current_(0)
-    , currentElement_(0)
-    , attr_(0) {
-        piFsm_.registerRule(piTarget, space, piTargetStop, recordTarget);
-        piFsm_.registerRule(piTargetStop, chr, piContent, recordPrevPosition);
-        piFsm_.registerRule(piContent, questMark, piStartStop);
-        piFsm_.registerRule(piStartStop, gt, piEnd, recordContent);
-        piFsm_.registerRule(piStartStop, chr, piContent);
-        piFsm_.registerRule(piTarget, eof, piError);
+        : parent_(0)
+        , doc_(0)
+        , current_(0)
+        , currentElement_(0)
+        , attr_(0) {
+            piFsm_.registerRule(piTarget, space, piTargetStop, recordTarget);
+            piFsm_.registerRule(piTargetStop, chr, piContent, recordPrevPosition);
+            piFsm_.registerRule(piContent, questMark, piStartStop);
+            piFsm_.registerRule(piStartStop, gt, piEnd, recordContent);
+            piFsm_.registerRule(piStartStop, chr, piContent);
+            piFsm_.registerRule(piTarget, eof, piError);
 
-        cdataFsm_.registerRule(cdataStart, letterC, cdataC);
-        cdataFsm_.registerRule(cdataC, letterD, cdataD);
-        cdataFsm_.registerRule(cdataD, letterA, cdataA1);
-        cdataFsm_.registerRule(cdataA1, letterT, cdataT);
-        cdataFsm_.registerRule(cdataT, letterA, cdataA2);
-        cdataFsm_.registerRule(cdataA2, leftSquare, cdataContent, recordPosition);
-        cdataFsm_.registerRule(cdataContent, rightSquare, cdataStartStop);
-        cdataFsm_.registerRule(cdataStartStop, rightSquare, cdataContinueStop);
-        cdataFsm_.registerRule(cdataContinueStop, gt, cdataEnd, recordCdataContent);
-        cdataFsm_.registerRule(cdataStart, chr, cdataError);
-        cdataFsm_.registerRule(cdataC, chr, cdataError);
-        cdataFsm_.registerRule(cdataD, chr, cdataError);
-        cdataFsm_.registerRule(cdataA1, chr, cdataError);
-        cdataFsm_.registerRule(cdataT, chr, cdataError);
-        cdataFsm_.registerRule(cdataA2, chr, cdataError);
-        cdataFsm_.registerRule(cdataStartStop, chr, cdataContent);
-        cdataFsm_.registerRule(cdataContinueStop, chr, cdataContent);
+            cdataFsm_.registerRule(cdataStart, letterC, cdataC);
+            cdataFsm_.registerRule(cdataC, letterD, cdataD);
+            cdataFsm_.registerRule(cdataD, letterA, cdataA1);
+            cdataFsm_.registerRule(cdataA1, letterT, cdataT);
+            cdataFsm_.registerRule(cdataT, letterA, cdataA2);
+            cdataFsm_.registerRule(cdataA2, leftSquare, cdataContent, recordPosition);
+            cdataFsm_.registerRule(cdataContent, rightSquare, cdataStartStop);
+            cdataFsm_.registerRule(cdataStartStop, rightSquare, cdataContinueStop);
+            cdataFsm_.registerRule(cdataContinueStop, gt, cdataEnd, recordCdataContent);
+            cdataFsm_.registerRule(cdataStart, chr, cdataError);
+            cdataFsm_.registerRule(cdataC, chr, cdataError);
+            cdataFsm_.registerRule(cdataD, chr, cdataError);
+            cdataFsm_.registerRule(cdataA1, chr, cdataError);
+            cdataFsm_.registerRule(cdataT, chr, cdataError);
+            cdataFsm_.registerRule(cdataA2, chr, cdataError);
+            cdataFsm_.registerRule(cdataStartStop, chr, cdataContent);
+            cdataFsm_.registerRule(cdataContinueStop, chr, cdataContent);
 
-        commentFsm_.registerRule(commentStart, hyphen, commentStartContent);
-        commentFsm_.registerRule(commentStartContent, chr, commentContent, recordPrevPosition);
-        commentFsm_.registerRule(commentContent, hyphen, commentStartStop);
-        commentFsm_.registerRule(commentStartStop, hyphen, commentContinueStop);
-        commentFsm_.registerRule(commentContinueStop, gt, commentEnd, recordCommentContent);
-        commentFsm_.registerRule(commentStartStop, chr, commentContent);
-        commentFsm_.registerRule(commentContinueStop, chr, commentError);
+            commentFsm_.registerRule(commentStart, hyphen, commentStartContent);
+            commentFsm_.registerRule(commentStartContent, chr, commentContent, recordPrevPosition);
+            commentFsm_.registerRule(commentContent, hyphen, commentStartStop);
+            commentFsm_.registerRule(commentStartStop, hyphen, commentContinueStop);
+            commentFsm_.registerRule(commentContinueStop, gt, commentEnd, recordCommentContent);
+            commentFsm_.registerRule(commentStartStop, chr, commentContent);
+            commentFsm_.registerRule(commentContinueStop, chr, commentError);
 
-        entityFsm_.registerRule(entityName, semicolon, entityEnd, convertEntity);
-        entityFsm_.registerRule(entityName, space, entityError);
+            entityFsm_.registerRule(entityName, semicolon, entityEnd, convertEntity);
+            entityFsm_.registerRule(entityName, space, entityError);
 
-        tagFsm_.registerRule(tagTagName, space, tagTagNameStop, recordTagName);
-        tagFsm_.registerRule(tagTagName, splash, tagEmptyTagStart, recordTagName);
-        tagFsm_.registerRule(tagTagName, gt, tagTagEnd, recordTagName);
-        tagFsm_.registerRule(tagTagNameStop, gt, tagTagEnd);
-        tagFsm_.registerRule(tagTagNameStop, splash, tagEmptyTagStart);
-        tagFsm_.registerRule(tagTagNameStop, chr, tagAttrName, recordPrevPosition);
-        tagFsm_.registerRule(tagAttrName, space, tagAttrNameStop, recordAttrName);
-        tagFsm_.registerRule(tagAttrName, eq, tagAttrEq, recordAttrName);
-        tagFsm_.registerRule(tagAttrNameStop, eq, tagAttrEq);
-        tagFsm_.registerRule(tagAttrEq, quot, tagAttrQuotValue, recordPosition);
-        tagFsm_.registerRule(tagAttrEq, apos, tagAttrAposValue, recordPosition);
-        tagFsm_.registerRule(tagAttrQuotValue, quot, tagAttrValueStop, recordAttrValue);
-        tagFsm_.registerRule(tagAttrValueStop, gt, tagTagEnd);
-        tagFsm_.registerRule(tagAttrValueStop, splash, tagEmptyTagStart);
-        tagFsm_.registerRule(tagAttrValueStop, space, tagTagNameStop);
-        tagFsm_.registerRule(tagEmptyTagStart, gt, tagEmptyTagEnd);
-        tagFsm_.registerRule(tagEmptyTagStart, chr, tagError);
-        tagFsm_.registerRule(tagEmptyTagStart, space, tagError);
-        tagFsm_.registerRule(tagTagName, eof, tagError);
-        tagFsm_.registerRule(tagTagNameStop, eof, tagError);
-        tagFsm_.registerRule(tagAttrName, eof, tagError);
-        tagFsm_.registerRule(tagAttrNameStop, eof, tagError);
-        tagFsm_.registerRule(tagAttrEq, eof, tagError);
-        tagFsm_.registerRule(tagAttrQuotValue, eof, tagError);
-        tagFsm_.registerRule(tagAttrAposValue, eof, tagError);
-        //tagFsm_.registerRule(tagTagEnd, eof, tagTagEnd);
-        //tagFsm_.registerRule(tagEmptyTagEnd, eof, tagEmptyTagEnd);
+            tagFsm_.registerRule(tagTagName, space, tagTagNameStop, recordTagName);
+            tagFsm_.registerRule(tagTagName, splash, tagEmptyTagStart, recordTagName);
+            tagFsm_.registerRule(tagTagName, gt, tagTagEnd, recordTagName);
+            tagFsm_.registerRule(tagTagNameStop, gt, tagTagEnd);
+            tagFsm_.registerRule(tagTagNameStop, splash, tagEmptyTagStart);
+            tagFsm_.registerRule(tagTagNameStop, chr, tagAttrName, recordPrevPosition);
+            tagFsm_.registerRule(tagAttrName, space, tagAttrNameStop, recordAttrName);
+            tagFsm_.registerRule(tagAttrName, eq, tagAttrEq, recordAttrName);
+            tagFsm_.registerRule(tagAttrNameStop, eq, tagAttrEq);
+            tagFsm_.registerRule(tagAttrEq, quot, tagAttrQuotValue, recordPosition);
+            tagFsm_.registerRule(tagAttrEq, apos, tagAttrAposValue, recordPosition);
+            tagFsm_.registerRule(tagAttrQuotValue, quot, tagAttrValueStop, recordAttrValue);
+            tagFsm_.registerRule(tagAttrValueStop, gt, tagTagEnd);
+            tagFsm_.registerRule(tagAttrValueStop, splash, tagEmptyTagStart);
+            tagFsm_.registerRule(tagAttrValueStop, space, tagTagNameStop);
+            tagFsm_.registerRule(tagEmptyTagStart, gt, tagEmptyTagEnd);
+            tagFsm_.registerRule(tagEmptyTagStart, chr, tagError);
+            tagFsm_.registerRule(tagEmptyTagStart, space, tagError);
+            tagFsm_.registerRule(tagTagName, eof, tagError);
+            tagFsm_.registerRule(tagTagNameStop, eof, tagError);
+            tagFsm_.registerRule(tagAttrName, eof, tagError);
+            tagFsm_.registerRule(tagAttrNameStop, eof, tagError);
+            tagFsm_.registerRule(tagAttrEq, eof, tagError);
+            tagFsm_.registerRule(tagAttrQuotValue, eof, tagError);
+            tagFsm_.registerRule(tagAttrAposValue, eof, tagError);
+            //tagFsm_.registerRule(tagTagEnd, eof, tagTagEnd);
+            //tagFsm_.registerRule(tagEmptyTagEnd, eof, tagEmptyTagEnd);
 
-        fsm_.registerRule(docIdle, chr, docText, textProc);
-        fsm_.registerRule(docIdle, space, docIdle, textProc);
-        fsm_.registerRule(docIdle, lt, docStage1);
-        fsm_.registerRule(docStage1, questMark, docPI, startPiFsm);
-        fsm_.registerRule(docStage1, chr, docElement, elementProc);
-        fsm_.registerRule(docStage1, splash, docEndTag, validAndInsert);
-        fsm_.registerRule(docStage1, exclaimMark, docStage2);
-        fsm_.registerRule(docStage2, letterD, docDocType, startDocTypeFsm);
-        fsm_.registerRule(docStage2, leftSquare, docCdata, startCdataFsm);
-        fsm_.registerRule(docStage2, hyphen, docComment, startCommentFsm);
-        fsm_.registerRule(docIdle, eof, docEnd);
-        fsm_.registerRule(docText, eof, docError);
-        fsm_.registerRule(docStage1, eof, docError);
-        fsm_.registerRule(docPI, eof, docEnd);
-        fsm_.registerRule(docElement, eof, docError);
-        fsm_.registerRule(docEndTag, eof, docEnd);
-        fsm_.registerRule(docStage2, eof, docError);
-        fsm_.registerRule(docDocType, eof, docEnd);
-        fsm_.registerRule(docCdata, eof, docError);
-        fsm_.registerRule(docComment, eof, docEnd);
+            fsm_.registerRule(docIdle, chr, docText, textProc);
+            fsm_.registerRule(docIdle, space, docIdle, textProc);
+            fsm_.registerRule(docIdle, lt, docStage1);
+            fsm_.registerRule(docStage1, questMark, docPI, startPiFsm);
+            fsm_.registerRule(docStage1, chr, docElement, elementProc);
+            fsm_.registerRule(docStage1, splash, docEndTag, validAndInsert);
+            fsm_.registerRule(docStage1, exclaimMark, docStage2);
+            fsm_.registerRule(docStage2, letterD, docDocType, startDocTypeFsm);
+            fsm_.registerRule(docStage2, leftSquare, docCdata, startCdataFsm);
+            fsm_.registerRule(docStage2, hyphen, docComment, startCommentFsm);
+            fsm_.registerRule(docIdle, eof, docEnd);
+            fsm_.registerRule(docText, eof, docError);
+            fsm_.registerRule(docStage1, eof, docError);
+            fsm_.registerRule(docPI, eof, docEnd);
+            fsm_.registerRule(docElement, eof, docError);
+            fsm_.registerRule(docEndTag, eof, docEnd);
+            fsm_.registerRule(docStage2, eof, docError);
+            fsm_.registerRule(docDocType, eof, docEnd);
+            fsm_.registerRule(docCdata, eof, docError);
+            fsm_.registerRule(docComment, eof, docEnd);
     }
 
     xmlLoad::~xmlLoad() {
@@ -136,22 +134,22 @@ namespace Util {
         //parse tagName and attributes
         TagState ts = parseTag_();
         switch (ts) {
-        case tagEmptyTagEnd:
-            fsm_.setStartState(docIdle);
-            //rewind to uplevel
-            parent_->appendChild(current_);
-            //parent_->appendChild(currentElement_);
-            current_ = parent_;
-            currentElement_ = dynamic_cast<Xml::Element*>(current_);
-            parent_ = current_->Parent();
-            break;
-        case tagTagEnd:
-            fsm_.setStartState(docIdle);
-            do {
-                fsm_.fireEvent(getEventByChar_(chr_), this);
-                chr_ = source_->GetChar();
-            } while (!source_->IsEnd());
-            break;
+    case tagEmptyTagEnd:
+        fsm_.setStartState(docIdle);
+        //rewind to uplevel
+        parent_->appendChild(current_);
+        //parent_->appendChild(currentElement_);
+        current_ = parent_;
+        currentElement_ = dynamic_cast<Xml::Element*>(current_);
+        parent_ = current_->Parent();
+        break;
+    case tagTagEnd:
+        fsm_.setStartState(docIdle);
+        do {
+            fsm_.fireEvent(getEventByChar_(chr_), this);
+            chr_ = source_->GetChar();
+        } while (!source_->IsEnd());
+        break;
         }
     }
 
@@ -488,9 +486,9 @@ namespace Util {
 
     Event const getCommonEventByChar(wchar_t const c) {
         Event result = static_cast<Event>(c);
-        if (iswalnum(c) || c == L':') { //std::use_facet<std::ctype<wchar_t> >(std::locale::classic()).is(std::ctype<wchar_t>::alnum, c)
+        if (std::use_facet<std::ctype<wchar_t> >(std::locale::classic()).is(std::ctype<wchar_t>::alnum, c) || c == L':') {
             result = chr;
-        } else if (iswspace(c)) { //std::use_facet<std::ctype<wchar_t> >(std::locale::classic()).is(std::ctype<wchar_t>::space, c)
+        } else if (std::use_facet<std::ctype<wchar_t> >(std::locale::classic()).is(std::ctype<wchar_t>::space, c)) {
             result = space;
         } else if (c == EOF) {
             result = eof;

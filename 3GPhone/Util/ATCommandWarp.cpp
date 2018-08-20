@@ -290,22 +290,22 @@ bool ATCommandWarp::Connect(std::string pin)
 
 bool ATCommandWarp::Init(void)
 {
-	char AT[] = "AT\x0D";// ²âÊÔGSM-MODEMµÄ´æÔÚÐÔ    
+	char AT[] = "AT\x0D";// ï¿½ï¿½ï¿½ï¿½GSM-MODEMï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½    
 	char ATE[] = "ATE0\x0D";// ECHO OFF    
 	char CMGF[] = "AT+CMGF=0\x0D";// PDUÄ£Ê½
-	char ATV[] = "ATV1\x0D";//1 <CR><LF><verbose code><CR><LF> 0 <numeric code><CR>	"ATV0\x0D";·µ»Ø¡°0\x0D¡±£¨ATVÖ¸Áî¾ö¶¨·µ»Øresult codeÊÇÊý×Ö¸ñÊ½»¹ÊÇ×Ö·û¸ñÊ½£¬ATV0 ·µ»ØÎªÊý×Ö¸ñÊ½£¬ÆäÖÐ0 ±íÊ¾OK£¬1 ±íÊ¾CONNECT£¬2 ±íÊ¾RING£¬3 ±íÊ¾NO CARRIER£¬4 ±íÊ¾ERROR
-	char DUSBDEG[] = "AT^DUSBDEG=1,1\x0D";//·µ»Ø¡°0\x0D¡±,£¨´ËÖ¸ÁîÎª¿ªÆôEP1 Í¨ÐÅ¿Ú£¬µÚÒ»¸ö²ÎÊý´Ó1-4 ¶ÔÓ¦EP1-EP4£¬µÚ¶þ¸ö²ÎÊý1 ±íÊ¾open£¬0 ±íÊ¾close£»ÔÚÆôÓÃÄ³	¸öÍ¨ÐÅ¿Ú×öÒµÎñÖ®Ç°ÐèÍ¨¹ý´ËÖ¸Áî¿ªÆô¶ÔÓ¦Í¨ÐÅ¿Ú£©
-	char DGPIOSM[] = "AT^DGPIOSM=1\x0D";//r¡±£¬·µ»Ø¡°0\x0D¡±£¨, ´ËÖ¸ÁîÎªAPPÓëÄ£¿é»½ÐÑÄ£Ê½Ñ¡Ôñ£©
-	char DSQ[] = "AT^DSQ\x0D";//·µ»Ø¡°0\x0D¡±,£¨´ËÖ¸ÁîÎª¿ªÆôÍøÂçÐÅºÅ·Ö±´ÖµµÄÉÏ±¨£©£»
-	char CRC[] = "AT+CRC=1\x0D";//·µ»Ø¡°0\x0D¡±,£¨´ËÖ¸ÁîÎª¿ªÆôÀ´µçºóµÄÀ©Õ¹Ö¸Ê¾£¬¿ÉÑ¡	ÊäÈëÖ¸Áî£©£»
-	char DSCI[] = "AT^DSCI=1\x0D";//£¬·µ»Ø¡°0\x0D¡±,£¨´ËÖ¸ÁîÎª¿ªÆô½ø¶ÈÖ¸Ê¾£¬¿ÉÑ¡ÊäÈëÖ¸Áî£©£»
-	char DCPI[] = "AT^DCPI=1\x0D";//·µ»Ø¡°0\x0D¡±, £¨´ËÖ¸ÁîÎª¿ªÆôºô½Ð×´Ì¬Ö¸Ê¾£¬ÒÔ²¦´òÓï	Òôµç»°10086 ÎªÀý£¬¿ªÆô´ËÉÏ±¨Ö¸Ê¾ºó£¬Æäºó¸úËæDCPI µÄÉÏ±¨Ö¸Ê¾£¬
-	//¡°^DCPI:1,0,0,1¡±Îª½¨Á¢Á¬½ÓÖ¸Ê¾£»¡°^DCPI:1,3,0,1¡± ÎªÕýÔÚºô½ÐÖ¸Ê¾£»
-	//¡°^DCPI:1,4,0,1¡± ÎªÐÅµÀ·ÖÅäÖ¸Ê¾£»¡°^DCPI:1,5,0,1¡± ÎªÃèÊö½ø¶ÈÖ¸Ê¾£»
-	//¡°^DCPI:1,2,0,1¡±Îª±»½ÐÕñÁåÖ¸Ê¾£»¡°^DCPI:1,6,0,1¡±Îªºô½Ð½¨Á¢Ö¸Ê¾£¬¿ÉÑ¡ÊäÈëÖ¸Áî£©£»
+	char ATV[] = "ATV1\x0D";//1 <CR><LF><verbose code><CR><LF> 0 <numeric code><CR>	"ATV0\x0D";ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ATVÖ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½result codeï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ATV0 ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Ö¸ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0 ï¿½ï¿½Ê¾OKï¿½ï¿½1 ï¿½ï¿½Ê¾CONNECTï¿½ï¿½2 ï¿½ï¿½Ê¾RINGï¿½ï¿½3 ï¿½ï¿½Ê¾NO CARRIERï¿½ï¿½4 ï¿½ï¿½Ê¾ERROR
+	char DUSBDEG[] = "AT^DUSBDEG=1,1\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½EP1 Í¨ï¿½Å¿Ú£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1-4 ï¿½ï¿½Ó¦EP1-EP4ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1 ï¿½ï¿½Ê¾openï¿½ï¿½0 ï¿½ï¿½Ê¾closeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³	ï¿½ï¿½Í¨ï¿½Å¿ï¿½ï¿½ï¿½Òµï¿½ï¿½Ö®Ç°ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½î¿ªï¿½ï¿½ï¿½Ó¦Í¨ï¿½Å¿Ú£ï¿½
+	char DGPIOSM[] = "AT^DGPIOSM=1\x0D";//rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ö¸ï¿½ï¿½ÎªAPPï¿½ï¿½Ä£ï¿½é»½ï¿½ï¿½Ä£Ê½Ñ¡ï¿½ï¿½
+	char DSQ[] = "AT^DSQ\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅºÅ·Ö±ï¿½Öµï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+	char CRC[] = "AT+CRC=1\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½Ñ¡	ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½î£©ï¿½ï¿½
+	char DSCI[] = "AT^DSCI=1\x0D";//ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½î£©ï¿½ï¿½
+	char DCPI[] = "AT^DCPI=1\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬Ö¸Ê¾ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½	ï¿½ï¿½ç»°10086 Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DCPI ï¿½ï¿½ï¿½Ï±ï¿½Ö¸Ê¾ï¿½ï¿½
+	//ï¿½ï¿½^DCPI:1,0,0,1ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½^DCPI:1,3,0,1ï¿½ï¿½ Îªï¿½ï¿½ï¿½Úºï¿½ï¿½Ö¸Ê¾ï¿½ï¿½
+	//ï¿½ï¿½^DCPI:1,4,0,1ï¿½ï¿½ Îªï¿½Åµï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½^DCPI:1,5,0,1ï¿½ï¿½ Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½
+	//ï¿½ï¿½^DCPI:1,2,0,1ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½^DCPI:1,6,0,1ï¿½ï¿½Îªï¿½ï¿½Ð½ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½î£©ï¿½ï¿½
 
 	bool result = true;
-	char ans[128];      // Ó¦´ð´®    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 
 	m_pCom->WriteComm(AT, strlen(AT));   
 	m_pCom->ReadComm(ans, 128);   
@@ -339,20 +339,20 @@ bool ATCommandWarp::Init(void)
 
 bool ATCommandWarp::On(const char* pin)
 {
-	char CREG[] = "AT+CREG=1\x0D";//·µ»Ø¡°0\x0D¡±£¨´ËÖ¸ÁîÎª¿ªÆôÍøÂçÉÏ±¨£¬¿ÉÑ¡ÊäÈëÖ¸Áî£©£»
-	char CMER[] = "AT+CMER =2,0,0,2\x0D";//r¡±£¬·µ»Ø¡°0\x0D¡±£¨´ËÖ¸ÁîÎª¿ªÆô¸ß²ãÐ­ÒéÕ»ÊÂ¼þCIEV£º	<ind>,<value>ÉÏ±¨£©£»
-	char CFUN5[] = "AT+CFUN=5\x0D";//·µ»Ø¡°0\x0D¡±£¬£¨´ËÖ¸ÁîÎª¼¤»îUSIM ¿¨£©£»
-	char CFUN1[] = "AT+CFUN=1\x0D";//£¬·µ»Ø¡°0\x0D¡±£¬£¨´ËÖ¸ÁîÎª¼¤»îÐ­ÒéÕ»£©£»
-	char COPS[] = "AT+COPS=0\x0D";//·µ»Ø¡°0\x0D¡±£¬(´ËÖ¸ÁîÎªËÑÍøÖ¸Áî),´ËºóLC6311 »á·µ
-	//»ØºÜ¶àÊý¾Ý£¬Ö±µ½·µ»Ø¡°+CREG£º1¡±±íÊ¾¿ª»ú³É¹¦£¨¡°^DACTI:2¡±±íÊ¾µ±Ç°½ÓÈë¼¼ÊõÊÇTD; ¡°+CIEV£º2,2¡±±íÊ¾ÐÅºÅµÈ¼¶Îª2 ¼¶£»¡°+CIEV£º8,0¡±±íÊ¾¶Ì
-	//ÏûÏ¢´æ´¢Î´Âú£»¡°+CREG£º2¡±±íÊ¾ËÑÍøÖÐ£»¡°+CREG£º1¡±±íÊ¾ËÑÍø³É¹¦²¢×¢
-	//²á³É¹¦¡£¡¾ËµÃ÷£º¡°+CREG:n¡±ÆäÖÐ¡°n¡±µÄÖµ¿ÉÎª0[Î´×¢²á]£¬1[×¢²á³É¹¦]£¬2[ËÑÍø]£¬3[ÍøÂç¾Ü¾ø×¢²á]£¬4[ÍøÂç×¢²á×´Ì¬Î´Öª]£¬5[ÂþÓÎ]£¬¿ª»úºóÖ»ÓÐµ±CREG
-	//·µ»ØµÄÊÇ1 »ò5 Ê±£¬²ÅÄÜ×öLC6311 ËùÖ§³ÖµÄÒµÎñ¡¿£»¼øÓÚ¶ÔCREG£º4 µÄÐ­Òé
-	//Àí½â£¬½¨Òéµ±+CREG£º4 Ê±£¬APP ´¦ÀíÆ÷ÔÚUI ÏÔÊ¾Îª¿ÉÌá¹©·þÎñ×´Ì¬£¬¼´µÈ
-	//Í¬ÓÚ+CREG£º1»ò+CREG:5¡¿£©¡£
+	char CREG[] = "AT+CREG=1\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½î£©ï¿½ï¿½
+	char CMER[] = "AT+CMER =2,0,0,2\x0D";//rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ß²ï¿½Ð­ï¿½ï¿½Õ»ï¿½Â¼ï¿½CIEVï¿½ï¿½	<ind>,<value>ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+	char CFUN5[] = "AT+CFUN=5\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½USIM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	char CFUN1[] = "AT+CFUN=1\x0D";//ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½
+	char COPS[] = "AT+COPS=0\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½),ï¿½Ëºï¿½LC6311 ï¿½á·µ
+	//ï¿½ØºÜ¶ï¿½ï¿½ï¿½ï¿½Ý£ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½+CREGï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½^DACTI:2ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ë¼¼ï¿½ï¿½ï¿½ï¿½TD; ï¿½ï¿½+CIEVï¿½ï¿½2,2ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ÅºÅµÈ¼ï¿½Îª2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½+CIEVï¿½ï¿½8,0ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
+	//ï¿½ï¿½Ï¢ï¿½æ´¢Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½+CREGï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½+CREGï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½×¢
+	//ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½+CREG:nï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½nï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Îª0[Î´×¢ï¿½ï¿½]ï¿½ï¿½1[×¢ï¿½ï¿½É¹ï¿½]ï¿½ï¿½2[ï¿½ï¿½ï¿½ï¿½]ï¿½ï¿½3[ï¿½ï¿½ï¿½ï¿½Ü¾ï¿½×¢ï¿½ï¿½]ï¿½ï¿½4[ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½×´Ì¬Î´Öª]ï¿½ï¿½5[ï¿½ï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Ðµï¿½CREG
+	//ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½1 ï¿½ï¿½5 Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LC6311 ï¿½ï¿½Ö§ï¿½Öµï¿½Òµï¿½ñ¡¿£ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½CREGï¿½ï¿½4 ï¿½ï¿½Ð­ï¿½ï¿½
+	//ï¿½ï¿½â£¬ï¿½ï¿½ï¿½éµ±+CREGï¿½ï¿½4 Ê±ï¿½ï¿½APP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UI ï¿½ï¿½Ê¾Îªï¿½ï¿½ï¿½á¹©ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//Í¬ï¿½ï¿½+CREGï¿½ï¿½1ï¿½ï¿½+CREG:5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	bool result = true;
-	//char ans[128];      // Ó¦´ð´®    
+	//char ans[128];      // Ó¦ï¿½ï¿½    
 
 	//m_pCom->WriteComm(CREG, strlen(CREG));
 	//m_pCom->ReadComm(ans, 128);
@@ -360,7 +360,7 @@ bool ATCommandWarp::On(const char* pin)
 	//m_pCom->ReadComm(ans, 128);
 	//m_pCom->WriteComm(CFUN5, strlen(CFUN5));
 	//m_pCom->ReadComm(ans, 128);
-	//if (strstr(ans, "+CME ERROR:11") != NULL)//ÔÚÉèÖÃ¿ª»úPIN ÂëÊ±£¬APP¶ËÊäÈë¡°AT+CFUN=5¡±£¬¼¤»îUSIM ¿¨£¬·µ»ØµÄ¡°£«CME		ERROR£º11¡±±íÊ¾¡°SIM PIN Required¡±£»´ËÊ±APP ¶Ë»áµ¯³öÌáÊ¾ÊäÈëpinÂëµÄÌáÊ¾£¬		APP¶ËÊäÈëPIN Âëºó£¬ÔÙÖ´ÐÐ¼¤»îÐ­ÒéÕ»µÄÖ¸Áî¡£
+	//if (strstr(ans, "+CME ERROR:11") != NULL)//ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½PIN ï¿½ï¿½Ê±ï¿½ï¿½APPï¿½ï¿½ï¿½ï¿½ï¿½ë¡°AT+CFUN=5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½USIM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ØµÄ¡ï¿½ï¿½ï¿½CME		ERRORï¿½ï¿½11ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½SIM PIN Requiredï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±APP ï¿½Ë»áµ¯ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½pinï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½		APPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PIN ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð¼ï¿½ï¿½ï¿½Ð­ï¿½ï¿½Õ»ï¿½ï¿½Ö¸ï¿½î¡£
 	//{
 	//	m_pCom->WriteComm((void*)pin, strlen(pin));
 	//	m_pCom->ReadComm(ans, 128);
@@ -378,13 +378,13 @@ bool ATCommandWarp::On(const char* pin)
 
 bool ATCommandWarp::Off(void)
 {
-	char COPS[] = "AT+COPS=2\x0D";//·µ»Ø¡°+CREG: 0\x0D\n0\x0D¡±£¨´ËÖ¸ÁîÎªÈ¥¼¤»îÍøÂç£©£»
-	char CFUN0[] = "AT+CFUN=0\x0D";//·µ»Ø¡°0\x0D¡±£¨´ËÖ¸ÁîÎªÈ¥¼¤»îÐ­ÒéÕ»£©£»
-	char CFUN6[] = "AT+CFUN=6\x0D";//·µ»Ø¡°0\x0D¡±£¨´ËÖ¸ÁîÎªÈ¥¼¤»îUSIM ¿¨£©£»
-	char DSOFF[] = "AT^DSOFF\x0D";//£¬·µ»Ø¡°0\x0D¡±£¨´ËÖ¸ÁîÎªÄ£¿éÈí¹Ø»ú£©£»
+	char COPS[] = "AT+COPS=2\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½+CREG: 0\x0D\n0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ÎªÈ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç£©ï¿½ï¿½
+	char CFUN0[] = "AT+CFUN=0\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ÎªÈ¥ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½
+	char CFUN6[] = "AT+CFUN=6\x0D";//ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ÎªÈ¥ï¿½ï¿½ï¿½ï¿½USIM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	char DSOFF[] = "AT^DSOFF\x0D";//ï¿½ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½0\x0Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ÎªÄ£ï¿½ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	bool result = true;
-	char ans[128];      // Ó¦´ð´®  
+	char ans[128];      // Ó¦ï¿½ï¿½  
 
 	m_pCom->WriteComm(COPS, strlen(COPS));
 	m_pCom->ReadComm(ans, 128);
@@ -409,7 +409,7 @@ bool ATCommandWarp::PhoneDial(char * number)
 	strcat(CMD, number);
 	strcat(CMD, ";\x0D");
 	bool result = true;
-	//char ans[128];      // Ó¦´ð´®    
+	//char ans[128];      // Ó¦ï¿½ï¿½    
 	m_pCom->WriteComm(CMD, strlen(CMD));
 	//	m_pCom->ReadComm(ans, 128);
 	//	result = *ans;
@@ -420,7 +420,7 @@ bool ATCommandWarp::PhoneRedial(void)
 {
 	char ATDL[] = "ATDL;\x0D";
 	bool result = true;
-	char ans[128];      // Ó¦´ð´®    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 	m_pCom->WriteComm(ATDL, strlen(ATDL));
 	m_pCom->ReadComm(ans, 128);
 	return result;	
@@ -430,7 +430,7 @@ int ATCommandWarp::PhoneState(void)
 {
 	char CLCC[] = "AT+CLCC\x0D";
 	char result = -1;
-	char ans[128];      // Ó¦´ð´®    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 	m_pCom->WriteComm(CLCC, strlen(CLCC));
 	m_pCom->ReadComm(ans, 128);
 
@@ -528,16 +528,16 @@ int ATCommandWarp::PhoneState(void)
 
 bool ATCommandWarp::PhoneRing(char * number, int * type)
 {
-	char CLCC[] = "AT+CLCC\x0D";//×¢Òâ£ºÀ´µçÏûÏ¢ÊÇÖ÷¶¯ÉÏ±¨µÄ£¬ÕâÀï»¹ÐèÒªÐÞ¸Ä¡£ +CRING: VOICE\x0D\n+CLIP:"10086",161,"",,"",0\x0D\n
+	char CLCC[] = "AT+CLCC\x0D";//×¢ï¿½â£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï»¹ï¿½ï¿½Òªï¿½Þ¸Ä¡ï¿½ +CRING: VOICE\x0D\n+CLIP:"10086",161,"",,"",0\x0D\n
 	bool result = false;
-	char ans[128];      // Ó¦´ð´®    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 	m_pCom->WriteComm(CLCC, strlen(CLCC));
 	m_pCom->ReadComm(ans, 128);
 
 	char* p = strstr(ans, "+CLIP:");
 	if ((strstr(ans, "RING") != NULL) && (p != NULL))
 	{
-		p += 8;//ÒÆ¶¯µ½+CLIP:"Ö®ºó
+		p += 8;//ï¿½Æ¶ï¿½ï¿½ï¿½+CLIP:"Ö®ï¿½ï¿½
 		while (*p != '\"')
 		{
 			*number = *p;
@@ -578,7 +578,7 @@ bool ATCommandWarp::PhoneRing(char * number, int * type)
 	//Execution command returns the activity status <pas> of the MT. It can	be used tointerrogate the MT before requesting action from the phone.
 	//char CPAS[] = "AT+CPAS\x0D";
 	//char result = 0;
-	//char ans[128];      // Ó¦´ð´®    
+	//char ans[128];      // Ó¦ï¿½ï¿½    
 	//m_pCom->WriteComm(CPAS, strlen(CPAS));
 	//m_pCom->ReadComm(ans, 128);
 	//if (strstr(ans, "+CPAS:3") != NULL)
@@ -589,9 +589,9 @@ bool ATCommandWarp::PhoneRing(char * number, int * type)
 
 bool ATCommandWarp::PhoneHangup(void)
 {
-	char ATH[] = "ATH\x0D";//¶ÔÓÚ¹Ò¶ÏATÖ¸Áî£¬AT£«CHUP£¨¹Ò¶Ïµ±Ç°¼¤»îCSÁ´Â·£©ºÍAT£«CHLD Ò²¿É×÷Îª¿ÉÑ¡ATÖ¸Áî¡£±»¶¯¹Ò¶Ï£¬ÔòLC6311 »á¸øAPP ÉÏ±¨¡°3\x0D¡±£¬3 ±íÊ¾¡°NO CARRIER¡±,Îª¶Ô¶ËÖ÷¶¯¹Ò¶Ï
+	char ATH[] = "ATH\x0D";//ï¿½ï¿½ï¿½Ú¹Ò¶ï¿½ATÖ¸ï¿½î£¬ATï¿½ï¿½CHUPï¿½ï¿½ï¿½Ò¶Ïµï¿½Ç°ï¿½ï¿½ï¿½ï¿½CSï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ATï¿½ï¿½CHLD Ò²ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ñ¡ATÖ¸ï¿½î¡£ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶Ï£ï¿½ï¿½ï¿½LC6311 ï¿½ï¿½ï¿½APP ï¿½Ï±ï¿½ï¿½ï¿½3\x0Dï¿½ï¿½ï¿½ï¿½3 ï¿½ï¿½Ê¾ï¿½ï¿½NO CARRIERï¿½ï¿½,Îªï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
 	bool result = true;
-	char ans[128];      // Ó¦´ð´®    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 	m_pCom->WriteComm(ATH, strlen(ATH));
 	m_pCom->ReadComm(ans, 128);
 	return result;	
@@ -599,9 +599,9 @@ bool ATCommandWarp::PhoneHangup(void)
 
 bool ATCommandWarp::PhoneAnswer(void)
 {
-	char ATA[] = "ATA\x0D";//¶ÔÓÚ¹Ò¶ÏATÖ¸Áî£¬AT£«CHUP£¨¹Ò¶Ïµ±Ç°¼¤»îCSÁ´Â·£©ºÍAT£«CHLD Ò²¿É×÷Îª¿ÉÑ¡ATÖ¸Áî¡£±»¶¯¹Ò¶Ï£¬ÔòLC6311 »á¸øAPP ÉÏ±¨¡°3\x0D¡±£¬3 ±íÊ¾¡°NO CARRIER¡±,Îª¶Ô¶ËÖ÷¶¯¹Ò¶Ï
+	char ATA[] = "ATA\x0D";//ï¿½ï¿½ï¿½Ú¹Ò¶ï¿½ATÖ¸ï¿½î£¬ATï¿½ï¿½CHUPï¿½ï¿½ï¿½Ò¶Ïµï¿½Ç°ï¿½ï¿½ï¿½ï¿½CSï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ATï¿½ï¿½CHLD Ò²ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ñ¡ATÖ¸ï¿½î¡£ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶Ï£ï¿½ï¿½ï¿½LC6311 ï¿½ï¿½ï¿½APP ï¿½Ï±ï¿½ï¿½ï¿½3\x0Dï¿½ï¿½ï¿½ï¿½3 ï¿½ï¿½Ê¾ï¿½ï¿½NO CARRIERï¿½ï¿½,Îªï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
 	bool result = true;
-	char ans[128];      // Ó¦´ð´®    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 	m_pCom->WriteComm(ATA, strlen(ATA));
 	m_pCom->ReadComm(ans, 128);
 	return result;	
@@ -609,10 +609,10 @@ bool ATCommandWarp::PhoneAnswer(void)
 
 bool ATCommandWarp::PhoneSubDial(char number)
 {
-	char cmd[16];       // ÃüÁî´®    
-	sprintf(cmd, "AT+VTS=%c\x0D", number); // Éú³ÉÃüÁî    
+	char cmd[16];       // ï¿½ï¿½ï¿½î´®    
+	sprintf(cmd, "AT+VTS=%c\x0D", number); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½    
 	m_pCom->WriteComm(cmd, strlen(cmd));
-	char ans[128];      // Ó¦´ð´®    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 	m_pCom->ReadComm(ans, 128);
 	if(strstr(ans, "OK\x0D\n> ") != NULL)   
 	{
@@ -623,11 +623,11 @@ bool ATCommandWarp::PhoneSubDial(char number)
 
 bool ATCommandWarp::SmsSend(int dataLength)
 {
-	char cmd[16];       // ÃüÁî´®    
-	sprintf(cmd, "AT+CMGS=%d\x0D", dataLength); // Éú³ÉÃüÁî    
+	char cmd[16];       // ï¿½ï¿½ï¿½î´®    
+	sprintf(cmd, "AT+CMGS=%d\x0D", dataLength); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½    
 	m_pCom->WriteComm(cmd, strlen(cmd));
-	int nLength;        // ´®¿ÚÊÕµ½µÄÊý¾Ý³¤¶È    
-	char ans[128];      // Ó¦´ð´®    
+	int nLength;        // ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½    
+	char ans[128];      // Ó¦ï¿½ï¿½    
 	nLength = m_pCom->ReadComm(ans, 128);
 	if(nLength == 4 && strncmp(ans, "\x0D\n> ", 4) == 0)   
 	{
@@ -643,9 +643,9 @@ int ATCommandWarp::SmsSend(char* pdu, int pduLength)
 
 int ATCommandWarp::SmsDelete(int index)
 {
-	char cmd[16];       // ÃüÁî´®    
-	sprintf(cmd, "AT+CMGD=%d\x0D", index);    // Éú³ÉÃüÁî    
-	// Êä³öÃüÁî´®    
+	char cmd[16];       // ï¿½ï¿½ï¿½î´®    
+	sprintf(cmd, "AT+CMGD=%d\x0D", index);    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½    
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î´®    
 	return m_pCom->WriteComm(cmd, strlen(cmd)); 
 }
 

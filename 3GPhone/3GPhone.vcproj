@@ -400,6 +400,8 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
+				RelativePath=".\Util\Data.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Util\Data.h"
@@ -1527,6 +1529,14 @@
 			>
 			<File
 				RelativePath=".\Weather\ReadMe.txt"
+				>
+			</File>
+			<File
+				RelativePath=".\Weather\Weather.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Weather\Weather.h"
 				>
 			</File>
 			<Filter

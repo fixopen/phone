@@ -18,7 +18,7 @@ namespace Util {
             indication_ = 0;
         } else {
             //log_(static_cast<char*>("open database failure!"));
-            //abort(); //not support by WinCE
+            abort();
         }
     }
     

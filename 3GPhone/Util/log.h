@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-#include "StringOp.h"
 
 namespace Util {
     namespace Log {
@@ -27,7 +26,6 @@ namespace Util {
             class NetworkDestination;
             class DatabaseDestination;
 
-        int const AddSource(Source* const processor);
         int const AddProcess(Processor* const processor, int const previousNode);
         Processor* const RemoveProcess(int const id);
         //int const AddSource(Source* const source, Parser* const parser, Receiver* const receiver);
@@ -47,11 +45,6 @@ namespace Util {
             , what(w) {
             }
 
-            Entry(wchar_t const* const w)
-            : level(lNotice)
-            , what(StringOp::FromUnicode(w)) {
-            }
-
             enum Level {
                 lFatalError,
                 lError,
@@ -63,7 +56,6 @@ namespace Util {
             std::string what;
         };
         class Processor {
-            friend int const AddSource(Source* const processor);
             friend int const AddProcess(Processor* const processor, int const previousNode);
             friend Processor* const RemoveProcess(int const id);
             //friend int const AddSource(Source* const source, Parser* const parser, Receiver* const receiver);
@@ -74,7 +66,7 @@ namespace Util {
             void AddNext(Processor* const next);
             void RemoveNext(Processor* const next);
             virtual ~Processor();
-        protected:
+        private:
             std::vector<Processor*> nexts_;
             int id_;
         };

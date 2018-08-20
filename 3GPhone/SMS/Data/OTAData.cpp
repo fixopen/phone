@@ -195,7 +195,7 @@ namespace SMS {
             cmd += L"', [imei] = '";
             cmd += Util::StringOp::FromUTF8(IMEI);
             cmd += L"', [terminalCode] = '";
-            cmd += Util::StringOp::FromUTF8(terminalId);//对应项不一样
+            cmd += Util::StringOp::FromUTF8(terminalId);//锟斤拷应锟筋不一锟斤拷
             cmd += L"' WHERE id = ";
             cmd += Util::StringOp::FromInt(id());
             ExecCommand(cmd);

@@ -67,8 +67,8 @@ namespace Contact_ {
             static std::wstring outlinePrefix_;
             static std::wstring virtualPrefix_;
         private:
-            static std::vector<std::wstring> worldNotionalNumbers_; //ËùÓĞ¹ú¼Ò±àºÅ
-            static std::vector<std::wstring> chinaRegionNumbers_; //ÖĞ¹úËùÓĞÇøºÅ
+            static std::vector<std::wstring> worldNotionalNumbers_; //æ‰€æœ‰å›½å®¶ç¼–å·
+            static std::vector<std::wstring> chinaRegionNumbers_; //ä¸­å›½æ‰€æœ‰åŒºå·
         public:
             static std::wstring thisNationalNumber_;
             static std::wstring thisRegionNumber_;

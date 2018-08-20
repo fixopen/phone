@@ -12,13 +12,13 @@
 namespace Contact_{
 	namespace Data {
 		enum SoundSegmentType {
-			sstLeaveWord, //ÁôÑÔ
-			sstTeleRecord, //Í¨»°Â¼Òô
-			sstLocalRecord, //±¾µØÂ¼Òô
-			sstTips, //ÌáÊ¾Óï
+			sstLeaveWord, //ç•™è¨€
+			sstTeleRecord, //é€šè¯å½•éŸ³
+			sstLocalRecord, //æœ¬åœ°å½•éŸ³
+			sstTips, //æç¤ºè¯­
 			
-			sstMusic, //ÒôÀÖ
-			sstRing, //ÕñÁåÒô
+			sstMusic, //éŸ³ä¹
+			sstRing, //æŒ¯é“ƒéŸ³
 
 			sstMidi,
 			sstMp3,

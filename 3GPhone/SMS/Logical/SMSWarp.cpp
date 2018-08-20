@@ -68,8 +68,8 @@ SMSWarp::SMSWarp()
 
 SMSWarp::~SMSWarp()
 {
-    SetEvent(m_hKillThreadEvent);           // �����ر����̵߳��ź�
-    WaitForSingleObject(m_hThreadKilledEvent, INFINITE);    // �ȴ����̹߳ر�
+    SetEvent(m_hKillThreadEvent);           // 发出关闭子线程的信号
+    WaitForSingleObject(m_hThreadKilledEvent, INFINITE);    // 等待子线程关闭
 
     DeleteCriticalSection(&m_csSend);
     DeleteCriticalSection(&m_csRecv);
@@ -95,21 +95,21 @@ SMSWarp* SMSWarp::GetSMSWarp()
 void SMSWarp::Bind(Util::ATCommandWarp* at)
 {
     m_pAT = at;
-    // �������߳�
+    // 启动子线程
     AfxBeginThread(SmThread, this, THREAD_PRIORITY_NORMAL);
 }
 
-// �ɴ�ӡ�ַ���ת��Ϊ�ֽ�����    
-// �磺"C8329BFD0E01" --> {0xC8, 0x32, 0x9B, 0xFD, 0x0E, 0x01}    
-// ����: pSrc - Դ�ַ���ָ��    
-//       nSrcLength - Դ�ַ�������    
-// ���: pDst - Ŀ������ָ��    
-// ����: Ŀ�����ݳ���    
+// 可打印字符串转换为字节数据    
+// 如："C8329BFD0E01" --> {0xC8, 0x32, 0x9B, 0xFD, 0x0E, 0x01}    
+// 输入: pSrc - 源字符串指针    
+//       nSrcLength - 源字符串长度    
+// 输出: pDst - 目标数据指针    
+// 返回: 目标数据长度    
 int SMSWarp::gsmString2Bytes(const char* pSrc, unsigned char* pDst, int nSrcLength)
 {
     for (int i = 0; i < nSrcLength; i += 2)
     {
-        // �����4λ
+        // 输出高4位
         if ((*pSrc >= '0') && (*pSrc <= '9'))
         {
             *pDst = (*pSrc - '0') << 4;
@@ -121,7 +121,7 @@ int SMSWarp::gsmString2Bytes(const char* pSrc, unsigned char* pDst, int nSrcLeng
 
         pSrc++;
 
-        // �����4λ
+        // 输出低4位
         if ((*pSrc>='0') && (*pSrc<='9'))
         {
             *pDst |= *pSrc - '0';
@@ -135,353 +135,353 @@ int SMSWarp::gsmString2Bytes(const char* pSrc, unsigned char* pDst, int nSrcLeng
         pDst++;
     }   
 
-    // ����Ŀ�����ݳ���
+    // 返回目标数据长度
     return (nSrcLength / 2);
 }   
 
-// �ֽ�����ת��Ϊ�ɴ�ӡ�ַ���    
-// �磺{0xC8, 0x32, 0x9B, 0xFD, 0x0E, 0x01} --> "C8329BFD0E01"     
-// ����: pSrc - Դ����ָ��    
-//       nSrcLength - Դ���ݳ���    
-// ���: pDst - Ŀ���ַ���ָ��    
-// ����: Ŀ���ַ�������    
+// 字节数据转换为可打印字符串    
+// 如：{0xC8, 0x32, 0x9B, 0xFD, 0x0E, 0x01} --> "C8329BFD0E01"     
+// 输入: pSrc - 源数据指针    
+//       nSrcLength - 源数据长度    
+// 输出: pDst - 目标字符串指针    
+// 返回: 目标字符串长度    
 int SMSWarp::gsmBytes2String(const unsigned char* pSrc, char* pDst, int nSrcLength)
 {
-    const char tab[]="0123456789ABCDEF";    // 0x0-0xf���ַ����ұ�
+    const char tab[]="0123456789ABCDEF";    // 0x0-0xf的字符查找表
 
     for (int i = 0; i < nSrcLength; i++)
     {
-        *pDst++ = tab[*pSrc >> 4];        // �����4λ
-        *pDst++ = tab[*pSrc & 0x0f];    // �����4λ
+        *pDst++ = tab[*pSrc >> 4];        // 输出高4位
+        *pDst++ = tab[*pSrc & 0x0f];    // 输出低4位
         pSrc++;
     }
 
-    // ����ַ����Ӹ�������
+    // 输出字符串加个结束符
     *pDst = '\0';
 
-    // ����Ŀ���ַ�������
+    // 返回目标字符串长度
     return (nSrcLength * 2);
 }   
 
-// 7bit����    
-// ����: pSrc - Դ�ַ���ָ��    
-//       nSrcLength - Դ�ַ�������    
-// ���: pDst - Ŀ����봮ָ��    
-// ����: Ŀ����봮����    
+// 7bit编码    
+// 输入: pSrc - 源字符串指针    
+//       nSrcLength - 源字符串长度    
+// 输出: pDst - 目标编码串指针    
+// 返回: 目标编码串长度    
 int SMSWarp::gsmEncode7bit(const char* pSrc, unsigned char* pDst, int nSrcLength)
 {
-    int nSrc;       // Դ�ַ����ļ���ֵ
-    int nDst;       // Ŀ����봮�ļ���ֵ
-    int nChar;      // ��ǰ���ڴ����������ַ��ֽڵ���ţ���Χ��0-7
-    unsigned char nLeft;    // ��һ�ֽڲ��������
+    int nSrc;       // 源字符串的计数值
+    int nDst;       // 目标编码串的计数值
+    int nChar;      // 当前正在处理的组内字符字节的序号，范围是0-7
+    unsigned char nLeft;    // 上一字节残余的数据
 
-    // ����ֵ��ʼ��
+    // 计数值初始化
     nSrc = 0;
     nDst = 0;
 
-    // ��Դ��ÿ8���ֽڷ�Ϊһ�飬ѹ����7���ֽ�
-    // ѭ���ô������̣�ֱ��Դ����������
-    // ������鲻��8�ֽڣ�Ҳ����ȷ����
+    // 将源串每8个字节分为一组，压缩成7个字节
+    // 循环该处理过程，直至源串被处理完
+    // 如果分组不到8字节，也能正确处理
     while (nSrc < nSrcLength)
     {
-        // ȡԴ�ַ����ļ���ֵ�����3λ
+        // 取源字符串的计数值的最低3位
         nChar = nSrc & 7;
 
-        // ����Դ����ÿ���ֽ�
+        // 处理源串的每个字节
         if (nChar == 0)
         {
-            // ���ڵ�һ���ֽڣ�ֻ�Ǳ�����������������һ���ֽ�ʱʹ��
+            // 组内第一个字节，只是保存起来，待处理下一个字节时使用
             nLeft = *pSrc;
         }
         else
         {
-            // ���������ֽڣ������ұ߲��������������ӣ��õ�һ��Ŀ������ֽ�
+            // 组内其它字节，将其右边部分与残余数据相加，得到一个目标编码字节
             *pDst = (*pSrc << (8-nChar)) | nLeft;
 
-            // �����ֽ�ʣ�µ���߲��֣���Ϊ�������ݱ�������
+            // 将该字节剩下的左边部分，作为残余数据保存起来
             nLeft = *pSrc >> nChar;
 
-            // �޸�Ŀ�괮��ָ��ͼ���ֵ
+            // 修改目标串的指针和计数值
             pDst++;
             nDst++;
         }
 
-        // �޸�Դ����ָ��ͼ���ֵ
+        // 修改源串的指针和计数值
         pSrc++;
         nSrc++;
     }   
 
-    // ����Ŀ�괮����
+    // 返回目标串长度
     return nDst;
 }
 
-// 7bit����    
-// ����: pSrc - Դ���봮ָ��    
-//       nSrcLength - Դ���봮����    
-// ���: pDst - Ŀ���ַ���ָ��    
-// ����: Ŀ���ַ�������    
+// 7bit解码    
+// 输入: pSrc - 源编码串指针    
+//       nSrcLength - 源编码串长度    
+// 输出: pDst - 目标字符串指针    
+// 返回: 目标字符串长度    
 int SMSWarp::gsmDecode7bit(const unsigned char* pSrc, char* pDst, int nSrcLength) {
-    int nSrc; // Դ�ַ����ļ���ֵ
-    int nDst; // Ŀ����봮�ļ���ֵ
-    int nByte; // ��ǰ���ڴ����������ֽڵ���ţ���Χ��0-6
-    unsigned char nLeft; // ��һ�ֽڲ��������
-    // ����ֵ��ʼ��
+    int nSrc; // 源字符串的计数值
+    int nDst; // 目标解码串的计数值
+    int nByte; // 当前正在处理的组内字节的序号，范围是0-6
+    unsigned char nLeft; // 上一字节残余的数据
+    // 计数值初始化
     nSrc = 0;
     nDst = 0;
-    // �����ֽ���źͲ������ݳ�ʼ��
+    // 组内字节序号和残余数据初始化
     nByte = 0;
     nLeft = 0;
-    // ��Դ����ÿ7���ֽڷ�Ϊһ�飬��ѹ����8���ֽ�
-    // ѭ���ô������̣�ֱ��Դ���ݱ�������
-    // ������鲻��7�ֽڣ�Ҳ����ȷ����
+    // 将源数据每7个字节分为一组，解压缩成8个字节
+    // 循环该处理过程，直至源数据被处理完
+    // 如果分组不到7字节，也能正确处理
     while(nSrc<nSrcLength) {
-        // ��Դ�ֽ��ұ߲��������������ӣ�ȥ�����λ���õ�һ��Ŀ������ֽ�
+        // 将源字节右边部分与残余数据相加，去掉最高位，得到一个目标解码字节
         *pDst = ((*pSrc << nByte) | nLeft) & 0x7f;
-        // �����ֽ�ʣ�µ���߲��֣���Ϊ�������ݱ�������
+        // 将该字节剩下的左边部分，作为残余数据保存起来
         nLeft = *pSrc >> (7-nByte);
-        // �޸�Ŀ�괮��ָ��ͼ���ֵ
+        // 修改目标串的指针和计数值
         pDst++;
         nDst++;
-        // �޸��ֽڼ���ֵ
+        // 修改字节计数值
         nByte++;
-        // ����һ������һ���ֽ�
+        // 到了一组的最后一个字节
         if(nByte == 7) {
-            // ����õ�һ��Ŀ������ֽ�
+            // 额外得到一个目标解码字节
             *pDst = nLeft;
-            // �޸�Ŀ�괮��ָ��ͼ���ֵ
+            // 修改目标串的指针和计数值
             pDst++;
             nDst++;
-            // �����ֽ���źͲ������ݳ�ʼ��
+            // 组内字节序号和残余数据初始化
             nByte = 0;
             nLeft = 0;
         }
-        // �޸�Դ����ָ��ͼ���ֵ
+        // 修改源串的指针和计数值
         pSrc++;
         nSrc++;
     }
     *pDst = 0;
-    // ����Ŀ�괮����
+    // 返回目标串长度
     return nDst;
 }
 
-// 8bit����    
-// ����: pSrc - Դ�ַ���ָ��    
-//       nSrcLength - Դ�ַ�������    
-// ���: pDst - Ŀ����봮ָ��    
-// ����: Ŀ����봮����    
+// 8bit编码    
+// 输入: pSrc - 源字符串指针    
+//       nSrcLength - 源字符串长度    
+// 输出: pDst - 目标编码串指针    
+// 返回: 目标编码串长度    
 int SMSWarp::gsmEncode8bit(const char* pSrc, unsigned char* pDst, int nSrcLength)   
 {   
-    // �򵥸���    
+    // 简单复制    
     memcpy(pDst, pSrc, nSrcLength);   
 
     return nSrcLength;   
 }   
 
-// 8bit����    
-// ����: pSrc - Դ���봮ָ��    
-//       nSrcLength -  Դ���봮����    
-// ���: pDst -  Ŀ���ַ���ָ��    
-// ����: Ŀ���ַ�������    
+// 8bit解码    
+// 输入: pSrc - 源编码串指针    
+//       nSrcLength -  源编码串长度    
+// 输出: pDst -  目标字符串指针    
+// 返回: 目标字符串长度    
 int SMSWarp::gsmDecode8bit(const unsigned char* pSrc, char* pDst, int nSrcLength)   
 {   
-    // �򵥸���    
+    // 简单复制    
     memcpy(pDst, pSrc, nSrcLength);   
 
-    // ����ַ����Ӹ�������    
+    // 输出字符串加个结束符    
     pDst[nSrcLength] = '\0';   
 
     return nSrcLength;   
 }   
 
-// UCS2����    
-// ����: pSrc - Դ�ַ���ָ��    
-//       nSrcLength - Դ�ַ�������    
-// ���: pDst - Ŀ����봮ָ��    
-// ����: Ŀ����봮����    
+// UCS2编码    
+// 输入: pSrc - 源字符串指针    
+//       nSrcLength - 源字符串长度    
+// 输出: pDst - 目标编码串指针    
+// 返回: 目标编码串长度    
 int SMSWarp::gsmEncodeUcs2(const char* pSrc, unsigned char* pDst, int nSrcLength) {
-    int nDstLength; // UNICODE���ַ���Ŀ
-    WCHAR wchar[128]; // UNICODE��������
-    // �ַ���-->UNICODE��
+    int nDstLength; // UNICODE宽字符数目
+    WCHAR wchar[128]; // UNICODE串缓冲区
+    // 字符串-->UNICODE串
     nDstLength = ::MultiByteToWideChar(CP_ACP, 0, pSrc, nSrcLength, wchar, 128);
-    // �ߵ��ֽڶԵ������
+    // 高低字节对调，输出
     for(int i=0; i<nDstLength; i++) {
-        // �������λ�ֽ�
+        // 先输出高位字节
         *pDst++ = wchar[i] >> 8;
-        // �������λ�ֽ�
+        // 后输出低位字节
         *pDst++ = wchar[i] & 0xff;
     }
-    // ����Ŀ����봮����
+    // 返回目标编码串长度
     return nDstLength * 2;
 }
 
-// UCS2����    
-// ����: pSrc - Դ���봮ָ��    
-//       nSrcLength -  Դ���봮����    
-// ���: pDst -  Ŀ���ַ���ָ��    
-// ����: Ŀ���ַ�������    
+// UCS2解码    
+// 输入: pSrc - 源编码串指针    
+//       nSrcLength -  源编码串长度    
+// 输出: pDst -  目标字符串指针    
+// 返回: 目标字符串长度    
 int SMSWarp::gsmDecodeUcs2(const unsigned char* pSrc, char* pDst, int nSrcLength) {
     int nDstLength;
-    // UNICODE���ַ���Ŀ
-    WCHAR wchar[128]; // UNICODE��������
-    // �ߵ��ֽڶԵ���ƴ��UNICODE
+    // UNICODE宽字符数目
+    WCHAR wchar[128]; // UNICODE串缓冲区
+    // 高低字节对调，拼成UNICODE
     for(int i=0; i<nSrcLength/2; i++) {
-        // �ȸ�λ�ֽ�
+        // 先高位字节
         wchar[i] = *pSrc++ << 8;
-        // ���λ�ֽ�
+        // 后低位字节
         wchar[i] |= *pSrc++;
     }
-    // UNICODE��-->�ַ���
+    // UNICODE串-->字符串
     nDstLength = ::WideCharToMultiByte(CP_ACP, 0, wchar, nSrcLength/2, pDst, 160,
         NULL, NULL);
-    // ����ַ����Ӹ�������
+    // 输出字符串加个结束符
     pDst[nDstLength] = '\0';
-    // ����Ŀ���ַ�������
+    // 返回目标字符串长度
     return nDstLength;
 }
 
-// ����˳����ַ���ת��Ϊ�����ߵ����ַ�����������Ϊ��������'F'�ճ�ż��    
-// �磺"8613851872468" --> "683158812764F8"    
-// ����: pSrc - Դ�ַ���ָ��    
-//       nSrcLength - Դ�ַ�������    
-// ���: pDst - Ŀ���ַ���ָ��    
-// ����: Ŀ���ַ�������        	
+// 正常顺序的字符串转换为两两颠倒的字符串，若长度为奇数，补'F'凑成偶数    
+// 如："8613851872468" --> "683158812764F8"    
+// 输入: pSrc - 源字符串指针    
+//       nSrcLength - 源字符串长度    
+// 输出: pDst - 目标字符串指针    
+// 返回: 目标字符串长度        	
 int SMSWarp::gsmInvertNumbers(const char* pSrc, char* pDst, int nSrcLength) 
 {
-    int nDstLength; // Ŀ���ַ�������
-    char ch; // ���ڱ���һ���ַ�
-    // ���ƴ�����
+    int nDstLength; // 目标字符串长度
+    char ch; // 用于保存一个字符
+    // 复制串长度
     nDstLength = nSrcLength;
-    // �����ߵ�
+    // 两两颠倒
     for(int i=0; i<nSrcLength;i+=2) {
-        ch = *pSrc++; // �����ȳ��ֵ��ַ�
-        *pDst++ = *pSrc++; // ���ƺ���ֵ��ַ�
-        *pDst++ = ch; // �����ȳ��ֵ��ַ�
+        ch = *pSrc++; // 保存先出现的字符
+        *pDst++ = *pSrc++; // 复制后出现的字符
+        *pDst++ = ch; // 复制先出现的字符
     }
-    // Դ��������������
+    // 源串长度是奇数吗？
     if(nSrcLength & 1) {
-        *(pDst-2) = 'F'; // ��'F'
-        nDstLength++; // Ŀ�괮���ȼ�1
+        *(pDst-2) = 'F'; // 补'F'
+        nDstLength++; // 目标串长度加1
     }
-    *pDst = '\0'; // ����ַ����Ӹ�������
-    return nDstLength; // ����Ŀ���ַ�������
+    *pDst = '\0'; // 输出字符串加个结束符
+    return nDstLength; // 返回目标字符串长度
 }
 
-// �����ߵ����ַ���ת��Ϊ����˳����ַ���
-// �磺"683158812764F8" --> "8613851872468"   	
-// ����: pSrc - Դ�ַ���ָ��    
-//       nSrcLength - Դ�ַ�������    
-// ���: pDst - Ŀ���ַ���ָ��    
-// ����: Ŀ���ַ�������    
+// 两两颠倒的字符串转换为正常顺序的字符串
+// 如："683158812764F8" --> "8613851872468"   	
+// 输入: pSrc - 源字符串指针    
+//       nSrcLength - 源字符串长度    
+// 输出: pDst - 目标字符串指针    
+// 返回: 目标字符串长度    
 int SMSWarp::gsmSerializeNumbers(const char* pSrc, char* pDst, int nSrcLength) {
-    int nDstLength; // Ŀ���ַ�������
-    char ch; // ���ڱ���һ���ַ�
-    // ���ƴ�����
+    int nDstLength; // 目标字符串长度
+    char ch; // 用于保存一个字符
+    // 复制串长度
     nDstLength = nSrcLength;
-    // �����ߵ�
+    // 两两颠倒
     for(int i=0; i<nSrcLength;i+=2) {
-        ch = *pSrc++; // �����ȳ��ֵ��ַ�
-        *pDst++ = *pSrc++; // ���ƺ���ֵ��ַ�
-        *pDst++ = ch; // �����ȳ��ֵ��ַ�
+        ch = *pSrc++; // 保存先出现的字符
+        *pDst++ = *pSrc++; // 复制后出现的字符
+        *pDst++ = ch; // 复制先出现的字符
     }
-    // �����ַ���'F'��
+    // 最后的字符是'F'吗？
     if(*(pDst-1) == 'F') {
         pDst--;
-        nDstLength--; // Ŀ���ַ������ȼ�1
+        nDstLength--; // 目标字符串长度减1
     }
-    *pDst = '\0'; // ����ַ����Ӹ�������
-    return nDstLength; // ����Ŀ���ַ�������
+    *pDst = '\0'; // 输出字符串加个结束符
+    return nDstLength; // 返回目标字符串长度
 }
 
-// PDU���룬���ڱ��ơ����Ͷ���Ϣ
-// pSrc: ԴPDU����ָ��
-// pDst: Ŀ��PDU��ָ��
-// ����: Ŀ��PDU������
+// PDU编码，用于编制、发送短消息
+// pSrc: 源PDU参数指针
+// pDst: 目标PDU串指针
+// 返回: 目标PDU串长度
 int SMSWarp::gsmEncodePdu(const SM_PARAM* pSrc, char* pDst) {
-    int nLength; // �ڲ��õĴ�����
-    int nDstLength; // Ŀ��PDU������
-    unsigned char buf[256]; // �ڲ��õĻ�����
-    // SMSC��ַ��Ϣ��
-    nLength = strlen(pSrc->SCA); // SMSC��ַ�ַ����ĳ���
-    buf[0] = (char)((nLength & 1) == 0 ? nLength : nLength + 1) / 2 + 1;// SMSC��ַ��Ϣ����
-    buf[1] = 0x91; // �̶�: �ù��ʸ�ʽ����
-    nDstLength = gsmBytes2String(buf, pDst, 2); // ת��2���ֽڵ�Ŀ��PDU��
-    // ת��SMSC��Ŀ��PDU��
+    int nLength; // 内部用的串长度
+    int nDstLength; // 目标PDU串长度
+    unsigned char buf[256]; // 内部用的缓冲区
+    // SMSC地址信息段
+    nLength = strlen(pSrc->SCA); // SMSC地址字符串的长度
+    buf[0] = (char)((nLength & 1) == 0 ? nLength : nLength + 1) / 2 + 1;// SMSC地址信息长度
+    buf[1] = 0x91; // 固定: 用国际格式号码
+    nDstLength = gsmBytes2String(buf, pDst, 2); // 转换2个字节到目标PDU串
+    // 转换SMSC到目标PDU串
     nDstLength += gsmInvertNumbers(pSrc->SCA, &pDst[nDstLength], nLength);
-    // TPDU�λ���������Ŀ���ַ��
-    nLength = strlen(pSrc->TPA); // TP-DA��ַ�ַ����ĳ���
-    buf[0] = 0x11; // �Ƿ��Ͷ���(TP-MTI=01)��TP-VP����Ը�ʽ(TP-VPF=10)
+    // TPDU段基本参数、目标地址等
+    nLength = strlen(pSrc->TPA); // TP-DA地址字符串的长度
+    buf[0] = 0x11; // 是发送短信(TP-MTI=01)，TP-VP用相对格式(TP-VPF=10)
     buf[1] = 0; // TP-MR=0
-    buf[2] = (char)nLength; // Ŀ���ַ���ָ���(TP-DA��ַ�ַ�����ʵ����)
-    buf[3] = 0x91; // �̶�: �ù��ʸ�ʽ����
-    nDstLength += gsmBytes2String(buf, &pDst[nDstLength], 4);//ת��4���ֽڵ�Ŀ��PDU��
-    // ת��TP-DA��Ŀ��PDU��
+    buf[2] = (char)nLength; // 目标地址数字个数(TP-DA地址字符串真实长度)
+    buf[3] = 0x91; // 固定: 用国际格式号码
+    nDstLength += gsmBytes2String(buf, &pDst[nDstLength], 4);//转换4个字节到目标PDU串
+    // 转换TP-DA到目标PDU串
     nDstLength += gsmInvertNumbers(pSrc->TPA, &pDst[nDstLength], nLength);
-    // TPDU��Э���ʶ�����뷽ʽ���û���Ϣ��
-    nLength = strlen(pSrc->TP_UD); // �û���Ϣ�ַ����ĳ���
-    buf[0] = pSrc->TP_PID; // Э���ʶ(TP-PID)
-    buf[1] = pSrc->TP_DCS; // �û���Ϣ���뷽ʽ(TP-DCS)
-    buf[2] = 0; // ��Ч��(TP-VP)Ϊ5����
+    // TPDU段协议标识、编码方式、用户信息等
+    nLength = strlen(pSrc->TP_UD); // 用户信息字符串的长度
+    buf[0] = pSrc->TP_PID; // 协议标识(TP-PID)
+    buf[1] = pSrc->TP_DCS; // 用户信息编码方式(TP-DCS)
+    buf[2] = 0; // 有效期(TP-VP)为5分钟
     if(pSrc->TP_DCS == GSM_7BIT) {
-        // 7-bit���뷽ʽ
-        buf[3] = nLength; // ����ǰ����
-        // ת��TP-DA��Ŀ��PDU��
+        // 7-bit编码方式
+        buf[3] = nLength; // 编码前长度
+        // 转换TP-DA到目标PDU串
         nLength = gsmEncode7bit(pSrc->TP_UD, &buf[4], nLength+1) + 4;
     }
     else if (pSrc->TP_DCS == GSM_UCS2) {
-        // UCS2���뷽ʽ
-        // ת��TP-DA��Ŀ��PDU��
+        // UCS2编码方式
+        // 转换TP-DA到目标PDU串
         buf[3] = gsmEncodeUcs2(pSrc->TP_UD, &buf[4], nLength);
-        nLength = buf[3] + 4; // nLength���ڸö����ݳ���
+        nLength = buf[3] + 4; // nLength等于该段数据长度
     }
     else {
-        // 8-bit���뷽ʽ
-        // ת��TP-DA��Ŀ��PDU��
+        // 8-bit编码方式
+        // 转换TP-DA到目标PDU串
         buf[3] = gsmEncode8bit(pSrc->TP_UD, &buf[4], nLength);
-        nLength = buf[3] + 4; // nLength���ڸö����ݳ���
+        nLength = buf[3] + 4; // nLength等于该段数据长度
     }
-    // ת���ö����ݵ�Ŀ��PDU��
+    // 转换该段数据到目标PDU串
     nDstLength += gsmBytes2String(buf, &pDst[nDstLength], nLength);
-    return nDstLength; // ����Ŀ���ַ�������
+    return nDstLength; // 返回目标字符串长度
 }
 
-// PDU���룬���ڽ��ա��Ķ�����Ϣ
-// pSrc: ԴPDU��ָ��
-// pDst: Ŀ��PDU����ָ��
-// ����: �û���Ϣ������
+// PDU解码，用于接收、阅读短消息
+// pSrc: 源PDU串指针
+// pDst: 目标PDU参数指针
+// 返回: 用户信息串长度
 int SMSWarp::gsmDecodePdu(const char* pSrc, SM_PARAM* pDst) {
-    int nDstLength; // Ŀ��PDU������
-    unsigned char tmp; // �ڲ��õ���ʱ�ֽڱ���
-    unsigned char buf[256]; // �ڲ��õĻ�����
+    int nDstLength; // 目标PDU串长度
+    unsigned char tmp; // 内部用的临时字节变量
+    unsigned char buf[256]; // 内部用的缓冲区
     unsigned char udhi = 0;
-    // SMSC��ַ��Ϣ��
-    gsmString2Bytes(pSrc, &tmp, 2); // ȡ����
-    tmp = (tmp - 1) * 2; // SMSC���봮����
-    pSrc += 4; // ָ�����
-    gsmSerializeNumbers(pSrc, pDst->SCA, tmp); // ת��SMSC���뵽Ŀ��PDU��
-    pSrc += tmp; // ָ�����
-    // TPDU�λ����������ظ���ַ��
-    gsmString2Bytes(pSrc, &tmp, 2); // ȡ��������
-    pSrc += 2; // ָ�����
-    udhi = tmp & 0x40;//�û�����ͷ��ʶ
+    // SMSC地址信息段
+    gsmString2Bytes(pSrc, &tmp, 2); // 取长度
+    tmp = (tmp - 1) * 2; // SMSC号码串长度
+    pSrc += 4; // 指针后移
+    gsmSerializeNumbers(pSrc, pDst->SCA, tmp); // 转换SMSC号码到目标PDU串
+    pSrc += tmp; // 指针后移
+    // TPDU段基本参数、回复地址等
+    gsmString2Bytes(pSrc, &tmp, 2); // 取基本参数
+    pSrc += 2; // 指针后移
+    udhi = tmp & 0x40;//用户数据头标识
     //	 if(tmp & 0x80) 
     {
-        // �����ظ���ַ��ȡ�ظ���ַ��Ϣ
-        gsmString2Bytes(pSrc, &tmp, 2); // ȡ����
-        if(tmp & 1) tmp += 1; // ������ż��
-        pSrc += 4; // ָ�����
-        gsmSerializeNumbers(pSrc, pDst->TPA, tmp); // ȡTP-RA����
-        pSrc += tmp; // ָ�����
+        // 包含回复地址，取回复地址信息
+        gsmString2Bytes(pSrc, &tmp, 2); // 取长度
+        if(tmp & 1) tmp += 1; // 调整奇偶性
+        pSrc += 4; // 指针后移
+        gsmSerializeNumbers(pSrc, pDst->TPA, tmp); // 取TP-RA号码
+        pSrc += tmp; // 指针后移
     }
-    // TPDU��Э���ʶ�����뷽ʽ���û���Ϣ��
-    gsmString2Bytes(pSrc, (unsigned char*)&pDst->TP_PID, 2); // ȡЭ���ʶ(TP-PID)
-    pSrc += 2; // ָ�����
+    // TPDU段协议标识、编码方式、用户信息等
+    gsmString2Bytes(pSrc, (unsigned char*)&pDst->TP_PID, 2); // 取协议标识(TP-PID)
+    pSrc += 2; // 指针后移
     gsmString2Bytes(pSrc, (unsigned char*)&pDst->TP_DCS, 2);
-    // ȡ���뷽ʽ(TP-DCS)
-    pSrc += 2; // ָ�����
-    gsmSerializeNumbers(pSrc, pDst->TP_SCTS, 14); // ����ʱ����ַ���(TP_SCTS)
-    pSrc += 14; // ָ�����
-    gsmString2Bytes(pSrc, &tmp, 2); // �û���Ϣ����(TP-UDL)
-    pSrc += 2; // ָ�����
+    // 取编码方式(TP-DCS)
+    pSrc += 2; // 指针后移
+    gsmSerializeNumbers(pSrc, pDst->TP_SCTS, 14); // 服务时间戳字符串(TP_SCTS)
+    pSrc += 14; // 指针后移
+    gsmString2Bytes(pSrc, &tmp, 2); // 用户信息长度(TP-UDL)
+    pSrc += 2; // 指针后移
     if (udhi == 0x40)
     {
         unsigned char hl;
@@ -492,34 +492,34 @@ int SMSWarp::gsmDecodePdu(const char* pSrc, SM_PARAM* pDst) {
     }
     if(pDst->TP_DCS == GSM_7BIT) 
     {
-        // 7-bit����
+        // 7-bit解码
         nDstLength = gsmString2Bytes(pSrc, buf, tmp & 7 ? (int)tmp*7 / 4 + 2 : (int)tmp*7 / 4);
-        // ��ʽת��
-        gsmDecode7bit(buf, pDst->TP_UD, nDstLength); // ת����TP-DU
+        // 格式转换
+        gsmDecode7bit(buf, pDst->TP_UD, nDstLength); // 转换到TP-DU
         nDstLength = tmp;
     }
     else if(pDst->TP_DCS == GSM_UCS2) 
     {
-        // UCS2����
+        // UCS2解码
         nDstLength = gsmString2Bytes(pSrc, buf, tmp * 2);
-        // ��ʽת��
-        nDstLength = gsmDecodeUcs2(buf, pDst->TP_UD, nDstLength); // ת����TP-DU
+        // 格式转换
+        nDstLength = gsmDecodeUcs2(buf, pDst->TP_UD, nDstLength); // 转换到TP-DU
     }
     else 
     {
-        // 8-bit����
+        // 8-bit解码
         nDstLength = gsmString2Bytes(pSrc, buf, tmp * 2);
         unsigned char* pBuf = &buf[0];
-        //		 char udh[] = {0x05, 0x04, 0x0B, 0x84, 0x23, 0xF0};// ֪ͨ
+        //		 char udh[] = {0x05, 0x04, 0x0B, 0x84, 0x23, 0xF0};// 通知
         //		 if (memcmp(pBuf + 1, udh, 6) == 0)
         if ((pBuf[1] == 0x06) && (memcmp(pBuf + 3, "application/vnd.wap", strlen("application/vnd.wap")) == 0))
         {
             //pBuf += 1; //0x06
-            //tmp = *pBuf; //head 1 ����
+            //tmp = *pBuf; //head 1 长度
             //pBuf += 1;
             //pBuf += tmp;
             pBuf += 2; // Transaction ID ,PDU Type: Push 0x06
-            tmp = *pBuf; //ͷ2����
+            tmp = *pBuf; //头2长度
             pBuf += 1;
 
             char* mms = "application/vnd.wap.mms-message";
@@ -527,7 +527,7 @@ int SMSWarp::gsmDecodePdu(const char* pSrc, SM_PARAM* pDst) {
             {
                 pBuf += tmp;
 
-                nDstLength -= (3 + tmp);//Transaction ID ,PDU Type,ͷ2����,ͷ����
+                nDstLength -= (3 + tmp);//Transaction ID ,PDU Type,头2长度,头内容
 
                 pBuf += 2; //0x82 0x8C X-Mms-Message-Type: m-notification-ind 
                 pBuf += 1; //0x98 Transaction-ID
@@ -593,23 +593,23 @@ int SMSWarp::gsmDecodePdu(const char* pSrc, SM_PARAM* pDst) {
             }
             else
             {
-                // ��ʽת��
-                nDstLength = gsmDecode8bit(buf, pDst->TP_UD, nDstLength); // ת����TP-DU
+                // 格式转换
+                nDstLength = gsmDecode8bit(buf, pDst->TP_UD, nDstLength); // 转换到TP-DU
                 pDst->Type = mtSMS;
             }
         }
     }
 
-    // ����Ŀ���ַ�������
+    // 返回目标字符串长度
     return nDstLength;
 }
 
-//// ��ʼ��GSM״̬    
+//// 初始化GSM状态    
 //BOOL SMSWarp::gsmInit()   
 //{   
-//	char ans[128];      // Ӧ��    
+//	char ans[128];      // 应答串    
 //
-//	// ����GSM-MODEM�Ĵ�����    
+//	// 测试GSM-MODEM的存在性    
 //	WriteComm("AT\r", 3);   
 //	ReadComm(ans, 128);   
 //	if (strstr(ans, "OK") == NULL)  return FALSE;   
@@ -618,44 +618,44 @@ int SMSWarp::gsmDecodePdu(const char* pSrc, SM_PARAM* pDst) {
 //	WriteComm("ATE0\r", 5);   
 //	ReadComm(ans, 128);   
 //
-//	// PDUģʽ    
+//	// PDU模式    
 //	WriteComm("AT+CMGF=0\r", 10);   
 //	ReadComm(ans, 128);   
 //
 //	return TRUE;   
 //}   
 
-// ���Ͷ���Ϣ���������������ȡӦ��    
-// ����: pSrc - ԴPDU����ָ��    
+// 发送短消息，仅发送命令，不读取应答    
+// 输入: pSrc - 源PDU参数指针    
 int SMSWarp::gsmSendMessage(SM_PARAM* pSrc)   
 {   
-    int nPduLength;     // PDU������    
-    unsigned char nSmscLength;  // SMSC������    
-    //int nLength;        // �����յ������ݳ���    
-    //char cmd[16];       // ���    
-    char pdu[512];      // PDU��    
-    //char ans[128];      // Ӧ��    
+    int nPduLength;     // PDU串长度    
+    unsigned char nSmscLength;  // SMSC串长度    
+    //int nLength;        // 串口收到的数据长度    
+    //char cmd[16];       // 命令串    
+    char pdu[512];      // PDU串    
+    //char ans[128];      // 应答串    
 
-    nPduLength = gsmEncodePdu(pSrc, pdu);   // ����PDU����������PDU��    
-    strcat(pdu, "\x01a");       // ��Ctrl-Z����    
+    nPduLength = gsmEncodePdu(pSrc, pdu);   // 根据PDU参数，编码PDU串    
+    strcat(pdu, "\x01a");       // 以Ctrl-Z结束    
 
-    gsmString2Bytes(pdu, &nSmscLength, 2);  // ȡPDU���е�SMSC��Ϣ����    
-    nSmscLength++;      // ���ϳ����ֽڱ���    
+    gsmString2Bytes(pdu, &nSmscLength, 2);  // 取PDU串中的SMSC信息长度    
+    nSmscLength++;      // 加上长度字节本身    
 
-    //// �����еĳ��ȣ�������SMSC��Ϣ���ȣ��������ֽڼ�    
-    //sprintf(cmd, "AT+CMGS=%d\r", nPduLength / 2 - nSmscLength); // ��������    
+    //// 命令中的长度，不包括SMSC信息长度，以数据字节计    
+    //sprintf(cmd, "AT+CMGS=%d\r", nPduLength / 2 - nSmscLength); // 生成命令    
 
     //  TRACE("%s", cmd);    
     //  TRACE("%s\n", pdu);    
 
-    //WriteComm(cmd, strlen(cmd));    // ��������    
+    //WriteComm(cmd, strlen(cmd));    // 先输出命令串    
 
-    //nLength = ReadComm(ans, 128);   // ��Ӧ������    
+    //nLength = ReadComm(ans, 128);   // 读应答数据    
 
-    //// �����ܷ��ҵ�"\r\n> "�����ɹ����    
+    //// 根据能否找到"\r\n> "决定成功与否    
     //if(nLength == 4 && strncmp(ans, "\r\n> ", 4) == 0)   
     //{   
-    //	return WriteComm(pdu, strlen(pdu));     // �õ��϶��ش𣬼������PDU��    
+    //	return WriteComm(pdu, strlen(pdu));     // 得到肯定回答，继续输出PDU串    
     //}   
     if (m_pAT->SmsSend(nPduLength / 2 - nSmscLength))
     {
@@ -665,40 +665,40 @@ int SMSWarp::gsmSendMessage(SM_PARAM* pSrc)
     return 0;   
 }   
 
-// ��ȡ����Ϣ���������������ȡӦ��    
-// ��+CMGL����+CMGR����һ���Զ���ȫ������Ϣ    
+// 读取短消息，仅发送命令，不读取应答    
+// 用+CMGL代替+CMGR，可一次性读出全部短消息    
 int SMSWarp::gsmReadMessageList()   
 {   
     //	return WriteComm("AT+CMGL=0\r", 10);   
     return m_pAT->SmsReadList();
 }   
 
-// ɾ������Ϣ���������������ȡӦ��    
-// ����: index - ����Ϣ��ţ�1-255    
+// 删除短消息，仅发送命令，不读取应答    
+// 输入: index - 短消息序号，1-255    
 int SMSWarp::gsmDeleteMessage(int index)   
 {   
-    //char cmd[16];       // ���    
-    //sprintf(cmd, "AT+CMGD=%d\r", index);    // ��������    
-    //// ������    
+    //char cmd[16];       // 命令串    
+    //sprintf(cmd, "AT+CMGD=%d\r", index);    // 生成命令    
+    //// 输出命令串    
     //return WriteComm(cmd, strlen(cmd)); 
     return m_pAT->SmsDelete(index);
 }   
 
-// ��ȡGSM MODEM��Ӧ�𣬿�����һ����    
-// ���: pBuff - ����Ӧ�𻺳���    
-// ����: GSM MODEM��Ӧ��״̬, GSM_WAIT/GSM_OK/GSM_ERR    
-// ��ע: ������Ҫ��ε��ò�����ɶ�ȡһ��Ӧ���״ε���ʱӦ��pBuff��ʼ��    
+// 读取GSM MODEM的应答，可能是一部分    
+// 输出: pBuff - 接收应答缓冲区    
+// 返回: GSM MODEM的应答状态, GSM_WAIT/GSM_OK/GSM_ERR    
+// 备注: 可能需要多次调用才能完成读取一次应答，首次调用时应将pBuff初始化    
 int SMSWarp::gsmGetResponse(SM_BUFF* pBuff)   
 {   
-    int nLength;        // �����յ������ݳ���    
+    int nLength;        // 串口收到的数据长度    
     int nState;   
 
-    // �Ӵ��ڶ����ݣ�׷�ӵ�������β��    
+    // 从串口读数据，追加到缓冲区尾部    
     //	nLength = ReadComm(&pBuff->data[pBuff->len], 128);       
     nLength = m_pAT->SmsReadResponse(&pBuff->data[pBuff->len], 128);
     pBuff->len += nLength;   
 
-    // ȷ��GSM MODEM��Ӧ��״̬    
+    // 确定GSM MODEM的应答状态    
     nState = GSM_WAIT;   
     if ((nLength > 0) && (pBuff->len >= 4))   
     {   
@@ -709,41 +709,41 @@ int SMSWarp::gsmGetResponse(SM_BUFF* pBuff)
     return nState;   
 }   
 
-// ���б��н�����ȫ������Ϣ    
-// ����: pBuff - ����Ϣ�б�������    
-// ���: pMsg - ����Ϣ������    
-// ����: ����Ϣ����    
+// 从列表中解析出全部短消息    
+// 输入: pBuff - 短消息列表缓冲区    
+// 输出: pMsg - 短消息缓冲区    
+// 返回: 短消息条数    
 int SMSWarp::gsmParseMessageList(SM_PARAM* pMsg, SM_BUFF* pBuff)   
 {   
-    int nMsg;           // ����Ϣ����ֵ    
-    char* ptr;          // �ڲ��õ�����ָ��    
+    int nMsg;           // 短消息计数值    
+    char* ptr;          // 内部用的数据指针    
 
     nMsg = 0;   
     ptr = pBuff->data;   
 
-    // ѭ����ȡÿһ������Ϣ, ��"+CMGL:"��ͷ    
+    // 循环读取每一条短消息, 以"+CMGL:"开头    
     while((ptr = strstr(ptr, "+CMGL:")) != NULL)   
     {   
-        ptr += 6;       // ����"+CMGL:", ��λ�����    
-        sscanf(ptr, "%d", &pMsg->index); // ��ȡ���    
+        ptr += 6;       // 跳过"+CMGL:", 定位到序号    
+        sscanf(ptr, "%d", &pMsg->index); // 读取序号    
         //      TRACE("  index=%d\n",pMsg->index);    
 
-        ptr = strstr(ptr, "\r\n");  // ����һ��    
+        ptr = strstr(ptr, "\r\n");  // 找下一行    
         if (ptr != NULL)   
         {   
-            ptr += 2;       // ����"\r\n", ��λ��PDU    
+            ptr += 2;       // 跳过"\r\n", 定位到PDU    
 
-            gsmDecodePdu(ptr, pMsg);    // PDU������    
+            gsmDecodePdu(ptr, pMsg);    // PDU串解码    
 
-            pMsg++;     // ׼������һ������Ϣ    
-            nMsg++;     // ����Ϣ������1    
+            pMsg++;     // 准备读下一条短消息    
+            nMsg++;     // 短消息计数加1    
         }   
     }   
 
     return nMsg;   
 }   
 
-// ��һ������Ϣ���뷢�Ͷ���    
+// 将一条短消息放入发送队列    
 void SMSWarp::PutSendMessage(SM_PARAM* pparam)   
 {   
     EnterCriticalSection(&m_csSend);   
@@ -756,7 +756,7 @@ void SMSWarp::PutSendMessage(SM_PARAM* pparam)
     LeaveCriticalSection(&m_csSend);   
 }   
 
-// �ӷ��Ͷ�����ȡһ������Ϣ    
+// 从发送队列中取一条短消息    
 BOOL SMSWarp::GetSendMessage(SM_PARAM* pparam)   
 {   
     BOOL fSuccess = FALSE;   
@@ -778,7 +778,7 @@ BOOL SMSWarp::GetSendMessage(SM_PARAM* pparam)
     return fSuccess;   
 }   
 
-// ������Ϣ������ն���    
+// 将短消息放入接收队列    
 void SMSWarp::PutRecvMessage(SM_PARAM* pparam, int nCount)   
 {   
     EnterCriticalSection(&m_csRecv);   
@@ -796,7 +796,7 @@ void SMSWarp::PutRecvMessage(SM_PARAM* pparam, int nCount)
     LeaveCriticalSection(&m_csRecv);   
 }   
 
-// �ӽ��ն�����ȡһ������Ϣ    
+// 从接收队列中取一条短消息    
 BOOL SMSWarp::GetRecvMessage(SM_PARAM* pparam)   
 {   
     BOOL fSuccess = FALSE;   
@@ -821,29 +821,29 @@ BOOL SMSWarp::GetRecvMessage(SM_PARAM* pparam)
 UINT SMSWarp::SmThread(LPVOID lParam)   
 {   
     SMSWarp* p=(SMSWarp *)lParam;   // this    
-    int nMsg;               // �յ�����Ϣ����    
-    int nDelete;            // Ŀǰ����ɾ���Ķ���Ϣ���    
-    SM_BUFF buff;           // ���ն���Ϣ�б��Ļ�����    
-    SM_PARAM param[256];    // ����/���ն���Ϣ������    
-    CTime tmOrg, tmNow;     // �ϴκ����ڵ�ʱ�䣬���㳬ʱ��    
+    int nMsg;               // 收到短消息条数    
+    int nDelete;            // 目前正在删除的短消息编号    
+    SM_BUFF buff;           // 接收短消息列表的缓冲区    
+    SM_PARAM param[256];    // 发送/接收短消息缓冲区    
+    CTime tmOrg, tmNow;     // 上次和现在的时间，计算超时用    
     enum {   
-        stBeginRest,                // ��ʼ��Ϣ/��ʱ    
-        stContinueRest,             // ������Ϣ/��ʱ    
-        stSendMessageRequest,       // ���Ͷ���Ϣ    
-        stSendMessageResponse,      // ��ȡ����Ӧ�𵽻�����    
-        stSendMessageWaitIdle,      // ���Ͳ��ɹ����ȴ�GSM����    
-        stReadMessageRequest,       // ���Ͷ�ȡ����Ϣ�б�������    
-        stReadMessageResponse,      // ��ȡ����Ϣ�б���������    
-        stDeleteMessageRequest,     // ɾ������Ϣ    
-        stDeleteMessageResponse,    // ɾ������Ϣ    
-        stDeleteMessageWaitIdle,    // ɾ�����ɹ����ȴ�GSM����    
-        stExitThread                // �˳�    
-    } nState;               // �������̵�״̬    
+        stBeginRest,                // 开始休息/延时    
+        stContinueRest,             // 继续休息/延时    
+        stSendMessageRequest,       // 发送短消息    
+        stSendMessageResponse,      // 读取发送应答到缓冲区    
+        stSendMessageWaitIdle,      // 发送不成功，等待GSM就绪    
+        stReadMessageRequest,       // 发送读取短消息列表的命令    
+        stReadMessageResponse,      // 读取短消息列表到缓冲区    
+        stDeleteMessageRequest,     // 删除短消息    
+        stDeleteMessageResponse,    // 删除短消息    
+        stDeleteMessageWaitIdle,    // 删除不成功，等待GSM就绪    
+        stExitThread                // 退出    
+    } nState;               // 处理过程的状态    
 
-    // ��ʼ״̬    
+    // 初始状态    
     nState = stBeginRest;   
 
-    // ���ͺͽ��մ�����״̬ѭ��    
+    // 发送和接收处理的状态循环    
     while (nState != stExitThread)   
     {   
         switch(nState)   
@@ -860,11 +860,11 @@ UINT SMSWarp::SmThread(LPVOID lParam)
             tmNow = CTime::GetCurrentTime();   
             if (p->GetSendMessage(param))   
             {   
-                nState = stSendMessageRequest;  // �д�������Ϣ���Ͳ���Ϣ��    
+                nState = stSendMessageRequest;  // 有待发短消息，就不休息了    
             }   
-            else if (tmNow - tmOrg >= 5)     // ��������Ϣ���пգ���Ϣ5��    
+            else if (tmNow - tmOrg >= 5)     // 待发短消息队列空，休息5秒    
             {   
-                nState = stReadMessageRequest;  // ת����ȡ����Ϣ״̬    
+                nState = stReadMessageRequest;  // 转到读取短消息状态    
             }   
             break;   
 
@@ -883,7 +883,7 @@ UINT SMSWarp::SmThread(LPVOID lParam)
             switch (p->gsmGetResponse(&buff))   
             {   
             case GSM_OK:    
-                //                      TRACE("  GSM_OK %d\n", tmNow - tmOrg);    //��Ҫ֪ͨAPP����ʽ����
+                //                      TRACE("  GSM_OK %d\n", tmNow - tmOrg);    //需要通知APP，方式待定
                 nState = stBeginRest;   
                 break;   
             case GSM_ERR:   
@@ -892,7 +892,7 @@ UINT SMSWarp::SmThread(LPVOID lParam)
                 break;   
             default:   
                 //                      TRACE("  GSM_WAIT %d\n", tmNow - tmOrg);    
-                if (tmNow - tmOrg >= 10)     // 10�볬ʱ    
+                if (tmNow - tmOrg >= 10)     // 10秒超时    
                 {   
                     //                          TRACE("  Timeout!\n");    
                     nState = stSendMessageWaitIdle;   
@@ -901,7 +901,7 @@ UINT SMSWarp::SmThread(LPVOID lParam)
             break;   
         case stSendMessageWaitIdle:   
             Sleep(500);   
-            nState = stSendMessageRequest;      // ֱ�����ͳɹ�Ϊֹ    
+            nState = stSendMessageRequest;      // 直到发送成功为止    
             break;   
 
         case stReadMessageRequest:   
@@ -938,7 +938,7 @@ UINT SMSWarp::SmThread(LPVOID lParam)
                 break;   
             default:   
                 //                      TRACE("  GSM_WAIT %d\n", tmNow - tmOrg);    
-                if (tmNow - tmOrg >= 15)     // 15�볬ʱ    
+                if (tmNow - tmOrg >= 15)     // 15秒超时    
                 {   
                     //                          TRACE("  Timeout!\n");    
                     nState = stBeginRest;   
@@ -978,7 +978,7 @@ UINT SMSWarp::SmThread(LPVOID lParam)
                 break;   
             default:   
                 //                      TRACE("  GSM_WAIT %d\n", tmNow - tmOrg);    
-                if (tmNow - tmOrg >= 5)      // 5�볬ʱ    
+                if (tmNow - tmOrg >= 5)      // 5秒超时    
                 {   
                     //                          TRACE("  Timeout!\n");    
                     nState = stBeginRest;   
@@ -989,16 +989,16 @@ UINT SMSWarp::SmThread(LPVOID lParam)
         case stDeleteMessageWaitIdle:   
             //              TRACE("State=stDeleteMessageWaitIdle\n");    
             Sleep(500);   
-            nState = stDeleteMessageRequest;        // ֱ��ɾ���ɹ�Ϊֹ    
+            nState = stDeleteMessageRequest;        // 直到删除成功为止    
             break;   
         }   
 
-        // ����Ƿ��йرձ��̵߳��ź�    
+        // 检测是否有关闭本线程的信号    
         DWORD dwEvent = WaitForSingleObject(p->m_hKillThreadEvent, 20);   
         if (dwEvent == WAIT_OBJECT_0)  nState = stExitThread;   
     }   
 
-    // �ø��߳̽�����־    
+    // 置该线程结束标志    
     SetEvent(p->m_hThreadKilledEvent);   
 
     return 0;   

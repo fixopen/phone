@@ -1,4 +1,4 @@
-// 3GPhoneDlg.cpp : ÊµÏÖÎÄ¼þ
+// 3GPhoneDlg.cpp : Êµï¿½ï¿½ï¿½Ä¼ï¿½
 //
 
 #include "stdafx.h"
@@ -17,7 +17,7 @@
 #define new DEBUG_NEW
 #endif
 
-// CMy3GPhoneDlg ¶Ô»°¿ò
+// CMy3GPhoneDlg ï¿½Ô»ï¿½ï¿½ï¿½
 
 CMy3GPhoneDlg::CMy3GPhoneDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CMy3GPhoneDlg::IDD, pParent)
@@ -38,18 +38,18 @@ BEGIN_MESSAGE_MAP(CMy3GPhoneDlg, CDialog)
 END_MESSAGE_MAP()
 
 
-// CMy3GPhoneDlg ÏûÏ¢´¦Àí³ÌÐò
+// CMy3GPhoneDlg ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 BOOL CMy3GPhoneDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// ÉèÖÃ´Ë¶Ô»°¿òµÄÍ¼±ê¡£µ±Ó¦ÓÃ³ÌÐòÖ÷´°¿Ú²»ÊÇ¶Ô»°¿òÊ±£¬¿ò¼Ü½«×Ô¶¯
-	//  Ö´ÐÐ´Ë²Ù×÷
-	SetIcon(m_hIcon, TRUE);			// ÉèÖÃ´óÍ¼±ê
-	SetIcon(m_hIcon, FALSE);		// ÉèÖÃÐ¡Í¼±ê
+	// ï¿½ï¿½ï¿½Ã´Ë¶Ô»ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ê¡£ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½Ç¶Ô»ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ü½ï¿½ï¿½Ô¶ï¿½
+	//  Ö´ï¿½Ð´Ë²ï¿½ï¿½ï¿½
+	SetIcon(m_hIcon, TRUE);			// ï¿½ï¿½ï¿½Ã´ï¿½Í¼ï¿½ï¿½
+	SetIcon(m_hIcon, FALSE);		// ï¿½ï¿½ï¿½ï¿½Ð¡Í¼ï¿½ï¿½
 
-	// TODO: ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯´úÂë
+	// TODO: ï¿½Ú´ï¿½ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     //Util::shared_ptr<Util::DocSource> source(new Util::DocSource("/temp/test.xml"));
     //Util::xmlLoad loader;
     //Util::shared_ptr<Xml::Document> doc = loader.parse(source);
@@ -83,7 +83,7 @@ BOOL CMy3GPhoneDlg::OnInitDialog()
     //at->ShutDown(); //same as at->UnregisterNetwork();
     //at->Finally();
 
-	return TRUE;  // ³ý·Ç½«½¹µãÉèÖÃµ½¿Ø¼þ£¬·ñÔò·µ»Ø TRUE
+	return TRUE;  // ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½ TRUE
 }
 
 #if defined(_DEVICE_RESOLUTION_AWARE) && !defined(WIN32_PLATFORM_WFSP)
