@@ -595,6 +595,7 @@
 #define WM_CHANGE_BATTERY				9105
 #define WM_CHANGE_BATTERYOK				9106
 #define WM_ATCOMM_ERROR					9107
+#define IDC_SELECT_CMDAPN				9108
 
 #define LEFT_KEY						10002
 #define RIGHT_KEY						10003

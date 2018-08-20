@@ -87,18 +87,22 @@ void C3GSMSDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		m_pSMSDetailDlg->ShowWindow(SW_SHOW);
 		break;
 	case 2:			//ÊÕ¼þÏä
+		m_pSMSListDlg->m_bChangeMain = FALSE;
 		m_pSMSListDlg->initType(RECV_TYPE, SMS_TYPE);
 		m_pSMSListDlg->ShowWindow(SW_SHOW);
 		break;
 	case 3:			//ÁôÑÔÏä
+		m_pSMSListDlg->m_bChangeMain = FALSE;
 		m_pSMSListDlg->initType(HOME_RECORD_TYPE, HOME_TYPE);
 		m_pSMSListDlg->ShowWindow(SW_SHOW);
 		break;
 	case 4:			//²Ý¸åÏä
+		m_pSMSListDlg->m_bChangeMain = FALSE;
 		m_pSMSListDlg->initType(DRAFT_TYPE, SMS_TYPE);
 		m_pSMSListDlg->ShowWindow(SW_SHOW);
 		break;
 	case 5:			//·¢ËÍÏä
+		m_pSMSListDlg->m_bChangeMain = FALSE;
 		m_pSMSListDlg->initType(SEND_TYPE, SMS_TYPE);
 		m_pSMSListDlg->ShowWindow(SW_SHOW);
 		break;

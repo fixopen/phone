@@ -103,7 +103,7 @@ public:
 	int     m_nLeaveSound;				//录音留言数
 	BOOL    m_bIsFireWall;				//防火墙是否开启
 	BOOL	m_bIsAlarm;					//是否有错过的闹铃
-	BOOL	FindTodayAlarm();			//查找今天已经过期的闹铃
+	BOOL	FindTodayAlarm(BOOL isDraw = FALSE);			//查找今天已经过期的闹铃
 	BOOL    ShowTodayAlarm();			//显示今天已经过期的闹铃
 	void    SetStatusAll(BOOL flag = TRUE);
 

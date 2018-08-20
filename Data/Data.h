@@ -236,7 +236,7 @@ namespace Data
             return p.items;
         }
 
-        static std::vector<boost::shared_ptr<T> > GetDatasByFilterAndPageInfo(std::string const filter, ModifyFieldByDB modifyFieldByDB, int const offset, int const count)
+		static std::vector<boost::shared_ptr<T> > GetDatasByFilterAndPageInfo(std::string const filter, ModifyFieldByDB modifyFieldByDB, int const offset, int const count)
         {
             std::string cmd = "SELECT * FROM [";
             cmd += tableName_;

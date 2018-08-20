@@ -1302,6 +1302,7 @@ void  CMultimediaPhoneDlg::SetAPN(int apn)
 BOOL CMultimediaPhoneDlg::IsConnectNet()
 {
 	BOOL flag = TRUE;
+	
 	if(m_nTELRigster < TELRIGSTER_DIALING)
 	{
 		m_pDeleteTipDlg->type = 1;
@@ -1319,11 +1320,13 @@ BOOL CMultimediaPhoneDlg::IsConnectNet()
 		m_pDeleteTipDlg->ShowWindow_(TRUE);
 		flag = FALSE;
 	}
+	
 	return flag;
 }
 
 BOOL CMultimediaPhoneDlg::IsUnConnectNet()
 {
+	
 	if(m_nTELRigster >= TELRIGSTER_DIALED)
 	{
 		m_pDeleteTipDlg->type = 2;
@@ -1332,6 +1335,7 @@ BOOL CMultimediaPhoneDlg::IsUnConnectNet()
 		m_pDeleteTipDlg->SetTitle("需要退出拨号连接吗?请确定!", 30000);
 		m_pDeleteTipDlg->ShowWindow_(TRUE);
 	}
+	
 	return TRUE;
 }
 
@@ -1353,7 +1357,7 @@ void TdDoWithProc()
 	*/
 
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	pMainDlg->SetAPN((int)CMNET);
+	//pMainDlg->SetAPN((int)CMNET);
 	while(1)
 	{
 	//	break;
@@ -1801,20 +1805,38 @@ void PlayDialToneProc(void *p)
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	char *ptr = (char *)p;
-	int offtime = 200;
+	int offtime = 50;
 	if(strlen(ptr) > 1)
-		offtime = 150;
+		offtime = 30;
+	WIN_Audio_close();
 	while(*ptr != '\0')
 	{
+		main->phone_->StartRing(L"");
 		char filename[32];
-		sprintf(filename, "/hive/res/%c.wav", *ptr);
+		char c = *ptr;
+		if(c == '*')
+			c = 'A';
+		sprintf(filename, "/hive/res/%c.wav", c);
 		ptr++;
 		CString s = filename;
-		main->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
+		Set_WIN_Params(NULL, 44*1024, 16, 1);
+		FILE *fl = fopen(filename, "r+b");
+		if(fl)
+		{
+			char *temp = new char[200*1024];
+			int len = fread(temp, sizeof(char), 200*1024, fl);
+			WIN_Play_Samples(temp, len/8);
+			fclose(fl);
+			delete []temp;
+		}
+	//	main->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
 		Sleep(offtime);
+		WIN_Audio_close();
+	//	main->phone_->StartRing(L"");
 	}
-	main->phone_->StartRing(L"");
-	GIsOpenMix(0);
+//	main->phone_->StartRing(L"");
+	
+//	GIsOpenMix(0);
 }
 
 char gDiatone[64];
@@ -1879,6 +1901,85 @@ void GNotifyReady()
 	main->phone_->m_pRS232->WritePort((unsigned char *)status, strlen(status));
 	::Sleep(10);
 }
+
+void UiProc(void *param)
+{
+	BOOL *flag = (BOOL *)param;
+	int i = 0;
+	HDC hdc = ::GetDC(0);
+	CRect rt = CRect(0, 0, 800, 480);
+	CBrush br = RGB(0, 0, 0);
+	::FillRect(hdc, &rt, (HBRUSH)br.m_hObject);
+	CGIFShow *cGifShow;
+	cGifShow = new CGIFShow(hdc);
+	if(cGifShow->Load(L"/flashdrv/开机1.gif"))
+	{
+		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+		cGifShow->SetMainWnd(main);
+		cGifShow->SetPosition(0,0);
+		cGifShow->Play();
+	}
+	while(*flag)
+	{
+		::Sleep(100);
+	}
+	cGifShow->Stop();
+ 	::ReleaseDC(0, hdc);
+	delete cGifShow;
+
+	/*
+	CDialog *pThis = (CDialog *)param;
+	CDialog* panel;
+	
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+
+	main->m_pContactDlg = new CContactDlg();
+	main->m_pContactDlg->Create(CContactDlg::IDD);
+	panel = main->m_pContactDlg;
+	main->panels_[IDC_BUTTON_CONTACT] = panel;
+	
+	main->m_pContactInfoDlg = new CContactInfoDlg();
+	panel = main->m_pContactInfoDlg;
+	panel->Create(CContactInfoDlg::IDD);
+	main->panels_[IDC_BUTTON_CONTACTINFO] = panel;
+	
+	main->m_pSoundDlg = new CSoundDlg();
+	panel = main->m_pSoundDlg;
+	panel->Create(CSoundDlg::IDD);
+	main->panels_[IDC_BUTTON_SOUND] = panel;
+	
+	main->m_pContactNewDlg = new CContactNewDlg(main->panels_[IDC_BUTTON_CONTACT]);
+	panel = main->m_pContactNewDlg;
+	panel->Create(CContactNewDlg::IDD);
+	main->panels_[IDC_BUTTON_CONTACTNEW] = panel;
+	
+	main->m_pContactGroupDlg = new CContactGroupDlg(main->panels_[IDC_BUTTON_CONTACT]);
+	panel = main->m_pContactGroupDlg;
+	panel->Create(CContactGroupDlg::IDD);
+	main->panels_[IDC_BUTTON_CONTACTGROUP] = panel;
+	
+	
+	main->m_pDeleteTipDlg = new CDeleteTipDlg(pThis);
+	main->m_pDeleteTipDlg->Create(CDeleteTipDlg::IDD);
+	
+	main->m_pNotebookDlg = new CNotebookDlg(pThis);
+	main->m_pNotebookDlg->Create(CNotebookDlg::IDD);
+	
+	main->m_AlarmShowDlg = new CAlarmShowDlg(pThis);
+	main->m_AlarmShowDlg->Create(CAlarmShowDlg::IDD);
+	
+	main->m_pWarningNoFlashDlg = new CWarningNoFlashDlg(pThis);
+	main->m_pWarningNoFlashDlg->Create(CWarningNoFlashDlg::IDD);
+	
+	main->m_pNetStatusDlg = new CNetStatusDlg(pThis);
+	main->m_pNetStatusDlg->Create(CNetStatusDlg::IDD);
+	
+	main->m_pPasswordDlg = new CPasswordDlg(pThis);
+	main->m_pPasswordDlg->Create(CPasswordDlg::IDD);
+	*/
+}
+
+BOOL isFirstGif;
 BOOL CMultimediaPhoneDlg::OnInitDialog()
 {
 	//lxz test jpg
@@ -1956,8 +2057,34 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	phone_ = Telephone::TelephoneWarp::GetTelephoneWarp();//new Telephone::TelephoneWarp();
 	m_pSMSWarp = SMS::SMSWarp::GetSMSWarp();
 #endif
+	CDialog* panel; 
+	panel = new CInformationDlg();
+	panel->Create(CInformationDlg::IDD);
+	panels_[IDC_BUTTON_INFORMATION] = panel;
 	
+	m_pSettingDlg = new CSettingDlg();
+	panel = m_pSettingDlg;
+	panel->Create(CSettingDlg::IDD);
+	panels_[IDC_BUTTON_SETTING] = panel;
 
+	InitializeCriticalSection(&csCom);
+	DWORD watchdogThreadID = 0;
+	HANDLE m_pThread1 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)WatchDogProc, 0, 0, &watchdogThreadID );
+	DWORD tdThreadID = 0;
+	HANDLE m_pThread2;
+	if(m_bATComm)
+	{
+		m_pThread2 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)TdDoWithProc, 0, 0, &tdThreadID );
+	}
+	else
+	{
+		SetTimer(0x126, 0, 0);
+	}
+	
+	DWORD uiThreadID = 0;
+	isFirstGif = TRUE;
+	HANDLE m_uiThread = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)UiProc, &isFirstGif, 0, &uiThreadID );
+	
 //	simdevice_ = new SIMDevice(NULL);
 
 	//mainVideoDlg_ = new CMainVideoDlg();
@@ -2086,29 +2213,21 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	m_btnSetting.SetIcon(IDI_ICON_SETTING, CSize(16, 16));
 	*/
 
-	CDialog* panel; 
-	panel = new CInformationDlg();
-	panel->Create(CInformationDlg::IDD);
-	panels_[IDC_BUTTON_INFORMATION] = panel;
-
-	m_pSettingDlg = new CSettingDlg();
-	panel = m_pSettingDlg;
-	panel->Create(CSettingDlg::IDD);
-	panels_[IDC_BUTTON_SETTING] = panel;
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	main->m_pTelephoneDlg = new CTelephoneDlg();
+	main->m_pTelephoneDlg->Create(CTelephoneDlg::IDD);
+	
+	main->m_pMainDlg = new CMainDlg();
+	panel = main->m_pMainDlg;
+	panel->Create(CMainDlg::IDD);
+	main->panels_[IDC_BUTTON_MAIN] = panel;
+	main->currentPanel_ = panel;
 	
 
 	/*
 	设置 三个 界面
 	*/
-	m_pTelephoneDlg = new CTelephoneDlg();
-	m_pTelephoneDlg->Create(CTelephoneDlg::IDD);
-
-	m_pMainDlg = new CMainDlg();
-	panel = m_pMainDlg;
-	panel->Create(CMainDlg::IDD);
-	panels_[IDC_BUTTON_MAIN] = panel;
-	currentPanel_ = panel;
-
+	//   放到线程中处理
 	m_pContactDlg = new CContactDlg();
 	m_pContactDlg->Create(CContactDlg::IDD);
 	panel = m_pContactDlg;
@@ -2122,7 +2241,9 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	m_pSoundDlg = new CSoundDlg();
 	panel = m_pSoundDlg;
 	panel->Create(CSoundDlg::IDD);
-	panels_[IDC_BUTTON_SOUND] = panel;
+//	panels_[IDC_BUTTON_SOUND] = panel;
+
+	panels_[IDC_BUTTON_SOUND] = m_pMainDlg->m_p3GSMSDlg->m_pSMSListDlg;
 
 	m_pContactNewDlg = new CContactNewDlg(panels_[IDC_BUTTON_CONTACT]);
 	panel = m_pContactNewDlg;
@@ -2153,35 +2274,6 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	m_pPasswordDlg = new CPasswordDlg(this);
 	m_pPasswordDlg->Create(CPasswordDlg::IDD);
 
-/*
- 	m_mainLunarderDlg1_ = new CLunarderDlg(panels_[IDC_BUTTON_MAINNOTE]);
-	panel = m_mainLunarderDlg1_;
-	panel->Create(CContactGroupDlg::IDD);
-	panels_[IDC_BUTTON_MAINNOTE] = panel;
-*/
-	/*
-	m_pHuangLiDlg_ = new CHuangliDlg;
-	m_pHuangLiDlg_->Create(CHuangliDlg::IDD, this);
-	m_pHuangLiDlg_->ShowWindow(SW_HIDE);
-	*/
-
-/*
-	buttons_[IDC_BUTTON_TIME] = &m_btnTime;
-	buttons_[IDC_BUTTON_IME] = &m_btnIME;s
-	buttons_[IDC_BUTTON_LINE] = &m_btnLine;
-	buttons_[IDC_BUTTON_MAIN] = &m_btnMain;
-	buttons_[IDC_BUTTON_CONTACT] = &m_btnContact;
-	buttons_[IDC_BUTTON_CONTACTINFO] = &m_btnContactInfo;
-	buttons_[IDC_BUTTON_SOUND] = &m_btnSound;
-	buttons_[IDC_BUTTON_INFORMATION] = &m_btnInformation;
-	buttons_[IDC_BUTTON_SETTING] = &m_btnSetting;
-
-	for (std::map<int, CCEButtonST*>::iterator iter = buttons_.begin(); iter != buttons_.end(); ++iter)
-	{
-		SetButtonDefaultColor((*iter).second);
-	}
-	*/
-
 	currentPanel_->ShowWindow(SW_SHOW);
 //	m_pBtnCurrent = &m_btnMain;
 //	SetButtonSelectedColor(m_pBtnCurrent);
@@ -2210,19 +2302,7 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	//lxz test 20090309
 	//SetTimer(0x999, 50000, NULL);
 
-	InitializeCriticalSection(&csCom);
-	DWORD watchdogThreadID = 0;
-	HANDLE m_pThread1 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)WatchDogProc, 0, 0, &watchdogThreadID );
-	DWORD tdThreadID = 0;
-	HANDLE m_pThread2;
-	if(m_bATComm)
-	{
-		m_pThread2 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)TdDoWithProc, 0, 0, &tdThreadID );
-	}
-	else
-	{
-		SetTimer(0x126, 0, 0);
-	}
+	
 	TestDB();
 	/*
 	if (m_pATCommandWarp1->Connect(""))
@@ -2234,6 +2314,7 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	}
 	*/
 
+	isFirstGif = FALSE;
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -2615,6 +2696,7 @@ void CMultimediaPhoneDlg::OnButtonContactinfo()
 void CMultimediaPhoneDlg::OnButtonSound() 
 {
 	// TODO: Add your control notification handler code here
+	m_pMainDlg->m_p3GSMSDlg->m_pSMSListDlg->m_bChangeMain = TRUE;
 	SwitchPanel_(IDC_BUTTON_SOUND);	
 	//lxz 20080617
 //	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->ClearRecordCount();
@@ -2942,6 +3024,7 @@ LRESULT CMultimediaPhoneDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lPar
 		{
 			if(wParam == 1)
 			{
+				SetAPN((int)CMNET);
 				m_bIsDial = TRUE;
 			}
 			else if(wParam == 2)
@@ -4176,11 +4259,23 @@ void CMultimediaPhoneDlg:: doSerachrTDNet()
 
 	int ret = m_pATCommandWarp1->Connect("");
 
-	phone_->Bind(m_pATCommandWarp1);
-	m_pSMSWarp->Bind(m_pATCommandWarp1);
+ 	static BOOL gIsRunThread = TRUE;
+// 	if(gIsRunThread)
+// 	{
+// 		phone_->Bind(m_pATCommandWarp1);
+// 		m_pSMSWarp->Bind(m_pATCommandWarp1);
+// 		gIsRunThread = FALSE;
+// 	}
 
 	if (ret == 1)    //1 成功    
 	{
+		if(gIsRunThread)
+		{
+			phone_->Bind(m_pATCommandWarp1);
+			m_pSMSWarp->Bind(m_pATCommandWarp1);
+			gIsRunThread = FALSE;
+		}
+
 		DWORD offset = GetTickCount() - dwStart;   
 	   	Dprintf("3G 搜网 %d Ok\r\n", offset);
 
@@ -4189,6 +4284,8 @@ void CMultimediaPhoneDlg:: doSerachrTDNet()
 
 		m_nTELRigster = TELRIGSTER_TD;
 
+	//	while(!m_pSettingDlg->m_pSetting)
+	//		sleep(20);
 		m_pSMSWarp->SetOTANumber(m_pSettingDlg->m_pSetting->speCode11_);			//设置OTA号码
 		
 		m_sMobileNumber = phone_->GetNumber();
@@ -4217,6 +4314,12 @@ void CMultimediaPhoneDlg:: doSerachrTDNet()
 	{
 		m_nTELRigster = TELRIGSTER_FAILED;
 
+		if(gIsRunThread)
+		{
+			phone_->Bind(m_pATCommandWarp1);
+		//	m_pSMSWarp->Bind(m_pATCommandWarp1);
+			gIsRunThread = FALSE;
+		}
 	}
 }
 
@@ -4650,7 +4753,7 @@ void CMultimediaPhoneDlg:: doWithDownLoad()
 	{
 		Net3GHungOff();
 		Sleep(3000);
-		SetAPN((int)CMNET);
+		SetAPN((int)CMWAP);
 	}
 }
 

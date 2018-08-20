@@ -163,7 +163,6 @@ public:
 	void SetRingLst(TCHAR *dir);
 
 	CCEButtonST m_chbEnableAutoLeaveWord;
-//	CCEStatic m_sticRingTimes;
 	CCEComboBox_ m_cmbRingTimes;
 	CCEComboBox_ m_cmbAutoRecoedeTimes;
 
@@ -262,6 +261,18 @@ public:
 	CCERadioButton m_recordMiddle;			//录音质量标准
 	CCERadioButton m_recordHight;			//手动录音
 
+	CCERectEdit m_smsC;
+	CCERectEdit m_mmsC;
+	CCEComboBox_ m_apnType;
+	CCERectEdit m_apnGW[4];
+	CCERectEdit m_apnPort;
+	CCERectEdit m_apnDot;
+	CCERectEdit m_apnUser;
+	CCERectEdit m_apnPwd;
+	CCERectEdit m_Web;
+
+	void SetApn(int type);
+	void GetApn();
 
 //	CCEBmpButton m_btnClearContact;
 //	CCEBmpButton m_btnClearContactInfo;
@@ -312,6 +323,7 @@ public:
 	
 	afx_msg void OnStopTryRing(WPARAM w, LPARAM l);
 	afx_msg void OnBtnSTClick(WPARAM w, LPARAM l);
+	afx_msg void OnSelectApn(WPARAM w, LPARAM l);
 	void StopTryRing();
 
 public:

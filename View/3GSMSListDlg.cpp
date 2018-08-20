@@ -27,6 +27,9 @@ C3GSMSListDlg::C3GSMSListDlg(CWnd* pParent /*=NULL*/)
 	m_nListCountTotal = 0;
 	m_nPageSize = PAGE_COUNT;
 	m_strHomeRecordeTelCode = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->speCode3_.c_str();
+	m_nBoxType = RECV_TYPE;
+	m_nSMSType = SMS_TYPE;
+	m_bChangeMain = FALSE;
 }
 
 
@@ -215,7 +218,12 @@ void C3GSMSListDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 10:
 		break;
 	case 100:
-		ShowWindow(SW_HIDE);
+		{
+			if(m_bChangeMain)
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
+			else
+				ShowWindow(SW_HIDE);
+		}
 	default:
 		break;
 	}
@@ -476,6 +484,7 @@ LRESULT C3GSMSListDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	//		initDateBase();
 	//		ScrollItemsInList(SB_PAGEDOWN, m_lsList.m_scollbar_.GetPos());
 			DeleteRefreshList();
+			::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 		}
 		break;
 	case WM_SCROLL_EDO:
