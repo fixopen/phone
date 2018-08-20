@@ -158,7 +158,7 @@ void CCELunarder::SetStcDay()
 		m_StcDay[i].SetTogle(FALSE);
 	}
 
-	for(i = 0; i < nDay; i++)
+	for(int i = 0; i < nDay; i++)
 	{
 		char txt[3];
 		sprintf(txt, "%d", i+1);

@@ -2414,6 +2414,7 @@ int CMJPGStatic::FindRowFocusUnit(FOCUSDIRECT direct)
 						sIndex += sTemp;
 					}
 				}
+				int i;
 				for(i = 0; i < nCount; i++)
 				{
 					if(Id[i] == m_nRowFocusUnit)
@@ -2462,7 +2463,8 @@ int CMJPGStatic::FindColFocusUnit(FOCUSDIRECT direct)
 				int Id[20][100];
 				memset(&Id[0][0], 0xFF, sizeof(int)*(2000));
 				CString sIndex = "";
-				for(int i = nStart+1; i <= nEnd; i++)
+				int i;
+				for( i = nStart+1; i <= nEnd; i++)
 				{
 					CString sTemp = s.Mid(i, 1);	
 					if(sTemp == L"," || sTemp == L"]")
@@ -2482,8 +2484,9 @@ int CMJPGStatic::FindColFocusUnit(FOCUSDIRECT direct)
 						sIndex += sTemp;
 					}
 				}
-				for(int j = 0; j < rCount; j++)
-					for(i = 0; i < 100; i++)
+				int j;
+				for(j = 0; j < rCount; j++)
+					for(int i = 0; i < 100; i++)
 					{
 						if(Id[j][i] == m_nColFocusUnit)
 							goto TAB;

@@ -249,7 +249,7 @@ LRESULT CCEListCtrl ::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 				nY = (lParam - nPos)%m_nPage;
 				for(int i = 0; i < nPage; i++)
 					SendMessage(WM_VSCROLL, SB_PAGEDOWN, 0 );
-				for(i = 0; i < nY; i++)
+				for(int i = 0; i < nY; i++)
 					SendMessage(WM_VSCROLL, SB_LINEDOWN, 0 );
 			}
 			else
@@ -258,7 +258,7 @@ LRESULT CCEListCtrl ::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 				nY = (nPos - lParam)%m_nPage;
 				for(int i = 0; i < nPage; i++)
 					SendMessage(WM_VSCROLL, SB_PAGEUP, 0 );
-				for(i = 0; i < nY; i++)
+				for(int i = 0; i < nY; i++)
 					SendMessage(WM_VSCROLL, SB_LINEUP, 0 );
 			}
 		}

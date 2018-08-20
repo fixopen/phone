@@ -118,7 +118,8 @@ namespace Structure
 		std::vector<KEYFILEItem*> Keyitems;
 		~PLAYConfigList()
 		{
-			for (int i = 0; i < ADVItems.size(); ++i)
+			int i;
+			for (i = 0; i < ADVItems.size(); ++i)
 				delete ADVItems[i];
 			for (i = 0; i < Sounditems.size(); ++i)
 				delete Sounditems[i];

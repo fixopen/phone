@@ -29,6 +29,27 @@ static char THIS_FILE[] = __FILE__;
 #include "Data/LanguageResource.h"
 #include "sip.h"
 
+#include "Protocol/Communicator.h"
+#include "Protocol/Session.h"
+#include "Protocol/RegisterSession.h"
+#include "Protocol/InitializeSession.h"
+#include "Protocol/BizManagerSession.h"
+#include "Protocol/TaskSession.h"
+#include "Protocol/MemberManagerSession.h"
+#include "Protocol/FriendManagerSession.h"
+#include "Protocol/GroupManagerSession.h"
+#include "Protocol/UpdateMenuSession.h"
+#include "Protocol/ApplicationSession.h"
+#include "Protocol/ScheduleSession.h"
+#include "Protocol/BillSession.h"
+#include "Protocol/WeatherSession.h"
+#include "Protocol/ContentSession.h"
+#include "Protocol/TimeSession.h"
+#include "Protocol/SoftwareUpdaterSession.h"
+#include "Protocol/MediaDownloadSession.h"
+#include "Protocol/MMInfoSession.h"
+#include "Protocol/TaskReportSession.h"
+
 //#define WM_PLAYVIDEO	8002
 #define  BMP_WIDTH			 800
 #define  BMP_HEIGHT          420
@@ -1103,7 +1124,7 @@ CMultimediaPhoneDlg::CMultimediaPhoneDlg(CWnd* pParent /*=NULL*/)
 	m_bNetOkStatus = FALSE;
 	m_bNetType = 0;
 	m_nTELRigster = TELRIGSTER_UN;
-	m_bIsDial = FALSE;
+	m_bIsDial = TRUE;
 	m_sMobileNumber = "";
 }
 
@@ -1337,15 +1358,82 @@ void TdDoWithProc()
 				Sleep(1000);
 			}	
 		}
-		else if(pMainDlg->m_nTELRigster == TELRIGSTER_DIALED /*&& isFirstReg*/)
+		else if(pMainDlg->m_nTELRigster == TELRIGSTER_DIALED && isFirstReg)
 		{
 			//Dprintf("doRegisterTel :\r\n");
 			//pMainDlg->doRegisterTel();    //LXZ 20090618k
+			RegisterSession* reg = new RegisterSession();
+			reg->Process();
+			delete reg;
+			InitializeSession* init = new InitializeSession();
+			init->Process();
+			delete init;
+			/*
+			BizManagerSession* biz = new BizManagerSession();
+			std::string body;
+			body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<subscriberequest>\n  <subscribeid>0000001</subscribeid>\n  <msisdn>13912345678</msisdn>\n  <serviceid>001002</serviceid>\n  <servicetype>五元包月套餐</servicetype>\n  <useraction>1</useraction>\n</subscriberequest>";
+			biz->Process(body);
+			delete biz;
+			*/
+			TaskSession* task = new TaskSession();
+			task->Process();
+			delete task;
+			isFirstReg = FALSE;
+			/*
+			MemberManagerSession* member = new MemberManagerSession();
+			member->Process();
+			delete member;
+			FriendManagerSession* friendList = new FriendManagerSession();
+			friendList->Process();
+			delete friendList;
+			GroupManagerSession* group = new GroupManagerSession();
+			group->SetType(GroupManagerSession::tInfo);
+			group->Process();
+			group->SetType(GroupManagerSession::tList);
+			group->Process();
+			delete group;
+			UpdateMenuSession* menu = new UpdateMenuSession();
+			menu->Process();
+			delete menu;
+			ApplicationSession* app = new ApplicationSession();
+			app->Process();
+			delete app;
+			ScheduleSession* schedule = new ScheduleSession();
+			schedule->Process();
+			delete schedule;
+			BillSession* bill = new BillSession();
+			bill->Process();
+			delete bill;
+			WeatherSession* weather = new WeatherSession();
+			weather->Process();
+			delete weather;
+			ContentSession* content = new ContentSession();
+			content->SetType(ContentSession::tNormal);
+			content->Process();
+			content->SetType(ContentSession::tDel);
+			content->Process();
+			delete content;
+			TimeSession* time = new TimeSession();
+			time->Process();
+			delete time;
+			SoftwareUpdaterSession* soft = new SoftwareUpdaterSession();
+			soft->Process();
+			delete soft;
+			MediaDownloadSession* media = new MediaDownloadSession();
+			media->Process();
+			delete media;
+			MMInfoSession* mminfo = new MMInfoSession();
+			mminfo->Process();
+			delete mminfo;
+			TaskReportSession* taskReport = new TaskReportSession();
+			taskReport->Process();
+			delete taskReport;
+			*/
 		}
 	//	else if(pMainDlg->m_nTELRigster == TELRIGSTER_REG)
 		if(pMainDlg->m_nTELRigster >= TELRIGSTER_TD)
 		{
-			pMainDlg->doWithDownLoad();   //test
+		//	pMainDlg->doWithDownLoad();   //test   调试 20091015
 		}
 	}
 }
@@ -2061,7 +2149,7 @@ BOOL CMultimediaPhoneDlg::OnInitDialog()
 	DWORD watchdogThreadID = 0;
 	HANDLE m_pThread1 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)WatchDogProc, 0, 0, &watchdogThreadID );
 	DWORD tdThreadID = 0;
-//	HANDLE m_pThread2 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)TdDoWithProc, 0, 0, &tdThreadID );
+	HANDLE m_pThread2 = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)TdDoWithProc, 0, 0, &tdThreadID );
 	TestDB();
 	/*
 	if (m_pATCommandWarp1->Connect(""))

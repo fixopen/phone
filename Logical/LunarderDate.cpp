@@ -529,7 +529,7 @@ namespace Logical
 						}
 					}
 				}
-				for(i = 1; i <= 12; i++)
+				for(int i = 1; i <= 12; i++)
 				{
 					int m = MonthDays(iLunarYear, i);
 					for(int j = 1; j <= m; j++)
@@ -2023,7 +2023,7 @@ const char *lunderji[] = {
 				}
 				strcat(data, "\r\n¼É£º");
 				isFirst = TRUE;
-				for(i = 0; i < 16; i++)
+				for(int i = 0; i < 16; i++)
 				{
 					for(int j = 0 ; j < 8; j++)
 					{
