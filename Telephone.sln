@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Telephone", "Telephone\Telephone.vcproj", "{D6FB6341-6386-405C-A95A-16EDA586DE4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|IngenicMedia (MIPSII) = Debug|IngenicMedia (MIPSII)
+		Release|IngenicMedia (MIPSII) = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6FB6341-6386-405C-A95A-16EDA586DE4D}.Debug|IngenicMedia (MIPSII).ActiveCfg = Debug|IngenicMedia (MIPSII)
+		{D6FB6341-6386-405C-A95A-16EDA586DE4D}.Debug|IngenicMedia (MIPSII).Build.0 = Debug|IngenicMedia (MIPSII)
+		{D6FB6341-6386-405C-A95A-16EDA586DE4D}.Debug|IngenicMedia (MIPSII).Deploy.0 = Debug|IngenicMedia (MIPSII)
+		{D6FB6341-6386-405C-A95A-16EDA586DE4D}.Release|IngenicMedia (MIPSII).ActiveCfg = Release|IngenicMedia (MIPSII)
+		{D6FB6341-6386-405C-A95A-16EDA586DE4D}.Release|IngenicMedia (MIPSII).Build.0 = Release|IngenicMedia (MIPSII)
+		{D6FB6341-6386-405C-A95A-16EDA586DE4D}.Release|IngenicMedia (MIPSII).Deploy.0 = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
