@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PizzaPhone", "PizzaPhone\PizzaPhone.vcproj", "{21BEB918-7227-4F68-9362-2598353B52F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|IngenicMedia (MIPSII) = Debug|IngenicMedia (MIPSII)
+		Release|IngenicMedia (MIPSII) = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21BEB918-7227-4F68-9362-2598353B52F5}.Debug|IngenicMedia (MIPSII).ActiveCfg = Debug|IngenicMedia (MIPSII)
+		{21BEB918-7227-4F68-9362-2598353B52F5}.Debug|IngenicMedia (MIPSII).Build.0 = Debug|IngenicMedia (MIPSII)
+		{21BEB918-7227-4F68-9362-2598353B52F5}.Debug|IngenicMedia (MIPSII).Deploy.0 = Debug|IngenicMedia (MIPSII)
+		{21BEB918-7227-4F68-9362-2598353B52F5}.Release|IngenicMedia (MIPSII).ActiveCfg = Release|IngenicMedia (MIPSII)
+		{21BEB918-7227-4F68-9362-2598353B52F5}.Release|IngenicMedia (MIPSII).Build.0 = Release|IngenicMedia (MIPSII)
+		{21BEB918-7227-4F68-9362-2598353B52F5}.Release|IngenicMedia (MIPSII).Deploy.0 = Release|IngenicMedia (MIPSII)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
