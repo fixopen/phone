@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="SQLite"
-	ProjectGUID="{3DAB64A3-40AE-4628-BCC8-C1D8BA59BB01}"
+	ProjectGUID="{975D1E3B-8FDC-405C-A770-A13D2E6DE41A}"
 	RootNamespace="SQLite"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"

@@ -382,34 +382,33 @@ namespace Util
     //    return result;
     //}
 
-	CString StringOp::ToCString(std::string const& content)
-	{
+	//CString StringOp::ToCString(std::string const& content) {
 #if 0
 		return CString(content.c_str());
 #else
-        //step1 : get converted length
-		//char* nullTermContent = new char[content.length() + 1];
-		//memset(nullTermContent, 0, content.length() + 1);
-		//memcpy(nullTermContent, content.c_str(), content.length());
-		//size_t wideContentLength = MultiByteToWideChar(CP_ACP, 0, nullTermContent, -1, 0, 0);
-		//delete[] nullTermContent;
-		size_t wideContentLength = mbstowcs(0, content.c_str(), content.length());
+        ////step1 : get converted length
+        ////char* nullTermContent = new char[content.length() + 1];
+        ////memset(nullTermContent, 0, content.length() + 1);
+        ////memcpy(nullTermContent, content.c_str(), content.length());
+        ////size_t wideContentLength = MultiByteToWideChar(CP_ACP, 0, nullTermContent, -1, 0, 0);
+        ////delete[] nullTermContent;
+        //size_t wideContentLength = mbstowcs(0, content.c_str(), content.length());
 
-        //step2 : alloc converted space
-		wchar_t* wideContent = new wchar_t[wideContentLength + 2];
-		memset(wideContent, 0, sizeof(wchar_t) * (wideContentLength + 2));
+        ////step2 : alloc converted space
+        //wchar_t* wideContent = new wchar_t[wideContentLength + 2];
+        //memset(wideContent, 0, sizeof(wchar_t) * (wideContentLength + 2));
 
-        //step3 : convert
-		size_t convLength = MultiByteToWideChar(CP_ACP, 0, content.c_str(), content.length(), wideContent, wideContentLength);
-		//size_t convLength = mbstowcs(wideContent, nullTermContent, wideContentLength + 1);
-		//assert(convLength == wideContentLength);
-        
-        //step4 : free converted space and return
-        CString result(wideContent);
-        delete[] wideContent;
-		return result;
+        ////step3 : convert
+        //size_t convLength = MultiByteToWideChar(CP_ACP, 0, content.c_str(), content.length(), wideContent, wideContentLength);
+        ////size_t convLength = mbstowcs(wideContent, nullTermContent, wideContentLength + 1);
+        ////assert(convLength == wideContentLength);
+
+        ////step4 : free converted space and return
+        //CString result(wideContent);
+        //delete[] wideContent;
+        //return result;
 #endif
-	}
+	//}
 
 	std::string StringOp::FromInt(int const value)
 	{
@@ -443,8 +442,7 @@ namespace Util
     //    return FromInt(timeSpan.GetTotalSeconds());
     //}
 	
-	std::string StringOp::FromCString(CString const& value)
-	{
+	//std::string StringOp::FromCString(CString const& value) {
 #if 0
 		CComBSTR nodeName;
 		HRESULT hr = item->get_nodeName(&nodeName);
@@ -463,25 +461,25 @@ namespace Util
 		free(temp);
 		return result;
 #else
-        //step1 : get converted length
-		//LPCSTR defaultChar = 0;
-		BOOL usedDefaultChar = false;
-		//int convLength = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, value.GetLength(), content, defaultChar, &usedDefaultChar);
-        int length = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, -1, 0, 0, 0, &usedDefaultChar);
-		//int length = wcstombs(0, (LPCTSTR)value, value.GetLength() * 2);
+        ////step1 : get converted length
+        ////LPCSTR defaultChar = 0;
+        //BOOL usedDefaultChar = false;
+        ////int convLength = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, value.GetLength(), content, defaultChar, &usedDefaultChar);
+        //int length = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, -1, 0, 0, 0, &usedDefaultChar);
+        ////int length = wcstombs(0, (LPCTSTR)value, value.GetLength() * 2);
 
-        //step2 : alloc converted space
-		char* content = (char*)malloc(length + 1);
-		memset(content, 0, length + 1);
-        
-        //step2 : convert
-		//int convLength = wcstombs(content, (LPCTSTR)value, value.GetLength() * 2);
-        int convLength = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, -1, content, length + 1, 0, &usedDefaultChar);
+        ////step2 : alloc converted space
+        //char* content = (char*)malloc(length + 1);
+        //memset(content, 0, length + 1);
 
-        //step4 : free converted space and return
-		std::string result = content;
-		free(content);
-		return result;
+        ////step2 : convert
+        ////int convLength = wcstombs(content, (LPCTSTR)value, value.GetLength() * 2);
+        //int convLength = WideCharToMultiByte(CP_ACP, 0, (LPCTSTR)value, -1, content, length + 1, 0, &usedDefaultChar);
+
+        ////step4 : free converted space and return
+        //std::string result = content;
+        //free(content);
+        //return result;
 #endif
-	}
+	//}
 }

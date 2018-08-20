@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="TCPMPLib"
-	ProjectGUID="{1763BE75-C0FF-4D18-9694-36B99435BAB2}"
+	ProjectGUID="{95B424A9-A91F-47A0-A39E-6F37209510FB}"
 	RootNamespace="TCPMPLib"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"

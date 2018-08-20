@@ -105,7 +105,7 @@ int plyCreate(int x, int y, int width, int height, MediaType mt)
     free(content);
 	//if (CreateProcess(g_strAppName[mt], szCmdLine, NULL, NULL, FALSE, NULL, NULL, NULL, NULL, NULL) == FALSE)
 	//	goto finish;
-	WinExec(szCmdLine, SW_SHOW);
+	//WinExec(szCmdLine, SW_SHOW);
 	fResult = TRUE;
 
 finish:
