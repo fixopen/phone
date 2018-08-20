@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultimediaPhone", "MultimediaPhone\MultimediaPhone.vcproj", "{6918EB32-6492-4B1A-98A0-E2F087312A46}"
+	ProjectSection(ProjectDependencies) = postProject
+		{363F727E-F1CE-46BD-95A9-A5778006CF73} = {363F727E-F1CE-46BD-95A9-A5778006CF73}
+		{59DAB0A4-293A-4CB1-B323-451314E70B69} = {59DAB0A4-293A-4CB1-B323-451314E70B69}
+		{309BDCA9-0D7E-44EF-BD4D-30C96B894169} = {309BDCA9-0D7E-44EF-BD4D-30C96B894169}
+		{F468AABB-2837-4A0F-8752-C5E0F4A05AAD} = {F468AABB-2837-4A0F-8752-C5E0F4A05AAD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite", "sqlite\sqlite.vcproj", "{59DAB0A4-293A-4CB1-B323-451314E70B69}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mpglib", "mpglib\mpglib.vcproj", "{363F727E-F1CE-46BD-95A9-A5778006CF73}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tcpmplib", "tcpmplib\tcpmplib.vcproj", "{309BDCA9-0D7E-44EF-BD4D-30C96B894169}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libogg", "libogg\libogg.vcproj", "{F468AABB-2837-4A0F-8752-C5E0F4A05AAD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6918EB32-6492-4B1A-98A0-E2F087312A46}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6918EB32-6492-4B1A-98A0-E2F087312A46}.Debug|Win32.Build.0 = Debug|Win32
+		{6918EB32-6492-4B1A-98A0-E2F087312A46}.Release|Win32.ActiveCfg = Release|Win32
+		{6918EB32-6492-4B1A-98A0-E2F087312A46}.Release|Win32.Build.0 = Release|Win32
+		{59DAB0A4-293A-4CB1-B323-451314E70B69}.Debug|Win32.ActiveCfg = Debug|Win32
+		{59DAB0A4-293A-4CB1-B323-451314E70B69}.Debug|Win32.Build.0 = Debug|Win32
+		{59DAB0A4-293A-4CB1-B323-451314E70B69}.Release|Win32.ActiveCfg = Release|Win32
+		{59DAB0A4-293A-4CB1-B323-451314E70B69}.Release|Win32.Build.0 = Release|Win32
+		{363F727E-F1CE-46BD-95A9-A5778006CF73}.Debug|Win32.ActiveCfg = Debug|Win32
+		{363F727E-F1CE-46BD-95A9-A5778006CF73}.Debug|Win32.Build.0 = Debug|Win32
+		{363F727E-F1CE-46BD-95A9-A5778006CF73}.Release|Win32.ActiveCfg = Release|Win32
+		{363F727E-F1CE-46BD-95A9-A5778006CF73}.Release|Win32.Build.0 = Release|Win32
+		{309BDCA9-0D7E-44EF-BD4D-30C96B894169}.Debug|Win32.ActiveCfg = Debug|Win32
+		{309BDCA9-0D7E-44EF-BD4D-30C96B894169}.Debug|Win32.Build.0 = Debug|Win32
+		{309BDCA9-0D7E-44EF-BD4D-30C96B894169}.Release|Win32.ActiveCfg = Release|Win32
+		{309BDCA9-0D7E-44EF-BD4D-30C96B894169}.Release|Win32.Build.0 = Release|Win32
+		{F468AABB-2837-4A0F-8752-C5E0F4A05AAD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F468AABB-2837-4A0F-8752-C5E0F4A05AAD}.Debug|Win32.Build.0 = Debug|Win32
+		{F468AABB-2837-4A0F-8752-C5E0F4A05AAD}.Release|Win32.ActiveCfg = Release|Win32
+		{F468AABB-2837-4A0F-8752-C5E0F4A05AAD}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
