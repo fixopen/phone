@@ -1,0 +1,804 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\MultimediaPhone.rc2""  // non-Microsoft eMbedded Visual C++ edited resources\r\n"
+    "#include ""l.CHS\\afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\icon\\MultimediaPhone.ico"
+IDI_ICON1               ICON                    "res\\icon\\01-名片类别.ico"
+IDI_ICON2               ICON                    "res\\icon\\04-黑名单名片.ico"
+IDI_ICON_IME            ICON                    "res\\icon\\07-输入法.ico"
+IDI_ICON_LINE           ICON                    "res\\icon\\08-通讯线路.ico"
+IDI_ICON_DESK           ICON                    "res\\icon\\01-主界面.ico"
+IDI_ICON_CONTACT        ICON                    "res\\icon\\02-电话本.ico"
+IDI_ICON_CONTACTINFO    ICON                    "res\\icon\\03-通话记录.ico"
+IDI_ICON_SOUND          ICON                    "res\\icon\\04-录音管理.ico"
+IDI_ICON_INFO           ICON                    "res\\icon\\05-信息点播.ico"
+IDI_ICON_SETTING        ICON                    "res\\icon\\06-系统设置.ico"
+IDI_ICON_VIDEO          ICON                    "res\\icon\\11-桌面影院.ico"
+IDI_ICON_SAVESCREEN     ICON                    "res\\icon\\16-屏幕保护.ico"
+IDI_ICON_PHOTO          ICON                    "res\\icon\\12-电子相册.ico"
+IDI_ICON_MP3            ICON                    "res\\icon\\13-音乐播放.ico"
+IDI_ICON_CANL           ICON                    "res\\icon\\14-日历.ico"
+IDI_ICON_CALU           ICON                    "res\\icon\\15-计算器.ico"
+IDI_ICON_EXIT           ICON                    "res\\icon\\01-关闭.ico"
+IDI_ICON_CHECK1         ICON                    "res\\icon\\02-复选 选中.ico"
+IDI_ICON_PRE            ICON                    "res\\icon\\08-上一个.ico"
+IDI_ICON_CHECK0         ICON                    "res\\icon\\03-复选 未选中.ico"
+IDI_ICON_SOUNDOK        ICON                    "res\\icon\\05-声音.ico"
+IDI_ICON_NEXT           ICON                    "res\\icon\\06-下一个.ico"
+IDI_ICON_PLAY           ICON                    "res\\icon\\07-1 播放.ico"
+IDI_ICON_STOPPLAY       ICON                    "res\\icon\\07-2 暂停.ico"
+IDI_ICON_SOUNDCACEL     ICON                    "res\\icon\\05-声音1.ico"
+IDI_ICON_COMBOBOX       ICON                    "Control\\res\\COMBOBOX.ICO"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_MAIN DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+    LTEXT           "timer",IDC_STATIC_TIME,41,27,107,42,NOT WS_VISIBLE | WS_DISABLED
+    LTEXT           "today",IDC_STATIC_TODAY,49,3,59,8,NOT WS_VISIBLE | WS_DISABLED
+    LTEXT           "Tel_Status",IDC_STATIC_TELSTATUS,41,77,51,8,NOT WS_VISIBLE | WS_DISABLED
+    LTEXT           "CALLWall_Status",IDC_STATIC_CALLWALL,43,93,56,8,NOT WS_VISIBLE | WS_DISABLED
+    LTEXT           "Line",IDC_STATIC_LINE,5,1,22,8,NOT WS_VISIBLE | WS_DISABLED
+END
+
+IDD_DIALOG_CONTACT DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_MULTIMEDIAPHONE_DIALOG DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_INPUT DIALOG  0, 0, 400, 123
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTINFO DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SOUND DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SETTING DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_INFORMATION DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_PLAYSOUND DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTINFOSEARCH DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTNEW DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTGROUP DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_MAINMENU DIALOG  0, 0, 275, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+    PUSHBUTTON      "Button1",IDC_BUTTON1,7,59,50,14,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "Button2",IDC_BUTTON2,79,59,50,14,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "Button3",IDC_BUTTON3,7,76,50,14,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "Button4",IDC_BUTTON4,79,76,50,14,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "Button5",IDC_BUTTON5,7,94,50,14,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "Button6",IDC_BUTTON6,79,94,50,14,NOT WS_VISIBLE | WS_DISABLED
+    CONTROL         152,IDC_STATIC_CUSTOMER,"Static",SS_BITMAP | NOT WS_VISIBLE,7,7,109,60
+END
+
+IDD_DIALOG_CEDLG DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_TESTCEDLG DIALOG  0, 0, 400, 129
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,147,29,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,149,70,50,14
+    LTEXT           "",IDC_STATIC,67,19,158,78
+END
+
+IDD_DIALOG_PLAYER DIALOG  0, 0, 8, 12
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_VIDEO DIALOG  0, 0, 275, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_PHOTO DIALOG  0, 0, 275, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_MP3 DIALOG  0, 0, 275, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CONTACTSEARCH DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SOUNDSEARCH DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_FASTDIALS DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_FIREWALL DIALOG  0, 0, 275, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_TELEPHONE DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_NOTE DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_PASSWORD DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_DELETETIP DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_LUNARDER DIALOG  0, 0, 275, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SCREENSAVE DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_CACULATER DIALOG  0, 0, 275, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_COPYFILE DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_NOTEBOOK DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_WEB DIALOGEX 0, 0, 403, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_EXPLORER_BROWSER,
+                    "{8856F961-340A-11D0-A96B-00C04FD705A2}",WS_TABSTOP,0,22,403,188
+END
+
+IDD_DIALOG_RECORDSOUND DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_SIMIMPORT DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_ALARM DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_HUANGLI DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_RENAME DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_NETSTATUS DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_NOFLASH DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+END
+
+IDD_DIALOG_TEST DIALOG  0, 0, 400, 210
+STYLE DS_SETFONT | WS_POPUP
+FONT 10, "System"
+BEGIN
+    LISTBOX         IDC_TEST_LISTBOX,7,7,104,232,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST_MEMORY,119,7,335,232,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "电话拨号测试开始",ID_BTN_TEST_CALL,7,240,70,22
+    PUSHBUTTON      "数据库测试开始",ID_BTN_TEST_DB,89,240,70,22
+    PUSHBUTTON      "退出",ID_BTN_TEST_EXIT,171,240,70,22
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_PROGRESS_BAR        BITMAP                  "Control\\res\\\\process_bar.bmp"
+IDB_VOIPINPUTPINYIN     BITMAP                  "Control\\res\\input_pinyin.bmp"
+IDB_VOIPINPUTENG        BITMAP                  "Control\\res\\input_eng.bmp"
+IDB_VOIPINPUTENG1       BITMAP                  "Control\\res\\input_eng1.bmp"
+IDB_VOIPINPUTFUHAO      BITMAP                  "Control\\res\\input_fuhao1.bmp"
+IDB_VOIPINPUTH          BITMAP                  "Control\\res\\input_write.bmp"
+IDB_BITMAP_CUSTOMER     BITMAP                  "res\\bitmap\\car4.bmp"
+IDB_VOIPPYSEARCH        BITMAP                  "Control\\res\\input_pysearch.bmp"
+IDB_BITMAP_MASK         BITMAP                  "Control\\res\\DialogMask.bmp"
+IDB_BITMAP_DOWNARROW1   BITMAP                  "Control\\res\\down_arrow2.bmp"
+IDB_BITMAP_THICK1       BITMAP                  "Control\\res\\slider2.bmp"
+IDB_BITMAP_UPARROW1     BITMAP                  "Control\\res\\up_arrow2.bmp"
+IDB_BITMAP_RADIO2       BITMAP                  "Control\\res\\Radio2.bmp"
+IDB_BITMAP_COMBOBOX     BITMAP                  "Control\\res\\combobox.bmp"
+IDB_BITMAP_RADIO1       BITMAP                  "Control\\res\\Radio1.bmp"
+IDB_BITMAP_CALCULATOR   BITMAP                  "res\\bitmap\\计算器_softkey.bmp"
+IDB_BITMAP_DOWNARROW    BITMAP                  "Control\\res\\scrollbar\\down.bmp"
+IDB_BITMAP_THICK        BITMAP                  "Control\\res\\scrollbar\\thinck.bmp"
+IDB_BITMAP_UPARROW      BITMAP                  "Control\\res\\scrollbar\\up.bmp"
+IDB_BITMAP_MAINTOGGLE   BITMAP                  "Control\\res\\statusbar\\main_toggle.bmp"
+IDB_BITMAP_MAINRECORD   BITMAP                  "Control\\res\\statusbar\\record.bmp"
+IDB_BITMAP_MAINSETTING  BITMAP                  "Control\\res\\statusbar\\set.bmp"
+IDB_BITMAP_MAINTEL      BITMAP                  "Control\\res\\statusbar\\tel.bmp"
+IDB_BITMAP_MAINCALLLIST BITMAP                  "Control\\res\\statusbar\\calllist.bmp"
+IDB_BITMAP_MAINCARD     BITMAP                  "Control\\res\\statusbar\\card.bmp"
+IDB_BITMAP_MAINDESKTOP  BITMAP                  "Control\\res\\statusbar\\desktop.bmp"
+IDB_BITMAP_MAININFO     BITMAP                  "Control\\res\\statusbar\\inf.bmp"
+IDB_BITMAP_MAININPUT    BITMAP                  "Control\\res\\statusbar\\input.bmp"
+IDB_BITMAP_MAIN         BITMAP                  "Control\\res\\statusbar\\main.bmp"
+IDB_BITMAP_MP3PROGRESS_TOP1 BITMAP                  "res\\bitmap\\progress_top_1.bmp"
+IDB_BITMAP_MP3SOUND_BOTTOM1 BITMAP                  "res\\bitmap\\sound_bottom_1.bmp"
+IDB_BITMAP_MP3SOUND_TOP1 BITMAP                  "res\\bitmap\\sound_top_1.bmp"
+IDB_BITMAP_MP3VPROGRESS_BOTTOM1 BITMAP                  "res\\bitmap\\sound_valuebottom.bmp"
+IDB_BITMAP_MP3VPROGRESS_TOP1 BITMAP                  "res\\bitmap\\sound_valuetop_1.bmp"
+IDB_BITMAP_ARC_BOTTOM1  BITMAP                  "res\\bitmap\\button_arcbottom_1.bmp"
+IDB_BITMAP_ARC_TOP1     BITMAP                  "res\\bitmap\\button_arctop_1.bmp"
+IDB_BITMAP_PLAY_BOTTOM1 BITMAP                  "res\\bitmap\\button_mp3play_bottom_1.bmp"
+IDB_BITMAP_PLAY_TOP1    BITMAP                  "res\\bitmap\\button_mp3play_top_1.bmp"
+IDB_BITMAP_MP3PROGRESS_BOTTOM1 BITMAP                  "res\\bitmap\\progress_bottom_1.bmp"
+IDB_BITMAP_MAINTIME     BITMAP                  "Control\\res\\Time\\total.bmp"
+IDB_BITMAP_MAIN_TXTBAR1 BITMAP                  "res\\bitmap\\main_txt_bar.bmp"
+IDB_BITMAP_MAINVIDEO    BITMAP                  "res\\bitmap\\桌面影院-1.bmp"
+IDB_BITMAP_MAINMP3      BITMAP                  "res\\bitmap\\mp3播放-1.bmp"
+IDB_BITMAP_MAINPHOTO    BITMAP                  "res\\bitmap\\电子相册-1.bmp"
+IDB_BITMAP_MAINCALU     BITMAP                  "res\\bitmap\\计算器-1.bmp"
+IDB_BITMAP_MAINSAVE     BITMAP                  "res\\bitmap\\屏保-1.bmp"
+IDB_BITMAP_MAINCAND     BITMAP                  "res\\bitmap\\日历-1.bmp"
+IDB_BITMAP_COMBOX_UP1   BITMAP                  "res\\bitmap\\下拉-1.bmp"
+IDB_BITMAP_COMBOX_DOWN1 BITMAP                  "res\\bitmap\\下高亮-1.bmp"
+IDB_BITMAP_MP3_SELECT_UP1 BITMAP                  "res\\bitmap\\全选清除.bmp"
+IDB_BITMAP_MP3_SELECT_DOWN1 BITMAP                  "res\\bitmap\\全选清除高亮.bmp"
+IDB_BITMAP_SELECT1      BITMAP                  "res\\bitmap\\选中.bmp"
+IDB_BITMAP_RECT_UP1     BITMAP                  "res\\bitmap\\button_rect.bmp"
+IDB_BITMAP_RECT_DOWN1   BITMAP                  "res\\bitmap\\button_rect_高亮.bmp"
+IDB_BITMAP_DIAL_UP1     BITMAP                  "res\\bitmap\\拨打-1.bmp"
+IDB_BITMAP_DIAL_DOWN1   BITMAP                  "res\\bitmap\\拨打高亮.bmp"
+IDB_BITMAP_UNSELECT1    BITMAP                  "res\\bitmap\\非选中.bmp"
+IDB_BITMAP_EXIT_DOWN1   BITMAP                  "res\\bitmap\\退出高亮.bmp"
+IDB_BITMAP_EXIT_UP1     BITMAP                  "res\\bitmap\\退出.bmp"
+IDB_BITMAP_EXIT1_UP1    BITMAP                  "res\\bitmap\\退出1.bmp"
+IDB_BITMAP_EXIT1_DOWN1  BITMAP                  "res\\bitmap\\退出高亮1.bmp"
+IDB_BITMAP_RIGHT_DOWN1  BITMAP                  "res\\bitmap\\rightbutton_高亮.bmp"
+IDB_BITMAP_LEFT_UP1     BITMAP                  "res\\bitmap\\leftbutton.bmp"
+IDB_BITMAP_LEFT_DOWN1   BITMAP                  "res\\bitmap\\leftbutton_高亮.bmp"
+IDB_BITMAP_RIGHT_UP1    BITMAP                  "res\\bitmap\\rightbutton.bmp"
+IDB_BITMAP_UP_DOWN1     BITMAP                  "res\\bitmap\\upbutton_高亮.bmp"
+IDB_BITMAP_DOWN_UP1     BITMAP                  "res\\bitmap\\downbutton.bmp"
+IDB_BITMAP_DOWN_DOWN1   BITMAP                  "res\\bitmap\\downbutton_高亮.bmp"
+IDB_BITMAP_UP_UP1       BITMAP                  "res\\bitmap\\upbutton.bmp"
+IDB_BITMAP1             BITMAP                  "res\\bitmap\\查找结果1.bmp"
+IDB_BITMAP2             BITMAP                  "res\\bitmap\\未接电话-1.bmp"
+IDB_BITMAP3             BITMAP                  "res\\bitmap\\巳接电话-1.bmp"
+IDB_BITMAP4             BITMAP                  "res\\bitmap\\巳拨电话-1.bmp"
+IDB_BITMAP6             BITMAP                  "res\\bitmap\\黑名单级别.bmp"
+IDB_BITMAP5             BITMAP                  "res\\bitmap\\所有名片-1.bmp"
+IDB_BITMAP7             BITMAP                  "res\\bitmap\\VIP级别.bmp"
+IDB_BITMAP8             BITMAP                  "res\\bitmap\\普通级别.bmp"
+IDB_BITMAP9             BITMAP                  "res\\bitmap\\重要客户A.bmp"
+IDB_BITMAP10            BITMAP                  "res\\bitmap\\重要客户B.bmp"
+IDB_BITMAP11            BITMAP                  "res\\bitmap\\家庭亲人.bmp"
+IDB_BITMAP12            BITMAP                  "res\\bitmap\\其他1.bmp"
+IDB_BITMAP13            BITMAP                  "res\\bitmap\\其他2.bmp"
+IDB_BITMAP14            BITMAP                  "res\\bitmap\\其他3.bmp"
+IDB_BITMAP15            BITMAP                  "res\\bitmap\\其他4.bmp"
+IDB_BITMAP16            BITMAP                  "res\\bitmap\\其他5.bmp"
+IDB_BITMAP17            BITMAP                  "res\\bitmap\\其他6.bmp"
+IDB_BITMAP18            BITMAP                  "res\\bitmap\\我的朋友.bmp"
+IDB_BITMAP19            BITMAP                  "res\\bitmap\\该通话记录是有记事.bmp"
+IDB_BITMAP20            BITMAP                  "res\\bitmap\\该通话记录是未读状态.bmp"
+IDB_BITMAP21            BITMAP                  "res\\bitmap\\该通话记录是无记事.bmp"
+IDB_BITMAP22            BITMAP                  "res\\bitmap\\该通话记录是已读状态.bmp"
+IDB_BITMAP23            BITMAP                  "res\\bitmap\\该留言未听状态.bmp"
+IDB_BITMAP24            BITMAP                  "res\\bitmap\\语音留言.bmp"
+IDB_BITMAP25            BITMAP                  "res\\bitmap\\通话留言.bmp"
+IDB_BITMAP26            BITMAP                  "res\\bitmap\\该留言已听状态.bmp"
+IDB_BITMAP27            BITMAP                  "res\\bitmap\\系统信息-1.bmp"
+IDB_BITMAP28            BITMAP                  "res\\bitmap\\电话通讯-1.bmp"
+IDB_BITMAP29            BITMAP                  "res\\bitmap\\网络设置-1.bmp"
+IDB_BITMAP30            BITMAP                  "res\\bitmap\\系统参数-1.bmp"
+IDB_BITMAP31            BITMAP                  "res\\bitmap\\正在录音.bmp"
+IDB_BITMAP32            BITMAP                  "res\\bitmap\\录音来电.bmp"
+IDB_BITMAP_LISTDIR      BITMAP                  "res\\bitmap\\目录.bmp"
+IDB_BITMAP_LISTTOBOTTOM BITMAP                  "res\\bitmap\\上一级.bmp"
+IDB_BITMAP_LISTCIPAN    BITMAP                  "res\\bitmap\\磁盘.bmp"
+IDB_BITMAP3_MUSIC       BITMAP                  "res\\bitmap\\音乐.bmp"
+IDB_BITMAP_SETTINGINOUT BITMAP                  "res\\bitmap\\导入导出-1.bmp"
+IDB_BITMAP_ARC_BOTTOM3  BITMAP                  "res\\bitmap\\button_arcbottom_3.bmp"
+IDB_BITMAP_ARC_BOTTOM2  BITMAP                  "res\\bitmap\\button_arcbottom_2.bmp"
+IDB_BITMAP_ARC_TOP3     BITMAP                  "res\\bitmap\\button_arctop_3.bmp"
+IDB_BITMAP_ARC_TOP2     BITMAP                  "res\\bitmap\\button_arctop_2.bmp"
+IDB_BITMAP_ARC_TOP4     BITMAP                  "res\\bitmap\\button_arctop_4.bmp"
+IDB_BITMAP_ARC_BOTTOM4  BITMAP                  "res\\bitmap\\button_arcbottom_4.bmp"
+IDB_BITMAP_WHSTATIC     BITMAP                  "res\\bitmap\\wh_static.bmp"
+IDB_BITMAP_PROGRESS_BAR1 BITMAP                  "Control\\res\\pro_1.bmp"
+IDB_BITMAP_PROGRESS_BAR2 BITMAP                  "Control\\res\\pro_2.bmp"
+IDB_PROGRESS_VOLUME1    BITMAP                  "Control\\res\\progressbar\\pro_volume1.bmp"
+IDB_PROGRESS_TIME1      BITMAP                  "Control\\res\\progressbar\\por_progress_1.bmp"
+IDB_PROGRESS_TIME2      BITMAP                  "Control\\res\\progressbar\\por_progress_2.bmp"
+IDB_PROGRESS_TIME_THINCK BITMAP                  "Control\\res\\progressbar\\por_progress_thinck.bmp"
+IDB_PROGRESS_VOLUMETHINCK BITMAP                  "Control\\res\\progressbar\\por_volume_thinck.bmp"
+IDB_BITMAP_LEFTARROW    BITMAP                  "Control\\res\\cdatetime\\leftarrow.bmp"
+IDB_BITMAP_RIGHTARROW   BITMAP                  "Control\\res\\cdatetime\\rihtarrow.bmp"
+IDB_BITMAP_RIGHTARROWD  BITMAP                  "Control\\res\\cdatetime\\rihtarrow_d.bmp"
+IDB_BITMAP_LEFTARROWD   BITMAP                  "Control\\res\\cdatetime\\leftarrow_d.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "CompanyName", " edo"
+            VALUE "FileDescription", "MultimediaPhone WCE MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "MultimediaPhone"
+            VALUE "LegalCopyright", "Copyright ?2007"
+            VALUE "OriginalFilename", "MultimediaPhone.exe"
+            VALUE "ProductName", "MultimediaPhone Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOG_CONTACT, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 155
+    END
+
+    IDD_DIALOG_INPUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 121
+    END
+
+    IDD_DIALOG_CONTACTINFO, DIALOG
+    BEGIN
+        RIGHTMARGIN, 219
+        BOTTOMMARGIN, 80
+    END
+
+    IDD_DIALOG_PLAYSOUND, DIALOG
+    BEGIN
+        RIGHTMARGIN, 274
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_DIALOG_MAINMENU, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 129
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 108
+    END
+
+    IDD_DIALOG_CEDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_TESTCEDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+
+    IDD_DIALOG_PLAYER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 1
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 5
+    END
+
+    IDD_DIALOG_VIDEO, DIALOG
+    BEGIN
+        RIGHTMARGIN, 137
+    END
+
+    IDD_DIALOG_PHOTO, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 168
+    END
+
+    IDD_DIALOG_MP3, DIALOG
+    BEGIN
+        RIGHTMARGIN, 136
+        BOTTOMMARGIN, 115
+    END
+
+    IDD_DIALOG_TELEPHONE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 258
+        BOTTOMMARGIN, 165
+    END
+
+    IDD_DIALOG_NOTE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 367
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_DIALOG_PASSWORD, DIALOG
+    BEGIN
+        RIGHTMARGIN, 187
+        BOTTOMMARGIN, 129
+    END
+
+    IDD_DIALOG_DELETETIP, DIALOG
+    BEGIN
+        RIGHTMARGIN, 372
+    END
+
+    IDD_DIALOG_LUNARDER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 116
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 110
+    END
+
+    IDD_DIALOG_SCREENSAVE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_CACULATER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_COPYFILE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_NOTEBOOK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 110
+    END
+
+    IDD_DIALOG_WEB, DIALOG
+    BEGIN
+        RIGHTMARGIN, 400
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_RECORDSOUND, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 163
+    END
+
+    IDD_DIALOG_SIMIMPORT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_ALARM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_HUANGLI, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_RENAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_NETSTATUS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_NOFLASH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_DIALOG_TEST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_DIALOG_WEB DLGINIT
+BEGIN
+    IDC_EXPLORER_BROWSER, 0x376, 160, 0
+0x0000, 0x0000, 0x004c, 0x0000, 0x534d, 0x0000, 0x26dc, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x004c, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 
+0x0000, 0xd0e0, 0x0057, 0x3573, 0x11cf, 0x69ae, 0x0008, 0x2e2b, 0x6212, 
+0x0008, 0x0000, 0x0000, 0x0000, 0x004c, 0x0000, 0x1401, 0x0002, 0x0000, 
+0x0000, 0x00c0, 0x0000, 0x0000, 0x4600, 0x0080, 0x0000, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_STRING1             "/"
+    IDS_STRING2             "类型"
+    IDS_STRING3             "姓名/号码"
+    IDS_STRING4             "时间"
+    IDS_STRING5             "时长"
+    IDS_STRING6             "留言"
+    IDS_STRING7             "未接电话"
+    IDS_STRING8             "已接电话"
+    IDS_STRING9             "已拨电话"
+    IDS_STRING10            "查找结果"
+    IDS_STRING11            "操作"
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\MultimediaPhone.rc2"  // non-Microsoft eMbedded Visual C++ edited resources
+#include "l.CHS\afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

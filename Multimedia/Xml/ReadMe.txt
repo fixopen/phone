@@ -1,2 +1,0 @@
-这是Xml DOMTree的数据结构定义目录，Util目录中的XMLParser解析
-文档的结果就是用这个目录中的Document表达的
