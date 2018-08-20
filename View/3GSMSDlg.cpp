@@ -68,7 +68,7 @@ BOOL C3GSMSDlg::OnInitDialog()
 	m_pSMSDetailDlg->Create(C3GSMSDetailDlg::IDD);
 
 	// TODO: Add extra initialization here
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this, 10086);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\÷–Œƒ\\3g_º“Õ•¡Ù—‘.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 600, 420));
 //	SetTimer(1, 1000, NULL);

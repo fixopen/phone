@@ -141,6 +141,7 @@ namespace Structure
 		CString bgfilename_down;
 		SHOWTYPE showtype;
 		CRect    m_Rect;
+		CString  m_sTab;
 
 		std::vector<MJPGItem*> items;
 		~MJPGList()

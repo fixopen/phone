@@ -592,6 +592,14 @@
 #define PIN_FUK_LOCKED					9102
 #define PIN_FUK_ERROR					9103
 
+#define LEFT_KEY						10002
+#define RIGHT_KEY						10003
+#define UP_KEY							10004
+#define DOWN_KEY						10005
+#define OK_KEY							10001
+#define CANCEL_KEY						10000
+
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

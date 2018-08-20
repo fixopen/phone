@@ -6,13 +6,13 @@
 --------------------Configuration: MultimediaPhone - Win32 (WCE MIPSII) Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F2.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBE.tmp" with contents
 [
 /nologo /W3 /GX /Zi /Od /D "DEBUG" /D "MIPS" /D "_MIPS_" /D "R4000" /D "MIPSII" /D UNDER_CE=500 /D _WIN32_WCE=500 /D "WCE_PLATFORM_ingenicWeb" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /FR"MIPSIIDbg/" /Fp"MIPSIIDbg/MultimediaPhone.pch" /YX /Fo"MIPSIIDbg/" /Fd"MIPSIIDbg/" /QMmips2 /QMFPE /MC /c 
-"D:\lxz_work_dir\media_phone\3g_phone\View\passworddlg.cpp"
+"D:\lxz_work_dir\media_phone\3g_phone\View\MainDlg.cpp"
 ]
-Creating command line "clmips.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F2.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F3.tmp" with contents
+Creating command line "clmips.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBE.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBF.tmp" with contents
 [
 lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib jpeg.lib lib\\png.lib lib\\zlib.lib commctrl.lib Coredll.lib lib\\lamelib.lib lib\\mpglib.lib lib\\libshine.lib lib\\speex.lib lib\\chshw.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /incremental:yes /pdb:"MIPSIIDbg/MultimediaPhone.pdb" /debug /out:"MIPSIIDbg/MultimediaPhone.exe" /libpath:"E:\My Documents\My Projects\MultimediaPhone\lib" /subsystem:windowsce,5.00 /MACHINE:MIPS 
 .\MIPSIIDbg\MultimediaPhone.obj
@@ -131,10 +131,14 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\cximagelib\png.lib
 .\cximagelib\zlib.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F3.tmp"
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBF.tmp"
 <h3>Output Window</h3>
 Compiling...
-passworddlg.cpp
+MainDlg.cpp
+d:\lxz_work_dir\media_phone\3g_phone\control\mmsshow.h(40) : warning C4005: 'IDC_BTN_OK' : macro redefinition
+        d:\lxz_work_dir\media_phone\3g_phone\view\cardselectdlg.h(24) : see previous definition of 'IDC_BTN_OK'
+d:\lxz_work_dir\media_phone\3g_phone\control\mmsshow.h(41) : warning C4005: 'IDC_BTN_CANCEL' : macro redefinition
+        d:\lxz_work_dir\media_phone\3g_phone\view\cardselectdlg.h(25) : see previous definition of 'IDC_BTN_CANCEL'
 Linking...
    Creating library MIPSIIDbg/MultimediaPhone.lib and object MIPSIIDbg/MultimediaPhone.exp
 corelibc.lib(wwinmain.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
@@ -143,7 +147,7 @@ corelibc.lib(crt0dat.obj) : warning LNK4209: debugging information corrupt; reco
 corelibc.lib(crt0init.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 Strmiids.lib(strmguid.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 Strmiids.lib(strmif_i.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F9.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC5.tmp" with contents
 [
 /nologo /o"MIPSIIDbg/MultimediaPhone.bsc" 
 .\MIPSIIDbg\MultimediaPhone.sbr
@@ -256,7 +260,7 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F9.tmp" with con
 .\MIPSIIDbg\MmsShow.sbr
 .\MIPSIIDbg\SoftKey.sbr
 .\MIPSIIDbg\xmlParser.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F9.tmp"
+Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC5.tmp"
 Creating browse info file...
 <h3>Output Window</h3>
 
@@ -264,7 +268,7 @@ Creating browse info file...
 
 
 <h3>Results</h3>
-MultimediaPhone.exe - 0 error(s), 6 warning(s)
+MultimediaPhone.exe - 0 error(s), 8 warning(s)
 </pre>
 </body>
 </html>

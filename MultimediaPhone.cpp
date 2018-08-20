@@ -119,6 +119,7 @@ BOOL CMultimediaPhoneApp::InitInstance()
 // 	}
 // 	unsigned int w__ = DMemprintf("test 0");
 
+	DeleteFile(L"\\flashdrv\\log.txt");
 	
 #ifdef _DEBUG
 #else
@@ -278,6 +279,19 @@ BOOL CMultimediaPhoneApp::PreTranslateMessage(MSG* pMsg)
 	//	Dprintf("Pen down %d (%d, %d)\n", gCount_penDwon++, pMsg->pt.x, pMsg->pt.y);
 		if(((CMultimediaPhoneDlg *)(theApp.m_pMainWnd))->m_nBackLightStatus == 0)  //ÎªºÚ
 			return TRUE;
+		ret = CWinApp::PreTranslateMessage(pMsg);
+	}
+	else if(pMsg->message == WM_KEYDOWN || pMsg->message == WM_KEYUP)
+	{
+// 		CPoint pt1 = CPoint(0, 120);
+// 		::SetCursorPos(pt1.x, pt1.y);
+// 		MSG msg;
+// 		msg.message = WM_LBUTTONDOWN;
+// 		msg.pt.x = 0;
+// 		msg.pt.y = 120;
+// 		msg.hwnd = NULL;
+// 		CWinApp::PreTranslateMessage(&msg);
+
 		ret = CWinApp::PreTranslateMessage(pMsg);
 	}
 	else

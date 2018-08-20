@@ -186,6 +186,7 @@ public:
 	UINT GetUnconnectCount(void);
 //	void ClearUnconnectCount(void);
 	UINT GetRecordCount(void); 
+	void AdjustVolume(int nVolume, BOOL isDraw = TRUE);
 //	void ClearRecordCount(void);
 
 	BOOL GetIsRecordStatus(){return m_bRecording;}

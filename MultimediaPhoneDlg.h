@@ -113,7 +113,7 @@ const std::string ssStorageCardRecordPath = "\\StorageCard\\MY_RECORD\\";
 const CString csStarageCard = _T("\\StorageCard\\");
 const std::string ssStarageCard = "\\StorageCard\\";
 const CString csUsbDisk = _T("\\UsbDisk\\");
-enum TelTDStatus{TELRIGSTER_UN, TELRIGSTER_TD, TELRIGSTER_DIALING, TELRIGSTER_DIALED, TELRIGSTER_REG, TEL_UNNET};    //电话未搜网   //电话已搜网   //电话已注册   //无网络
+enum TelTDStatus{TELRIGSTER_UN, TELRIGSTER_FAILED, TELRIGSTER_TD, TELRIGSTER_DIALING, TELRIGSTER_DIALED, TELRIGSTER_REG, TEL_UNNET};    //电话未搜网   //电话已搜网   //电话已注册   //无网络
 
 struct DIAL_APN
 {
@@ -165,6 +165,9 @@ public:
 	Util::ComWarp* m_pComWarp2;
 	Util::ATCommandWarp* m_pATCommandWarp2;
 	SMS::SMSWarp* m_pSMSWarp;
+
+	//用于VP数据通道
+	Util::ComWarp* m_pVideoComWarp;
 	
 	int          n_StyleMain;
 	unsigned int n_bklightcount; 

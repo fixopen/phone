@@ -978,7 +978,7 @@ int MMSWarp::DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_R
 							pos2 = smil.find("</body>");
 							if ((pos1 != string::npos ) && (pos2 != string::npos))
 							{
-								pos1 += sizeof("<body>");
+								pos1 += (sizeof("<body>")-1);
 								string body = smil.substr(pos1, pos2 - pos1);
 								while ((body.find("<par") != string::npos) && (body.find("</par>") != string::npos))
 								{
@@ -1364,7 +1364,7 @@ void MMSWarp::DecodeSmil(std::string file, vector<MMS_PAR>& vpars, MMS_LAYOUT& v
 	pos2 = smil.find("</body>");
 	if ((pos1 != string::npos ) && (pos2 != string::npos))
 	{
-		pos1 += sizeof("<body>");
+		pos1 += (sizeof("<body>")-1);
 		string body = smil.substr(pos1, pos2 - pos1);
 		while ((body.find("<par") != string::npos) && (body.find("</par>") != string::npos))
 		{

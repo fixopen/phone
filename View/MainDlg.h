@@ -152,6 +152,7 @@ protected:
 	afx_msg void OnSetAdmin(WPARAM w, LPARAM l);
 	afx_msg void OnUnSetAdmin(WPARAM w, LPARAM l);
 	afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_MSG
 private:
 	//CCEButtonST m_btnMovie;

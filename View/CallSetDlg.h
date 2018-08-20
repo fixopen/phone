@@ -17,6 +17,7 @@
 #include "../Data/Setting.h"
 
 #include "../control/MJPGStatic.h"
+#include "../Util/ATCommandWarp.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CCallSetDlg dialog
@@ -25,16 +26,20 @@ class CCallSetDlg : public CCEDialog
 {
 // Construction
 public:
-	CCEButtonST m_chbCallToCall;
+	PhoneCallTRans m_calltrans;
+	PhoneCallWaiting  m_callwaiting;
+	PhoneCallLimit m_calllimit;
+
+//	CCEButtonST m_chbCallToCall;
 		CCEButtonST  m_chbNoAnswer;
 		CCEButtonST  m_chbUnCondifie;
 		CCEButtonST  m_chbIsTeling;
 		CCEButtonST  m_chbIsNoTeling;
 		CCERectEdit m_edtTelCode;
-	CCEButtonST m_chbCallToLimit;
+//	CCEButtonST m_chbCallToLimit;
 		CCEButtonST  m_chbLimitCallIn;
 		CCEButtonST  m_chbLimitCallOut;
-	CCEButtonST m_chbCallToWaiting;
+//	CCEButtonST m_chbCallToWaiting;
 		CCERadioButton m_rdoIsYes;
 		CCERadioButton m_rdoIsNo;
 	

@@ -72,6 +72,11 @@ void CMainDlg ::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
 	}
 }
 
+void CMainDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+{
+	int i = 0;
+	i++;
+}
 
 BEGIN_MESSAGE_MAP(CMainDlg, CDialog)
 	//{{AFX_MSG_MAP(CMainDlg)
@@ -86,6 +91,7 @@ BEGIN_MESSAGE_MAP(CMainDlg, CDialog)
 	ON_WM_ACTIVATE()
 	ON_MESSAGE(WM_CHECKPASSWORD, OnSetAdmin)
 	ON_MESSAGE(WM_DELETESELITEM, OnUnSetAdmin)
+	ON_WM_KEYDOWN()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -224,7 +230,7 @@ BOOL CMainDlg::OnInitDialog()
 	m_p3GDetailDlg->Create(C3GDetailDlg::IDD, this);
 	m_p3GDetailDlg->ShowWindow(SW_HIDE);
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this, 10086);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_桌面.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
@@ -1327,6 +1333,8 @@ void CMainDlg::ShowWindow_(int nCmdShow)
 		m_pWebDialog->ShowWindow_(SW_HIDE);	
 		((CMultimediaPhoneDlg *)theApp.m_pMainWnd)->m_pNotebookDlg->ShowWindow(SW_HIDE);
 		m_MJPGList.ShowWindow(SW_SHOW);
+		
+		SetFocus();   //lxz 20090923
 	}
 	SetTimer_(TRUE);
 }
@@ -1380,6 +1388,12 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 	case 1:					//视频电话
 		{
 			m_p3GTelDlg->ShowWindow(SW_SHOW);
+			/*
+			int no[] = {2, 3, 4, 5, 6, 100, 101, 102, 103, 104, 105, 106, 107, 108};
+			static BOOL flag = FALSE;
+			m_MJPGList.DrawGroup_HDC(no, 14, flag);
+			flag = !flag;
+			*/
 		}
 		break;
 	case 2:					//家庭留言								

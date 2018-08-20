@@ -62,7 +62,7 @@ BOOL C3GTelDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this, 10086);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_视频电话.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 600, 420));
 //	SetTimer(1, 1000, NULL);

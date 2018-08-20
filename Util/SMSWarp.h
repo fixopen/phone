@@ -27,6 +27,7 @@ namespace SMS
 		SMSWarp(const SMSWarp& smsWarp);
 		static SMSWarp* GetSMSWarp();
 		void Bind(Util::ATCommandWarp* at);
+		void Bind_(Util::ATCommandWarp* at);
 		void SetOTANumber(std::string number);
 
 	private:
@@ -143,7 +144,7 @@ namespace SMS
 		static UINT SmThread(LPVOID lpParam);	// 短消息收发处理子线程 
 
 		void Send(std::string number, std::string content);
-		void SetCenterAddress(std::string address);
+		void SetCenterAddress();
 		std::wstring ToUnicode(std::string content);
 		void MapMessage(SM_PARAM* sms);//格式转换
 		void ReceiveCallback(SMS_TYPE type, void* msg);

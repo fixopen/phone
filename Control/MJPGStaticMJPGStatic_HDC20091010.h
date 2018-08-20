@@ -33,10 +33,10 @@ public:
 	CString  m_oldLinkFile;
 	CString	ToFileDir(CString filename);
 
- 	HDC  m_hMemDC;   //移到全局
- 	HBITMAP m_hBmp;
- 	HBITMAP m_hOldBmp;
- 	LPVOID  m_plpBits;	
+// 	HDC  g_hMJPGStasticMemDC;   //移到全局
+// 	HBITMAP m_hBmp;
+// 	HBITMAP m_hOldBmp;
+// 	LPVOID   m_plpBits;	
 
 //	CBitmap *m_pOldbmp;
 //	void CreateMemDC();
@@ -55,8 +55,6 @@ public:
 	int FindUnitIndex(CPoint pt);
 	void InvertRect(CRect rt);
 	void InvertRect_HDC(HDC hdc, CRect rt);
-
-	void DrawGroup_HDC(int *nNO, int nCount, BOOL isShow);
 //	void DrawUnitStatus(UNIT *pUnit, int nUintStatus);
 		
 	CRect		m_rtMJPG;
@@ -67,7 +65,7 @@ public:
 	void GetCurrentLinkFile(CString &s){s = m_sCurrentLinkFile;}
 
 	BOOL SetUnitIsDownStatus(int UnitNO, BOOL isDown);
-	int SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh = TRUE, BOOL isInvalidate = FALSE);
+	BOOL SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh = TRUE, BOOL isInvalidate = FALSE);
 
 	BOOL SetUnitBitmap(int UnitNO, CString filename_up, CString filename_down, BOOL isDraw, BOOL isInvalidate = FALSE);
 	BOOL SetUnitText(int UnitNO, CString text, BOOL isDraw, BOOL isInvalidate = FALSE);
