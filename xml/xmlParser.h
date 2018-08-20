@@ -738,7 +738,7 @@ public:
 								char txt[64];
 								sprintf(txt, "%d:[%d, %d, %d, %d]\r\n", item->unitparam.m_nSiererNO, item->unitparam.m_Rect.left, item->unitparam.m_Rect.top, item->unitparam.m_Rect.right, item->unitparam.m_Rect.bottom);
 								extern VOID WriteLog(CHAR* str);
-//								WriteLog(txt);
+								WriteLog(txt);
 								item = NULL;
 							}
 
@@ -1072,11 +1072,11 @@ public:
 					char txt[64];
 					sprintf(txt, "%d:[%d, %d, %d, %d]\r\n", item->unitparam.m_nSiererNO, item->unitparam.m_Rect.left, item->unitparam.m_Rect.top, item->unitparam.m_Rect.right, item->unitparam.m_Rect.bottom);
 					extern VOID WriteLog(CHAR* str);
-//					WriteLog(txt);
+					WriteLog(txt);
 					item = NULL;
 				}
 				extern VOID WriteLog(CHAR* str);
-//				WriteLog("1111111111\r\n");
+				WriteLog("1111111111\r\n");
 
 				for(int i = 0; i < result->items.size(); i++)
 				{
@@ -1084,7 +1084,7 @@ public:
 					char txt[64];
 					sprintf(txt, "%d:[%d, %d, %d, %d]\r\n", t->unitparam.m_nSiererNO, t->unitparam.m_Rect.left, t->unitparam.m_Rect.top, t->unitparam.m_Rect.right, t->unitparam.m_Rect.bottom);
 					extern VOID WriteLog(CHAR* str);
-//					WriteLog(txt);
+					WriteLog(txt);
 				}
 
 				delete lBuff;

@@ -23,7 +23,7 @@ UINT WM_RASEVENT; //= ::RegisterWindowMessageA(RASDIALEVENT);
 CString const GetPPPoEIP()
 {
 	HKEY hKey = NULL;
-	LONG hRes = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Comm\\Serial Cable on LC6311 VCOM7:(PS)\\Parms\\TcpIp"), 0, 0, &hKey);
+	LONG hRes = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Comm\\Serial Cable on VCOM3:(PS)\\Parms\\TcpIp"), 0, 0, &hKey);
 	DWORD dwType = REG_MULTI_SZ;
 	TCHAR ipAddr[20] = {0};
 	DWORD dwSize = sizeof(ipAddr);
@@ -73,7 +73,7 @@ bool CNetStatusDlg::ADSLInit()
 	entry.dwFramingProtocol = RASFP_Ppp;
 
 	wsprintf(entry.szDeviceType, L"modem");
-	wsprintf(entry.szDeviceName, L"Serial Cable on LC6311 VCOM7:(PS)");
+	wsprintf(entry.szDeviceName, L"Serial Cable on VCOM3:(PS)");
 
 	wsprintf(entry.szLocalPhoneNumber,/* L"*99***1#"*/L"*98*1#");
 	entry.dwCountryID = 0;
@@ -94,10 +94,10 @@ bool CNetStatusDlg::ADSLInit()
 }
 
 static BOOL gDialRas = FALSE;
-bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, CWnd *pMsgWnd, DIALTYPE type, char *apnName) 
+bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, CWnd *pMsgWnd, DIALTYPE type) 
 {
 	if(gDialRas)
-	  ADSLHungUp();
+		ADSLHungUp();
 	
 	TCHAR telcode[24] = {0};
 	TCHAR atinit[64] = {0};
@@ -111,21 +111,11 @@ bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, C
 		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"CMWAP\",\"\",0,0<cr>");
 		wsprintf(atinit1 , L"AT+CGQREQ=1<cr>");	
 	}
-	else if(type == CMNET)
+	else
 	{
 	//	wsprintf(telcode , L"*99***1#");
 		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"CMNET\",\"\",0,0<cr>");
-		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,0,0,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");  //wangzhenxing20100804
-	}
- 	else if(type == CMUSER1)
-	{
-		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"%S\",\"\",0,0<cr>", apnName);
-		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,0,0,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");
-	}
-	else if(type == CMUSER2)
-	{
-		wsprintf(atinit , L"AT+CGDCONT=1,\"IP\",\"%S\",\"\",0,0<cr>", apnName);
-		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,0,0,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");
+		wsprintf(atinit1 , L"AT+CGEQREQ=1,2,128,2048,0,0,0,0,\"0E0\",\"0E0\",,0,0<cr>");	
 	}
 
 	TCHAR szTemp[256] = {0};
@@ -168,7 +158,7 @@ bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, C
 	entry.dwFramingProtocol = RASFP_Ppp;
 	
 	wsprintf(entry.szDeviceType, L"modem");
-	wsprintf(entry.szDeviceName, L"Serial Cable on LC6311 VCOM7:(PS)");
+	wsprintf(entry.szDeviceName, L"Serial Cable on VCOM3:(PS)");
 	
 	wsprintf(entry.szLocalPhoneNumber,telcode);
 	entry.dwCountryID = 0;
@@ -181,7 +171,7 @@ bool CNetStatusDlg::ADSLDial(char *dialnumber, char *username, char *password, C
 		&entry,		// buffer that contains entry information
 		sizeof(RASENTRY),// size, in bytes, of the lpRasEntry buffer
 		NULL,			// buffer that contains device-specific 
-		0);	
+									  0);	
 
 	gDialRas = TRUE;
 
@@ -541,7 +531,6 @@ void CNetStatusDlg::OnClickMJPG(WPARAM w, LPARAM l)
 // 			}
 		}
 		break;
-
 	case 2:
 		if(m_bADSLISConnnect)
 		{

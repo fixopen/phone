@@ -8,18 +8,15 @@
 //
 
 #include "../Control/MJPGStatic.h"
-#include "../Control/CEDialog.h"
 /////////////////////////////////////////////////////////////////////////////
 // CTipDlg dialog
 
-class CTipDlg : public CCEDialog
+class CTipDlg : public CDialog
 {
 // Construction
 public:
 	CTipDlg(CWnd* pParent = NULL);   // standard constructor
 	CMJPGStatic   m_MJPGList;
-	
-	void SetTitle(CString title,int isTime = 4000,TEXTSIZE font = font_20);
 
 // Dialog Data
 	//{{AFX_DATA(CTipDlg)
@@ -42,7 +39,6 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnClickOK();
-	afx_msg void OnTimer(UINT nIDEvent) ;
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

@@ -71,7 +71,7 @@ namespace Data {
             cmd += " WHERE [id] = ";
             cmd += Util::StringOp::FromInt(id());
 			extern void WriteLog(char *ptr);
-	//		WriteLog((char *)cmd.c_str());
+			WriteLog((char *)cmd.c_str());
             ExecCommand(cmd);
         }
 
@@ -122,14 +122,12 @@ namespace Data {
 			cmd += Util::StringOp::FromInt(no);
             cmd += " )";
 			extern VOID WriteLog(CHAR* str);
-//			WriteLog((char *)cmd.c_str());
+			WriteLog((char *)cmd.c_str());
 			
 			bool btr = ExecCommand(cmd);
-			
-			if (btr)
-			{
-				id(GetCurrentId());
-			}
+
+            id(GetCurrentId());
+
 			return btr ;
         }
 

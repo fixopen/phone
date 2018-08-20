@@ -93,35 +93,18 @@ void CContactGroupDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 	case 10:
 		{
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 			if(!m_MJPGList.GetUnitIsDownStatus(5))
 			{
-				CString   str;
-				UINT32 v = 0xaa00 | (0xaa00<<16);
-				if(main->phone_->g_RingSound < 0)
-				{
-					main->phone_->g_RingSound = v;
-				}  
+				CString   str;  
 				m_ringEdit.GetWindowText(str);
 				if(str.Compare(Util::StringOp::ToCString(Data::LanguageResource::Get(Data::RI_CARD_DEFAULT))) != 0)
 				{
-					main->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002); //SendMessage(WM_OUTEVENT, 0, 0);
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002); //SendMessage(WM_OUTEVENT, 0, 0);
 					
 					CString s = m_ringDir;
 					s += str;
-					main->phone_->SetMsgWnd(this);
-					main->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
-					m_MJPGList.SetUnitIsDownStatus(5, TRUE);
-					m_MJPGList.SetUnitIsShow(5, TRUE);
-				}
-				else
-				{
-					main->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002); //SendMessage(WM_OUTEVENT, 0, 0);
-					
-					CString s = m_ringDir;
-					s += Util::StringOp::ToCString(main->m_pSettingDlg->m_pSetting->phoneCallRingFilename_);
-					main->phone_->SetMsgWnd(this);
-					main->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->SetMsgWnd(this);
+					((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StartRing((LPTSTR)(LPCTSTR)s, 1);
 					m_MJPGList.SetUnitIsDownStatus(5, TRUE);
 					m_MJPGList.SetUnitIsShow(5, TRUE);
 				}
@@ -166,28 +149,27 @@ BOOL CContactGroupDlg::OnInitDialog()
 	
 	ybegin = 158+105;
 	m_ringEdit.Create(WS_CHILD|WS_VISIBLE,
-		CRect(xbegin, ybegin, xbegin+199, ybegin+height), this, 0xFFFF);
+		CRect(xbegin, ybegin, xbegin+167, ybegin+height), this, 0xFFFF);
 	m_ringEdit.SetIsAutoInput(FALSE);
 	
 	//按钮
-	m_ringButton.Create(L"",IDB_BITMAP_CONTACTNEW,
-		IDB_BITMAP_CONTACTNEW1, WS_CHILD|WS_VISIBLE,
-		CRect(xbegin+199,ybegin,xbegin+199+24,ybegin+32), this, IDC_SETTING_RINGSELECT);
-
+	m_ringButton.Create(L"",Data::g_comboxBMPID[0][Data::g_skinstyle],
+		Data::g_comboxBMPID[1][Data::g_skinstyle], WS_CHILD|WS_VISIBLE,
+		CRect(xbegin+167,ybegin,xbegin+167+58,ybegin+height+7), this, IDC_SETTING_RINGSELECT);
+	
 	m_ringList.Create(WS_CHILD|LVS_REPORT|LVS_NOCOLUMNHEADER|LVS_NOSORTHEADER,
-		CRect(xbegin,ybegin+38,xbegin+223,ybegin+38+150), this, IDC_SETTING_LSTRING, TRUE, 1);
+		CRect(xbegin,ybegin+38,xbegin+226,ybegin+38+150), this, IDC_SETTING_LSTRING, TRUE, 1);
 	m_ringList.SetListColor(Data::g_listctrlBackRGB1[Data::g_skinstyle], 
 		Data::g_listctrlBackRGB2[Data::g_skinstyle]);
 	m_ringList.InsertColumn(0, _T("Filename"), LVCFMT_LEFT, 508-194-32);
 	m_ringList.ShowWindow_(SW_HIDE);
 
-	m_ringStatic.Create(L"", WS_CHILD, CRect(xbegin-2,ybegin+34-3,xbegin-2+223+6,ybegin+34-3+156), this);
+	m_ringStatic.Create(L"", WS_CHILD, CRect(xbegin-2,ybegin+34-3,xbegin-2+226+8,ybegin+34-3+156), this);
 	m_ringStatic.SetBorder(TRUE);
 
-	m_cmbSoundTip.CreateEx(WS_CHILD|WS_VISIBLE, 
-		CRect(xbegin-4, 205+105-2, xbegin+width-4, 205+105-2+153), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP,24,24,32,-1);
-	m_cmbSoundTip.ShowWindow(SW_HIDE);
-
+	m_cmbSoundTip.Create(WS_CHILD|WS_VISIBLE, 
+		CRect(xbegin-4, 205+105-5, xbegin+width, 205+105-5+153), this, IDC_COMBOBOX_CONTACTGROUP_SOUNDTIP);
+	
 	m_pImageList1 = new CImageList();
 	m_pImageList1->Create(32, 32, ILC_COLOR32|ILC_MASK, 6, 6);   
 	CBitmap bm;
@@ -270,7 +252,6 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 	{
 		CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		main->m_pWarningNoFlashDlg->SetTitle("不能新建SIM组别");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 		return ;
 	}
 
@@ -320,7 +301,7 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 		result = Data::ContactGroup::GetFromDatabase(filter);
 		if (!result.empty())
 		{
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetTitle(L"新建组别重复");     //提示该类别已存在
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(1);     //提示该类别已存在
 			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 			return;
 		}
@@ -340,6 +321,7 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 //	{
 //		++sel;
 //	}
+//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->SetTypeListSelected(sel);
 //	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowItemsInList();
 	
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUp();
@@ -348,7 +330,7 @@ void CContactGroupDlg::OnButtonContactGroupOk()
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowUpGroupInfo();
 
 
-	ShowWindow_(SW_HIDE);
+	ShowWindow(FALSE);
 	SipShowIM(SIPF_OFF);
 	
 	m_ringList.ShowWindow_(SW_HIDE);
@@ -373,7 +355,7 @@ void CContactGroupDlg::OnButtonContactGroupDelete()
 	//	std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_CONTACTGROUP);
 	//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
 		
-		CString title = "确认删除该组别吗,连同组别中的名片?";
+		CString title = "确认删除该组别吗?";
 		int count = 1 ;
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(title,0);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
@@ -672,24 +654,23 @@ LRESULT CContactGroupDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	// TODO: Add your specialized code here and/or call the base class
 	switch (message)
 	{
-		case WM_DELETESELITEM:
-		{
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-			std::string filter = "groupId = " + Util::StringOp::FromInt(m_pContactGroup->id());
-			Data::Contact::Remove(filter);
-			m_pContactGroup->Remove();
+	case WM_DELETESELITEM:
+	{
+		std::string filter = "groupId = " + Util::StringOp::FromInt(m_pContactGroup->id());
+		Data::Contact::Remove(filter);
+		m_pContactGroup->Remove();
 
-			main->m_pDeleteTipDlg->SetProcessPos(1);
-			main->m_pContactDlg->ClearUp();
-			main->m_pContactDlg->ClearUpGroup();
-			main->m_pContactDlg->FromGroupDataBase();
-			main->m_pContactDlg->ShowUpGroupInfo();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(1);
 
-			main->m_pContactDlg->OnClickMJPG(0,0);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUp();
 
-			ShowWindow_(SW_HIDE);
-		}
-		break;
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ClearUpGroup();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->FromGroupDataBase();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ShowUpGroupInfo();
+
+		ShowWindow(FALSE);
+	}
+	break;
 	}
 	return CDialog::WindowProc(message, wParam, lParam);
 }

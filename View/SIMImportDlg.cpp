@@ -70,7 +70,7 @@ BOOL CSIMImportDlg::OnInitDialog()
 	
 	// TODO: Add extra initialization here
 
-	m_procbar.Create(WS_CHILD, CRect(180+35, 105+216 , 180+35+367, 105+216+27), this, 0xFF10);
+	m_procbar.Create(WS_CHILD, CRect(180+35, 105+216 , 180+35+185, 105+216+27), this, IDC_PBAR_SOUNDDLG_PROCESS);
 
 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(180, 105, 180+440,105+270), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\SIM导入.xml");
@@ -79,7 +79,8 @@ BOOL CSIMImportDlg::OnInitDialog()
 	m_MJPGList.SetUnitText(2, L"", FALSE);
 	m_MJPGList.SetUnitIsShow(3, FALSE);
 
-	m_bOK = false;
+	m_pContact = boost::shared_ptr<Data::Contact>(new Data::Contact);	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -102,12 +103,6 @@ void CSIMImportDlg::SetUnit(Destination des)
 	m_MJPGList.SetUnitIsDisable(3,true);
 	m_MJPGList.SetUnitIsShow(4,true,true);
 	m_MJPGList.SetUnitIsShow(3,true,true);
-
-	m_procbar.ShowWindow(SW_HIDE);
-	m_MJPGList.SetUnitIsShow(1001,true,true);
-	m_procbar.SetPos(0);
-
-	m_bOK = false;
 
 }
 
@@ -177,19 +172,13 @@ std::string  GetAlias(std::string name)
 
 void CSIMImportDlg::OnBtnOK()
 {	
-	if (!m_bOK)
-	{	
-		m_bOK = true;
-		m_MJPGList.SetUnitIsShow(1001,false,true);
-		::PostMessage(m_handle, WM_SIM_IMPORT,m_enumDes, 0);
-	}
-
+	m_procbar.ShowWindow(SW_SHOW);
+	::PostMessage(m_handle, WM_SIM_IMPORT,m_enumDes, 0);
 }
 
 void CSIMImportDlg::SetProcessMax(int max )
 {
-	m_procbar.ShowWindow(SW_SHOW);
-	m_MJPGList.SetUnitIsShow(1001,true,true);
+	m_procbar.ShowWindow(SW_HIDE);
 	m_procbar.SetParam(0,0,max,1);
 	m_procbar.SetPos(0);
 	m_iMaxPos = max;
@@ -201,6 +190,5 @@ void CSIMImportDlg::SetProcessPos(int npos)
 	if (npos == m_iMaxPos)
 	{
 		SetTimer(1,100,NULL);
-		m_iMaxPos = 0;
 	}
 }

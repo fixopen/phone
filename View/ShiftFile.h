@@ -34,7 +34,6 @@ public:
 	void OnClickCancel();
 	
 	HWND m_handle;
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 // Dialog Data
 	//{{AFX_DATA(CShiftFile)
 	enum { IDD = IDD_DIALOG_SIMIMPORT};
@@ -60,6 +59,7 @@ protected:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 	//}}AFX_MSG
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnClickOk();
 	DECLARE_MESSAGE_MAP()
 };

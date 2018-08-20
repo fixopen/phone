@@ -18,24 +18,16 @@
 
 #include "../control/MmsShow.h"
 
-#define MMS_RECIVE_BOX 500
-#define MMS_SEND_BOX 500
-#define MMS_DRAFT_BOX 500
-
 class CMMSDlg : public CDialog
 {
 // Construction
 public:
-	MmsShow			m_MmsShow;	//彩信图片显示控件
+//	C3GSMSListDlg   *m_pSMSListDlg;
+	C3GSMSDetailDlg *m_pSMSDetailDlg;
+
 	CMJPGStatic		m_MJPGList;
 	CMMSDlg(CWnd* pParent = NULL);   // standard constructor
 
-	double	m_MmsSize;  //wangzhenxing20100609
-	int m_picCount;
-	int m_mp3Count;
-	BOOL m_isMid;
-	int m_nSelVideo;
-	
 // Dialog Data
 	//{{AFX_DATA(C3GSMSDlg)
 	enum { IDD = IDD_DIALOG_MMS };
@@ -52,29 +44,7 @@ public:
 	//}}AFX_VIRTUAL
 
 private:
-
-	enum ImageAction{
-		insertImage,
-		deleteImage,
-		saveImage,
-	};
-	enum AudioAction{
-		insertAudio,
-		deleteAudio,
-		saveAudio,
-	};
-
-	enum AudioOperate{
-		play,
-		stop,
-	};
-
-	enum Action{
-		up_page,
-		down_page,
-		current_page,
-	};
-
+	
 	CCELineEdit				m_senderEdit1;//发信人1-5
 	CCELineEdit				m_senderEdit2;
 	CCELineEdit				m_senderEdit3;
@@ -89,15 +59,13 @@ private:
 	std::vector<CString>    m_vTelnum;//发信人的电话号码
 	std::map<int,CString>	m_mapTelnum;//保存联系人的电话
 	int						m_iCurrentPage;//当前在第几页
-	int						m_nInsesrtIndex;//
 	int const				pageSize;
-	ImageAction				m_nImageAction;//图片动作类型
-	AudioAction				m_nAudioAction;//音频文件
-	AudioOperate			m_nAudioOperate;
-	int n ;
-	int m_pageCount;
-	int m_currentPage;
-
+	MmsShow					m_MmsShow;//彩信图片显示控件
+	enum Action{
+		up_page,
+		down_page,
+		current_page,
+		};
 public:
 
 	void initDataBase(SMSDETAILTYPE type,  int smsid = -1, BOOL reDraw = FALSE);
@@ -109,45 +77,19 @@ public:
 	void SendMMS();
 	void SetSender(std::vector<CString> telnum);//设置发信好人号码
 	void SetAppend(std::vector<CString> append);//设置跟名字绑定的号码
-	void SaveDraft(bool tip = true);
-	void CopyData(CString srcpath,CString despath);//把一个目录下的所有文件拷贝到另一个目录
+	void SaveDraft();
 	void SetMmsContent(boost::shared_ptr<Data::MMSData> pmmsdata ,bool baddname = false);
 	void Preview();//预览
 	void InsertPicture(CString path);
 	void OnBtnPicture();
-	void InsertAudio(CString path);//插入音频
-	void OnBtnAudio();//图片处理
-	void OnBtnPlayAudio();//播放音频
-	void StopAudio();
 	void GetSender(std::vector<CString> &telnum);
-	void SetPage();//
-	void Clear();
 	void ShowWindow_(int nCmdShow);
-	int  GetMMSMaxSize();
-	void SetMmsSize(double size);
-	void TransferSender(std::vector<CString> Sender);//把短息里的发件人插入到mms
-	void TransferTelnum(std::vector<CString> telnum);//
-	void FindNumber(std::string &adr);
-	void OnBtnCancel();
-	void ClearParPage();
-
-	//Mms 
-	int  MmsBoxCount(Data::MMSData::Type type);//彩信的数目
-	bool SaveMmsData(boost::shared_ptr<Data::MMSData> pmmsdata,Data::MMSData::Type type);
-	void SaveMmsData(Data::MMSData *pmmsdata);
-	void MmsDelOldest(Data::MMSData::Type type);//删除彩信里最早插入的
-
-	//彩信回复
-	void SetReplayStatus();//把界面设置成回复的状态
-
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(C3GSMSDlg)
 	virtual BOOL OnInitDialog();
 //	afx_msg void OnTimer(UINT nIDEvent);
-	LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

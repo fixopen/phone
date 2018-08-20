@@ -17,7 +17,6 @@ static char THIS_FILE[] = __FILE__;
 #include<algorithm>
 
 extern g_isAutoPlay;
-extern g_bManulStop;
 static BOOL gbPhotoPauseCount = 0;
 extern BOOL DetectDIR(TCHAR *sDir);
 /////////////////////////////////////////////////////////////////////////////
@@ -119,13 +118,12 @@ void CMainPhotoDlg::OnExit()
 	playerDlg_->player_->ExitPlayer(TRUE);
 
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)this, (LPARAM)SW_HIDE);
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->PopbackIcon();
 }
 
 //播放
 void CMainPhotoDlg::OnPlayer(int index)
 {
-	if (g_isAutoPlay)
+	if (g_isAutoPlay)   ////
 	{
 		playerDlg_->StopTimer();
 		g_isAutoPlay = FALSE;
@@ -135,7 +133,6 @@ void CMainPhotoDlg::OnPlayer(int index)
 	{
 		playerDlg_->SetResumeTimer();
 		g_isAutoPlay = TRUE;
-		g_bManulStop = FALSE;
 		m_MJPGList.SetUnitIsDownStatus(3, TRUE);
 	}
 	m_MJPGList.SetUnitIsShow(3, TRUE);
@@ -144,7 +141,6 @@ void CMainPhotoDlg::OnPlayer(int index)
 //前一条
 void CMainPhotoDlg::OnPre()
 {
-	playerDlg_->StopTimer();
 	gbPhotoPauseCount = 0;
 	playerDlg_->OnKeyDown('U', 0, 0);
 	if (m_selectCurrentFile == 1)
@@ -157,15 +153,10 @@ void CMainPhotoDlg::OnPre()
 	}
 
 	SetCurrentFile();
-	playerDlg_->SetResumeTimer();
-
-	m_MJPGList.SetUnitIsDownStatus(2, FALSE);
-	m_MJPGList.SetUnitIsShow(2, TRUE);
 }
 //后一条
 void CMainPhotoDlg::OnBack()
 {
-	playerDlg_->StopTimer();
 	gbPhotoPauseCount = 0;
 	playerDlg_->OnKeyDown('D', 0 , 0);
 	if (m_selectCurrentFile == m_selectFileCount)
@@ -178,60 +169,40 @@ void CMainPhotoDlg::OnBack()
 	}
 
 	SetCurrentFile();
-	playerDlg_->SetResumeTimer();
-
-	m_MJPGList.SetUnitIsDownStatus(4, FALSE);
-	m_MJPGList.SetUnitIsShow(4, TRUE);
 }
 
 void CMainPhotoDlg::OnFirst()
 {
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	playerDlg_->StopTimer();
 	main->playerimage_->First();
 	m_selectCurrentFile = 1;
 	SetCurrentFile();
-	playerDlg_->SetResumeTimer();
-
-	m_MJPGList.SetUnitIsDownStatus(1, FALSE);
-	m_MJPGList.SetUnitIsShow(1, TRUE);
 }
 
 void CMainPhotoDlg::OnLast()
 {
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	playerDlg_->StopTimer();
 	main->playerimage_->Last();
 	m_selectCurrentFile = m_selectFileCount;
 	SetCurrentFile();
-	playerDlg_->SetResumeTimer();
-
-	m_MJPGList.SetUnitIsDownStatus(5, FALSE);
-	m_MJPGList.SetUnitIsShow(5, TRUE);
 }
 
 void CMainPhotoDlg::NarrowPicture()
 {
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	playerDlg_->StopTimer();
 	main->playerimage_->NarrowPlay(m_PhotoList[m_selectCurrentFile-1]);
-	playerDlg_->SetResumeTimer();
 }
 
 void CMainPhotoDlg::ZoomPicture()
 {
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	playerDlg_->StopTimer();
 	main->playerimage_->ZoomPlay(m_PhotoList[m_selectCurrentFile-1]);
-	playerDlg_->SetResumeTimer();
 }
 
 void CMainPhotoDlg::RotatePicture()
 {
 	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	playerDlg_->StopTimer();
 	main->playerimage_->RotatePicture(m_PhotoList[m_selectCurrentFile-1]);
-	playerDlg_->SetResumeTimer();
 }
 
 void CMainPhotoDlg::SetCurrentFile()
@@ -253,12 +224,12 @@ void CMainPhotoDlg::OnOpenFile()
 //全屏播放
 void CMainPhotoDlg::OnPlayerAll()
 {
-	playerDlg_->StopTimer();
+//	GetParent()->SendMessage(WM_PLAYPHOTO, 2);	//全屏
+
 	SetAllScreenPlayer(TRUE);
 	playerDlg_->SetActiveWindow();
 
 	::SetCursorPos(799, 479);
-	playerDlg_->SetResumeTimer();
 }
 
 void CMainPhotoDlg::OnScreenSave()
@@ -266,22 +237,23 @@ void CMainPhotoDlg::OnScreenSave()
 	//wangzhenxing20091011
 	int nFileSelected = 0;
 	int ncount = m_PhotoList.size();
-	m_ScreenPhotoList = m_PhotoList;
 	FILE *file =NULL;
 	for(int i = 0; i < ncount; i++)
 	{
-		std::string filename = Util::StringOp::FromCString(m_PhotoList[i]);
-		nFileSelected++;
-		if(nFileSelected == 1)
-		{
-			file = fopen("/flashdrv/my_photo/screensave.pls", "w+b");
-			fwrite(filename.c_str(), sizeof(char), filename.size(), file);
-		}
-		else
-		{
-			fwrite(filename.c_str(), sizeof(char), filename.size(), file);
-		}
-		fwrite("\r\n", sizeof(char), 2, file);
+// 		int val = m_PhotoList[i];
+// 		if(val == 1)
+// 		{
+			nFileSelected++;
+			if(nFileSelected == 1)
+			{
+				file = fopen("/flashdrv/my_photo/screensave.pls", "w+b");
+				fwrite(m_PhotoList[i], sizeof(char), m_PhotoList[i].GetLength(), file);
+			}
+			else
+			{
+				fwrite(m_PhotoList[i], sizeof(char), m_PhotoList[i].GetLength(), file);
+			}
+//		}
 	}
 	if(file)
 		fclose(file);
@@ -319,14 +291,6 @@ void CMainPhotoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		OnPre();
 		break;
 	case 3:			//播放
-		if(m_MJPGList.GetUnitIsDownStatus(w))
-		{
-			g_bManulStop = TRUE;  //人工操作暂停
-		}
-		else
-		{
-			g_bManulStop = FALSE;
-		}
 		OnPlayer();
 		break;      
 	case 4:			//下一条
@@ -340,8 +304,6 @@ void CMainPhotoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 11:			//保存至屏保
 		OnScreenSave();
-		m_MJPGList.SetUnitIsDownStatus(11, FALSE);
-		m_MJPGList.SetUnitIsShow(11, TRUE);
 		break;
 	case 20:        //放大
 		ZoomPicture();
@@ -382,11 +344,7 @@ void CMainPhotoDlg::OnTimer(UINT nIDEvent)
 		KillTimer(0x100);
 		if(IsWindowVisible())
 		{
-			playerDlg_->ShowWindow(SW_SHOW);
-			playerDlg_->player_->PlayerImage();
-			playerDlg_->SetResumeTimer();
-			::Sleep(200);
-			main->SetForegroundWindow();
+			OnPlayer(-1);
 		}
 	}
 	else if(nIDEvent == 100)
@@ -394,16 +352,6 @@ void CMainPhotoDlg::OnTimer(UINT nIDEvent)
 		KillTimer(100);
 		if(memcmp(m_chDir, _T("/flashdrv/my_photo/"), wcslen(m_chDir)*2) == 0)
  			main->m_pMainDlg->m_p3GHomePicDlg->SetPlayList(_T("/flashdrv/my_photo/"));
-	}
-	else if(nIDEvent == 0x101)
-	{
-		SetForegroundWindow();
-		KillTimer(0x101);
-		if(0 == main->phone_->m_BatteryStatus.batteryType)
-		{
-			main->phone_->m_BatteryStatus.typeChange = 1;
-			::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_CHANGE_DCBATTERY, 0, 0);
-		}
 	}
 	
 	CDialog::OnTimer(nIDEvent);
@@ -427,17 +375,7 @@ void CMainPhotoDlg::OnOutEvent(WPARAM w, LPARAM l)
 			if(gbPhotoPauseCount && !main->m_AlarmShowDlg->IsWindowVisible() && !main->m_pTelephoneDlg->IsWindowVisible())
 			{
 				gbPhotoPauseCount = 0;
-				if(g_bManulStop)
-				{
-					playerDlg_->ShowWindow(SW_SHOW);
-					playerDlg_->player_->PlayerImage();
-					::Sleep(200);
-					SetForegroundWindow();
-				}
-				else
-				{
-					SetTimer(0x100, 5, NULL);
-				}
+				SetTimer(0x100, 5, NULL);
 			}
 		}
 	}

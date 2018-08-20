@@ -125,7 +125,7 @@ BOOL CFireWallDlg::OnInitDialog()
 	m_btnCancel.SetBackRGB(Data::g_partFrameMainBackRGB[Data::g_skinstyle]);
 	*/
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\电话防火墙.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 600, 420));
 
@@ -140,6 +140,12 @@ BOOL CFireWallDlg::OnInitDialog()
 // 	memcpy(ts[0].sTxt, Data::LanguageResource::Get(Data::RI_FIREWALL_TITLE).c_str(), Data::LanguageResource::Get(Data::RI_FIREWALL_TITLE).length());
 // 	
 // 	m_sticBackground.SetTextStruct(ts, 1);
+
+	/*
+	SetParameters(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType(),
+		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration().GetTotalSeconds());
+		*/
 
 	if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->isFirewall() && ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->firewallType() == 3) //掉电后让限时防火墙失效
 	{

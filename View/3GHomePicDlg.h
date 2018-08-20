@@ -40,10 +40,9 @@ public:
 	void OnOK_();
 	void OnPlayer(int index = 0);
 	void FindSelectPage();
-	void ShowWindow_(int nCmdShow, BOOL isBtnShow = TRUE);
+	void ShowWindow_(int nCmdShow);
 	void AddFilePicture();
 	void SetInitShow();
-	void SetScreenPicture();
 
 	// Dialog Data
 	//{{AFX_DATA(C3GHomePicDlg)
@@ -55,7 +54,6 @@ private:
 	std::vector<CString> m_fileDir;
 	std::vector<int> m_isFileSelect;
 	
-	unsigned int m_selCount;
 	unsigned int m_cardType1;
 	unsigned int m_cardType2;
 	unsigned int m_uiType;
@@ -69,8 +67,7 @@ private:
 	
 	TCHAR	m_chDir[128];
 	BOOL    m_isSelectAll;
-	BOOL	m_UnitStatus[5];
-	std::vector<CString> m_sPreDir;
+	BOOL m_UnitStatus[5];
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(C3GHomePicDlg)
@@ -84,7 +81,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(C3GHomePicDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnTimer(UINT nIDEvent);
+//	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 

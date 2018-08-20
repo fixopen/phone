@@ -73,34 +73,14 @@ BOOL ComWarp::CloseComm()
 int ComWarp::WriteComm(void* pData, int nLength)   
 {   
 	DWORD dwNumWrite;   // 串口发出的数据长度    
-	
-//	Dprintf("\r\nWrite_Begin:\r\n");
-//	Dprintf((char *)pData);
 
-	WriteFile(hComm, pData, (DWORD)nLength, &dwNumWrite, NULL);  
-	
-//	Dprintf("\r\nWrite_Middle:\r\n");
-//	Dprintf((char *)pData);
-
+	WriteFile(hComm, pData, (DWORD)nLength, &dwNumWrite, NULL);   
 	if (dwNumWrite > 0)
 	{
-	//	extern VOID WriteLog(char *ptr);
-	//	WriteLog((char *)pData);
-
-		VOID WriteMyLog_(char *ptr, int size);
-		WriteMyLog_((char *)pData,nLength);
-	
-		Dprintf("\r\nWrite: %d\r\n", dwNumWrite);
+		extern VOID WriteLog(char *ptr);
+		WriteLog((char *)pData);
+//		Dprintf("Write: %d ", dwNumWrite);
 		Dprintf((char *)pData);
-
-	//	extern void EditPrintf(char *ptr);
-	//	EditPrintf((char *)pData);
-
-	}
-	else //add by qi 20100913
-	{
-		DWORD D = GetLastError();
-		Dprintf("Write_Error:%d\r\n",D);
 	}
 	return (int)dwNumWrite;   
 }   
@@ -124,22 +104,15 @@ int ComWarp::ReadComm(void* pData, int nLength)
 		ret += dwNumRead;
 		if (dwNumRead > 0)
 		{
-		//	extern VOID WriteLog(char *ptr);
-		//	WriteLog((char *)pData);
-
-			VOID WriteMyLog_(char *ptr, int size);
-			WriteMyLog_((char*)pData,dwNumRead);
+			extern VOID WriteLog(char *ptr);
+			WriteLog((char *)pData);
 			
 			Dprintf((char *)pData);
-
-	//		extern void EditPrintf(char *ptr);
-	//		EditPrintf((char *)pData);
-			
 			break;
 		}
 		else if (dwNumRead == 0)
 		{
-			//TRACE(L"00000000000000000000000000000000000000000\n");
+			TRACE(L"00000000000000000000000000000000000000000\n");
 			// Dprintf("00000000000000000000000000000000000000000\n");
 		}
 		::Sleep(0);

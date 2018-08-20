@@ -57,7 +57,6 @@ struct UNIT{
 	int 				m_nIsScroll;		//控件是否属于滚动 分组中    0 不滚动  1  page1  2 page2
 	CWnd				*m_pUnitWnd;		//记录 edit radio check commbox Wnd
 	BOOL				m_bIsDisable;		//是否设置点击不响应.
-	BOOL				m_bDirty;
 };
 
 enum PLAYCONFIGITEMTYPE{type_ADVItem, type_SoundItem, type_KeyItem, type_MainFile, type_HungonFile};

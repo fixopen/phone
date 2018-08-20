@@ -27,7 +27,6 @@ public:
 	CMJPGStatic		m_MJPGList;
 	CCEMoveTxtStatic *m_MoveText;
 
-	bool m_bAllScreen;
 	int m_ClickType;
 	int m_IsPlay;
 	BOOL m_IsSound;
@@ -51,10 +50,6 @@ public:
 	void CalculatePage(int dataCount);
 	void OnClickShowList(int unitNO);
 	void OnDBClickShowList(int unitNO);
-	void HandleAudio(bool bt);
-
-	afx_msg void OnPlayer();
-	void SetAllScreenPlayer(BOOL flag);
 
 public:
 	CPlayerDlg	*playerDlg_; 
@@ -70,7 +65,6 @@ public:
 
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnOpenFile();
-	afx_msg void OnExit();
 
 
 // Overrides
@@ -86,6 +80,8 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CMainVideoDlg)
 	virtual BOOL OnInitDialog();
+	afx_msg void OnExit();
+	afx_msg void OnPlayer();
 	afx_msg void OnStop();
 	afx_msg void OnPre();
 	afx_msg void OnBack();

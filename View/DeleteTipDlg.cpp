@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "..\multimediaphone.h"
-#include "..\MultimediaPhoneDlg.h"
 #include "deletetipdlg.h"
 #include "../Data/LanguageResource.h"
 #include "../Data/SkinStyle.h"
@@ -15,7 +14,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern BOOL g_bStartring;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDeleteTipDlg dialog
@@ -92,46 +90,11 @@ void CDeleteTipDlg::OnButtonDeleteTipOk()
 	else
 	{
 		ShowWindow_(SW_HIDE);
-		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->IsSendMessage(TRUE);
-	}
-	
-	if ( 0 == m_ntype)
-	{
-		if (m_handle)
-		{
-			::PostMessage(m_handle, WM_DELETESELITEM, 0, 0);
-			if(g_bStartring)
-			{
-				::PostMessage(m_handle, WM_RINGTIME, 0, 0);
-			}
-		}
-	}
-	else if ( 1 == m_ntype)
-	{
-		if (m_handle)
-		{
-			::PostMessage(m_handle, WM_SEND_MMS, m_ntype, 0);
-		}
-		
-	}
-	else if ( 2 == m_ntype || 3 == m_ntype)
-	{
-		if (m_handle)
-		{
-			::PostMessage(m_handle, WM_DELETESELITEM, m_ntype, 0);
-		}
-	}
-	else if ( 4 == m_ntype)//用于名片的群组发送
-	{
-		if (m_handle)
-		{
-			::PostMessage(m_handle, WM_GROUP_SEND, 0, 0);
-		}
 	}
 
+	::PostMessage(m_handle, WM_DELETESELITEM, m_ntype, 0);
 	KillTimer(100);
 	m_ntype = 0 ;
-	m_handle = NULL;
 
 }
 
@@ -139,19 +102,7 @@ void CDeleteTipDlg::OnButtonDeleteTipCancel()
 {	
 	ShowWindow_(SW_HIDE);
 	KillTimer(100);
-	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->IsSendMessage(TRUE);
-
-	if ( 1 == m_ntype)
-	{
-		if (m_handle)
-		{
-			::PostMessage(m_handle, WM_SEND_MMS, m_ntype, 1);
-		}
-		
-	}
-
-	m_handle = NULL;
-	m_ntype  = 0 ;
+//	ShowWindow(SW_HIDE);
 }
 
 void CDeleteTipDlg::SetHWnd(HWND handle)
@@ -198,11 +149,9 @@ void CDeleteTipDlg::SetDelTip(CString tips)
 	//m_sticTip.SetWindowText(tips);
 }
 
-void CDeleteTipDlg::SetTitle(CString title,int isTime,int type,TEXTSIZE font)
-{
-	m_iMaxPos = 0	 ;
-	m_ntype   = type ;
-	m_MJPGList.SetUnitFont(1,font);
+void CDeleteTipDlg::SetTitle(CString title,int isTime )
+{	
+	m_iMaxPos = 0;
 	m_MJPGList.SetUnitText(1,title,true);
 	
 	if(isTime > 0)	

@@ -18,7 +18,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPasswordDlg dialog
-std::string  g_tempPassword = "";
+
 
 CPasswordDlg::CPasswordDlg(CWnd* pParent /*=NULL*/)
 	: CCEDialog(CPasswordDlg::IDD, pParent)
@@ -28,9 +28,9 @@ CPasswordDlg::CPasswordDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	m_passwordType = SETTINGPLAY_PASSWORD;
 	m_password = "";
+	m_tempPassword = "";
 	m_nStep = 0;
 	m_Owner = NULL;
-	m_nCtrl = 0;
 }
 
 void CPasswordDlg::DoDataExchange(CDataExchange* pDX)
@@ -44,9 +44,9 @@ void CPasswordDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CPasswordDlg, CCEDialog)
 	//{{AFX_MSG_MAP(CPasswordDlg)
-	ON_WM_PAINT()
 	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_BUTTON_PASSWORD_OK, OnButtonPasswordOk)
 	ON_BN_CLICKED(IDC_BUTTON_PASSWORD_CANCEL, OnButtonPasswordCancel)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 END_MESSAGE_MAP()
@@ -58,11 +58,10 @@ void CPasswordDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	switch(w)
 	{
 	case 1001:
-		KillTimer(4);
+//		OnButtonPasswordOk();
 		SettingOK();
 		break;
 	case 1000:
-		KillTimer(4);
 		OnButtonPasswordCancel();
 		break;
 	}
@@ -72,31 +71,23 @@ BOOL CPasswordDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-
-	//int xtop = 140 ;
-	int xtop = 190 ;
-	int ytop = 105 ;
-	int xbegin = 185 ;
-	int ybegin = 94 ;
-	int width = 200, height = 36;
-	int internal = 19;
 	
-	m_edtOldPassword.Create(WS_CHILD|ES_PASSWORD, CRect(190 +xtop, 120 + ytop, 401+xtop, ytop + 149), this, IDC_SETTING_PASSWORD1);
+	m_edtOldPassword.Create(WS_CHILD|ES_PASSWORD, CRect(190 +100, 120 + 137, 401+100, 137 + 149), this, IDC_SETTING_PASSWORD1);
 	m_edtOldPassword.SetLimitText(6);
 	m_edtOldPassword.SetLimitDiagital();
 
-	m_edtNewPassword1.Create(WS_CHILD|ES_PASSWORD, CRect(190+xtop, ytop+156, 401+xtop, ytop+185), this, IDC_SETTING_PASSWORD2);
+	m_edtNewPassword1.Create(WS_CHILD|ES_PASSWORD, CRect(190+100, 137+156, 401+100, 137+185), this, IDC_SETTING_PASSWORD2);
 	m_edtNewPassword1.SetLimitText(6);
 	m_edtNewPassword1.SetLimitDiagital();
 
-	m_edtNewPassword2.Create(WS_CHILD|ES_PASSWORD, CRect(190+xtop, ytop+192, 401+xtop, ytop+221), this, IDC_SETTING_PASSWORD3);
+
+	m_edtNewPassword2.Create(WS_CHILD|ES_PASSWORD, CRect(190+100, 137+192, 401+100, 137+221), this, IDC_SETTING_PASSWORD3);
 	m_edtNewPassword2.SetLimitText(6);
 	m_edtNewPassword2.SetLimitDiagital();
 		
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(xtop, ytop, xtop+440, ytop+270), this);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(100, 137, 540, 407), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\÷–Œƒ\\√‹¬Î—È÷§.xml");
-	m_MJPGList.SetMJPGRect(CRect(xtop, ytop, xtop+440, ytop+270));
-	
+	m_MJPGList.SetMJPGRect(CRect(100, 137, 540, 407));
 	m_MJPGList.SetUnitFont(0, font_20);
 	m_MJPGList.SetUnitFont(1, font_18);
 	m_MJPGList.SetUnitFont(2, font_18);
@@ -111,11 +102,30 @@ void CPasswordDlg::SetStaticDefaultColor(CCEStatic* cestatic)
 	// 	cestatic->SetColor(RGB(0, 0, 0), RGB(194,235,149));
 }
 
-void CPasswordDlg::SettingOK()
+void CPasswordDlg::OnButtonPasswordOk()
 {
 	CString s;
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if(m_passwordType == SETTINGPLAY_PASSWORD || m_passwordType == SETTINGSUPPER_PASSWORD || m_passwordType == SETTINGSCREEN_PASSWORD)
+	BOOL isError = FALSE;
+	if(PASSWORD_CHECKERROR == m_passwordType || PASSWORD_OLDERROR == m_passwordType || PASSWORD_NEWERROR == m_passwordType)
+	{
+		if(PASSWORD_CHECKERROR == m_passwordType && m_passwordType == CHECK_PINPASSWORD)
+		{
+			SetType(CHECK_PINPASSWORD);
+		}
+		if(PASSWORD_CHECKERROR == m_passwordType && m_passwordType == CHECK_PUKPASSWORD)
+		{
+			SetType(CHECK_PUKPASSWORD);
+		}
+		else
+		{
+			SipShowIM(SIPF_OFF);
+			ShowWindow_(FALSE);
+			
+			if(m_Owner && (PASSWORD_CHECKERROR == m_passwordType))
+				::SendMessage(m_Owner, WM_CHECKPASSWORD, 0, m_nCtrl);
+		}	
+	}
+	else if(m_passwordType == SETTINGPLAY_PASSWORD || m_passwordType == SETTINGSUPPER_PASSWORD)
 	{
 		CString s1, s2, s3;
 		GetDlgItemText(IDC_SETTING_PASSWORD1, s1);
@@ -123,30 +133,23 @@ void CPasswordDlg::SettingOK()
 		GetDlgItemText(IDC_SETTING_PASSWORD3, s3);
 		if(m_password != s1)
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"æ…√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtOldPassword.SetWindowText(L"");
+			SetType(PASSWORD_OLDERROR, m_nCtrl);
 		}
 		else if(s2 != s3)
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"–¬√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtNewPassword1.SetWindowText(L"");
-			m_edtNewPassword2.SetWindowText(L"");
+			SetType(PASSWORD_NEWERROR, m_nCtrl);
 		}
 		else
 		{
 			SipShowIM(SIPF_OFF);
 			//∏¯÷˜¥∞ø⁄∑¢ÀÕ–¬µƒ√‹¬Î
 			ShowWindow_(FALSE);
+//			theApp.inputDlg_->ShowWindow(FALSE);
 			if(m_Owner)
 			{
-				g_tempPassword = Util::StringOp::FromCString(s2);
-				main->m_pDeleteTipDlg->SetTitle(L"»∑∂®“™∏¸∏ƒ√‹¬Î¬£ø", 0);
-				main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-				main->m_pDeleteTipDlg->ShowWindow_(TRUE);
+				std::string strtemp = Util::StringOp::FromCString(s2);
+				const char *temp = strtemp.c_str();
+				::SendMessage(m_Owner, WM_SETTINGPASSWORD, (WPARAM)temp, /*strlen(temp)*/m_passwordType);
 				return;
 			}
 		}
@@ -157,24 +160,17 @@ void CPasswordDlg::SettingOK()
 		GetDlgItemText(IDC_SETTING_PASSWORD1, s1);
 		GetDlgItemText(IDC_SETTING_PASSWORD2, s2);
 		GetDlgItemText(IDC_SETTING_PASSWORD3, s3);
-		if(s1 == "")
+		if(s1 == "" || s2 == "")
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"æ…√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtOldPassword.SetWindowText(L"");
+			SetType(PASSWORD_NEWERROR, m_nCtrl);	//lxz 20090906
 		}
 		else if(s2 != s3)
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"–¬√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtNewPassword1.SetWindowText(L"");
-			m_edtNewPassword2.SetWindowText(L"");
+			SetType(PASSWORD_CHECKERROR, m_nCtrl);
 		}
 		else
 		{
-			char oldpin[10], newpin[10];
+			char oldpin[6], newpin[6];
 			std::string s1_, s2_;
 			s1_ = Util::StringOp::FromCString(s1);
 			s2_ = Util::StringOp::FromCString(s2);
@@ -186,10 +182,7 @@ void CPasswordDlg::SettingOK()
 			{
 				if(!ret)
 				{
-					main->m_pWarningNoFlashDlg->SetTitle(L"æ…√‹¬Î ‰»Î¥ÌŒÛ!");
-					main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-					main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-					m_edtOldPassword.SetWindowText(L"");
+					SetType(PASSWORD_CHECKERROR, m_nCtrl);   //lxz 20090906
 				}
 				else
 				{
@@ -206,14 +199,11 @@ void CPasswordDlg::SettingOK()
 		
 		if(s1 == "")
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtNewPassword1.SetWindowText(L"");
+			SetType(PASSWORD_CHECKERROR, m_nCtrl);
 		}
 		else
 		{
-			char oldpin[10];
+			char oldpin[6];
 			std::string s1_;
 			s1_ = Util::StringOp::FromCString(s1);
 			sprintf(oldpin, "%s", s1_.c_str());
@@ -222,10 +212,7 @@ void CPasswordDlg::SettingOK()
 			BOOL ret = pATCommanWarp->LockSim(oldpin);	
 			if(!ret)
 			{
-				main->m_pWarningNoFlashDlg->SetTitle(L"√‹¬Î ‰»Î¥ÌŒÛ!");
-				main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-				main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-				m_edtNewPassword1.SetWindowText(L"");
+				SetType(PASSWORD_CHECKERROR, m_nCtrl);
 			}
 			else
 			{
@@ -242,14 +229,11 @@ void CPasswordDlg::SettingOK()
 		
 		if(s1 == "")
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtNewPassword1.SetWindowText(L"");
+			SetType(PASSWORD_CHECKERROR, m_nCtrl);
 		}
 		else
 		{
-			char oldpin[10];
+			char oldpin[6];
 			std::string s1_;
 			s1_ = Util::StringOp::FromCString(s1);
 			sprintf(oldpin, "%s", s1_.c_str());
@@ -258,10 +242,7 @@ void CPasswordDlg::SettingOK()
 			BOOL ret = pATCommanWarp->UnlockSim(oldpin);	
 			if(!ret)
 			{
-				main->m_pWarningNoFlashDlg->SetTitle(L"√‹¬Î ‰»Î¥ÌŒÛ!");
-				main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-				main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-				m_edtNewPassword1.SetWindowText(L"");
+				SetType(PASSWORD_CHECKERROR, m_nCtrl);
 			}
 			else
 			{
@@ -275,28 +256,14 @@ void CPasswordDlg::SettingOK()
 	{
 		CString s1;
 		GetDlgItemText(IDC_SETTING_PASSWORD2, s1);
-
-		//add by qi 20100802
-		//≈–∂œPIN¬Îµƒ≥§∂»
-		if (s1.GetLength() < 4)
-		{	
-			main->m_pWarningNoFlashDlg->SetTitle(L"PIN¬Î”¶÷¡…Ÿ4Œª");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			return;
-		}
-		//
-
+		
 		if(s1 == "")
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtNewPassword1.SetWindowText(L"");
+			SetType(PASSWORD_CHECKERROR, m_nCtrl);
 		}
 		else
 		{
-			char oldpin[10];
+			char oldpin[6];
 			std::string s1_;
 			s1_ = Util::StringOp::FromCString(s1);
 			sprintf(oldpin, "%s", s1_.c_str());
@@ -315,14 +282,11 @@ void CPasswordDlg::SettingOK()
 		
 		if(s1 == "")
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtNewPassword1.SetWindowText(L"");
+			SetType(PASSWORD_CHECKERROR, m_nCtrl);
 		}
 		else
 		{
-			char oldpin[10];
+			char oldpin[6];
 			std::string s1_;
 			s1_ = Util::StringOp::FromCString(s1);
 			sprintf(oldpin, "%s", s1_.c_str());
@@ -341,34 +305,224 @@ void CPasswordDlg::SettingOK()
 	
 		if(m_password != s1)
 		{
-			main->m_pWarningNoFlashDlg->SetTitle(L"√‹¬Î ‰»Î¥ÌŒÛ!");
-			main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-			main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			m_edtNewPassword1.SetWindowText(L"");
+			SetType(PASSWORD_CHECKERROR, m_nCtrl);
 		}
 		else
 		{
 			SipShowIM(SIPF_OFF);
-			ShowWindow_(SW_HIDE);
+			ShowWindow_(FALSE);
+			if(m_Owner)
+				::SendMessage(m_Owner, WM_CHECKPASSWORD, 1, m_nCtrl);
+		}
+	}
+}
+
+void CPasswordDlg::SettingOK()
+{
+	CString s;
+	if(m_passwordType == SETTINGPLAY_PASSWORD || m_passwordType == SETTINGSUPPER_PASSWORD || m_passwordType == SETTINGSCREEN_PASSWORD)
+	{
+		CString s1, s2, s3;
+		GetDlgItemText(IDC_SETTING_PASSWORD1, s1);
+		GetDlgItemText(IDC_SETTING_PASSWORD2, s2);
+		GetDlgItemText(IDC_SETTING_PASSWORD3, s3);
+		if(m_password != s1)
+		{
+			m_MJPGList.SetUnitText(1, _T("æ…√‹¬Î ‰»Î¥ÌŒÛ£°"), TRUE);
+			m_edtOldPassword.SetWindowText(L"");
+		}
+		else if(s2 != s3)
+		{
+			m_MJPGList.SetUnitText(2, L"–¬√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtNewPassword1.SetWindowText(L"");
+			m_edtNewPassword2.SetWindowText(L"");
+		}
+		else
+		{
+			SipShowIM(SIPF_OFF);
+			//∏¯÷˜¥∞ø⁄∑¢ÀÕ–¬µƒ√‹¬Î
+			ShowWindow_(FALSE);
 			if(m_Owner)
 			{
-				if(m_passwordType == CHECK_PLAYPASSWORD)
+				std::string strtemp = Util::StringOp::FromCString(s2);
+				m_tempPassword = strtemp.c_str();
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"»∑∂®“™∏¸∏ƒ√‹¬Î¬£ø", 0);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
+				return;
+			}
+		}
+	}
+	else if(m_passwordType == SETTINGPIN_PASSWORD)			//…Ë÷√PIN¬Î
+	{
+		CString s1, s2, s3;
+		GetDlgItemText(IDC_SETTING_PASSWORD1, s1);
+		GetDlgItemText(IDC_SETTING_PASSWORD2, s2);
+		GetDlgItemText(IDC_SETTING_PASSWORD3, s3);
+		if(s1 == "")
+		{
+			m_MJPGList.SetUnitText(1, L"æ…√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtOldPassword.SetWindowText(L"");
+		}
+		else if(s2 != s3)
+		{
+			m_MJPGList.SetUnitText(2, L"–¬√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtNewPassword1.SetWindowText(L"");
+			m_edtNewPassword2.SetWindowText(L"");
+		}
+		else
+		{
+			char oldpin[6], newpin[6];
+			std::string s1_, s2_;
+			s1_ = Util::StringOp::FromCString(s1);
+			s2_ = Util::StringOp::FromCString(s2);
+			sprintf(oldpin, "%s", s1_.c_str());
+			sprintf(newpin, "%s", s2_.c_str());
+			extern Util::ATCommandWarp* GetATCommandWarp();
+			Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
+			BOOL ret = pATCommanWarp->ChangePin(oldpin, newpin);	
+			{
+				if(!ret)
 				{
-					::SendMessage(m_Owner, CHECK_PLAYPASSWORD, 1, m_nCtrl);
+					m_MJPGList.SetUnitText(1, L"æ…√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+					m_edtOldPassword.SetWindowText(L"");
 				}
-				else if(m_passwordType == CHECK_SUPPERPASSWORD)
+				else
 				{
-					::SendMessage(m_Owner, CHECK_SUPPERPASSWORD, 1, m_nCtrl);
-				}
-				else if(m_passwordType == CHECK_SCREENPASSWORD)
-				{
-					main->m_pMainDlg->m_mainScreenSaveDlg_->WindowProc(CHECK_SCREENPASSWORD, 1, m_nCtrl);
-				}
-				else if(m_passwordType == CHECK_CLEARPASSWORD)
-				{
-					::SendMessage(m_Owner, CHECK_CLEARPASSWORD, 1, m_nCtrl);
+					SipShowIM(SIPF_OFF);
+					ShowWindow_(FALSE);   //lxz 20090906
 				}
 			}
+		}
+	}
+	else if(m_passwordType == CHECK_LOCKPINPASSWORD)		// ‰»Îpin¬Î
+	{
+		CString s1;
+		GetDlgItemText(IDC_SETTING_PASSWORD2, s1);
+		
+		if(s1 == "")
+		{
+			m_MJPGList.SetUnitText(2, L"√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtNewPassword1.SetWindowText(L"");
+		}
+		else
+		{
+			char oldpin[6];
+			std::string s1_;
+			s1_ = Util::StringOp::FromCString(s1);
+			sprintf(oldpin, "%s", s1_.c_str());
+			extern Util::ATCommandWarp* GetATCommandWarp();
+			Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
+			BOOL ret = pATCommanWarp->LockSim(oldpin);	
+			if(!ret)
+			{
+				m_MJPGList.SetUnitText(2, L"√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+				m_edtNewPassword1.SetWindowText(L"");
+			}
+			else
+			{
+				SipShowIM(SIPF_OFF);
+				ShowWindow_(FALSE);
+				::SendMessage(m_Owner, WM_CHECKPASSWORD, 0, m_nCtrl);
+			}
+		}
+	}
+	else if(m_passwordType == CHECK_UNLOCKPINPASSWORD)		// ‰»Îpin¬Î
+	{
+		CString s1;
+		GetDlgItemText(IDC_SETTING_PASSWORD2, s1);
+		
+		if(s1 == "")
+		{
+			m_MJPGList.SetUnitText(2, L"√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtNewPassword1.SetWindowText(L"");
+		}
+		else
+		{
+			char oldpin[6];
+			std::string s1_;
+			s1_ = Util::StringOp::FromCString(s1);
+			sprintf(oldpin, "%s", s1_.c_str());
+			extern Util::ATCommandWarp* GetATCommandWarp();
+			Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
+			BOOL ret = pATCommanWarp->UnlockSim(oldpin);	
+			if(!ret)
+			{
+				m_MJPGList.SetUnitText(2, L"√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+				m_edtNewPassword1.SetWindowText(L"");
+			}
+			else
+			{
+				SipShowIM(SIPF_OFF);
+				ShowWindow_(FALSE);
+				::SendMessage(m_Owner, WM_CHECKPASSWORD, 0, m_nCtrl);
+			}
+		}
+	}
+	else if(m_passwordType == CHECK_PINPASSWORD)			// ‰»ÎΩ‚À¯PIN
+	{
+		CString s1;
+		GetDlgItemText(IDC_SETTING_PASSWORD2, s1);
+		
+		if(s1 == "")
+		{
+			m_MJPGList.SetUnitText(2, L"√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtNewPassword1.SetWindowText(L"");
+		}
+		else
+		{
+			char oldpin[6];
+			std::string s1_;
+			s1_ = Util::StringOp::FromCString(s1);
+			sprintf(oldpin, "%s", s1_.c_str());
+			extern Util::ATCommandWarp* GetATCommandWarp();
+			Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
+			pATCommanWarp->InputPin(oldpin);	
+			
+			SipShowIM(SIPF_OFF);
+			ShowWindow_(FALSE);
+		}
+	}
+	else if(m_passwordType == CHECK_PUKPASSWORD)			// ‰»ÎΩ‚À¯PUK
+	{
+		CString s1;
+		GetDlgItemText(IDC_SETTING_PASSWORD2, s1);
+		
+		if(s1 == "")
+		{
+			m_MJPGList.SetUnitText(2, L"√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtNewPassword1.SetWindowText(L"");
+		}
+		else
+		{
+			char oldpin[6];
+			std::string s1_;
+			s1_ = Util::StringOp::FromCString(s1);
+			sprintf(oldpin, "%s", s1_.c_str());
+			extern Util::ATCommandWarp* GetATCommandWarp();
+			Util::ATCommandWarp *pATCommanWarp = GetATCommandWarp();
+			pATCommanWarp->InputPuk(oldpin, "1234");	
+			
+			SipShowIM(SIPF_OFF);
+			ShowWindow_(FALSE);
+		}
+	}
+	else 
+	{
+		CString s1;
+		GetDlgItemText(IDC_SETTING_PASSWORD2, s1);
+	
+		if(m_password != s1)
+		{
+			m_MJPGList.SetUnitText(1, L"æ…√‹¬Î ‰»Î¥ÌŒÛ£°", TRUE);
+			m_edtOldPassword.SetWindowText(L"");
+		}
+		else
+		{
+			SipShowIM(SIPF_OFF);
+			ShowWindow_(FALSE);
+			if(m_Owner)
+				::SendMessage(m_Owner, WM_CHECKPASSWORD, 1, m_nCtrl);
 		}
 	}
 }
@@ -377,66 +531,172 @@ void CPasswordDlg::OnButtonPasswordCancel()
 {
 	if( m_passwordType == CHECK_PINPASSWORD)
 	{
-		SettingType(CHECK_PINPASSWORD);
+		SetType(CHECK_PINPASSWORD);
 	}
 	else if(m_passwordType == CHECK_PUKPASSWORD)
 	{
-		SettingType(CHECK_PUKPASSWORD);
+		SetType(CHECK_PUKPASSWORD);
 	}
 	else
 	{
-		if(m_passwordType == CHECK_SCREENPASSWORD)
-		{
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_mainScreenSaveDlg_->WindowProc(CHECK_SCREENPASSWORD, 0, m_nCtrl);
-		}
+		if(m_Owner && (CHECK_CLEARPASSWORD >= m_passwordType))
+			::SendMessage(m_Owner, WM_CHECKPASSWORD, 0, m_nCtrl);
+		
 		SipShowIM(SIPF_OFF);
-		SetTimer(1000, 10, NULL);
-		//ShowWindow_(SW_HIDE); 
+		ShowWindow_(FALSE); 
 	}
 }
 
 void CPasswordDlg::SetOldPassWord(char *pPassWord)
 {
-	std::string s = pPassWord;
-	m_password = Util::StringOp::ToCString(s);
-	if(m_password == L"")
+	m_password = pPassWord;
+	if(m_password == "" /* && m_passwordType >= SETTINGPLAY_PASSWORD  && m_passwordType <= SETTINGSUPPER_PASSWORD*/)
 	{
-		m_edtOldPassword.EnableWindow(FALSE);
-	}
-	else
-	{
-		m_edtOldPassword.EnableWindow(TRUE);
+	//	m_MJPGList.SetUnitBitmap(2, L"", L"",  TRUE);
+		m_edtOldPassword.ShowWindow(SW_HIDE);
 	}
 }
 
-void CPasswordDlg::SetErrorCount(int nCount)
+void CPasswordDlg::SetType(PASSWORD_TYPE nType, int nCtrl)
 {
-	if(nCount > 0)
-	{
-		m_nErrorCount = nCount;
-		char temp[24]; 
-		sprintf(temp, " £”‡%d¥Œ", nCount);
-		CString s = temp;
-		m_MJPGList.SetUnitIsShow(30, TRUE, FALSE);
-		m_MJPGList.SetUnitText(30, s, FALSE);
-	}
-}
-
-void CPasswordDlg::SettingType(PASSWORD_TYPE nType, int nCtrl)
-{
-	if(nCtrl > 0)
-	{
-		m_nCtrl = nCtrl;
-	}
+	m_nCtrl = nCtrl;
 	m_passwordType = nType;
 	m_edtNewPassword1.SetWindowText(L"");
 	m_edtNewPassword2.SetWindowText(L"");
 	m_edtOldPassword.SetWindowText(L"");
 	m_edtNewPassword1.SetLimitDiagital();
-
-	m_edtOldPassword.SetLimitText(6);
 	m_edtNewPassword1.SetLimitText(6);
-	m_edtNewPassword2.SetLimitText(6);
+
+	if(m_passwordType == SETTINGPLAY_PASSWORD || m_passwordType == SETTINGSUPPER_PASSWORD || m_passwordType == SETTINGPIN_PASSWORD)
+	{
+		m_MJPGList.SetUnitBitmap(3, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(5, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(7, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+
+		if(m_passwordType == SETTINGPLAY_PASSWORD)
+			m_MJPGList.SetUnitBitmap(2, L".\\adv\\mjpg\\k1\\common\\password_playold.bmp", L"",  TRUE);
+		else if(m_passwordType == SETTINGPIN_PASSWORD)   //lxz 20090906
+		{
+			m_edtNewPassword1.SetLimitDiagital();
+			m_edtNewPassword1.SetLimitText(4);
+			m_edtNewPassword2.SetLimitDiagital();
+			m_edtNewPassword2.SetLimitText(4);
+			m_edtOldPassword.SetLimitDiagital();
+			m_edtOldPassword.SetLimitText(4);	
+			m_MJPGList.SetUnitBitmap(2, L".\\adv\\mjpg\\k1\\common\\password_pin.bmp", L"",  TRUE);
+		}
+		else
+			m_MJPGList.SetUnitBitmap(2, L".\\adv\\mjpg\\k1\\common\\password_supperold.bmp", L"",  TRUE);
+
+		
+
+		m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_new.bmp", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(6, L".\\adv\\mjpg\\k1\\common\\password_new1.bmp", L"",  TRUE);
+		
+		m_edtNewPassword1.ShowWindow(SW_SHOW);
+		m_edtNewPassword2.ShowWindow(SW_SHOW);
+		m_edtOldPassword.ShowWindow(SW_SHOW);
+	}
+	else if(m_passwordType == PASSWORD_CHECKERROR)
+	{
+		
+		m_MJPGList.SetUnitBitmap(3, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(7, L"", L"",  TRUE);
+		
+		m_MJPGList.SetUnitBitmap(2, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(6, L"", L"",  TRUE);
+		
+		m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_checkerror.bmp", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(5, L"", L"",  TRUE);
+		
+		m_edtNewPassword1.ShowWindow(SW_HIDE);
+		m_edtNewPassword2.ShowWindow(SW_HIDE);
+		m_edtOldPassword.ShowWindow(SW_HIDE);
+	}
+	else if(m_passwordType == PASSWORD_OLDERROR)
+	{
+		m_MJPGList.SetUnitBitmap(3, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(7, L"", L"",  TRUE);
+		
+		m_MJPGList.SetUnitBitmap(2, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(6, L"", L"",  TRUE);
+		
+		m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_olderror.bmp", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(5, L"", L"",  TRUE);
+		
+		m_edtNewPassword1.ShowWindow(SW_HIDE);
+		m_edtNewPassword2.ShowWindow(SW_HIDE);
+		m_edtOldPassword.ShowWindow(SW_HIDE);
+	}
+	else if(m_passwordType == PASSWORD_NEWERROR)
+	{
+		
+		m_MJPGList.SetUnitBitmap(3, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(7, L"", L"",  TRUE);
+		
+		m_MJPGList.SetUnitBitmap(2, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(6, L"", L"",  TRUE);
+		
+		m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_newerror.bmp", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(5, L"", L"",  TRUE);
+		
+		m_edtNewPassword1.ShowWindow(SW_HIDE);
+		m_edtNewPassword2.ShowWindow(SW_HIDE);
+		m_edtOldPassword.ShowWindow(SW_HIDE);
+	}
+	else
+	{
+	
+		m_MJPGList.SetUnitBitmap(3, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(7, L"", L"",  TRUE);
+		
+		m_MJPGList.SetUnitBitmap(2, L"", L"",  TRUE);
+		m_MJPGList.SetUnitBitmap(6, L"", L"",  TRUE);
+
+		if(m_passwordType == CHECK_PLAYPASSWORD)
+		{
+			m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_play.bmp", L"",  TRUE);
+			m_MJPGList.SetUnitBitmap(5, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+		}
+		else if(m_passwordType == CHECK_SUPPERPASSWORD)
+		{
+			m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_supper.bmp", L"",  TRUE);
+			m_MJPGList.SetUnitBitmap(5, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+		}
+		else if(m_passwordType == CHECK_CLEARPASSWORD)
+		{
+			m_edtNewPassword1.SetLimitDiagital(FALSE);
+			m_edtNewPassword1.SetLimitText(8);
+			m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_clear.bmp", L"",  TRUE);
+			m_MJPGList.SetUnitBitmap(5, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+		}
+		else if(m_passwordType == CHECK_LOCKPINPASSWORD || m_passwordType == CHECK_UNLOCKPINPASSWORD || m_passwordType == CHECK_PINPASSWORD)    //lxz 20090906
+		{
+			m_edtNewPassword1.SetLimitText(4);
+			m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_pin.bmp", L"",  TRUE);
+			m_MJPGList.SetUnitBitmap(5, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+		}
+		else if(m_passwordType == CHECK_PUKPASSWORD )
+		{
+			m_edtNewPassword1.SetLimitText(8);
+			m_MJPGList.SetUnitBitmap(4, L".\\adv\\mjpg\\k1\\common\\password_puk.bmp", L"",  TRUE);
+			m_MJPGList.SetUnitBitmap(5, L".\\adv\\mjpg\\k1\\common\\input_null.bmp", L"",  TRUE);
+		}
+		m_edtNewPassword1.ShowWindow(SW_SHOW);
+		m_edtNewPassword2.ShowWindow(SW_HIDE);
+		m_edtOldPassword.ShowWindow(SW_HIDE);
+	}
+}
+
+void CPasswordDlg::SettingType(PASSWORD_TYPE nType, int nCtrl)
+{
+	m_nCtrl = nCtrl;
+	m_passwordType = nType;
+	m_edtNewPassword1.SetWindowText(L"");
+	m_edtNewPassword2.SetWindowText(L"");
+	m_edtOldPassword.SetWindowText(L"");
+	m_edtNewPassword1.SetLimitDiagital();
+	m_edtNewPassword1.SetLimitText(6);
 
 	m_MJPGList.SetUnitText(1, L"", FALSE);
 	m_MJPGList.SetUnitText(2, L"", FALSE);
@@ -455,11 +715,11 @@ void CPasswordDlg::SettingType(PASSWORD_TYPE nType, int nCtrl)
 		else if(m_passwordType == SETTINGPIN_PASSWORD)   //lxz 20090906
 		{
 			m_edtNewPassword1.SetLimitDiagital();
-			m_edtNewPassword1.SetLimitText(8);
+			m_edtNewPassword1.SetLimitText(4);
 			m_edtNewPassword2.SetLimitDiagital();
-			m_edtNewPassword2.SetLimitText(8);
+			m_edtNewPassword2.SetLimitText(4);
 			m_edtOldPassword.SetLimitDiagital();
-			m_edtOldPassword.SetLimitText(8);	
+			m_edtOldPassword.SetLimitText(4);	
 
 			m_MJPGList.SetUnitText(0, L"PIN¬Î…Ë÷√", FALSE);
 		}
@@ -492,9 +752,8 @@ void CPasswordDlg::SettingType(PASSWORD_TYPE nType, int nCtrl)
 		}
 		else if(m_passwordType == CHECK_LOCKPINPASSWORD || m_passwordType == CHECK_UNLOCKPINPASSWORD || m_passwordType == CHECK_PINPASSWORD)    //lxz 20090906
 		{
-			m_MJPGList.SetUnitText(2, L"«Î ‰»ÎPIN¬Î", FALSE);
 			m_MJPGList.SetUnitText(0, L"PIN¬Î—È÷§", FALSE);
-			m_edtNewPassword1.SetLimitText(8);
+			m_edtNewPassword1.SetLimitText(4);
 		}
 		else if(m_passwordType == CHECK_PUKPASSWORD )
 		{
@@ -507,7 +766,6 @@ void CPasswordDlg::SettingType(PASSWORD_TYPE nType, int nCtrl)
 		}
 		SetTimer(3, 200, NULL);
 	}
-	SetTimer(4, 20*1000, NULL);
 	m_MJPGList.Invalidate();
 }
 
@@ -531,17 +789,6 @@ void CPasswordDlg::OnTimer(UINT nIDEvent)
 		m_edtNewPassword2.ShowWindow(SW_HIDE);
 		m_edtOldPassword.ShowWindow(SW_HIDE);
 	}
-	else if(4 == nIDEvent)
-	{
-		KillTimer(4);
-		OnButtonPasswordCancel();
-	}
-	else if(1000 == nIDEvent)
-	{
-		KillTimer(4);
-		KillTimer(1000);
-		ShowWindow_(SW_HIDE);
-	}
 }
 
 LRESULT CPasswordDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
@@ -549,25 +796,8 @@ LRESULT CPasswordDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	switch(message)
 	{
 	case WM_DELETESELITEM:
-		::SendMessage(m_Owner, WM_SETTINGPASSWORD, 0, m_passwordType);
+		::SendMessage(m_Owner, WM_SETTINGPASSWORD, (WPARAM)m_tempPassword, m_passwordType);
 		break;
 	}
 	return CDialog::WindowProc(message, wParam, lParam);
-}
-
-void CPasswordDlg ::OnPaint()
-{
-	if(m_passwordType == CHECK_SCREENPASSWORD)
-	{
-		CRect rt;
-		GetWindowRect(&rt);
-		HDC hdc = ::GetDC(m_hWnd);
-		CBrush bBr = RGB(0, 0, 0); 
-		rt = CRect(0, 0, rt.Width(), rt.Height());
-		::FillRect(hdc, rt, (HBRUSH)bBr.m_hObject);
-		::ReleaseDC(m_hWnd, hdc);
-		CDialog::OnPaint();
-	}
-	else
-		CCEDialog::OnPaint();
 }

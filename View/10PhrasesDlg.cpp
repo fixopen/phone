@@ -1,4 +1,4 @@
-	// deletetipdlg.cpp : implementation file
+// deletetipdlg.cpp : implementation file
 //
 
 #include "stdafx.h"

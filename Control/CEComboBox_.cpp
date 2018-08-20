@@ -37,10 +37,6 @@ BOOL CCEComboBox_::CreateEx(int style, CRect &rect, CWnd *pParentWnd, int nCtrlI
 	{
 		m_Btn.Create(L"", IDB_BITMAP_COMBOX1_FORE, IDB_BITMAP_COMBOX1_BACK, WS_CHILD|WS_VISIBLE, CRect(rt1.right-btnWidth, rt1.top, rt1.right, rt1.bottom), this, IDC_COMBO_BTN);
 	}
-	else if( bitmapType == -1)
-	{
-		m_Btn.Create(L"", IDB_BITMAP_CONTACTNEW, IDB_BITMAP_CONTACTNEW1, WS_CHILD|WS_VISIBLE, CRect(rt1.right-btnWidth, rt1.top+1, rt1.right, rt1.bottom+1), this, IDC_COMBO_BTN);
-	}
 	else
 	{
 		m_Btn.Create(L"", IDB_BITMAP_COMBOX_FORE, IDB_BITMAP_COMBOX_BACK, WS_CHILD|WS_VISIBLE, CRect(rt1.right-btnWidth, rt1.top, rt1.right, rt1.bottom), this, IDC_COMBO_BTN);
@@ -48,7 +44,7 @@ BOOL CCEComboBox_::CreateEx(int style, CRect &rect, CWnd *pParentWnd, int nCtrlI
 	m_Combo.Create(WS_CHILD|WS_VSCROLL|CBS_DROPDOWNLIST, rt, this, IDC_COMBO_COMBO);
 	m_nCtrlID = nCtrlID;
 	VERIFY(m_font.CreateFont(
-		fontSize,                  // nHeight
+		fontSize,                        // nHeight
 		0,                         // nWidth
 		0,                         // nEscapement
 		0,                         // nOrientation
@@ -182,7 +178,7 @@ void CCEComboBox_::OnPaint()
 void CCEComboBox_::OnButton1()
 {
 	m_Combo.ShowDropDown(TRUE);
-	//  Invalidate(TRUE);
+	//Invalidate(TRUE);
 }
 
 void CCEComboBox_::OnSelchangeCombo1()
@@ -194,9 +190,6 @@ void CCEComboBox_::OnSelchangeCombo1()
 	if(GetParent())
 	{
 		GetParent()->SendMessage(WM_COMMBOX_CLICKED, m_nCtrlID, m_nCtrlID);
-		
-	//	::SetForegroundWindow(GetParent()->m_hWnd);
-		::SetFocus(GetParent()->m_hWnd);
 	}
 }
 

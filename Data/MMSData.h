@@ -2,7 +2,6 @@
 #define __SMS_DATA_MMSDATA_H__
 
 #include "Data.h"
-#include "OTAData.h"
 
 //namespace SMS {
     namespace Data {
@@ -31,7 +30,6 @@
             //	char MMState;//Status-value = Expired | Retrieved | Rejected | Deferred | Unrecognised	Expired = <Octet 128>		Retrieved = <Octet 129>		Rejected = <Octet 130>		Deferred = <Octet 131>		Unrecognised = <Octet 132>		The value Unrecognized is reserved for version management purpose only.
             std::string Subject; //Encoded-string-value
 
-			SMSCTimestamp localSendTime;
 
             std::string MessageId; //Message-ID-value = Text -string
             std::string MessageClass; //Message-class-value = Class-identifier | Token-text	Class-identifier = Personal | Advertisement | Informational | Auto		Personal = <Octet 128>		Advertisement = <Octet 129>		Informational = <Octet 130>		Auto = <Octet 131>
@@ -39,7 +37,6 @@
             std::string RequestStatus;
 
             std::string SavePath;
-			unsigned int repeatCount;  //开机重发次数
 
             bool isRead;
             enum Type
@@ -48,8 +45,7 @@
                 tpSend,
                 tpUnSend,
 				tpSpecod,       //特殊短信
-				tpReadySend,	//正在发送
-				tpRepeatSend
+				tpReadySend		//正在发送
             };
             Type type;
         private:

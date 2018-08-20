@@ -19,11 +19,13 @@ public:
 	CMJPGStatic		m_MJPGList;
 	HWND			m_handle;
 	CWarningNoFlashDlg(CWnd* pParent = NULL);   // standard constructor
-	void SetTitle(CString title, int nTimer=5000);
+	void SetType(int type);
+	void SetTitle(CString title);
 	void SetHWnd(HWND handle);
 	int m_nType;
-	BOOL m_bIsNoclick;
-	void SetNoClick(BOOL bIsNoclick){m_bIsNoclick = bIsNoclick;}
+	CCEProcessBar m_procbarSound;
+
+	static void RemoveThread(void *type);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	afx_msg void OnClickOK();
 	afx_msg void OnClickCancel();

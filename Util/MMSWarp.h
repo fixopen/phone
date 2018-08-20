@@ -187,7 +187,6 @@ namespace MMS
 			string Subject;
 			unsigned char Priority;
 			unsigned char DeliveryReport;
-			unsigned char ReadReport;
 
 			unsigned char RequestStatus;
 			//unsigned char MMState;
@@ -217,17 +216,6 @@ namespace MMS
 			unsigned char MMStatus;
 		} MMS_DeliveryReportingRequest;
 
-		typedef struct
-		{
-			unsigned char MessageType;  //m_read_rec_ind = 0x87
-			unsigned char MMSVersion;   //m_read_orig_ind = 0x88
-			string MessageID;
-			string RecipientAddress;
-			string SenderAddress;
-			unsigned int DateAndTime;
-			unsigned char ReadStatus;
-		} MMS_ReadReplyRequest;
-
 		int EncodeSubmitRequest(const MMS_SubmitRequest* pSrc, char* pDst);
 		int DecodeSubmitResponse(const unsigned char* pSrc, int srcLen, MMS_SubmitResponse* pDst);
 		int DecodeNotificationRequest(const unsigned char* pSrc, int srcLen, MMS_NotificationRequest* pDst);
@@ -235,11 +223,6 @@ namespace MMS
 		int DecodeRetrieveResponse(const unsigned char* pSrc, int srcLen, MMS_RetrieveResponse* pDst);
 		int EncodeAcknowledgementRequest(const MMS_AcknowledgementRequest* pSrc, char* pDst);
 		int DecodeDeliveryReportingRequest(const unsigned char* pSrc, int srcLen, MMS_DeliveryReportingRequest* pDst);
-		int EncodeReadRecipientRequest(const MMS_ReadReplyRequest *pSrc, char *pDst);
-		int DecodeReadOriginatorRequest(const unsigned char *pSrc, int srcLen, MMS_ReadReplyRequest *pDst);
-		
-		unsigned int EncodeReadRecipientRequest(unsigned char status, char *pDst);
-		unsigned int DecodeReadOriginatorRequest(const unsigned char *pSrc, int srcLen);
 
 		Data::MMSData* DecodeMessage(const unsigned char* pSrc, int srcLen);
 		unsigned int DecodeSubmitResponse(const unsigned char* pSrc, int srcLen);
@@ -249,7 +232,7 @@ namespace MMS
 		void EncodeSmil(vector<MMS_PAR> vpars, MMS_LAYOUT layout, std::string path);
 		void AddRootLayout(MMS_SubmitRequest* req, unsigned int width,	unsigned int height);
 		void AddRegion(MMS_SubmitRequest* req, MMS_REGION_TYPE id, unsigned int left, unsigned int top, unsigned int width, unsigned int height, MMS_REGION_FIT fit = rfHidden);
-		void AddPar(MMS_SubmitRequest* req, string imageFile, string textFile, string audioFile, string videoFile, unsigned int dur = 10);
+		void AddPar(MMS_SubmitRequest* req, string imageFile, string textFile, string audioFile, unsigned int dur = 10);
 		int gsmSerializeNumbers(const char* pSrc, char* pDst, int nSrcLength);
 		std::wstring ToUnicode(std::string content);
 		std::string FromUnicode(std::wstring content);

@@ -12,15 +12,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern BOOL g_isShift;
 extern int gPlayIndex;
 extern CString g_destDir;
 extern CString g_srcDir;
 extern CString g_showDir;
 extern BOOL DetectDIR(TCHAR *sDir);
 extern BOOL DetectFile(TCHAR *sDir);
-extern double GetFileSize(TCHAR *sFile);
-extern double GetDirSize(TCHAR *sDir, float &fSize);
+extern float GetFileSize(TCHAR *sFile);
+extern float GetDirSize(TCHAR *sDir, float &fSize);
 /////////////////////////////////////////////////////////////////////////////
 // C3GHomeJoyDlg dialog
 
@@ -40,15 +39,11 @@ C3GHomeJoyDlg::C3GHomeJoyDlg(CWnd* pParent /*=NULL*/)
 	m_pageSize = 5;
 	m_offSet = 0;
 	m_uiType = 0;
-	m_playType = -1;
 	m_cardType2 = 0;
 	m_cardType3 = 0;
 	m_sListSearchFilter = "";
 	m_sListFilter = "";
 	m_soundType = -1;
-	m_callType = 0;
-	m_playFileSize = 0;
-	m_selCount = 0;
 }
 
 
@@ -96,18 +91,14 @@ BOOL C3GHomeJoyDlg::OnInitDialog()
 	
 	m_bTelephoneInUse = false;
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\音乐.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
-
+	
 	MoveWindow(0, 57, 800, 423);
 	SetUnitFont();
 
 	m_MJPGList.SetUnitIsDisable(2, TRUE);
 	m_MJPGList.SetUnitIsDisable(3, TRUE);
-	m_MJPGList.SetUnitIsDisable(4, TRUE);//add by qi 20100613
-	m_MJPGList.SetUnitFont(9, font_14);//add by qi 20100613
-
 	m_MJPGList.SetUnitIsShow(1, TRUE);
 	m_MJPGList.SetUnitIsShow(10, TRUE);
 	m_MJPGList.SetUnitIsShow(11, TRUE);
@@ -124,19 +115,16 @@ BOOL C3GHomeJoyDlg::OnInitDialog()
 void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
 	int index = 0;
 	switch(w)
 	{
 	case 0:
+	case 1:
 	case 2:
 	case 3:
 		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
 		m_isSelectAll = FALSE;
-		m_firstSelPage = 0;
-		m_lastSelPage = 0;
 		m_uiType = w;
-		m_selCount = 0;
 		ShowItemsInList(w);
 		break;
 	case 5:			//选择当前页数
@@ -149,12 +137,11 @@ void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 10:      //播放
 		{
-			if(IsWindow(hWnd) || pMainDlg->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic)
+			HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
+			if(IsWindow(hWnd))
 			{
 				pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn();
 				pMainDlg->m_pMainDlg->m_mainMp3Dlg_->playerDlg_->ShowWindow(SW_SHOW);
-
-				pMainDlg->AddIcon(Allicon[4],pMainDlg->m_pMainDlg->m_mainMp3Dlg_,false);		//lxz 20100528
 			}
 			else
 			{
@@ -163,96 +150,52 @@ void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				{
 					if((0 == m_uiType) || (2 == m_uiType) || (3 == m_uiType))
 					{
-						m_playType = m_uiType;   //将播放的音乐所在的页签记下
-
 						pMainDlg->m_pMainDlg->m_mainMp3Dlg_->OnOpenFile();
 						pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn();
 						OnPlayer();
-
-						pMainDlg->AddIcon(Allicon[4],pMainDlg->m_pMainDlg->m_mainMp3Dlg_,false);		//lxz 20100528
 					}
 					else if(1 == m_uiType)
 					{
 						PlaySound();
 					}
 				}
-				else
-				{
-					pMainDlg->m_pTipDlg->SetTitle("请选择要播放的文件!");
-					pMainDlg->m_pTipDlg->ShowWindow_(TRUE);
-				}
 			}
 			break;
 		}
 	case 12:      //转移文件
-		if(!g_isShift)
+		FindSelectPage();
+		if (m_firstSelPage > 0)
 		{
-			FindSelectPage();
-			if (m_firstSelPage > 0)
+			if (0 == m_uiType)
 			{
-				if((hWnd == NULL && !pMainDlg->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic) || m_uiType != m_playType)
-				{
-					if (0 == m_uiType)
-					{
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, TRUE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, TRUE);
-						pMainDlg->m_pShiftFileDlg->OnClickMJPG(10, 0);
-					}
-					else
-					{
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, TRUE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
-						pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, TRUE);
-						pMainDlg->m_pShiftFileDlg->OnClickMJPG(20, 0);
-					}
-					OnShiftFile();
-				}
-				else
-				{
-					pMainDlg->m_pWarningNoFlashDlg->SetTitle("正在播放音乐,无法转移!");
-					pMainDlg->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-				}
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, TRUE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, TRUE);
 			}
 			else
 			{
-				pMainDlg->m_pTipDlg->SetTitle("请选择要转移的文件!");
-				pMainDlg->m_pTipDlg->ShowWindow_(TRUE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, TRUE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, TRUE);
 			}
-		}
-		else
-		{
-			pMainDlg->m_pShiftFileDlg->ShowWindow_(TRUE);
+			OnShiftFile();
 		}
 		break;
 	case 11:	  //删除
 		FindSelectPage();
 		if (m_firstSelPage > 0)
 		{
-			if((hWnd == NULL && !pMainDlg->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic) || m_uiType != m_playType)
-			{
-				OnClickDelete();
-			}
-			else
-			{
-				pMainDlg->m_pWarningNoFlashDlg->SetTitle("正在播放音乐,无法删除!");
-				pMainDlg->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			}
-		}
-		else
-		{
-			pMainDlg->m_pTipDlg->SetTitle("请选择要删除的文件!");
-			pMainDlg->m_pTipDlg->ShowWindow_(TRUE);
+			OnClickDelete();
 		}
 		break;
 	case 13:		//提示语
@@ -303,49 +246,41 @@ void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		ShowRecord(m_sListFilter);
 		break;
 	case 50:
-		if((hWnd == NULL && !pMainDlg->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic) || m_uiType != m_playType)
-		{
-			OnSelectAll();
-		}
-		break;
-	case 57:
-		if(m_sPreDir.size() > 0)
-		{
-			CString dir = m_sPreDir[m_sPreDir.size()-1];
-			m_sPreDir.pop_back();
-			SetPlayList(dir.GetBuffer(dir.GetLength()), m_uiType);
-			SetInitShow();
-			AddFileMp3();
-			ShowArrayInList();
-		}
+		OnSelectAll();
 		break;
 	case 100:      //选择
 	case 200:
 	case 300:
 	case 400:
 	case 500:
+		if (m_UnitStatus[w/100-1])
 		{
-			if((hWnd == NULL && !pMainDlg->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic)
-				|| m_callType == 1 || m_uiType != m_playType)
-			{
-				if (m_UnitStatus[w/100-1])
-				{
-					m_offSet = w/100 -1;
-					OnButtonCheck(w);
-				}
-			}
-			else
-			{
-				pMainDlg->m_pWarningNoFlashDlg->SetTitle("正在播放,若需重新选择,请暂停音乐!");
-				pMainDlg->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-			}
+			m_offSet = w/100 -1;
+			OnButtonCheck(w);
 		}
 		break;
-	case 1000: //返回	
+	case 101:          //播放图标   
+	case 201:
+	case 301:
+	case 401:
+	case 501:
+		break;
+	case 102:
+	case 202:
+	case 302:
+	case 402:
+	case 502:
+		break;
+	case 103:		  //联系人信息	 
+	case 203:
+	case 303:
+	case 403:
+	case 503:
+		break;
+	case 1000:     //返回	
 		OnExit_();
 		break;
-	case 1001: //确定
-		InsertAudio2Mms();
+	case 1001:    //确定
 		break;
 	default:
 		break;
@@ -354,7 +289,7 @@ void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 void C3GHomeJoyDlg::SetUnitFont()
 {
-	m_MJPGList.SetUnitText(9, _T("当前页"), TRUE);
+	m_MJPGList.SetUnitText(4, _T("当前页"), TRUE);
 	m_MJPGList.SetUnitText(52, _T("文件/文件夹"), TRUE);
 
 	for (int i=4; i<=6; i++)
@@ -362,7 +297,6 @@ void C3GHomeJoyDlg::SetUnitFont()
 		m_MJPGList.SetUnitFont(i, font_14);
 		m_MJPGList.SetUnitColor(i,font_white,TRUE);
 	}
-
 	for (i=51; i<=56; i++)
 	{
 		m_MJPGList.SetUnitFont(i, font_18);
@@ -433,11 +367,11 @@ void C3GHomeJoyDlg::SetInitShow()
 	}
 	if (m_fileCount <= m_pageSize)		//当总数小于6时设置下翻按钮不可用
 	{
-		m_MJPGList.SetUnitIsDisable(8, TRUE);
+			m_MJPGList.SetUnitIsDisable(8, TRUE);
 	}
 	else
 	{
-		m_MJPGList.SetUnitIsDisable(8, FALSE); 
+			m_MJPGList.SetUnitIsDisable(8, FALSE); 
 	}
 }
 
@@ -506,31 +440,12 @@ void C3GHomeJoyDlg::ShowItemsInList(int type)
 
 void C3GHomeJoyDlg::ShowArrayInList()
 {
-	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	OnClearAll();
-	
-	CString dir = m_chDir;
-	CString preDir = L"";
-	if(m_sPreDir.size() > 0)
-	{
-		preDir = m_sPreDir[m_sPreDir.size()-1];
-	}
-	if(preDir != dir && preDir != L"")
-	{
-		m_MJPGList.SetUnitIsDisable(57, FALSE);
-		m_MJPGList.SetUnitIsShow(57, TRUE, FALSE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsDisable(57, TRUE);
-		m_MJPGList.SetUnitIsShow(57, FALSE, FALSE);
-	}
-
 	int index = 100;
 	if (m_fileCount > 0)
 	{
 		CString temp;
-		double fileSize;
+		float fileSize;
 		for (int i=(m_currentPage - 1)*m_pageSize; i<m_currentPage*m_pageSize; i++)
 		{
 			fileSize = 0;
@@ -543,11 +458,26 @@ void C3GHomeJoyDlg::ShowArrayInList()
 				m_MJPGList.SetUnitText(index+2, m_fileMp3[i], FALSE);
 				if(i<m_fileDir.size())
 				{
-					m_MJPGList.SetUnitBitmap(index, ".\\adv\\mjpg\\k5\\common\\png\\文件夹.bmp", L".\\adv\\mjpg\\k5\\common\\png\\文件夹.bmp", FALSE);
-					
+
+					m_MJPGList.SetUnitBitmap(index, ".\\adv\\mjpg\\k5\\common\\png\\文件夹.png", L".\\adv\\mjpg\\k5\\common\\png\\文件夹.png", FALSE);
+					fileSize = GetDirSize((LPTSTR)(LPCTSTR)path, fileSize);
+					fileSize /= (1024*1024);
 					if(m_uiType != 1)
 					{
-						m_MJPGList.SetUnitText(index+20, L"", FALSE);
+						if(fileSize < 1.0 && fileSize > 0.0000001)
+						{
+							fileSize *= 1024;
+							temp.Format(_T("%0.1fK"), fileSize);
+						}
+						else if(fileSize >= -0.0000001 && fileSize <= 0.0000001)
+						{
+							temp = L"0字节";
+						}
+						else
+						{
+							temp.Format(_T("%0.1fM"), fileSize);
+						}
+						m_MJPGList.SetUnitText(index+20, temp, FALSE);
 					}
 				}
 				else
@@ -596,22 +526,9 @@ void C3GHomeJoyDlg::ShowArrayInList()
 					}
 					else
 					{
-						HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
-						if(IsWindow(hWnd) || main->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic)
-						{
-						//	if(1 == m_callType)
-						//	{
-								if(m_fileMp3[i] == main->m_pMainDlg->m_mainMp3Dlg_->m_ShowList[gPlayIndex-1])
-								{
-									fileSize = m_playFileSize/(1024*1024);
-								}
-						//	}
-						}
-
 						if(fileSize < 1.0 && fileSize > 0.0000001)
 						{
 							fileSize *= 1024;
-							fileSize += 0.05;
 							temp.Format(_T("%0.1fK"), fileSize);
 						}
 						else if(fileSize >= -0.0000001 && fileSize <= 0.0000001)
@@ -648,7 +565,6 @@ void C3GHomeJoyDlg::ShowArrayInList()
 			m_UnitStatus[i-1] = FALSE;
 			SetShowStatus(i*100, TRUE);
 		}
-		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
 	}
 	m_MJPGList.Invalidate();
 }
@@ -737,9 +653,7 @@ int C3GHomeJoyDlg::SetPlayList(TCHAR *dir, int type)
 		char filename[128];
 		int i = wcstombs( filename, FindFileData.cFileName, 128);
 		filename[i] = '\0';
-		if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")
-			||strstr(filename, ".wav")||strstr(filename, ".WAV")
-			||strstr(filename, ".mid")||strstr(filename, ".MID"))
+		if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")||strstr(filename, ".wav")||strstr(filename, ".WAV"))
 		{
 			m_fileMp3.push_back(FindFileData.cFileName);
 			m_isFileSelect.push_back(0);
@@ -756,9 +670,7 @@ int C3GHomeJoyDlg::SetPlayList(TCHAR *dir, int type)
 		{
 			i = wcstombs( filename, FindFileData.cFileName, /*wcslen(FindFileData.cFileName)*/128);
 			filename[i] = '\0';
-			if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")
-				||strstr(filename, ".wav")||strstr(filename, ".WAV")
-				||strstr(filename, ".mid")||strstr(filename, ".MID"))
+			if(strstr(filename, ".mp3")||strstr(filename, ".MP3")||strstr(filename, ".Mp3")||strstr(filename, ".wav")||strstr(filename, ".WAV"))
 			{
 				m_fileMp3.push_back(FindFileData.cFileName);
 				m_isFileSelect.push_back(0);
@@ -821,7 +733,6 @@ void C3GHomeJoyDlg::OnSelectAll()
 			{
 				m_isFileSelect[i] = 1;
 			}
-			m_selCount = m_isFileSelect.size();
 		}
 		else
 		{
@@ -833,20 +744,11 @@ void C3GHomeJoyDlg::OnSelectAll()
 			{
 				m_isFileSelect[i] = 0;
 			}
-			m_selCount = 0;
 		}
 		for (int i=100; i<=500; i+=100)
 		{
 			SetShowStatus(i, !m_isSelectAll);
 		}
-	}
-	else
-	{
-		m_isSelectAll = FALSE;
-		m_firstSelPage = 0;
-		m_lastSelPage = 0;
-		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
-		m_MJPGList.Invalidate();
 	}
 }
 
@@ -860,33 +762,16 @@ void C3GHomeJoyDlg::OnButtonCheck(int uintNO)
 			if (m_isFileSelect[index] == 0)
 			{
 				m_isFileSelect[index] = 1;
-				m_selCount++;
-				if(m_selCount == m_isFileSelect.size())
-				{
-					m_isSelectAll = TRUE;
-					m_firstSelPage = 1;
-					m_lastSelPage = m_pageCount;
-					m_MJPGList.SetUnitIsDownStatus(50, TRUE);
-				}
 				SetShowStatus(uintNO, FALSE);
 			}
 			else
 			{
-				m_selCount--;
-				if(m_selCount < m_isFileSelect.size())
-				{
-					m_isSelectAll = FALSE;
-					m_firstSelPage = 0;
-					m_lastSelPage = 0;
-					m_MJPGList.SetUnitIsDownStatus(50, FALSE);
-				}
 				m_isFileSelect[index] = 0;
 				SetShowStatus(uintNO, TRUE);
 			}
 		}
 		else
 		{
-			m_sPreDir.push_back(m_chDir);
 			CString dir = m_chDir+m_MJPGList.GetUnitText(uintNO+2)+"/";
 			SetPlayList(dir.GetBuffer(dir.GetLength()), m_uiType);
 			SetInitShow();
@@ -942,34 +827,28 @@ void C3GHomeJoyDlg::PageDown()
 
 void C3GHomeJoyDlg::OnClickDelete()
 {
-	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	if (0 == m_firstSelPage)
 		return;
 	int count = 0;
-	for(int i=(m_firstSelPage-1)*m_pageSize; i<m_fileCount; i++)
+	for(int i=(m_firstSelPage-1)*m_pageSize; i<m_lastSelPage*m_pageSize; i++)
 	{
 		if(1 == m_isFileSelect[i] && i >= m_fileDir.size())
 			count++;
 	}
-
-	CString str;
-	str.Format(L"%d", count);
-	str = L"是否删除已选中的" + str +L"个文件?";
-	main->m_pDeleteTipDlg->SetTitle(str, 0);
-	main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-	main->m_pDeleteTipDlg->SetProcessMax(count);
-	if (main->m_pSettingDlg->m_pSetting->isAdmin() && !main->m_pSettingDlg->m_bLogin)
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要删除已选文件吗？", 0);
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 	{
-		main->m_pDeleteTipDlg->SetPasswordModel(true);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 	}
-	std::string pw = main->m_pSettingDlg->m_pSetting->adminPassword();
-	main->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
-	main->m_pDeleteTipDlg->ShowWindow_(TRUE);
+	std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 }
 extern void DeleteDirectory(CString SrcDir, BOOL isShow = TRUE);
 void C3GHomeJoyDlg::DeleteSelectedItem()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	size_t pageStartIndex = m_fileDir.size();
 	std::vector<int>::iterator checkItem = m_isFileSelect.begin() + pageStartIndex;
 	std::vector<CString>::iterator checkFile = m_fileMp3.begin() + pageStartIndex;
@@ -1000,6 +879,7 @@ void C3GHomeJoyDlg::DeleteSelectedItem()
 			int ret = GetLastError();
 			if(0 == GetLastError() || 2 == GetLastError())
 			{
+				delCount++;
 				checkFile = m_fileMp3.erase(checkFile);
 				checkItem = m_isFileSelect.erase(checkItem);
 			}
@@ -1009,13 +889,8 @@ void C3GHomeJoyDlg::DeleteSelectedItem()
 				++checkFile;
 				++m_vResult;
 				++i;
-
-				main->m_pWarningNoFlashDlg->SetTitle(L"无法删除该文件!请确定文件是否受保护!");
-				main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
 			}
-
-			delCount++;
-			main->m_pDeleteTipDlg->SetProcessPos(delCount);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(delCount);
 		}
 		else
 		{
@@ -1030,7 +905,7 @@ void C3GHomeJoyDlg::DeleteSelectedItem()
 	m_fileCount = m_fileMp3.size();
 	if (0 == m_fileCount)
 	{
-		m_MJPGList.SetUnitText(6, "/0", TRUE);
+		m_MJPGList.SetUnitText(6, "0", TRUE);
 		m_MJPGList.SetUnitText(5, "0", TRUE);
 		m_MJPGList.SetUnitIsDisable(8, TRUE);
 		m_MJPGList.SetUnitIsDisable(7, TRUE);
@@ -1087,10 +962,6 @@ void C3GHomeJoyDlg::FindSelectPage()
 	BOOL find = FALSE;
 	if (!m_isSelectAll)
 	{
-		if(m_playType != m_uiType)
-		{
-			m_firstSelPage = 0;
-		}
 		for (int i=0; i<m_fileCount; i++)
 		{
 			if (1 == m_isFileSelect[i])
@@ -1115,15 +986,14 @@ void C3GHomeJoyDlg::OnShiftFile()
 {
 	g_destDir = L"";
 	g_showDir = L"";
-	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 
 	if (0 == m_firstSelPage)
 		return;
 	if(!DetectDIR(_T("\\StorageCard")) && !DetectDIR(_T("\\UsbDisk")))
 	{
-		main->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
-		main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-		main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
 		return;
 	}
 
@@ -1165,6 +1035,7 @@ void C3GHomeJoyDlg::OnShiftFile()
 		g_destDir = _T("/FlashDrv/MY_MUSIC/");
 	}
 
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	main->CancelBalckLightSaveTimer();
 	main->m_pShiftFileDlg->m_shiftProc->SetPos(0);
 	main->m_pShiftFileDlg->SetHWnd(this->GetSafeHwnd());
@@ -1285,28 +1156,19 @@ void C3GHomeJoyDlg::SetUnitIsAvailable(int type)
 
 LRESULT C3GHomeJoyDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
-	// TODO: Add your specialized code here and/or call the base class
-	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
-	HWND hWnd = ::FindWindow(L"csplayer_win1", L"csplayer window1");
-
+	// TODO: Add your specialized code here and/or call the base class	
 	switch (message)
 	{
 	case WM_DELETESELITEM:
-		if((hWnd == NULL && !main->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic) || m_uiType != m_playType)
-		{
-			DeleteSelectedItem();
-		}
+		DeleteSelectedItem();
 		break;
 	case WM_SHIFTSELITEM:
-		if((hWnd == NULL && !main->m_pMainDlg->m_mainMp3Dlg_->m_isMidiMusic) || m_uiType != m_playType)
-		{
-			m_MJPGList.SetUnitIsDownStatus(50, FALSE);
-			m_isSelectAll = FALSE;
-			SetPlayList(m_chDir, m_uiType);
-			SetInitShow();
-			AddFileMp3();
-			ShowArrayInList();
-		}
+		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
+		m_isSelectAll = FALSE;
+		SetPlayList(m_chDir, m_uiType);
+		SetInitShow();
+		AddFileMp3();
+		ShowArrayInList();
 		break;
 	};
 	return CDialog::WindowProc(message, wParam, lParam);
@@ -1316,7 +1178,7 @@ void C3GHomeJoyDlg::OnDeviceChange(WPARAM w, LPARAM l)
 {
   	if (w == 0x8000) //insert
 	{
-		::Sleep(2000);
+		::Sleep(500);
 		if (m_MJPGList.GetUnitIsDisable(2))
 		{
 			if(DetectDIR(_T("/usbdisk")))
@@ -1376,23 +1238,10 @@ void C3GHomeJoyDlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 }
 
-void C3GHomeJoyDlg::ShowWindow_(int nCmdShow,int bbtnShow )
+void C3GHomeJoyDlg::ShowWindow_(int nCmdShow)
 {
-	if(m_callType != 1)
-	{
-		OnExit_();
-	}
-	
-	// add by qi 20100302
-	m_MJPGList.SetUnitIsShow(10,bbtnShow,false);
-	m_MJPGList.SetUnitIsShow(11,bbtnShow,false);
-	m_MJPGList.SetUnitIsShow(12,bbtnShow,false);
-	
-	m_selCount = 0;
-	m_sPreDir.clear();
 	ShowItemsInList(m_uiType);
 	ShowWindow(nCmdShow);
-	m_MJPGList.Invalidate();
 }
 
 void C3GHomeJoyDlg::OnExit_()
@@ -1402,10 +1251,8 @@ void C3GHomeJoyDlg::OnExit_()
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	pMainDlg->PopbackIcon();
 
-	m_selCount = 0;
 	m_isSelectAll = FALSE;
 	m_uiType = 0;
-	m_sPreDir.clear();
 	m_MJPGList.SetUnitIsDownStatus(50, FALSE);
 	for (int i=100; i<=500; i+=100)
 	{
@@ -1447,35 +1294,29 @@ void C3GHomeJoyDlg::OnPlayer(int index)
 			
 			main->m_pMainDlg->m_mainMp3Dlg_->m_MP3List.push_back(txt);
 			main->m_pMainDlg->m_mainMp3Dlg_->m_ShowList.push_back(m_fileMp3[loop]);
-			if((m_fileMp3[loop].Right(4) != L".mid") && (m_fileMp3[loop].Right(4) != L".MID"))
-			{
-				nFileSelected++;
-			}
+			nFileSelected++;
 		}
 	}
 	
-	main->m_pMainDlg->m_mainMp3Dlg_->CalculatePage(main->m_pMainDlg->m_mainMp3Dlg_->m_MP3List.size());
+	main->m_pMainDlg->m_mainMp3Dlg_->CalculatePage(nFileSelected);
 	main->m_pMainDlg->m_mainMp3Dlg_->ShowArrayInList(main->m_pMainDlg->m_mainMp3Dlg_->m_ShowList);
 	
 	if(nFileSelected > 0)
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		main->playeraudio_->SetImageList(main->m_pMainDlg->m_mainMp3Dlg_->m_MP3List, index);
+		m_MJPGList.Invalidate();
 	}
-	
-	main->m_pMainDlg->m_mainMp3Dlg_->SetTimer(0x101, 200, NULL);
-
-	m_MJPGList.Invalidate();
 	gPlayIndex = 1;
 }
 
 void C3GHomeJoyDlg::PlaySound()
 {
 	m_pPlaySoundDlg->SetSound(m_soundType, m_vCurrentResult[0]->id(), 0, m_sListFilter);
-	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 	{
-		m_pPasswordDlg->SettingType(CHECK_PLAYPASSWORD);
-		std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
+		m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
+		std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pTempSetting->playRecordPassword();
 		m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 		m_pPasswordDlg->SetHWnd(this->m_hWnd);
 		m_pPasswordDlg->ShowWindow_(SW_SHOW);	
@@ -1512,14 +1353,14 @@ void C3GHomeJoyDlg::OnButtonSetTip()
 				}
 				else
 				{
-					//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(2);     //提示录音数据超出10秒
-					//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(2);     //提示录音数据超出10秒
+					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 				}
 			}
 			else
 			{
-				//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(3);     //提示提示语应该为本地录音
-				//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetType(3);     //提示提示语应该为本地录音
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 			}
 		}
 	}
@@ -1554,28 +1395,4 @@ void C3GHomeJoyDlg::OnRename(WPARAM w, LPARAM l)
 		s += s1.c_str();
 	}
 	m_MJPGList.SetUnitText(((w%m_pageSize)+1)*100+3, s, TRUE);
-}
-
-void C3GHomeJoyDlg::InsertAudio2Mms()
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if(1 == m_callType)
-	{	
-		CString filename = m_chDir;
-		for(int i=m_fileDir.size(); i<m_isFileSelect.size(); i++)
-		{
-			if(1 == m_isFileSelect[i])
-			{
-				filename += m_fileMp3[i];
-				break;
-			}
-		}
-		
-		main->m_pMMSDlg->InsertAudio(filename);
-		
-		main->PopbackIcon();
-		ShowWindow(false);
-		
-	}	
-	m_callType = 0;
 }

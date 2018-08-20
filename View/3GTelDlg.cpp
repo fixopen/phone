@@ -77,8 +77,7 @@ void C3GTelDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	switch(w)
 	{
 	case 1:
-	//	if(pMainDlg->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff)
-		if(pMainDlg->m_phoneLine[0].pFSM->getCurrentState() != CMultimediaPhoneDlg::p3gsHangOff)
+		if(pMainDlg->m_pFSM->getCurrentState() != CMultimediaPhoneDlg::tsHangOff)
 		{
 			CString sTel = ".\\adv\\mjpg\\k1\\common\\µç»°1.bmp";
 			pMainDlg->m_MJPGList.SetUnitBitmap(1, sTel, "", TRUE);

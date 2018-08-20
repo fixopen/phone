@@ -165,7 +165,7 @@ BOOL CRecordSoundDlg::OnInitDialog()
 bool CRecordSoundDlg::RecStart(void)
 {
 	// TODO: Add your control notification handler code here
-	path = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->soundPath();
+	path = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pTempSetting->soundPath();
 	
 	BOOL DetectDIR(TCHAR *sDir);
 	if (path == ssStorageCardRecordPath)//"\\StorageCard\\MY_RECORD\\")
@@ -262,7 +262,6 @@ bool CRecordSoundDlg::RecStart(void)
 		return false;
 	}
 	
-	Dprintf("Wav_0x30000002\r\n");
 	waveInMessage(m_hWaveIn,0x30000002,0,0);
 
 	for (int i = 0; i < WAVE_BUFFER_COUNT; ++i)

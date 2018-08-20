@@ -23,11 +23,10 @@ private:
 
 	CMJPGStatic		m_MJPGList;
 	CCERectEdit		m_DialNumEdit;
-	CCEComboBox12_    m_cmbType1;
-	CCEComboBox12_    m_cmbType2;
+	CCEComboBox_    m_cmbType1;
+	CCEComboBox_    m_cmbType2;
 	CCERectEdit     m_edtTransferNum1;
 	CCERectEdit     m_edtTransferNum2;
-	CCERectEdit		*m_edtTemp;
 
 	unsigned int    m_transferType;
 
@@ -45,7 +44,7 @@ public:
 	double  m_dtemp1;     //存放运算结果
 	double  m_dtemp2;    //存放运算符中第二个数字
 	double	m_dCurtemp;	 //当前显示在输入框的数字
-
+	
 	void OnButtonEquel(int type);
 	void ClearData();
 	void SetComboData(int type);
@@ -69,7 +68,6 @@ public:
 	//{{AFX_VIRTUAL(CCalculaterDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	//}}AFX_VIRTUAL
 
 // Implementation

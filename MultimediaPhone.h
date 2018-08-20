@@ -1,5 +1,4 @@
 // MultimediaPhone.h : main header file for the MULTIMEDIAPHONE application
-//add  one line for testing
 //
 
 #if !defined(AFX_MULTIMEDIAPHONE_H__B1504A4F_9CE6_43BB_9108_F1FFFA72E62C__INCLUDED_)

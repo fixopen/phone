@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "SerialPort.h"
-extern VOID WriteMyLog_(char *ptr, int size);
 
 namespace Util
 {
@@ -17,7 +16,7 @@ namespace Util
 	void RS232::SetReadFunc(OnSerialPortDataReceived onSerialPortDataReceived)
 	{
 		onSerialPortDataReceived_ = onSerialPortDataReceived;
-		readThread_ = boost::shared_ptr<ReadThread >(new ReadThread(this));
+		readThread_ = boost::shared_ptr<ReadThread>(new ReadThread(this));
 		readThread_->start();
 	}
 
@@ -27,14 +26,8 @@ namespace Util
 	//	bufferLength_ = bufferLength;
 	//}
 
-	RS232 *pGTest = NULL;
 	bool RS232::OpenPort(unsigned int portNo, unsigned int baud, unsigned int parity, unsigned int databits, unsigned int stopbits)
 	{
-		if(portNo == 8)
-		{
-			pGTest = this;
-//			TRACE(L"RS232_8 %x\r\n", pGTest);
-		}
 		// 已经打开的话，直接返回
 		if (handle_ != INVALID_HANDLE_VALUE)
 		{
@@ -140,7 +133,6 @@ namespace Util
 			{
 				return false;
 			}
-			Sleep(10);
 		} while (true);
 
 		return true;
@@ -166,29 +158,12 @@ namespace Util
 		}
 	}
 
-	void RS232::Bind(HANDLE handle_)
-	{
-		handle_ = handle_;
-	}
-
-	HANDLE RS232::Handle()
-	{
-		return handle_;
-	}
-
-	void RS232::ClearWriteCom()
-	{
-		//清空串口
-		::PurgeComm(handle_, PURGE_TXABORT | PURGE_TXCLEAR);
-	}
-
 	RS232::ReadThread::ReadThread(RS232* serialPort)
 		: serialPort_(serialPort)
 		, quit_(false)
 		, frameHeadPos_(-1)
 		, isFirstPacket_(true)
 	{
-	
 	}
 
 	int const RS232::ReadThread::run(void)
@@ -214,78 +189,71 @@ namespace Util
 		unsigned char readBuffer[1024] = {0};
 		while (!quit_)
 		{
-			Sleep(50);
+			Sleep(10);
 		    //printf("serial port start\n");
-			//Dprintf("serial port start\r\n");
-//			TRACE(L"RS232_8 00 %x\r\n", pGTest);
 			if (::WaitCommEvent(serialPort_->handle_, &evtMask, 0))
 			{
-//				if(pGTest == serialPort_)
-//				TRACE(L"RS232_8 01 %x\r\n", pGTest);
 				::SetCommMask(serialPort_->handle_, EV_RXCHAR | EV_CTS | EV_DSR);
-//				if(pGTest == serialPort_)
-//				TRACE(L"RS232_8 02 %x\r\n", pGTest);
 				if (evtMask & EV_RXCHAR)
 				{
 					::ClearCommError(serialPort_->handle_, &dwReadErrors, &cmState);
 					int willReadLen = cmState.cbInQue;
 					//printf("*%d", willReadLen); //hardware bytes count \n
 					if (willReadLen > 0)
-					{	
-
-					// change by qi 20100206
-					/*	unsigned char *allReadBuffer ;//add by qi 
-						allReadBuffer = new unsigned char[willReadLen+2];
-						if (!allReadBuffer)
-						{
-							WriteMyLog_("memory_error",strlen("memory_error"));			
-							return 0;			
-						}
-						memset(allReadBuffer,0,willReadLen+2);
-						
-						int  actualReadLen = 0;
-						while (actualReadLen != willReadLen)
-						{	
-							int readLength = 0; 
-							ReadFile(serialPort_->handle_, readBuffer, min(willReadLen, 1024), (unsigned long*)&readLength, 0);
-							//strcat((char *)allReadBuffer,(char *)readBuffer);
-							memcpy(allReadBuffer+actualReadLen,readBuffer,readLength);
-							actualReadLen += readLength;
-							memset(readBuffer,0,1024);
-
-						}
-
-						if (serialPort_->onSerialPortDataReceived_)
-						{	
-						  	serialPort_->onSerialPortDataReceived_(allReadBuffer, willReadLen);
- 						}
-
-						memset(allReadBuffer,0,willReadLen+2);
-						delete []allReadBuffer;
-						allReadBuffer = NULL;
-						*/
-
+					{
 						int actualReadLen = 0;
-//						if(pGTest == serialPort_)
-//						TRACE(L"RS232_8 03 %x\r\n", pGTest);
 						ReadFile(serialPort_->handle_, readBuffer, min(willReadLen, 1024), (unsigned long*)&actualReadLen, 0);
+// 						if (frameHeadPos_ == -1)
+// 						{
+// 							for (int i = 0; i < actualReadLen; ++i)
+// 							{
+// 								if (readBuffer[i] == 0xFF)
+// 								{
+// 									frameHeadPos_ = i;
+// 									isFirstPacket_ = true;
+// 									totalReadChars = 0;
+// 									break;
+// 								}
+// 							}
+// 						}
+// 						if (isFirstPacket_)
+// 						{
+// 							memcpy(totalBuffer + totalReadChars, readBuffer + frameHeadPos_, min(actualReadLen - frameHeadPos_, 20 - totalReadChars));
+// 							totalReadChars += min(actualReadLen - frameHeadPos_, 20 - totalReadChars);
+// 							isFirstPacket_ = false;
+// 						}
+// 						else
+// 						{
+// 							memcpy(totalBuffer + totalReadChars, readBuffer, min(actualReadLen, 20 - totalReadChars));
+// 							totalReadChars += min(actualReadLen, 20 - totalReadChars);
+// 							if (totalReadChars >= 2)
+// 							{
+// 								if (totalBuffer[1] != 0xAA)
+// 								{
+// 									frameHeadPos_ = -1;
+// 								}
+// 							}
+// 							if (totalReadChars >= 3)
+// 							{
+// 								if (totalBuffer[2] != 0x55)
+// 								{
+// 									frameHeadPos_ = -1;
+// 								}
+// 							}
+// 						}
+// 						if (totalReadChars >= 20)
+// 						{
+// 							frameHeadPos_ = -1;
+// 							isFirstPacket_ = true;
 
-						if (serialPort_->onSerialPortDataReceived_)
-						{
-							if(pGTest == serialPort_)
+							if (serialPort_->onSerialPortDataReceived_)
 							{
-								int i;
-								i++;
-
-//								TRACE(L"RS232_8 05 %x\r\n", pGTest);
+ 								serialPort_->onSerialPortDataReceived_(readBuffer, actualReadLen);//mhq
+// 								serialPort_->onSerialPortDataReceived_(totalBuffer, totalReadChars);
 							}
-
-	 						serialPort_->onSerialPortDataReceived_(readBuffer, actualReadLen);//mhq
-//							if(pGTest == serialPort_)
-//							TRACE(L"RS232_8 06 %x\r\n", pGTest);
-						}
-						memset(readBuffer, 0, 1024);
-						
+							memset(readBuffer, 0, 1024);
+//							totalReadChars = 0;
+// 						}
 					}
 				}
 			}
@@ -293,6 +261,4 @@ namespace Util
 		Dprintf("serial port stop\n");
 		return 0;
 	}
-
-
 }

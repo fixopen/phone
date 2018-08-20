@@ -101,11 +101,12 @@ bool C3GVideoPhone::InitData(void)
 	m_uiTipTimer = 3;
 	m_uiInNoCount = 0;
 	m_uiRecordCound = 0;
-	
+//	m_bAutoRecord = FALSE;
 	m_bHasCallID = FALSE;
 	m_bPlayingLeaveWord = FALSE;
 	m_bFirwall = FALSE;
 	m_bRingPlayed = FALSE;	
+//	m_spSimAddr = boost::shared_ptr<Data::SimAddr>(new Data::SimAddr);
 
 	m_spContactInfo = boost::shared_ptr<Data::ContactInfo>();
 	m_spSoundSegment = boost::shared_ptr<Data::SoundSegment>();
@@ -126,6 +127,18 @@ bool C3GVideoPhone::InitData(void)
 	m_waveform.nBlockAlign=m_waveform.nChannels * m_waveform.wBitsPerSample / 8;
 	m_waveform.nAvgBytesPerSec=m_waveform.nBlockAlign * m_waveform.nSamplesPerSec;
 	m_waveform.cbSize=0;	
+
+// 	m_pWaveHdr1 = reinterpret_cast<PWAVEHDR>(malloc(sizeof(WAVEHDR)));
+// 	m_pWaveHdr2 = reinterpret_cast<PWAVEHDR>(malloc(sizeof(WAVEHDR)));
+// 	m_pBuffer1=(PBYTE)malloc(INP_BUFFER_SIZE);
+// 	m_pBuffer2=(PBYTE)malloc(INP_BUFFER_SIZE);
+// 	
+// 	if (!m_pBuffer1 || !m_pBuffer2)
+// 	{
+// 		if (m_pBuffer1) free(m_pBuffer1);
+// 		if (m_pBuffer2) free(m_pBuffer2);
+// 		Dprintf("buffer malloc error!\n");
+// 	}
 
 	for (int i = 0; i < WAVE_BUFFER_COUNT; ++i)
 	{
@@ -452,7 +465,7 @@ bool C3GVideoPhone::RecStart(void)
 		return false;
 	}
 	waveInMessage(m_hWaveIn,WAV_LINEIN_MIC,0,0);
-	Dprintf("Wav_WAV_LINEIN_MIC\r\n");
+	
 	
 	// 	m_pWaveHdr1->lpData=(char*)m_pBuffer1;
 	// 	m_pWaveHdr1->dwBufferLength=INP_BUFFER_SIZE;

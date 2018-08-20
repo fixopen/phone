@@ -50,29 +50,25 @@ namespace Data {
             cmd += MessageClass;
             cmd += "', [dateAndTime] = '";
             cmd += Util::StringOp::FromInt(DateAndTime);
-			cmd += "', [localsendtime] = '";
-			cmd += localSendTime.ToString_();
             cmd += "', [requestStatus] = '";
             cmd += RequestStatus;
             cmd += "', [savePath] = '";
             cmd += SavePath;
             cmd += "', [isRead] = ";
             cmd += Util::StringOp::FromInt(isRead);
-			cmd += ", [repeatCount] = ";
-			cmd += Util::StringOp::FromInt(repeatCount);
             cmd += ", [type] = ";
             cmd += Util::StringOp::FromInt(type);
             cmd += " WHERE [id] = ";
             cmd += Util::StringOp::FromInt(id());
 			extern void WriteLog(char *ptr);
-	//		WriteLog((char *)cmd.c_str());
+			WriteLog((char *)cmd.c_str());
             ExecCommand(cmd);
         }
 
         bool MMSData::Insert() {
             std::string cmd = "INSERT INTO ";
             cmd += tableName();
-            cmd += " ( messageType, transactionId, mmsVersion, recipientAddress, contentType, senderAddress, timeOfExpiry, subject, messageId, messageClass, dateAndTime, localsendtime, requestStatus, savePath, isRead, repeatCount, [type] ) VALUES ( '" ; 
+            cmd += " ( messageType, transactionId, mmsVersion, recipientAddress, contentType, senderAddress, timeOfExpiry, subject, messageId, messageClass, dateAndTime, requestStatus, savePath, isRead, [type] ) VALUES ( '" ; 
             cmd += MessageType;
             cmd += "', '";
             cmd += TransactionId;
@@ -95,20 +91,16 @@ namespace Data {
             cmd += "', ";
             cmd += Util::StringOp::FromInt(DateAndTime);
             cmd += ", '";
-			cmd += localSendTime.ToString_();
-			cmd += "', '";
             cmd += RequestStatus;
             cmd += "', '";
             cmd += SavePath;
             cmd += "', ";
             cmd += Util::StringOp::FromInt(isRead);
             cmd += ", ";
-			cmd += Util::StringOp::FromInt(repeatCount);
-            cmd += ", ";
             cmd += Util::StringOp::FromInt(type);
             cmd += " )";
 			extern void WriteLog(char *ptr);
-	//		WriteLog((char *)cmd.c_str());
+			WriteLog((char *)cmd.c_str());
             
 			bool bt = ExecCommand(cmd);
 
@@ -149,12 +141,10 @@ namespace Data {
             item->MessageId								=	argv[getIndexByName(argc, columnName, "messageId")];
             item->MessageClass								= argv[getIndexByName(argc, columnName, "messageClass")];
             item->DateAndTime			=	atoi(argv[getIndexByName(argc, columnName, "dateAndTime")]);
-            item->localSendTime			=   SMSCTimestamp(argv[getIndexByName(argc,columnName,"localsendtime")]);
-			item->RequestStatus		=	argv[getIndexByName(argc, columnName, "requestStatus")];
+            item->RequestStatus		=	argv[getIndexByName(argc, columnName, "requestStatus")];
             item->SavePath						=	argv[getIndexByName(argc, columnName, "savePath")];
             item->isRead						=	atoi(argv[getIndexByName(argc, columnName, "isRead")]);
-            item->repeatCount				=   atoi(argv[getIndexByName(argc, columnName, "repeatCount")]);
-			item->type						=	static_cast<Type>(atoi(argv[getIndexByName(argc, columnName, "type")]));
+            item->type						=	static_cast<Type>(atoi(argv[getIndexByName(argc, columnName, "type")]));
         }
     }
 //}

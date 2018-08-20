@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTelephoneDialDlg dialog
 
-class CTelephoneRingDlg : public CDialog//CCEDialog
+class CTelephoneRingDlg : public CCEDialog
 {
 // Construction
 public:
@@ -54,17 +54,8 @@ public:
 	CMJPGStatic		m_MJPGList;
 
 	void	HangOff_();
-	void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number, int unitNo = 100);
-	void	HandleOn();
-	void	Switch();
-	void	HideContact(int uintNo,bool bshow = true );
-	void    InitData();
-	void	ClearData(int unitNo);
-	void	RightReject();//ÓÒÂ·¾Ü½Ó
-	void	RightUnitShow(bool bshow);
-
-	void    ShowWindow_(int nCmdShow);
-
+	void	ShowContact(boost::shared_ptr<Data::Contact> contact, std::string number);
+	void	HandleOn();  
 };
 
 //{{AFX_INSERT_LOCATION}}

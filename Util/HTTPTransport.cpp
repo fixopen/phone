@@ -4,12 +4,8 @@
 #pragma warning(disable: 4786)
 #include <vector>
 #include "HTTPTransport.h"
-#include "../MultimediaPhoneDlg.h"
-#include "../Multimediaphone.h"
 
 #include "StringOp.h"
-extern int g_SignalSize;
-extern VOID WriteMyLog_(char *ptr, int size);
 
 namespace Util {
     namespace {
@@ -221,13 +217,8 @@ namespace Util {
     }
 
     DWORD HTTPTransport::Post(std::wstring const& uriV, std::wstring const& agentName) {
-		
-		WriteMyLog_("Post_in",strlen("Post_in"));
-		char log[100];
-		memset(log,0,100);
-
-		DWORD error = 0;
-        HINTERNET  HTTPOpen = ::InternetOpen(agentName.c_str(),
+        DWORD error = 0;
+        HINTERNET HTTPOpen = ::InternetOpen(agentName.c_str(),
             INTERNET_OPEN_TYPE_PROXY,//INTERNET_OPEN_TYPE_PRECONFIG, // proxy option
             apn_proxyIP, // proxy
             NULL, // proxy bypass
@@ -235,12 +226,10 @@ namespace Util {
 
         if (!HTTPOpen) {
             error = ::GetLastError();
-			sprintf(log,"InternetOpen_error:%d",error);
-			WriteMyLog_(log,strlen(log));
         } else {
             URI uri(uriV);
 
-            HINTERNET  HTTPConnection = ::InternetConnect(HTTPOpen, // internet opened handle
+            HINTERNET HTTPConnection = ::InternetConnect(HTTPOpen, // internet opened handle
                 uri.host.c_str(), // server name
                 uri.port, // ports
                 uri.username.c_str(), // user name
@@ -251,23 +240,12 @@ namespace Util {
 
             if (!HTTPConnection) {
                 error = ::GetLastError();
-                //::CloseHandle(HTTPOpen);
-				InternetCloseHandle(HTTPOpen);
-				memset(log,0,100);
-				sprintf(log,"HTTPConnection_error:%d",error);
-				WriteMyLog_(log,strlen(log));
-
+                ::CloseHandle(HTTPOpen);
             } else {
                 if (::InternetAttemptConnect(NULL) != ERROR_SUCCESS) {
                     error = ::GetLastError();
-                    //::CloseHandle(HTTPConnection);
-                    //::CloseHandle(HTTPOpen);
-					InternetCloseHandle(HTTPConnection);
-					InternetCloseHandle(HTTPOpen);
-					memset(log,0,100);
-					sprintf(log,"InternetAttemptConnect_error:%d",error);
-					WriteMyLog_(log,strlen(log));
-
+                    ::CloseHandle(HTTPConnection);
+                    ::CloseHandle(HTTPOpen);
                 } else {
                     wchar_t const* acceptType = HttpAcceptType.c_str(); //const_cast<wchar_t*>();
 					LPCTSTR ppszAcceptTypes[2];
@@ -285,17 +263,11 @@ namespace Util {
 
                     if (!HTTPRequest) {
                         error = ::GetLastError();
-						memset(log,0,100);
-						sprintf(log,"HTTPRequest_error:%d",error);
-						WriteMyLog_(log,strlen(log));
                         return error;
                     } else {
                         // set accept header
                         if (!::HttpAddRequestHeaders(HTTPRequest, HttpAccept.c_str(), HttpAccept.length(), HTTP_ADDREQ_FLAG_REPLACE)) {
                             error = ::GetLastError();
-							memset(log,0,100);
-							sprintf(log,"HttpAddRequestHeaders_error:%d",error);
-							WriteMyLog_(log,strlen(log));
                             return error;
                         } else {
                             //set other headers
@@ -307,9 +279,6 @@ namespace Util {
 							{
 								if (!::HttpAddRequestHeaders(HTTPRequest, headers.c_str(), headers.length(), HTTP_ADDREQ_FLAG_ADD)) {
 									error = ::GetLastError();
-									memset(log,0,100);
-									sprintf(log,"HttpAddRequestHeaders_error:%d",error);
-									WriteMyLog_(log,strlen(log));
 								}
                             } 
 							{
@@ -321,10 +290,6 @@ namespace Util {
 		                            nPostDataLenth/*(void *)message.body.c_str(),*/ // additional data in HTTP Post or HTTP Put
                                     /*message.body.length()*/)) { // additional data length
                                         error = ::GetLastError();
-									memset(log,0,100);
-									sprintf(log,"HttpSendRequest_error:%d",error);
-									WriteMyLog_(log,strlen(log));
-
                                 } 
 								else {
                                  //   thread_->setHttpRequest(HTTPRequest);
@@ -341,27 +306,17 @@ namespace Util {
 
 	int HTTPTransport::Recv(UINT8 * pBuf, int length)
 	{
-		int actSize = 0;
-		DWORD size = 0;
+		DWORD actSize = 0;
 		if(HTTPRequest)
 		{
-			if (!::InternetReadFile(HTTPRequest, pBuf, length, &size))
+			if (!::InternetReadFile(HTTPRequest, pBuf, length, &actSize))
 			{
 				actSize = 0;
 			}       
 		}
 		else if(bNewSocket)
 		{
-// 			actSize = pNewSocket.Receive(pBuf, length, MSG_PEEK);
-// 			if(actSize > 0)
-// 			{
-				actSize = pNewSocket.Receive(pBuf, length);
-// 			}
-// 			else if(actSize == SOCKET_ERROR)
-// 			{
-// 				int err = GetLastError();
-// 				actSize = SOCKET_ERROR;
-// 			}
+			actSize = pNewSocket.Receive(pBuf, length);
 		}
 		return actSize;
 	}
@@ -371,11 +326,7 @@ namespace Util {
 		if(HTTPRequest)
 		{
 			::InternetCloseHandle(HTTPRequest);
-		//	::InternetCloseHandle(HTTPOpen);
-		//	::InternetCloseHandle(HTTPConnection);
 			HTTPRequest = NULL;
-		//	HTTPOpen = NULL;
-		//	HTTPConnection = NULL;
 		}
 		if(bNewSocket)
 		{
@@ -414,7 +365,6 @@ namespace Util {
 			sIp = uri.host.c_str();
 			port = uri.port;
 		}
-
 		if(pNewSocket.Connect(sIp, port))
 		{
 			bNewSocket = TRUE;
@@ -478,100 +428,6 @@ namespace Util {
 			error = GetLastError();	
         return error;
     }
-
-	DWORD HTTPTransport::PostMms(std::wstring const uriV, UINT8 *pData, int nDatalen)
-	{
-		bNewSocket = FALSE;
-
-        DWORD error = 0;
-		URI uri(uriV);
-		CString sIp = apn_proxyIP;
-		int port = 80;
-        if(wcslen(apn_proxyIP) > 0)
-		{
-			CString s = apn_proxyIP;
-			int n = s.Find(L":");
-			if(n >= 0)
-			{
-				sIp = s.Mid(0, n);
-				CString sPort = s.Right(s.GetLength() - n -1);
-				port = Util::StringOp::ToInt(sPort);
-			}
-
-		}
-		else
-		{
-			sIp = uri.host.c_str();
-			port = uri.port;
-		}
-		
-		Dprintf("sIp:%s",Util::StringOp::FromCString(sIp).c_str());
-		Dprintf("port:%d",port);
-		if(pNewSocket.Connect(sIp, port))
-		{
-			bNewSocket = TRUE;
-			char BUF_[1024] = {0};
-			char url_[256] = {0};
-			wcstombs(url_, uriV.c_str(), uriV.length());
-
-
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-			CString mmsc(url_);  //wangzhenxing20100803
-			mmsc.MakeLower();
-			if(main->m_pSettingDlg->m_pSetting->mmsType_ == 0)//现网判断，不是现网放过
-			{
-				if(mmsc != L"http://mmsc.monternet.com" && mmsc != L"http://mmsc.monternet.com/")
-				{
-					error = -1;
-					return error;
-				}
-			}
-
-			char cLen[12];
-			sprintf(cLen, "%d", nDatalen);
-			char *pBuf[3] = {"POST ", " HTTP/1.1\r\nContent-type: application/vnd.wap.mms-message\r\nAccept: application/vnd.wap.mms-message,text/plain,*/*\r\nUser-Agent: ceHttp\r\nContent-Length: ", "\r\n\r\n"};
-	
-			TCHAR sLen[32];
-		//	char BUF_[1024];
-			sprintf(BUF_, "%s%s%s%d%s", pBuf[0], url_, pBuf[1], nDatalen, pBuf[2]);
-			int ret = pNewSocket.Send(BUF_, strlen(BUF_));
-			if(ret != strlen(BUF_))
-				error = GetLastError();
-			else
-			{
-				int nPlen = nDatalen;
-				UINT8 *ptr = pData;
-
-				int ret = pNewSocket.Send(ptr, nPlen);
-				if(ret != nPlen)
-				{
-					error = GetLastError();
-					return error ;
-				}
-
-// 				while(nPlen > 0)
-// 				{
-// 					Sleep(10);
-// 					int count = min(nPlen, 1024);
-// 					ret = pNewSocket.Send(ptr, count);
-// 					Dprintf("count:%d",count);
-// 					Dprintf("ret:%d",ret);
-// 
-// 					if(ret != count)
-// 					{
-// 						error = GetLastError();
-// 						break;
-// 					}
-// 					nPlen -= count;
-// 					ptr += count;
-// 				}
-			}
-		}
-		else
-			error = GetLastError();	
-        return error;
-	}
-
 	/*
 	int HTTPTransport::Recv()
 	{

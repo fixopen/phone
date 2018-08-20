@@ -22,7 +22,7 @@ static char THIS_FILE[] = __FILE__;
 
 CCardSelectDlg::CCardSelectDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CCardSelectDlg::IDD, pParent)
-	, ContactTotal(3000)
+	, ContactTotal(10000)
 	, ContactGroupTotal(8)
 	, PageSize(8)
 {
@@ -521,6 +521,18 @@ int CCardSelectDlg::GetTypeListSelected(void)
 		return index;
 	}
 	return -1;
+}
+
+void CCardSelectDlg::SetTypeListSelected(int index)
+{
+	POSITION pos = m_lsType.GetFirstSelectedItemPosition();   
+	while (pos != NULL)
+	{   
+		int iSel = m_lsType.GetNextSelectedItem(pos);   
+		m_lsType.SetItemState(iSel, 0, LVIS_SELECTED);   
+	}
+    m_lsType.SetItemState(index, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+
 }
 
 

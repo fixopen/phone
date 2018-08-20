@@ -15,41 +15,35 @@
 #include "../resource.h"
 #include "PlayerDlg.h"
 
-#include "MidiPlayerControl.h"
-
 /////////////////////////////////////////////////////////////////////////////
 // CMainMp3Dlg dialog
 
 class CMainMp3Dlg : public CDialog
 {
 public:
-	BOOL				m_bIsPausebyEvent;
-	TCHAR				m_chDir[128];
+	BOOL m_bIsPausebyEvent;
+	TCHAR		m_chDir[128];
 	
-	CCEProcessBar		m_prgPlayTime;
-	CMJPGStatic			m_MJPGList;
-	CCEMoveTxtStatic	*m_MoveText;
+	CCEProcessBar m_prgPlayTime;
+	CMJPGStatic		m_MJPGList;
+	CCEMoveTxtStatic *m_MoveText;
 	
-	BOOL m_isMidiMusic;
-	BOOL m_isMidiInit;
-	BOOL m_isPlayerShow;
-	int  m_ClickType;
-	int  m_IsPlay;
-	int  m_PreOrBack;  //0代表正常，1代表前一首，2代表下一首
+	int m_ClickType;
+	int m_IsPlay;
+	int m_PreOrBack;  //0代表正常，1代表前一首，2代表下一首
 	BOOL m_IsSound;
 	int  m_Volume;
 	BOOL m_isAllScreenPlay;
 	unsigned int m_pageSize;
-	unsigned int m_selectPageCount;//被选中文件总页数
-	unsigned int m_selectCurrentPage;//当前显示的页数
+	unsigned int m_selectPageCount;   //被选中文件总页数
+	unsigned int m_selectCurrentPage;   //当前显示的文件
 	std::vector<CString> m_MP3List;
 	std::vector<CString> m_ShowList;
 
 	//local 0初级阶段
-	bool SetMP3(CString filename);
-	bool PlayAudio(CString filename,int nVolue = 20);
-	void EliminateMidi();
+	void SetMP3(CString filename);
 	void OnExit_(BOOL isStopMusic);
+	void SetVolume();
 	void ChangeVolume(int w);
 	void OnFirst();
 	void OnLast();
@@ -61,9 +55,6 @@ public:
 	void OnClickShowList(int unitNO);
 	void OnDBClickShowList(int unitNO);
 
-	void HandleAudio(bool bt);
-
-
 public:
 	CPlayerDlg	*playerDlg_; 
 
@@ -73,16 +64,13 @@ public:
 // Construction
 public:
 	CMainMp3Dlg(CWnd* pParent = NULL);   // standard constructor
-	
-	MediaPlayer::MidiPlayer *pTheMidiPlayer;
-	afx_msg void OnExit();  //wangzhenxing20100527
+
 // Dialog Data
 	//{{AFX_DATA(CMainMp3Dlg)
 	enum { IDD = IDD_DIALOG_CACULATER };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
-private:
-	
+
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -99,6 +87,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CMainMp3Dlg)
 	virtual BOOL OnInitDialog();
+	afx_msg void OnExit();
 	afx_msg void OnPlayer();
 	afx_msg void OnStop();
 	afx_msg void OnPre();

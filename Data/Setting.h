@@ -639,15 +639,6 @@ namespace Data
             nightControlBlackLightEndTime_ = nightControlBlackLightEndTime;
         }
 
-		void MmsReciveType(int const mmsReciveType)
-		{
-			mmsType_ = mmsReciveType;
-		}
-		int const MmsReciveType() const
-		{
-			return mmsType_;
-		}
-
 	public:
 		//int id_;
 		SettingType type_;
@@ -745,15 +736,7 @@ namespace Data
 
 		//呼叫设置
 		int	callRecall_;
-		//int callLimit_;
-		
-		//change by qi 20100621
-		int isPhoneDialTimes_;
-		int PhoneDialTimes_;
-		
-		//是否深度睡眠
-		bool isDeepSleep;
-		
+		int callLimit_;
 		int callWaiting_;
 
 		//特服号
@@ -799,22 +782,6 @@ namespace Data
 		std::string gprsDialnumber2_;
 		std::string gprsProxyIp2_;
 		int gprsProxyPort2_;
-
-		std::string gprsType3_;
-		std::string gprsHttp3_;
-		std::string gprsDialnumber3_;
-		std::string gprsProxyIp3_;
-		int gprsProxyPort3_;
-
-		std::string gprsType4_;
-		std::string gprsHttp4_;
-		std::string gprsDialnumber4_;
-		std::string gprsProxyIp4_;
-		int gprsProxyPort4_;
-
-		int mmsType_;  //彩信接收方式
-		int netType_;  //拨号上网方式
-
 		/*
 		//meta info
 		Util::Timestamp creationTime_;

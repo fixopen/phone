@@ -23,8 +23,6 @@ class CPasswordDlg : public CCEDialog
 // Construction
 public:
 	int m_nCtrl;
-	int m_nErrorCount;
-	void SetErrorCount(int nCount);
 	CPasswordDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -49,8 +47,8 @@ protected:
 	//{{AFX_MSG(CPasswordDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT nIDEvent);
-	afx_msg void OnPaint();
 	//}}AFX_MSG
+	afx_msg void OnButtonPasswordOk();
 	afx_msg void OnButtonPasswordCancel();
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
@@ -63,11 +61,13 @@ private:
 	
 	PASSWORD_TYPE m_passwordType;
 	CString		  m_password;
+	const char		  *m_tempPassword;
 	int			  m_nStep;
 	HWND		  m_Owner;
 
 	void SetStaticDefaultColor(CCEStatic* cestatic);
 public:
+	void	SetType(PASSWORD_TYPE nType, int nCtrl = 0);
 	void    SetOldPassWord(char *pPassWord);
 	void    SetHWnd(HWND handle){m_Owner = handle;}
 	void    SettingType(PASSWORD_TYPE nType, int nCtrl = 0);

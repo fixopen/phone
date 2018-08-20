@@ -34,13 +34,11 @@ public:
 	void OnClickDelete();
 	void DeleteSelectedItem();
 	void OnExit_();
-	void OnOK_();
 	void OnPlayer(int index = 0);
 	void FindSelectPage();
 	void AddFileMovie();
 	void SetInitShow();
 	void ShowWindow_(int nCmdShow);
-	int m_callType;
 
 // Dialog Data
 	//{{AFX_DATA(C3GHomeMovieDlg)
@@ -51,7 +49,6 @@ private:
 	std::vector<CString> m_fileDir;
 	std::vector<int> m_isFileSelect;
 	
-	unsigned int m_selCount;
 	unsigned int m_cardType1;
 	unsigned int m_cardType2;
 	unsigned int m_uiType;
@@ -65,8 +62,7 @@ private:
 	
 	TCHAR	m_chDir[128];
 	BOOL    m_isSelectAll;
-	BOOL	m_UnitStatus[5];
-	std::vector<CString> m_sPreDir;
+	BOOL m_UnitStatus[5];
 
 // Overrides
 	// ClassWizard generated virtual function overrides

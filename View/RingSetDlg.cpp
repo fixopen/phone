@@ -78,7 +78,6 @@ void CRingSetDlg::OnComboSelect(WPARAM w, LPARAM l)
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->g_RingSound = v;
 		((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->phone_->StartRing((LPTSTR)(LPCTSTR)sFile, 1);
 	}
-
 }
 /////////////////////////////////////////////////////////////////////////////
 // CRingSetDlg message handlers
@@ -119,7 +118,8 @@ BOOL CRingSetDlg::OnInitDialog()
 	//	SetButtonDefaultColor(&m_chbEnableRing);
 	m_cmbSpecRing.Create(WS_CHILD|WS_VISIBLE, CRect(195+54, 241+62-10, 195+54+196, 241+62+190), this, IDC_COMBOBOX_SETTING_SPECRING);
 	m_cmbSpecRingVolume.Create(WS_CHILD|WS_VISIBLE, CRect(414+54, 230+62, 414+54+136, 230+62+190), this, IDC_COMBOBOX_SETTING_SPECRINGV);
-	
+
+
 	CString sRingVolume[5] = {"最大", "较大", "中间", "较小", "最小"};
 	m_cmbRingVolume.ResetContent();
 	m_cmbRingVolume.AddString(sRingVolume[0]);
@@ -142,7 +142,7 @@ BOOL CRingSetDlg::OnInitDialog()
 	m_cmbSpecRingVolume.AddString(sRingVolume[3]);
 	m_cmbSpecRingVolume.AddString(sRingVolume[4]);
 	
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(54, 62, 746, 358), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\铃声设置.xml");
 	m_MJPGList.SetMJPGRect(CRect(54, 62, 746, 358));
 

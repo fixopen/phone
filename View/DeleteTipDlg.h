@@ -19,7 +19,6 @@ class CDeleteTipDlg : public CCEDialog
 {
 // Construction
 public:
-	void OnButtonDeleteTipCancel();
 	CDeleteTipDlg(CWnd* pParent = NULL);   // standard constructor
 	int       m_ntype;
 
@@ -46,6 +45,7 @@ protected:
 	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	afx_msg void OnButtonDeleteTipOk();
+	afx_msg void OnButtonDeleteTipCancel();
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 private:
@@ -62,7 +62,7 @@ public:
 	void SetTipModel(BOOL b);
 	void SetPassword(CString password);
 	void SetDelTip(CString tips);
-	void SetTitle(CString title,int isTime = 5000,int type = 0 ,TEXTSIZE font=font_24);
+	void SetTitle(CString title,int isTime = 5000);
 
 	void SetProcessMax(int max );
 	void SetProcessPos(int npos);

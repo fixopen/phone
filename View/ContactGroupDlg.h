@@ -23,7 +23,7 @@ class CContactGroupDlg : public CCEDialog
 {
 // Construction
 public:
-	CCEComboBox12_ m_cmbSoundTip;
+	CCEComboBox_ m_cmbSoundTip;
 	CContactGroupDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data

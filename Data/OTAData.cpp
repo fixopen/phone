@@ -212,22 +212,6 @@ namespace Data {
             result += (l);
             return result;
         }
-		
-		std::string const SMSCTimestamp::ToString_NoSecond() const {
-			std::string result;
-            char l[5] = {0};
-            sprintf(l, "%04d-", (year+2000));
-            result += l;
-            sprintf(l, "%02d-", (month));
-            result += (l);
-            sprintf(l, "%02d", (day));
-            result += (l);
-            sprintf(l, "% 02d:", (hour));
-            result += (l);
-            sprintf(l, "%02d", (minite));
-            result += (l);
-            return result;
-		}
 
 		std::string const SMSCTimestamp::ToStringFormat_() const {
             std::string result;
@@ -903,7 +887,7 @@ namespace Data {
 				cmd += "' )";
 				ExecCommand(cmd);
 				extern VOID WriteLog(CHAR* str);
-//				WriteLog((char *)cmd.c_str());
+				WriteLog((char *)cmd.c_str());
 				id(GetCurrentId());
 			}
         }

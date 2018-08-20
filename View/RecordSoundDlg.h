@@ -73,6 +73,11 @@ private:
 	PBYTE m_pBuffer[WAVE_BUFFER_COUNT];
 	PWAVEHDR m_pWaveHdr[WAVE_BUFFER_COUNT];
 
+// 	PBYTE m_pBuffer1;
+// 	PBYTE m_pBuffer2;
+// 	PWAVEHDR m_pWaveHdr1;
+// 	PWAVEHDR m_pWaveHdr2;
+
 	CFile m_fWav;	
 	WAVEFORMATEX m_waveform;
 	UINT m_uiRemainRecordSecond;
@@ -85,8 +90,22 @@ private:
 	//Data::SoundSegmentType m_sstType;
 
 private:
+	/*
+	CCEStatic m_sticNameNO;
+	CCEStatic m_sticSoundName;
+	CCEStatic m_sticSoundDuration;
+	CCEStatic m_sticRecordCaption;
+	CCEStatic m_sticRecord;
+	CCEStatic m_sticDurationMax;
+	*/
 
 	CCEProcessBar m_procbarSound;
+// 	CCEBmpButton m_btnClose;
+// 	CCEBmpButton m_btnClear;
+// 	CCEBmpButton m_btnPlay;
+// 	CCEBmpButton m_btnRecord;
+// 	CCEBmpButton m_btnRecordTip;
+//	CCEFramePartStatic m_sticBackground;
 
 	bool RecStart(void);
 	bool RecStop(void);

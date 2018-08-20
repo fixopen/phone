@@ -76,7 +76,6 @@ void C10ContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	default:
 		break;
 	}
-
 }
 BOOL C10ContactInfoDlg::OnInitDialog() 
 {
@@ -86,8 +85,7 @@ BOOL C10ContactInfoDlg::OnInitDialog()
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\10条通话记录.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 241+317, 52+376));
 	
-//	MoveWindow(241,52,317,376);
-	MoveWindow(41,20+52,317,376);
+	MoveWindow(241,52,317,376);
 	SetPageFont();
 
 //	MoveWindow(180,105,440,270);
@@ -105,14 +103,10 @@ void C10ContactInfoDlg::SetMainWnd(CWnd *pwnd)
 void C10ContactInfoDlg::FromContactInfoDataBase(void)
 {
 	if (Data::ContactInfo::GetDataCount("") > 0)
-	{	
-		std::string filter = "telephoneNumber <> " ;
-		filter += "''";		
-		m_iCount = Data::ContactInfo::GetDataCount(filter);
-		m_vCurrentResult = Data::ContactInfo::GetFromDatabase(filter, Data::dNull, Data::ContactInfo::GetCurrentId() + 1, 10);
-	
+	{
+		m_iCount = Data::ContactInfo::GetDataCount("");
+		m_vCurrentResult = Data::ContactInfo::GetFromDatabase("", Data::dNull, Data::ContactInfo::GetCurrentId() + 1, 10);
 	}
-
 }
 
 void C10ContactInfoDlg::ShowContactInfo()
@@ -140,42 +134,30 @@ void C10ContactInfoDlg::ShowContactInfo()
 		m_MJPGList.SetUnitText(i*10,tel,false);
 
 		m_MJPGList.SetUnitIsShow(i*10+2,true,false);//显示该unit
-
 	}
 	m_MJPGList.Invalidate();
-
 }
 
 void C10ContactInfoDlg::ClickOneItem(int item)
 {	
 
-// 	if (m_iUnitNo > -1)
-// 	{	
-// 		m_MJPGList.SetUnitIsDownStatus(m_iUnitNo,false);
-// 		m_MJPGList.SetUnitIsShow(m_iUnitNo,true,true);
-// 	}
+	if (m_iUnitNo > -1)
+	{	
+		m_MJPGList.SetUnitIsDownStatus(m_iUnitNo,false);
+	//	m_MJPGList.SetUnitIsShow(m_iUnitNo,true,true);
+	}
 
-//	m_MJPGList.SetUnitIsDownStatus(item,true);
+	m_MJPGList.SetUnitIsDownStatus(item,true);
 //	m_MJPGList.SetUnitIsShow(item,true,true);
-	
-	ShowWindow(SW_HIDE);
-
-// 	if (m_iUnitNo > 0)
-// 	{
-// 		m_MJPGList.SetUnitIsDownStatus(m_iUnitNo,false);
-// 	}
-	m_iUnitNo = -1 ;
-
-	CString tel = m_MJPGList.GetUnitText(item-2);
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->SetTel(tel);
-
 	m_iUnitNo = item ;
-
+	m_MJPGList.Invalidate();
 }
 void C10ContactInfoDlg::Show10ContactInfo()
 {	
 	ClearPage();
-
+	m_MJPGList.SetUnitIsDownStatus(m_iUnitNo,false);
+	m_MJPGList.SetUnitIsShow(m_iUnitNo,true,true);
+	m_iUnitNo = -1 ;
 	FromContactInfoDataBase();
 	ShowContactInfo();
 	ShowWindow(SW_SHOW);
@@ -199,21 +181,19 @@ void C10ContactInfoDlg::ClearPage()
 		m_MJPGList.SetUnitBitmap(item+i,L"",L"",false);
 		m_MJPGList.SetUnitText(item+i+1,L"",false);
 		m_MJPGList.SetUnitIsShow(item+2,false,false);
-		m_MJPGList.SetUnitIsDownStatus(item+2,false);
 		item += 10;
 	}
-	m_MJPGList.Invalidate();
-
+//	m_MJPGList.Invalidate();
 }
 
 void C10ContactInfoDlg::OnBtnOK()
 {
-	//if (m_iUnitNo > -1)
-	//{	
+	if (m_iUnitNo > -1)
+	{	
 		ShowWindow(SW_HIDE);
-	//	CString tel = m_MJPGList.GetUnitText(m_iUnitNo-2);
-	//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->SetTel(tel);
-	//}
+		CString tel = m_MJPGList.GetUnitText(m_iUnitNo-2);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelphoneDialDlg->SetTel(tel);
+	}
 }
 
 

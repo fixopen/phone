@@ -49,13 +49,8 @@ public:
 	void Replay(void);
 	void Transit(void);
 	void DialBack();//回拨
-	void Repeat();//重发
 	void SaveDraft(void);//存成草稿
-	void NumberExtract();//号码提取
-	void CheckChatacter(CString &ct);//号码检查
-
-	void RefreshName(std::string name);  //wangzhenxing20100604
-	void CalCulateContent(CString content = L"");
+	void NumberExtract();//号码提取 
 
 protected:
 	// Generated message map functions

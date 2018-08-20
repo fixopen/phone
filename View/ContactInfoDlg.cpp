@@ -24,7 +24,7 @@ static char THIS_FILE[] = __FILE__;
 
 CContactInfoDlg::CContactInfoDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CContactInfoDlg::IDD, pParent)
-	, ContactInfoTotal(3000)
+	, ContactInfoTotal(10000)
 	, PageSize(6)
 {
 	//{{AFX_DATA_INIT(CContactInfoDlg)
@@ -80,7 +80,6 @@ void CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		SetContactInfoFilter(w);
 		FromContactInfoDataBase();
 		ShowTypeInfo();
-		SetPageTurnBtn();
 		break;
 
 	case 4://查找		
@@ -98,20 +97,17 @@ void CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 1000: //返回
 		ShowWindow(SW_HIDE);
 		main->PopbackIcon();
-		main->IsSendMessage(FALSE);
 		break;
 
 	case 1001: //确定
 		OnBtnOK();
-		main->IsSendMessage(FALSE);
-		break;
+		break;	
 		
 	case 11://短信息
 		if (OnBtnSMS())
 		{
-			CWnd *p = main->m_pMainDlg->m_p3GSMSDlg ;
 			icon = Allicon[1];
-			main->AddIcon(icon,p,false);
+			main->AddIcon(icon);
 		}		
 		break;
 
@@ -120,24 +116,15 @@ void CContactInfoDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 
 	case 13://删除
-	case 14://详情
+		OnButtonDelete();
+		break;
+
+	case 14://听留言
+		OnButtonSound();
+		break;
+
 	case 15://新建名片
-		{
-			m_operateType = w;
-			BOOL flag1 = main->m_pSettingDlg->m_pSetting->isAdmin();
-			if(flag1 && !main->m_pSettingDlg->m_bLogin)
-			{
-				main->m_pPasswordDlg->SettingType(CHECK_SUPPERPASSWORD);
-				std::string strTemp = main->m_pSettingDlg->m_pSetting->adminPassword();
-				main->m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
-				main->m_pPasswordDlg->SetHWnd(this->m_hWnd);
-				main->m_pPasswordDlg->ShowWindow_(SW_SHOW);
-			}
-			else
-			{
-				WindowProc(CHECK_SUPPERPASSWORD, 1, 0);
-			}
-		}
+		OnButtonNew();
 		break;
 
 	case 50://全选
@@ -386,9 +373,9 @@ BOOL CContactInfoDlg::OnInitDialog()
 	m_MJPGLetter_key.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\letter_key.xml");
  	m_MJPGLetter_key.SetMJPGRect(CRect(0, 308, 800, 400));
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\通话记录界面.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));	
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));	
 
 	m_pPlaySoundDlg = new CPlaySoundDlg(this);
 	m_pPlaySoundDlg->Create(CPlaySoundDlg::IDD);
@@ -425,65 +412,28 @@ void CContactInfoDlg::SetButtonSelectedColor(CCEButtonST* button)
 }
 
 
-std::string CContactInfoDlg::GetName(std::string number, int &groupId)
+std::string CContactInfoDlg::GetName(std::string number)
 {
-	
-	if (number == "" )
+	if (number == "")
 	{
-		return "";
+		return number;
 	}
-	
-	if ( number.length() > 6)
-	{
-		if ( 0 == (number.substr(0,2)).compare("86"))
-		{
-			number = number.substr(2);
-		}
-		else if ( 0 == (number.substr(0,3)).compare("+86"))
-		{
-			number = number.substr(3);
-		}
-	}
-
 	std::string filter;
-	if (number.length() < 7)
-	{
-		filter += "mobilesTelephone = '";
-		filter += (number);
-		filter += "'";
-		filter += " OR mobilesTelephone2 = '";
-		filter += (number);
-		filter += "'";
-		filter += " OR worksTelephone = '";
-		filter += (number);
-		filter += "'";
-		filter += " OR worksTelephone2 = '";
-		filter += (number);
-		filter += "'";
-	}
-	else
-	{
-		filter += "mobilesTelephone LIKE '%";
-		filter += (number);
-		filter += "'";
-		filter += " OR mobilesTelephone2 LIKE '%";
-		filter += (number);
-		filter += "'";
-		filter += " OR worksTelephone LIKE '%";
-		filter += (number);
-		filter += "'";
-		filter += " OR worksTelephone2 LIKE '%";
-		filter += (number);
-		filter += "'";
-	}
-	
-	std::vector<boost::shared_ptr<Data::Contact> > result = Data::Contact::GetFromDatabaseByTypeOffsetLength(filter, 0, 1);
+	filter += "mobilesTelephone = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "' OR mobilesTelephone2 = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "' OR worksTelephone = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "' OR worksTelephone2 = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "'";
+	std::vector<boost::shared_ptr<Data::Contact> > result = Data::Contact::GetFromDatabase(filter);
 	if (!result.empty())
 	{
-		groupId = result[0]->groupId();
-		return result[0]->name();
+		return result[0]->name() + "(" + number + ")";
 	}
-	return "";
+	return number;
 }
 
 void CContactInfoDlg::OnButtonDial() 
@@ -505,13 +455,6 @@ void CContactInfoDlg::OnButtonDial()
 		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 		return ;
 	}
-	else if ( 0 == num)
-	{	
-		CString title = L"请先选择记录!" ;
-		main->m_pWarningNoFlashDlg->SetTitle(title);
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return;
-	}
 
 	for (i = 0 ; i < m_vClick.size() ;i++)
 	{
@@ -520,23 +463,18 @@ void CContactInfoDlg::OnButtonDial()
 			break ;
 		}	
 	}
-
-	main->m_pMainDlg->StopVideo(TRUE, 0, 0);  //wangzhenxing20100709
-
 	std::string filter = "id = " + Util::StringOp::FromInt(m_vContactID[i]);
 	std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
 	
 	if (!result.empty() && result[0]->GetContact())
-	{	
-		main->m_phoneLine[0].pFSM->setStartState(CMultimediaPhoneDlg::p3gsHangOn);
+	{
 		std::string number = result[0]->telephoneNumber().number();
-		main->m_pTelephoneDlg->DialContact(number, result[0]->GetContact()->id());
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(number, result[0]->GetContact()->id());
 	}
 	else
 	{	
-		main->m_phoneLine[0].pFSM->setStartState(CMultimediaPhoneDlg::p3gsHangOn);
 		std::string number = result[0]->telephoneNumber().number();
-		main->m_pTelephoneDlg->DialContact(number);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pTelephoneDlg->DialContact(number);
 	}	
 
 }
@@ -563,7 +501,7 @@ void CContactInfoDlg::OnButtonSound()
 		m_pPlaySoundDlg->SetSound((int)result[0]->type(), result[0]->id(), 0, m_sListSearchFilter);
 		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isPlayProtect() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 		{
-			m_pPasswordDlg->SettingType(CHECK_PLAYPASSWORD);
+			m_pPasswordDlg->SetType(CHECK_PLAYPASSWORD);
 			std::string strTemp = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->playRecordPassword();
 			m_pPasswordDlg->SetOldPassWord((char *)strTemp.c_str());
 			m_pPasswordDlg->SetHWnd(this->m_hWnd);
@@ -583,21 +521,32 @@ void CContactInfoDlg::OnButtonNote()
 
 	CMultimediaPhoneDlg *pMain = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 
+	//需要传送号码
+	pMain->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg->initDataBase(SMS_NEW, -1);
+	pMain->m_pMainDlg->m_p3GSMSDlg->m_pSMSDetailDlg->ShowWindow(SW_SHOW);
 }
 
 void CContactInfoDlg::OnButtonNew() 
 {	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	if (!Warning())
+	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
+	int num = 0;
+	for (int i = 0 ; i < m_vClick.size() ;i++)
 	{
-		return;
+		if (1 == m_vClick[i])
+		{	
+			num++;
+		}	
 	}
 	
-	std::string filter;
-	filter = "[groupId] <>";
-	filter += Util::StringOp::FromInt(main->m_pContactDlg->GetSimID());
+	if (num > 1)
+	{	
+		CString title = L"不能选择多个去新联系人!" ;
+		main->m_pWarningNoFlashDlg->SetTitle(title);
+		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+		return ;
+	}
 
-	if (Data::Contact::GetDataCount(filter) < main->m_pContactDlg->ContactTotal)
+	if (Data::Contact::GetDataCount("") < ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactDlg->ContactTotal)
 	{	
 		int index = -1; 
 		for (int i = 0 ; i < m_vClick.size() ;i++)
@@ -624,7 +573,7 @@ void CContactInfoDlg::OnButtonNew()
 				std::vector<boost::shared_ptr<Data::Contact> > result = Data::Contact::GetFromDatabase(filter);
 				if (!result.empty())
 				{
-					//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACT);
+					//	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACT);
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->SetContact(result[0]);
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->ShowWindow(TRUE);
 				}
@@ -651,16 +600,16 @@ void CContactInfoDlg::OnButtonNew()
 					}		
 				}
 				
-				main->m_pContactNewDlg->SetContact(contact);
-				main->m_pContactNewDlg->ShowWindow(TRUE);
+				//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_CONTACT);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->SetContact(contact);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pContactNewDlg->ShowWindow(TRUE);
 			}
 		}
 		
 	}
 	else
-	{	
-		main->m_pWarningNoFlashDlg->SetTitle(L"新建名片已满!");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
+	{
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
 	}
 }
 
@@ -677,7 +626,7 @@ void CContactInfoDlg::OnButtonSearch()
 	}
 	else
 	{	
-	//	SetContactInfoFilter(3);
+		SetContactInfoFilter(3);
 		m_MJPGList.SetUnitBitmap(4,L"",L"",true);
 		m_MJPGLetter_key.ShowWindow(SW_HIDE);
 		m_MJPGData_key.ShowWindow(SW_HIDE);
@@ -691,7 +640,6 @@ void CContactInfoDlg::OnButtonSearch()
 
 void CContactInfoDlg::OnButtonDelete() 
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	bool enble = false ;
 	int  count = 0 ;
 	
@@ -704,59 +652,21 @@ void CContactInfoDlg::OnButtonDelete()
 		}	
 	}
 	
-	if (m_bSelectAll)
-	{
-		enble = true;
-	}
-	else if ( 0 == count)
-	{	
-		CString title = L"请先选择记录!" ;
-		main->m_pWarningNoFlashDlg->SetTitle(title);
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return;
-	}
-
 	if (enble)
 	{	
-		CString title = L"";
-		if (m_bSelectAll)
+		CString title = "确认删除已选的内容吗?";
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(title,0);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+		if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 		{
-			int allcount = Data::ContactInfo::GetDataCount(m_sListFilter);
-			if (count == m_vClick.size() && count != 0)//全部
-			{	
-				count = allcount;
-				title = L"是否删除全部信息?";
-			}
-			else if( count != m_vClick.size())//
-			{
-				count = allcount - (m_vClick.size() - count);
-				if ( 0 == count)
-				{
-					return ;
-				}	
-				title.Format(L"%d", count);
-				title = L"是否删除已选中的" + title + L"条信息?";
-			}
-			count = 1;
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 		}
-		else
-		{
-			title.Format(L"%d", count);
-			title = L"是否删除已选中的" + title + L"条记录?";
-		}
-		
-		main->m_pDeleteTipDlg->SetTitle(title,0);
-		main->m_pDeleteTipDlg->SetProcessMax(count);
-		main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-		if (main->m_pSettingDlg->m_pSetting->isAdmin() && !main->m_pSettingDlg->m_bLogin)
-		{
-			main->m_pDeleteTipDlg->SetPasswordModel(true);
-		}
-		std::string pw = main->m_pSettingDlg->m_pSetting->adminPassword();
-		main->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
+		std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
 		std::string strTemp = Data::LanguageResource::Get(Data::RI_DELETETIP_CONTACTINFO);
-		main->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
-		main->m_pDeleteTipDlg->ShowWindow_(TRUE);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 
 	}
 }
@@ -773,6 +683,8 @@ void CContactInfoDlg::SaveContactInfo(boost::shared_ptr<Data::ContactInfo> ci)
 		ci->Update();	
 	}
 
+	//m_uiSelectIndex = 0;
+	//ShowItemsInList(0);
 	int count = Data::ContactInfo::GetDataCount("");
 	if (count > ContactInfoTotal)
 	{
@@ -800,24 +712,15 @@ void CContactInfoDlg::ShowUnconnectItems(void)
 	SetContactInfoFilter(0);
 	FromContactInfoDataBase();
 	ShowTypeInfo();
-	SetPageTurnBtn();
 }
 
 LRESULT CContactInfoDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 {
-	// TODO: Add your specialized code here and/or call the base class
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	// TODO: Add your specialized code here and/or call the base class	
 	switch (message)
 	{
 	case WM_DELETESELITEM:
-		if (m_bSelectAll)
-		{
-			DeleteAll();
-		}
-		else
-		{
-			DeleteItems();
-		}
+		DeleteItems();
 		break;
 		
 	case WM_CHECKPASSWORD:
@@ -836,25 +739,6 @@ LRESULT CContactInfoDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_TEL_NOUSE:
 		m_bTelephoneInUse = false;
-		break;
-	case CHECK_SUPPERPASSWORD:
-		if(1 == wParam)
-		{
-			main->m_pSettingDlg->m_bLogin = TRUE;
-			switch(m_operateType)
-			{
-			case 13:
-				OnButtonDelete();
-				break;
-			case 14:
-			//	OnButtonSound();
-				Detail();
-				break;
-			case 15:
-				OnButtonNew();
-				break;
-			}
-		}
 		break;
 	};
 	return CDialog::WindowProc(message, wParam, lParam);
@@ -922,8 +806,7 @@ void CContactInfoDlg::Add(CString ch)
 	ClearCurrentPage();
 	FromContactInfoDataBase();
 	ShowTypeInfo();
-	SetUpBtn(3);
-	SetPageTurnBtn();
+	SetUpBtn(3);	
 }
 
 std::string CContactInfoDlg::GetPYIndex(CString content)
@@ -945,48 +828,40 @@ std::string CContactInfoDlg::GetPYIndex(CString content)
 	return alias;
 }
 
-std::string CContactInfoDlg::GetType(int groupId)
+std::string CContactInfoDlg::GetType(std::string number)
 {
 	std::string filter;
-
-	if(groupId >= 0)
+	int groupID ;
+	filter += "mobilesTelephone = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "' OR mobilesTelephone2 = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "' OR worksTelephone = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "' OR worksTelephone2 = '";
+	filter += Data::TelephoneNumber(number).ToString();
+	filter += "'";
+	std::vector<boost::shared_ptr<Data::Contact> > result = Data::Contact::GetFromDatabase(filter);
+	if (!result.empty())
 	{
-		filter = "id = " + Util::StringOp::FromInt(groupId);
-		std::vector<boost::shared_ptr<Data::ContactGroup> > Groupresult = Data::ContactGroup::GetFromDatabase(filter);
-	
-		if (Groupresult.size() > 0)
-		{
-			return Groupresult[0]->name();
-		}
+		std::string name = result[0]->name();
+		groupID = result[0]->groupId();
+		filter = "id = " + Util::StringOp::FromInt(groupID);
 	}
-
+	
+	std::vector<boost::shared_ptr<Data::ContactGroup> > Groupresult = Data::ContactGroup::GetFromDatabase(filter);
+	
+	if (Groupresult.size() > 0)
+	{
+		return Groupresult[0]->name();	
+	}
+	
 	return "";
 }
 
 
 bool CContactInfoDlg::OnBtnSMS()
 {	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	int num = 0 ;
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{
-			num++;
-		}
-	}
-
-	if (!m_bSelectAll)
-	{	
-		if ( 0 == num)
-		{
-			CString title = L"请先选择记录!" ;
-			main->m_pWarningNoFlashDlg->SetTitle(title);
-			main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-			return false;
-		}
-	}
-
 	std::vector<CString> telNumber ;
 	std::vector<CString> vname ;
 	GetNumName(vname,telNumber);
@@ -1038,8 +913,6 @@ void CContactInfoDlg::PageSwitch(Action action)
 		
 	}
 	
-	SetPageTurnBtn(1);
-
 	ClearCurrentPage();
 	FromContactInfoDataBase();
 	ShowTypeInfo();		
@@ -1050,7 +923,7 @@ void CContactInfoDlg::ClearCurrentPage()
 	for (int i=1; i <= PageSize; i++)
 	{
 		int index = i*100;
-		for (int j=1; j<8; j++)
+		for (int j=1; j<7; j++)
 		{
 			m_MJPGList.SetUnitText(index +j, L"", FALSE);
 			m_MJPGList.SetUnitIsShow(index+j, FALSE, FALSE);
@@ -1061,10 +934,9 @@ void CContactInfoDlg::ClearCurrentPage()
 		m_MJPGList.SetUnitIsShow(index, FALSE, FALSE);
 		m_MJPGList.SetUnitIsDownStatus(index,FALSE);
 		
-	//	m_MJPGList.SetUnitBitmap(index+7,L"",L"",false);
-	//	m_MJPGList.SetUnitIsShow(index+7, FALSE, FALSE);
-	//	m_MJPGList.SetUnitIsDisable(index+7, TRUE);
-
+		m_MJPGList.SetUnitBitmap(index+7,L"",L"",false);
+		m_MJPGList.SetUnitIsShow(index+7, FALSE, FALSE);
+		m_MJPGList.SetUnitIsDisable(index+7, TRUE);
 	}
 	m_MJPGList.SetUnitIsShow(50,false,false);
 
@@ -1073,44 +945,18 @@ void CContactInfoDlg::ClearCurrentPage()
 
 void CContactInfoDlg::ClickedOneItem(int unitID,int item)
 {	
+	
 	if (m_vClick[(m_iCurrentPage-1)*PageSize+item] == 0)//被点击了
 	{		
 		m_MJPGList.SetUnitIsDownStatus(unitID,true);		
 		m_vClick[(m_iCurrentPage-1)*PageSize+item] = 1;
-		
-		//add by qi 0720
-		int count = 0 ;
-		if (m_bSelectAll)//判断是不是全选
-		{
-			for (int i = 0 ; i < m_vClick.size() ;i++)
-			{
-				if (1 == m_vClick[i])
-				{	
-					count++;
-				}	
-			}
-			
-			if (count == m_vClick.size() && count != 0)//全选了
-			{
-				m_MJPGList.SetUnitIsDownStatus(50,true);
-				m_MJPGList.SetUnitIsShow(50,true,true);
-			}
-		}
-
 	}
 	else
 	{		
 		m_MJPGList.SetUnitIsDownStatus(unitID,false);
 		m_vClick[(m_iCurrentPage-1)*PageSize+item] = 0;
-		
-		//add by qi 0720
-		if (m_bSelectAll)
-		{
-			m_MJPGList.SetUnitIsDownStatus(50,false);
-			m_MJPGList.SetUnitIsShow(50,true,true);	
-		}
 	}
-	
+
 	m_MJPGList.SetUnitIsShow(unitID,true,true);
 	
 }
@@ -1118,23 +964,19 @@ void CContactInfoDlg::ClickedOneItem(int unitID,int item)
 void CContactInfoDlg::SeeOneItem(int item)
 {
 	int index = item/100 - 1;
-	if ( !m_vCurrentResult[index]->played() )
+	if (!m_vCurrentResult[index]->played() && !m_sListFilter.compare("type = 0"))
 	{
-// 		for (int j = 1; j < 8 ;j++)
-// 		{
-// 			m_MJPGList.SetUnitColor(item+j,font_white,true);
-// 			m_MJPGList.SetUnitIsDisable(item+j,true);
-// 		}
-		
-		m_MJPGList.SetUnitIsDisable(item+7,true);
-		m_MJPGList.SetUnitText(item+7,L"已读",true);
+		for (int j = 1; j < 8 ;j++)
+		{
+			m_MJPGList.SetUnitColor(item+j,font_white,false);
+			m_MJPGList.SetUnitIsDisable(item+j,true);
+		}
 
 		m_vCurrentResult[index]->played(true) ;
 		m_vCurrentResult[index]->Update();
 
 		::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
 			m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
-
 	}	
 }
 
@@ -1144,7 +986,12 @@ void CContactInfoDlg::DeleteItems()
 	for (int i = 0 ; i < m_vClick.size() ;i++)
 	{	
 		if ( 1 == m_vClick[i])
-		{				
+		{	
+			Data::ContactInfo::Remove("id = " + Util::StringOp::FromInt(m_vContactID[i]));
+			
+			npos++;
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(npos);
+			
 			if (!m_sListFilter.compare("type = 0"))//未接留言
 			{
 				std::vector< boost::shared_ptr<Data::ContactInfo > > result ;
@@ -1158,11 +1005,6 @@ void CContactInfoDlg::DeleteItems()
 				}
 			}
 			
-			Data::ContactInfo::Remove("id = " + Util::StringOp::FromInt(m_vContactID[i]));
-			
-			npos++;
-			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(npos);
-
 		}
 	}
 	
@@ -1213,64 +1055,10 @@ void CContactInfoDlg::DeleteItems()
 		m_iCurrentPage = 1;
 	}
 	
-	SetPageTurnBtn(1);
-
-	ClearCurrentPage();
-
-	//比较容器里的页数 和 当前所在的页
-	int nCount = m_iCurrentPage;
-	int pages ;
-	pages = m_vClick.size()/PageSize ;
-	if (pages >= m_iCurrentPage)//剩余的数据大于当前的页，直接找当前页的数据
-	{
-		FromContactInfoDataBase();
-	}
-	else
-	{
-		m_iCurrentPage = pages ;//
-		for (;pages < nCount;pages++)//循环往容器里添数据
-		{	
-			m_iCurrentPage++;//
-			FromContactInfoDataBase();
-		}
-	}
-
-	ShowTypeInfo();
-}
-
-void CContactInfoDlg::DeleteAll()
-{
-	std::vector< boost::shared_ptr<Data::ContactInfo> > result ;
-	result = Data::ContactInfo::GetFromDatabase(m_sListFilter);
-		
-	for (int i = 0 ; i < result.size() ; i++)
-	{
-		if ( i >= m_vClick.size())
-		{
-			result[i]->Remove();
-		}
-		else 
-		{
-			if (m_vClick[i] == 1)
-			{
-				result[i]->Remove();	
-			}
-		}
-		
-	}
-		
-	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(1);
-	
-	m_iCurrentPage = 1;
-	Clear();
 	ClearCurrentPage();
 	FromContactInfoDataBase();
 	ShowTypeInfo();
-	SetPageTurnBtn();
-
-	::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
-		m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1,0);//清空
-
+	
 }
 
 void CContactInfoDlg::SetPageFont()
@@ -1279,7 +1067,7 @@ void CContactInfoDlg::SetPageFont()
 	for (int i = 1 ;i <= PageSize;i++)
 	{   
 		items = i * 100 ;
-		for (int j = 1 ;j < 8;j++)
+		for (int j = 1 ;j < 7;j++)
 		{
 			m_MJPGList.SetUnitFont(items + j,font_18);
 			m_MJPGList.SetUnitColor(items + j,font_white,false);
@@ -1332,36 +1120,21 @@ void CContactInfoDlg::SelectAll()
 		for (int i = 1 ; i <= m_vCurrentResult.size() ; i++)
 		{	
 			unitID = i * 100 ;
+			m_MJPGList.SetUnitIsDownStatus(50,true);
 			m_MJPGList.SetUnitIsDownStatus(unitID,true);		
 			
 		}
-		m_MJPGList.SetUnitIsDownStatus(50,true);
 	}
 	else
 	{	
-		//add by qi 0720
-		if (m_MJPGList.GetUnitIsDownStatus(50))//如果是按下状态
-		{
-			m_bSelectAll = false ;
-			for (int i = 1 ; i <= m_vCurrentResult.size() ; i++)
-			{	
-				unitID = i * 100 ;
-				m_MJPGList.SetUnitIsDownStatus(unitID,false);				
-			}
-			m_MJPGList.SetUnitIsDownStatus(50,false);			
-		}
-		else//不是按下状态还是全选
+		m_bSelectAll = false ;
+		for (int i = 1 ; i <= m_vCurrentResult.size() ; i++)
 		{	
-			m_bSelectAll = true ;
-			for (int i = 1 ; i <= m_vCurrentResult.size() ; i++)
-			{	
-				unitID = i * 100 ;
-				m_MJPGList.SetUnitIsDownStatus(unitID,true);		
-				
-			}
-			m_MJPGList.SetUnitIsDownStatus(50,true);
+			unitID = i * 100 ;
+			m_MJPGList.SetUnitIsDownStatus(50,false);
+			m_MJPGList.SetUnitIsDownStatus(unitID,false);		
+		
 		}
-
 	}
 	
 	//所有项全部全选
@@ -1392,39 +1165,6 @@ void CContactInfoDlg::SetUpPages()
 	m_MJPGList.SetUnitText(6,page,TRUE);//设置当前的页
 }
 
-void CContactInfoDlg::SetPageTurnBtn(int type)
-{	
-	if ( 0 == type)
-	{
-		int ncount = Data::ContactInfo::GetDataCount(m_sListFilter);
-		if (ncount <= PageSize)//小于一页
-		{
-			m_MJPGList.SetUnitIsDisable(7,true);
-			m_MJPGList.SetUnitIsDisable(8,true);
-		}
-		else //大于一页
-		{
-			m_MJPGList.SetUnitIsDisable(7,true);
-			m_MJPGList.SetUnitIsDisable(8,false);
-		}
-	}
-	else if( 1 == type)
-	{
-		//判断翻页按钮是否有效
-		m_MJPGList.SetUnitIsDisable(7,false);
-		m_MJPGList.SetUnitIsDisable(8,false);
-		if (m_iCurrentPage == 1)
-		{
-			m_MJPGList.SetUnitIsDisable(7,true);
-		}
-
-		if (m_iCurrentPage == m_iTotalPages)
-		{
-			m_MJPGList.SetUnitIsDisable(8,true);
-		}
-	}
-} 
-
 void CContactInfoDlg::SetUnitStatus()
 {
 	int item  = 0;	
@@ -1438,18 +1178,11 @@ void CContactInfoDlg::SetUnitStatus()
 		
 		if (!m_vCurrentResult[i]->played())
 		{
-// 			for (int j = 1; j < 8 ;j++)
-// 			{
-// 				m_MJPGList.SetUnitColor(item+j,font_green,false);
-// 				m_MJPGList.SetUnitIsDisable(item+j,false);
-// 			}
-			m_MJPGList.SetUnitText(item + 7,L"未读",false);
-			m_MJPGList.SetUnitIsDisable(item + 7 ,false);
-
-		}
-		else
-		{
-			m_MJPGList.SetUnitText(item + 7,L"已读",false);
+			for (int j = 1; j < 8 ;j++)
+			{
+				m_MJPGList.SetUnitColor(item+j,font_blue,false);
+				m_MJPGList.SetUnitIsDisable(item+j,false);
+			}
 		}
 
 		for (int j = 0 ; j < 8 ;j++)
@@ -1457,6 +1190,8 @@ void CContactInfoDlg::SetUnitStatus()
 			m_MJPGList.SetUnitIsShow(item+j,true,false);
 		}
 		
+		m_MJPGList.SetUnitIsDisable(item + 7 ,false);
+
 	}
 	
 	if (m_vCurrentResult.size() > 0)
@@ -1478,20 +1213,15 @@ int CContactInfoDlg::GetVectorPages()
 
 void CContactInfoDlg::ShowTypeInfo()
 {	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
 	CString record = L".\\adv\\mjpg\\k5\\common\\png\\录音.bmp" ;
 	CString temp ;
 	int items	= 0  ;
 	int row = 100;
-	int groupId = -1;
 	
 	SetUnitStatus();
 	SetUpPages();
-	ShowTypeCount();
 	for (int i = 0; i < m_vCurrentResult.size(); ++i)
-	{
-		groupId = -1;
+	{					
 		boost::shared_ptr<Data::ContactInfo> result = 
 			m_vCurrentResult[i];
 		
@@ -1500,27 +1230,20 @@ void CContactInfoDlg::ShowTypeInfo()
 			temp = result->name().c_str();
 			m_MJPGList.SetUnitText(row+2, temp, FALSE);
 		}
-
 		if(result->telephoneNumber().number() != "")//电话与类别
-		{	
-			//姓名
-			std::string name;
-			name = GetName(result->telephoneNumber().number(), groupId);
-			m_MJPGList.SetUnitText(row+2,Util::StringOp::ToCString(name),false);			
-			//
-
+		{
 			temp = result->telephoneNumber().number().c_str();
 			m_MJPGList.SetUnitText(row+3,temp,FALSE); 
 			
 			std::string groupName;
-			groupName = GetType(groupId);
+			groupName = GetType(Util::StringOp::FromCString(temp));
 			m_MJPGList.SetUnitText(row+1, Util::StringOp::ToCString(groupName), 
 				FALSE);
 		}
 		
 		//wangzhenxing0925
 		//if (!array[i]->played())
-	/*	if (result->isSound())
+		if (result->isSound())
 		{
 			m_MJPGList.SetUnitIsDisable(row+7, FALSE);
 			m_MJPGList.SetUnitBitmap(row+7, record, L"", FALSE);
@@ -1528,14 +1251,11 @@ void CContactInfoDlg::ShowTypeInfo()
 		else
 		{
 			m_MJPGList.SetUnitIsDisable(row+7, TRUE);
-		}*/
+		}
 		
-
- 		temp.Format(_T("%02d-%02d-%02d"), result->startTime().GetYear(),
- 			result->startTime().GetMonth(), result->startTime().GetDay());
-		temp = temp.Mid(2);
+		temp.Format(_T("%02d/%02d/%02d"), result->startTime().GetYear(),
+			result->startTime().GetMonth(), result->startTime().GetDay());
 		m_MJPGList.SetUnitText(row+5,temp,FALSE);
-
 		temp.Format(_T("%02d:%02d"), result->startTime().GetHour(), result->startTime().GetMinute());
 		m_MJPGList.SetUnitText(row+6,temp,FALSE);//通话开始时间
 		
@@ -1555,14 +1275,6 @@ void CContactInfoDlg::ShowTypeInfo()
 		row += 100;
 	}
 	
-}
-
-void CContactInfoDlg::ShowTypeCount()
-{
-	int ncount = Data::ContactInfo::GetDataCount(m_sListFilter);
-	CString d ;
-	d.Format(L"%d",ncount);
-	m_MJPGList.SetUnitText(10,d,false);
 }
 
 void CContactInfoDlg::SetContactInfoFilter(int index)
@@ -1635,144 +1347,58 @@ void CContactInfoDlg::SetType(int type)
 }
 
 void CContactInfoDlg::GetNumName(std::vector<CString> &vname,std::vector<CString> &vnumber)
-{	
-	if (m_bSelectAll)
-	{
-		std::vector< boost::shared_ptr<Data::ContactInfo> > result ;
-		result = Data::ContactInfo::GetFromDatabase(m_sListFilter);
-		
-		for (int i = 0 ; i < result.size() ; i++)
-		{
-			bool b = false;
-			if ( i >= m_vClick.size())
-			{
-				b = true;
-			}
-			else 
-			{
-				if (m_vClick[i] == 1)
-				{
-					b = true;		
-				}
-			}
-			
-			if (b)
-			{
-				Num2Name(result[i],vname,vnumber);	
-			}
-		}
-	}
-	else
-	{
-		for (int i = 0 ; i < m_vClick.size() ;i++)
-		{
-			if (1 == m_vClick[i])
-			{	
-				std::string filter = "id = " + Util::StringOp::FromInt(m_vContactID[i]);
-				std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
-				
-				if (!result.empty())
-				{	
-					Num2Name(result[0],vname,vnumber);					
-				}
-			}	
-		}
-	}
-
-}
-
-void CContactInfoDlg::Num2Name(boost::shared_ptr<Data::ContactInfo > pcontactInfo,std::vector<CString> &vname,std::vector<CString> &vnumber)
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	std::string stelnum = pcontactInfo->telephoneNumber().number();
-	CString number = Util::StringOp::ToCString(stelnum);
-	
-	//std::string sname = pcontactInfo->name();
-	std::string sname = main->GetName(stelnum) ;
-	CString name = Util::StringOp::ToCString(sname);
-	if (!name.IsEmpty())
-	{
-		vname.push_back(name);
-		vnumber.push_back(number);
-	}
-	else if(!number.IsEmpty())
-	{
-		vname.push_back(number);
-		vnumber.push_back(number);
-	}
-	
-}
-
-void CContactInfoDlg::InsertNum2Phone()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	
-	int count = 0  ;
-	int index;
-	for (int i = 0 ; i < m_vClick.size(); i++)
+	for (int i = 0 ; i < m_vClick.size() ;i++)
 	{
-		if ( 1 == m_vClick[i])
-		{
-			count++;
-			index = i ;
-		}
-	}
-	
-	if (count > 1)
-	{
-		main->m_pWarningNoFlashDlg->SetTitle(L"只能选择一个联系人");
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return ;
-	}
-	
-	if ( 1 == count)
-	{			
-		std::string filter = "id = " + Util::StringOp::FromInt(m_vContactID[index]);
-		std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
-		
-		if (!result.empty())
-		{
-			std::string stelnum = result[0]->telephoneNumber().number();
-			CString number = Util::StringOp::ToCString(stelnum);
-			main->m_pTelphoneDialDlg->SetTel(number);
+		if (1 == m_vClick[i])
+		{	
+			std::string filter = "id = " + Util::StringOp::FromInt(m_vContactID[i]);
+			std::vector<boost::shared_ptr<Data::ContactInfo> > result = Data::ContactInfo::GetFromDatabase(filter);
 			
-			ShowWindow(SW_HIDE);
-			main->PopbackIcon();		
-		}
-		
+			if (!result.empty())
+			{
+				std::string stelnum = result[0]->telephoneNumber().number();
+				CString number = Util::StringOp::ToCString(stelnum);
+				
+				std::string sname = result[0]->name();
+				CString name = Util::StringOp::ToCString(sname);
+				if (!name.IsEmpty())
+				{
+					vname.push_back(name);
+					vnumber.push_back(number);
+				}
+				else if(!number.IsEmpty())
+				{
+					vname.push_back(number);
+					vnumber.push_back(number);
+				}
+				
+			}
+		}	
 	}
-
 }
-
 void CContactInfoDlg::OnBtnOK()
 {	
 	CMultimediaPhoneDlg*main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	
-	if ( 1 == m_nType || 2 == m_nType)//短信或者彩信
-	{
-		std::vector<CString> telNumber ;
-		std::vector<CString> vname ;
-		GetNumName(vname,telNumber);
-		if (vname.size())
-		{	
-			if (1 == m_nType)
-			{
-				main->m_pMainDlg->m_p3GSMSDlg->SetSender(vname);
-				main->m_pMainDlg->m_p3GSMSDlg->SetAppend(telNumber);
-				
-			}
-			else if( 2 == m_nType)
-			{
-				main->m_pMMSDlg->SetSender(vname);
-				main->m_pMMSDlg->SetAppend(telNumber);
-				
-			}
-			
+	std::vector<CString> telNumber ;
+	std::vector<CString> vname ;
+	GetNumName(vname,telNumber);
+	if (vname.size())
+	{	
+		if (1 == m_nType)
+		{
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->SetSender(vname);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->SetAppend(telNumber);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMainDlg->m_p3GSMSDlg->ShowWindow(TRUE);
+
 		}
-	}
-	else if ( 3 == m_nType)//来至于电话
-	{
-		InsertNum2Phone();		
+		else if( 2 == m_nType)
+		{
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMMSDlg->SetSender(vname);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMMSDlg->SetAppend(telNumber);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pMMSDlg->ShowWindow(TRUE);
+		}
+
 	}
 	
 	if (m_nType > 0)
@@ -1784,93 +1410,14 @@ void CContactInfoDlg::OnBtnOK()
 
 }
 
-void CContactInfoDlg::Detail()
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-
-	if (!Warning())
-	{
-		return;
-	}
-
-	int index = -1; 
-	int count = 0 ;
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{	
-			index = i ;
-			count++;
-			break;
-		}
-		else
-		{
-			count++;
-		}
-	}
-	
-	boost::shared_ptr<Data::ContactInfo> pContactInfo = Data::ContactInfo::GetDataById(m_vContactID[index]);
-	main->m_pSMSListDlg->m_pSmsDetailDlg->ShowContactinfoDetail(pContactInfo);
-	main->m_pSMSListDlg->m_pSmsDetailDlg->ShowWindow_(SW_SHOW);
-
-	if ( !pContactInfo->played())
-	{
-		int item = ((count%6 ==0)?6:count%6);
-		item *=100 ;
-		m_MJPGList.SetUnitText(item+7,L"已读",true);
-		m_MJPGList.SetUnitIsDisable(item + 7 ,true);
-		
-		pContactInfo->played(true) ;
-		pContactInfo->Update();
-		
-		::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->
-			m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 1, 2);
-		
-	}
-
-}
-
-bool CContactInfoDlg::Warning()
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd ;
-	int num = 0;
-	for (int i = 0 ; i < m_vClick.size() ;i++)
-	{
-		if (1 == m_vClick[i])
-		{	
-			num++;
-		}	
-	}
-	
-	if (num > 1)
-	{	
-		CString title = L"不能选择多个联系人!" ;
-		main->m_pWarningNoFlashDlg->SetTitle(title);
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return false;
-	}
-
-	if ( 0 == num)
-	{
-		CString title = L"请先选择记录!" ;
-		main->m_pWarningNoFlashDlg->SetTitle(title);
-		main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-		return false;
-	}
-	return true;
-}
-
 void CContactInfoDlg::ShowWindow_()
 {
 	Clear();
 	ClearCurrentPage();
-	m_sListFilter = "";
-	ShowWindow(SW_SHOW);
 	FromContactInfoDataBase();
 	SetUpBtn(3);
 	ShowTypeInfo();
-	SetPageTurnBtn();
-
+	ShowWindow(SW_SHOW);
 }
 
 void CContactInfoDlg::ResetTypeInfo()
@@ -1882,3 +1429,15 @@ void CContactInfoDlg::ResetTypeInfo()
 	ShowTypeInfo();
 }
 
+bool CContactInfoDlg::HaveClicked()
+{
+	bool enble = false ;	
+	for (int i = 0 ; i < m_vClick.size() ;i++)
+	{
+		if (1 == m_vClick[i])
+		{	
+			enble = true ;
+		}	
+	}
+	return enble ;
+}

@@ -17,7 +17,10 @@ static char THIS_FILE[] = __FILE__;
 extern CString g_destDir;
 extern CString g_srcDir;
 extern void DeleteDirectory(CString SrcDir, BOOL isShow = TRUE);
-extern void WriteLog_(char *ptr, int size);
+// extern void CopyDirFiles(TCHAR *src, TCHAR *des, BOOL bOverflow, DWORD &freeBytes);
+// extern BOOL DetectDIR(TCHAR *sDir);
+// extern BOOL DetectFile(TCHAR *sDir);
+// extern float GetFileSize(TCHAR *sFile);
 
 BOOL g_isShift = FALSE;
 /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +49,6 @@ DWORD WINAPI ShiftFileProc(LPVOID lpParameter)   // thread data
 	CString srcStr;
 	DWORD freeBytes = shiftDlg->m_freeBytes.QuadPart;
 	int err = 0;
-	char log[32] = {0};
 	for (int i=0; i<shiftDlg->m_fileList.size(); i++)
 	{
 		if (!g_isShift)
@@ -60,7 +62,7 @@ DWORD WINAPI ShiftFileProc(LPVOID lpParameter)   // thread data
 		CString s;
 		destStr = g_destDir + shiftDlg->m_fileList[i];
 		srcStr = g_srcDir + shiftDlg->m_fileList[i];
-		/*if (1 == DetectDir((LPTSTR)(LPCTSTR)srcStr))
+		if (1 == DetectDir((LPTSTR)(LPCTSTR)srcStr))
 		{
 			CreateDirectoryW(destStr, NULL);
 			CopyDirectoryFiles((LPTSTR)(LPCTSTR)srcStr, (LPTSTR)(LPCTSTR)destStr, freeBytes, TRUE);
@@ -74,9 +76,9 @@ DWORD WINAPI ShiftFileProc(LPVOID lpParameter)   // thread data
 			err = GetLastError();
 			shiftDlg->m_currentFile++;
 			shiftDlg->m_shiftProc->SetPos(shiftDlg->m_currentFile);
-			//DeleteDirectory(srcStr);
+			DeleteDirectory(srcStr);
 		}
-		else*/ if (2 == DetectDir((LPTSTR)(LPCTSTR)srcStr))
+		else if (2 == DetectDir((LPTSTR)(LPCTSTR)srcStr))
 		{
 			DWORD fileBytes = GetFileSize((LPTSTR)(LPCTSTR)srcStr);
 			if(freeBytes > fileBytes)
@@ -86,22 +88,13 @@ DWORD WINAPI ShiftFileProc(LPVOID lpParameter)   // thread data
 				err = GetLastError();
 				if(ret)
 				{
-					sprintf(log, "shift the %d file!", i+1);
-					WriteLog_(log, 32);
 					shiftDlg->m_currentFile++;
 					shiftDlg->m_shiftProc->SetPos(shiftDlg->m_currentFile);
-				}
-				else
-				{
-					shiftDlg->m_currentFile++;
-					shiftDlg->m_shiftProc->SetPos(shiftDlg->m_currentFile);
+					DeleteFile(srcStr);
 				}
 			}
 			else
 			{
-				sprintf(log, "shift %d file error!", i+1);
-				WriteLog_(log, 32);
-
 				freeBytes = 0;
 
 				main->m_pWarningNoFlashDlg->SetTitle(L"存储空间不足！转移失败！");
@@ -118,7 +111,6 @@ DWORD WINAPI ShiftFileProc(LPVOID lpParameter)   // thread data
 	shiftDlg->KillTimer(0x10);
 	shiftDlg->ShowWindow_(SW_HIDE);
 	::SendMessage(shiftDlg->m_handle, WM_SHIFTSELITEM, 0, 0);
-	g_isShift = FALSE;
 
 	return 0;
 }
@@ -174,8 +166,7 @@ BOOL CShiftFile::OnInitDialog()
 
 extern BOOL DetectDIR(TCHAR *sDir);
 void CShiftFile::OnClickMJPG(WPARAM w, LPARAM l)
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+{	
 	switch(w)
 	{
 	case 10:      //本地到SD卡或者USB
@@ -187,7 +178,9 @@ void CShiftFile::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			m_MJPGList.SetUnitIsDownStatus(10, FALSE);
 		}
-		GetDiskFreeSpaceEx(_T("\\StorageCard"), &m_freeBytes, &m_totalBytes, &m_totalFreeBytes);
+//		GetDiskFreeSpaceEx(_T("\\StorageCard"), &m_freeBytes, &m_totalBytes, &m_totalFreeBytes);
+
+		GetDiskFreeSpaceEx(_T("\\UsbDisk"), &m_freeBytes, &m_totalBytes, &m_totalFreeBytes);
 		break;
 	case 20:     //USB或者SD卡到本地
 		if (!m_MJPGList.GetUnitIsDownStatus(20))
@@ -199,37 +192,25 @@ void CShiftFile::OnClickMJPG(WPARAM w, LPARAM l)
 			m_MJPGList.SetUnitIsDownStatus(20, FALSE);
 		}
 		GetDiskFreeSpaceEx(_T("\\Flashdrv"), &m_freeBytes, &m_totalBytes, &m_totalFreeBytes);
-		if(m_freeBytes.QuadPart> 0)
-		{
-			m_freeBytes.QuadPart -= 50*1024*1024;
-		}
 		break;
 	case 1000:   //返回
 		OnClickCancel();
 		break;
 	case 1001:    //确定
-		if (!g_isShift)
+		if ((L"" != g_destDir) && (L"" != g_srcDir))
 		{
-			if ((L"" != g_destDir) && (L"" != g_srcDir))
+			if(!DetectDIR(_T("\\StorageCard")) && !DetectDIR(_T("\\UsbDisk")))
 			{
-				if(!DetectDIR(_T("\\StorageCard")) && !DetectDIR(_T("\\UsbDisk")))
-				{
-					main->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
-					main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-					main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
-				}
-				else
-				{
-					main->m_pDeleteTipDlg->SetTitle(L"确定要转移所选文件吗？", 0);
-					main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-					main->m_pDeleteTipDlg->ShowWindow_(TRUE);
-				}
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
 			}
-		}
-		else
-		{
-			main->m_pTipDlg->SetTitle(L"正在转移文件,请稍后...",3000);
-			main->m_pTipDlg->ShowWindow_(SW_SHOW);
+			else
+			{
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要转移所选文件吗？", 0);
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+				((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
+			}
 		}
 		break;
 	}
@@ -249,8 +230,13 @@ void CShiftFile::OnClickCancel()
 
 void CShiftFile::OnClickOk()
 {
-	SetTimer(0x11, 2000, NULL);
 	g_isShift = TRUE;
+	HANDLE hThread;
+// 	hThread = CreateThread(NULL, 0, ShiftFileProc, this, 0, NULL);
+// 	CloseHandle(hThread);	
+
+	SetTimer(0x10, 1000, NULL);
+	Sleep(1000);
 }
 
 void CShiftFile::OnTimer(UINT nIDEvent)
@@ -269,16 +255,6 @@ void CShiftFile::OnTimer(UINT nIDEvent)
 		}
 
 		m_bCheckStatus = !m_bCheckStatus;
-	}
-	else if(0x11 == nIDEvent)
-	{
-		KillTimer(0x11);
-		HANDLE hThread;
-		hThread = CreateThread(NULL, 0, ShiftFileProc, this, 0, NULL);
-		CloseHandle(hThread);	
-		
-		SetTimer(0x10, 1000, NULL);
-		Sleep(1000);
 	}
 }
 

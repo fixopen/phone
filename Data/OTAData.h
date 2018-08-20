@@ -87,7 +87,6 @@
             SMSCTimestamp(std::string const& v = "");
             std::string const ToString() const;
 			std::string const ToString_() const;
-			std::string const ToString_NoSecond() const;
 			std::string const ToStringFormat_() const;
 			Util::Timestamp ToCTimeStamp();
             unsigned char year;

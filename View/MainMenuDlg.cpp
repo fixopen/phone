@@ -122,7 +122,17 @@ void CMainMenuDlg::OnMp3Btn()
 
 void CMainMenuDlg::SetVideo()
 {
-
+	/*
+	playerDlg_->SetParam( "/flashdrv/apple192.avi", mtImage, TRUE);
+	playerDlg_->SetImageList("/flashdrv/my_photo/");
+	BOOL flag = FALSE;
+	if(playerDlg_->IsWindowVisible())
+		flag = TRUE;
+	//playerDlg_->ReSetWindowsRect(CRect(13, 20, 228, 102));
+	playerDlg_->ReSetWindowsRect(CRect(0, 0, 0, 0));
+	if(!flag)
+		playerDlg_->ShowWindow(SW_HIDE);
+	*/
 }
 
 void CMainMenuDlg ::OnScreenSaveBtn()
@@ -136,6 +146,7 @@ void CMainMenuDlg ::OnScreenSaveBtn()
 void CMainMenuDlg::OnCalculBtn()
 {
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+//	((CMainDlg *)(main->GetPanel(IDC_BUTTON_MAIN)))->m_mainCalucaterDlg_->ClearData();
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)4, SW_SHOW);   //ÇÐ»»µ½¼ÆËãÆ÷
 }
 

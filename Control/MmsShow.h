@@ -11,7 +11,6 @@
 #include "CERadioButton.h"
 #include "../Resource.h"
 #include "ximage.h"
-#include "MidiPlayerControl.h"
 
 
 #define		DISPOSAL_NO 0
@@ -24,16 +23,8 @@
 #define		TXT_TIMER			2
 #define		DEF_IMAGE_SHOW		3
 #define		DEF_TXT_SHOW		4
-#define		AUDIO_TIMER			6
-#define		DEF_AUDIO_TIMER		7
-#define		VIDEO_TIMER			14
-#define		DEF_VIDEO_TIMER		15
-
-#define		WM_AUDIO			1234
-#define		WM_IMAGE			1235
-
 #define		BTN_INTERVAL		25
-#define		BTN_HEITHT			235
+#define		BTN_HEITHT			205
 #define		BTN_WIDTH			130
 #define		TIME_BASE			1
 #define		PIC_BTN_HEIGHT		85	
@@ -43,9 +34,7 @@
 #define		IMAGE_REGION_HEIGHT	172
 #define		TEXT_REGION_WIDTH	290
 #define		TEXT_REGION_HEIGHT	172
-#define		TEXT_TOP			60
-
-#define		PAR_SIZE			20
+#define		TEXT_TOP			29
 
 #define		IDC_BTN_PIC1		0x2000
 #define		IDC_BTN_PIC2		0x2001
@@ -57,8 +46,7 @@
 #define		IDC_BTN_VEDIO		0x2007
 #define		IDC_BTN_NEXT_PAGE	0x2008
 #define		IDC_BTN_UP_PAGE		0x2009
-#define     IDC_BTN_TEXT_DOWN	0x200A
-#define     IDC_BTN_TEXT_UP		0x200B
+#define     IDC_BTN_SAVE		0x200A
 
 #ifndef IDC_BTN_OK
 #define IDC_BTN_OK	0x2010
@@ -117,8 +105,6 @@ class CPicPathSet : public CDialog
 public:
 	CPicPathSet(CWnd* pParent = NULL);   // standard constructor	
 	enum { IDD = IDD_PIC_SELECT_DLG };
-
-	int m_uSaveType;       //保存音频，视频，图片
 		
 protected:
 	
@@ -224,7 +210,7 @@ public:
 	HBITMAP FirstImage(void);
 	HBITMAP NextImage(void);
 	HBITMAP TakeIt(void);
-	HBITMAP DIBTohBitmap(HDC hDC,LPSTR  lpSrcDIB);
+	HBITMAP DIBTohBitmap(HDC hDC,LPSTR   lpSrcDIB);
 	WORD GetCode(void);
 	BYTE GetByte(void);
 	void Output(BYTE bit);
@@ -238,8 +224,7 @@ public:
 class CImageViewer : public CStatic
 {
 public:
-	CString sTitle;
-	void SetTitle(CString s);
+
 	static enum EImageSize{ OriginalSize, FitControl};
 
 struct TFrame    // structure that keeps a single frame info
@@ -371,8 +356,7 @@ protected:
 
 	afx_msg HBRUSH CtlColor(CDC* pDC,UINT nCtlColor);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	virtual void PreSubclassWindow();
-	afx_msg void OnClicked();
+
 	//}}AFX_MSG
 
 	DECLARE_MESSAGE_MAP()
@@ -407,7 +391,8 @@ private:
 protected:
 	afx_msg void OnPaint();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-		
+	
+	
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -432,17 +417,14 @@ public:
 	void SetTextSize(CPoint const& origin, CSize const& size);//设置文本窗口位置
 	void SetTextShow( BOOL show = true); //设置
 	void SetTextUpdate();//设置文本更新
-	void ShowTextBtn();
-	void TextScrollUp();//向上滚动
-	void TextScrollDown();//向下滚动
 	void SetImagePos(CRect &rct);
 	void SetMmsEdit();//设置文本可编辑，以及按钮性质
 	void SetMmsRead();//设置文本为可读状态,
-	void SetMmsInsert();//内容插入
-	void SetpWnd(CWnd const * pWnd);
 	
+	BOOL LoadTextBMP(UINT bmpID);
 	BOOL FindFileSmil(std::wstring const filename);
 	void InitialDefRegion();
+	void InitialDefPar();
 	void InitialRegion();
 	void InitialPar();
 	
@@ -450,67 +432,29 @@ public:
 	void GetMmsRegionInfo();
 	void GetDefRegionInfo();
 	void GetHouZhui(CString &houzui,CString const fl);
-	void GetImage(CString &fl);
+	void GetName(CString &fl);
 	void InsertPicture();
 	void ClosePicture();
-	void SavePicture();//保存图片
-
-	void GetAllFileInfo(std::wstring &image,std::wstring &text,std::wstring &aduio,std::wstring &video);//获得所有文件的信息
-	void DeleteAudio();
-	void SaveAudio();
-	void HandleAudio();
-	void SetAudioShow();//显示音频文件
-	void InsertAudio(CString const audioPath);//插入音频
-	void PlayAudio(bool bplay);//播放
-	CString GetAudio();
-
-	void SetVideoShow(BOOL show = TRUE);  //设置视频显示
-	void PlayVideo();
-	void DeleteVideo();
-	void SaveVideo();
-	void InsertVideo(CString const videoPath);
-	CString GetVideo();
-	void StopVideo();
-
+	void GetAllFileInfo(std::wstring &image,std::wstring &text,std::wstring &aduio,std::wstring &vedio);//获得所有文件的信息
+	
 	BOOL GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp::MMS_LAYOUT &mmsLayout,std::wstring &title);//获得par里的内容
 	void SaveParInfo();
-	void AddParInfo(bool binsert = false);//往par里添加一条par
+	void AddParInfo();//往par里添加一条par
 	void SetTitle(std::wstring const title);
 	void SetTransit(std::wstring const filename);//设置转移
 	CString	GetFileName(CString const allpath);
-	void MsgPost();//处理音频，文本的状态
-	void NewPar();//新建一个Par
-	void AllFileSize();//par里的文件大小
-	void GetCurrentPageFileSize(long double &filesize,CString &text);//获得当前页的文件小
-	void AutoPlay(bool bauto);//自动播放，还是手动播放
-	void ShowParInfo();//展示par的信息
-	void GetText();//获得文本内容
-	bool ReadName(std::string name,CString &content);//获得文本里的内容
-	BOOL GetPicMp3Count();
 
 public:
-	MediaPlayer::MidiPlayer *m_pMidiPlayer;
-	BOOL  m_isMidInit;
-	CString	m_cAudioName	;//音频路径
-	CString	m_cImagePath	;//图片全路径
-	CString m_cVideoName	;//视频文件名
-	CPicPathSet	m_picPathDlg	;//路径设置
-	std::vector<MMS::MMSWarp::MMS_PAR>		m_cMmsPar		;//par
-	double m_addtionSize;
 
-	void SetReadPage();
 protected:
 	afx_msg void OnTimer(UINT nIDEvent);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 private:
 	CImageViewer							m_cPic			;
+//	CTextViewer								m_cTextView		;
 	CCELineEdit								m_cTextView		;
 	CCEStatic								m_cstcTitle		;
-//	CColorStatic							m_cstcAudio		;//音频
-	CCEMoveTxtStatic						m_cstcAudio		;//音频
 	CCELineEdit								m_cMmsTitle		;//标题
-	//CCERectEdit								m_cMmsTitle;
 	UINT									m_imageWidth	;//图片的高度
 	UINT									m_imageHeight	;//图片的宽度
 	CRect									m_rctImage		;//图片的区域
@@ -518,67 +462,48 @@ private:
 	UINT									m_itextHeight	;//文本的宽度
 	CRect									m_rcttext		;//文本的区域
 	std::vector<MMS::MMSWarp::MMS_REGION>	m_cMmsRegion	;//文件的路径
+	std::vector<MMS::MMSWarp::MMS_PAR>		m_cMmsPar		;//par
 	MMS::MMSWarp::MMS_LAYOUT				m_cMmsLayOut	;//mms layout
 	
+	UINT									m_cImageTime	;//图片显示次数
 	int										m_uMmsParPlay	;//当前正在播放的PAR
 	CString									m_cSmilPath		;//SMIL文件的路径
-	
-	UINT									m_cImageTime	;//图片显示次数
+	CString									m_cImagePath	;//图片全路径
 	UINT									m_uImageDur		;//图片的显示时间
-
-	UINT									m_uParDur		;//Par显示的总时间
-	UINT									m_uParTime		;//显示的时间
-
 	UINT									m_uTxtDur		;//文本显示时间
+	UINT									m_uParDur		;//Par显示的总时间
 	CString									m_cTxtContent	;//文本内容
 	UINT									m_uTxtTime		;//文本显示了多长时间
-	
-	UINT									m_uAudioDur		;//音频文件显示的时间
-	UINT									m_uAudioTime	;//音频文件
-
-	UINT									m_uVideoDur		;//视频文件显示时间
-	UINT									m_uVideoTime	;
+	UINT									m_uParTime		;//显示的时间
 
 	std::vector<CString>					m_cDefImagePath	;//没有SMIL文件，加载该路径的全部图片
 	std::vector<CString>					m_cDefTxtContent;//没有SMIL文件，加载文本
-	std::vector<CString>					m_cDefAudio		;//音频文件
-	std::vector<CString>					m_cDefVideo		;//视频文件
-
 	UINT									m_uDefTxtTime	;//文本显示了多长时间
 	UINT									m_uDefImageTime	;//显示的时间
-	UINT									m_uDefAudioTime	;//音频文件显示时间
-	UINT									m_uDefVideoItem ;//视频文件显示的时间
 	int										m_uDefTxtItem	;//正在
 	int										m_uDefImageItem	;//显示的时间
-	int										m_uDefAudioItem ;//音频
-	
 	BOOL									m_bFindSiml		;
-	BOOL									m_bIsTextClick ;
-		
+	
+	CCEButtonST								m_btnPicture	;//保存图片
+	CCEButtonST								m_btnMusic		;//保存音频
+	CCEButtonST								m_btnVedio		;//保存视频
+	CCEButtonST								m_btnNextPage	;//下一页
+	CCEButtonST								m_btnUpPage		;//上一页
+	CCEButtonST								m_btnSave		;//保存
+	
 	UINT									m_uState		;//1,readonly,2,edit
 	std::vector<CString>					m_cInsertList	;//插入图片的列表
 	std::vector<CString>					m_cInsertAudio	;//音乐
-	std::vector<CString>					m_cInsertvideo	;//视频
+	std::vector<CString>					m_cInsertvedio	;//视频
+	CString									m_cAudioName	;//音频路径
 	CString									m_cVedioName	;//
 	CString									m_cTitleName	;//标题名字
+	CPicPathSet								m_picPathDlg	;//路径设置
 	int										m_iPageNum		;//页数
-
-	CRect									m_cMmscRect		;//控件的大小
-	HWND									m_pHwnd			;//设置窗口句柄
-
-	CCEButtonST								m_btnUp			;
-	CCEButtonST								m_btnDown		;
-
-	bool									m_bHaveInsertPic;//是否插入图片
-
-	std::vector<std::pair<int,std::wstring > > m_vText		;//管理文本Text
-	
 //	CListContral							m_listCtral		;//文件列表
 
 protected:
 	DECLARE_MESSAGE_MAP()
-
-public:
 
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -586,12 +511,11 @@ public:
 	afx_msg void OnPaint();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void  OnBtnPicture();
+	afx_msg void  OnBtnMusic();
+	afx_msg void  OnBtnVedio();
 	afx_msg void  OnBtnUp();
 	afx_msg void  OnBtnNext();
-	afx_msg void  OnBtnTextUp();
-	afx_msg void  OnBtnTextDown();
-	afx_msg void  OnPicClicked(WPARAM w, LPARAM l);
-	afx_msg void  OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void  OnBtnSave();
 
 };
 

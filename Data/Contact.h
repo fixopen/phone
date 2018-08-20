@@ -276,10 +276,6 @@ namespace Data
 		~Contact(); //destroy
 		static std::vector<boost::shared_ptr<Contact> > GetFromDatabase(std::string filter, Direction const dir = dNull, int const id = 0, int const pageSize = 0); //get from database
 		static std::vector<boost::shared_ptr<Contact> > GetFromDatabaseByTypeOffsetLength(std::string type, int const offset, int const pageSize);
-		
-		//add by qi 20100608
-		static std::vector<boost::shared_ptr<Contact> > GetFromDatabaseByNameOffsetLength(std::string type, int const offset, int const pageSize);
-
 		void Update() const; //sync to database
 		void Insert(); //insert new instance to database
         void Remove() const; //delete self from database

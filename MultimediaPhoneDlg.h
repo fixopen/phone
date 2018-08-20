@@ -12,8 +12,6 @@
 #pragma warning(disable: 4786)
 #include <map>
 
-#include   <imaging.h> //add 20100920
-
 #include "View/MainDlg.h"
 #include "./Control/InputDlg.h"
 #include "./Control/CeBtnST.h"
@@ -51,14 +49,7 @@
 #include "View/CMMSSettingDlg.h"
 #include "View/TelephoneDialDlg.h"
 #include "View/TelephoneRingDlg.h"
-#include "Data/MessageSet.h"
-#include "Data/MmsMessage.h"
 
-#include "View/TipDlg.h"//提示框
-
-#include "View/STKDlg.h"
-
-#include "Control/Cache.h"
 /////////////////////////////////////////////////////////////////////////////
 // CMultimediaPhoneDlg dialog
 
@@ -81,16 +72,12 @@
 
 #define SCL_SYSTEM_RESET		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x1,METHOD_IN_DIRECT,FILE_ANY_ACCESS) //reset system
 #define SCL_ENABLE_WATCHDOG		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x2,METHOD_IN_DIRECT,FILE_ANY_ACCESS) //enable watch dog
-#define	SCL_ADJUST_BACKLIGHT	CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x5,METHOD_IN_DIRECT,FILE_ANY_ACCESS)	   //LCD 灯控制	
-#define SCL_GET_PRODUCT_INFO	CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x7,METHOD_IN_DIRECT,FILE_ANY_ACCESS)	   //产品信息
+#define	SCL_ADJUST_BACKLIGHT		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x5,METHOD_IN_DIRECT,FILE_ANY_ACCESS)	   //LCD 灯控制	
+#define SCL_GET_PRODUCT_INFO		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x7,METHOD_IN_DIRECT,FILE_ANY_ACCESS)	   //产品信息
 #define SCL_ADSL_POWERCTL		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0xA,METHOD_IN_DIRECT,FILE_ANY_ACCESS) //ADSL 电源控制
 #define SCL_ENCRYGPT_VERIFY		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0xE,METHOD_IN_DIRECT,FILE_ANY_ACCESS)	
 
-#define SCL_NET_POWERCTL		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0xA,METHOD_IN_DIRECT,FILE_ANY_ACCESS)
-#define SCL_GET_CPU_FREQ		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x8,METHOD_IN_DIRECT,FILE_ANY_ACCESS)
-#define SCL_SET_CPU_FREQ		CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x9,METHOD_IN_DIRECT,FILE_ANY_ACCESS)
 
-#define SCL_GET_SleepFlag       CTL_CODE(FILE_DEVICE_STREAMS,SCL_IOCODE_BASE+0x24,METHOD_IN_DIRECT,FILE_ANY_ACCESS)	//get sleep flag
 
 #define SIM_IOCODE_BASE				    2050
 #define SIM_IO_OFFSET				    100
@@ -137,14 +124,6 @@ const std::string ssStarageCard = "\\StorageCard\\";
 const CString csUsbDisk = _T("\\UsbDisk\\");
 enum TelTDStatus{TELRIGSTER_UN,TELRIGSTER_FAILED, TELRIGSTER_TD, TELRIGSTER_DIALING, TELRIGSTER_DIALED, TELRIGSTER_REG, TEL_UNNET};    //电话未搜网   //电话已搜网   //电话已注册   //无网络
 
-enum NetStatus{
-	netUnRegister,
-	netSearching,
-	netRegistered,
-	netReject,
-	netUnknown,
-	netRamble,
-};
 
 struct DIAL_APN
 {
@@ -154,41 +133,17 @@ struct DIAL_APN
 	char http[64];
 }; 
 
-#define  SEARCH_NET_TIMER 10
-
-
 class CMultimediaPhoneDlg : public CDialog
 {
 public:
-
-	//
-	//
-	void UnSetPreADSLDial();
-	void SetPreADSLDial();
-
-	BOOL m_bIsCloseLCD;
-	BOOL IsCloseLCD(BOOL flag);
-	BOOL IsCloseNet(BOOL flag);
-	BOOL IsReduceRreq(BOOL flag);
-	BOOL IsNightBackTime();
-	
-	BOOL IsMediaPlay();
-	void IsSendMessage(BOOL flag);
-	void BatteryLow();
-	void SelMMSDataBase();
-
-	Data::MmsMessage *m_MmsMsg;
-	boost::shared_ptr<Data::MessageSet> m_pMessageSet;
-	boost::shared_ptr<Data::MessageSet> m_pTempMsgSet;
 	std::string m_sMobileNumber;
 	void ParseSmil(CString FilePath, MMS::MMSWarp::MMS_SubmitRequest &r);
-	int        m_isDialTimeout;
 	DIAL_APN    m_nAPN;
 	BOOL        m_bIsDial;   //是否需要拨号
 	BOOL        GetIs3GDialed();
 	void        SetAPN(int apn);
+	void        TestDB();
 	TelTDStatus m_nTELRigster;
-	void		BreakNetwork();
 	BOOL        IsConnectNet();
 	BOOL        IsUnConnectNet();
 	//处理短信
@@ -197,14 +152,23 @@ public:
 	//		   2	来电
 	void SMSSpecRing(int type, CString s);
 	void doWithSMS(WPARAM wParam, LPARAM lParam);
-	void SearchNetInit();
-	BOOL doSerachrTDNet(BOOL isSleepStart);    //手机搜网
+	void doSerachrTDNet();    //手机搜网
 	void doRegisterTel();	  //开机注册搜网
 	void doWithDownLoad();    //在另一个进程中去调用
 	void Net3GHungOff();
-	void MMSReciveTip(Data::MmsMessage *mms);
-	
-	Util::ComWarp *m_pComWarp7;//com7
+
+//	telmodem
+// 	Util::ComWarp* m_pComWarp;
+// 	Util::ATCommandWarp* m_pATCommandWarp;
+// 	Telephone::TelephoneWarp* phone_;
+// 
+// 	Util::ComWarp* m_pComWarp1;
+// 	Util::ATCommandWarp* m_pATCommandWarp1;
+// 	Telephone::TelephoneWarp* m_pTelephoneWarp;
+// 	Util::ComWarp* m_pComWarp2;
+// 	Util::ATCommandWarp* m_pATCommandWarp2;
+// 	SMS::SMSWarp* m_pSMSWarp;
+// 	
 
 	Util::ComWarp* m_pComWarp1;
 	Util::ATCommandWarp* m_pATCommandWarp1;
@@ -219,9 +183,9 @@ public:
 	
 	int          n_StyleMain;
 	unsigned int n_bklightcount; 
-	HANDLE  m_hPort;
-	int     m_nBackLightStatus;			//0 关闭     7 打开
-	int		m_nBackLightValue;
+	HANDLE m_hPort;
+	int m_bklightvalue;
+	int    m_nBackLightStatus;			//0 关闭     7 打开
 	MANUINFO	m_manuinfo;
 
 	//初始化SCL
@@ -238,7 +202,6 @@ public:
 	// 7    亮
 	// 0    黑
 	BOOL SetBackLight(int isOn);
-	BOOL SetBackLight_(int level);
 	//读取该设置背光的值
 	UINT32 GetBackLightValue();
 	//读取背光的光敏值
@@ -253,33 +216,23 @@ public:
 	void GetDataFromContact(std::vector<Util::ATCommandWarp::SIM_FORMAT> &vsim);
 	void SaveDataToContact(const std::vector<Util::ATCommandWarp::SIM_FORMAT> vsim);
 	void InsertSimToContact(const std::vector<Util::ATCommandWarp::SIM_FORMAT> vsim);//把sim卡里电话插入到Contact
-	void RemoveSIMGroup();
 	std::string GetAlias(std::string name);
-
 	
-//	void AddIcon(CString icon,bool bjudge = true);//添加图标
-	void AddIcon(CString icon,CWnd *pcwnd,bool bjudge = true);//添加图标
-	void PopbackIcon(CWnd *p = NULL);//移除图标
-	void PopIcon(CWnd *c);//隐藏窗口,释放图标
-
+	void AddIcon(CString icon);//添加图标
+	void PopbackIcon();//移除图标
 	void Desktop();//周面
 	void AddDesktopBtn();//
-	bool GetSimStatus();//
-	void VK_F(WPARAM w);
-	void AddAudio(bool badd);
+	bool GetSimStatus();
 	std::string GetName(std::string number);//获得名字
 
-//	std::vector<CString>	m_vIcon ; //保存每个界面的图标
-	std::vector<std::pair<CWnd*,CString> >	m_vIcon ; //保存每个界面的图标
-	CWnd *GetIconCurrentWnd();
+	std::vector<CString>	m_vIcon ; //保存每个界面的图标
 
 private :
 	int m_nSIMID ;
+	int m_bInsertSim;//是否插入SIM卡
 	std::vector<CDialog* >		m_vAllCwnd;//所有窗口
 public:
 	CMJPGStatic			m_MJPGList;
-	bool m_bInsertSim;//是否插入SIM卡
-
 
 	//Logical::Phone* m_pPhone;
 
@@ -300,7 +253,6 @@ public:
 	CContactGroupDlg	*m_pContactGroupDlg;
 	CTelephoneDlg		*m_pTelephoneDlg;
 	CDeleteTipDlg		*m_pDeleteTipDlg;
-	CNetStatusDlg		*m_pNetStatusDlg;
 
 	CContactInfoDlg		*m_pContactInfoDlg;
 	CSoundDlg			*m_pSoundDlg;
@@ -316,26 +268,19 @@ public:
 	CMMSSettingDlg		*m_pMmsSettingDlg;//彩消息设置
 	CTelephoneDialDlg	*m_pTelphoneDialDlg;//电话拨号
 	CTelephoneRingDlg	*m_pTelphoneRingDlg;//电话振铃界面
-	
-	CSTKDlg				*m_pCstkDlg;//stk显示界面
-	CTipDlg				*m_pTipDlg;//提示框
-
 
 //	CWebDialog* m_pWebDialog;
 //	CLunarderDlg	*m_mainLunarderDlg1_;
 
-//  add by qi 2009_10_19
+	// add by qi 2009_10_19
 	CShiftFile	*m_pShiftFileDlg ;
 
 	BOOL			m_bIsHaveUSB;
 	BOOL			m_bIsSD;
 	BOOL			m_bIsHungOn;
-	bool			m_isBattery;
-	BOOL			m_isHaveBattery;
-	bool			m_bNoDc;//是否插入电源
-
 	BOOL  GetPhoneHungOn(){return m_bIsHungOn;}
 
+	void SetSkinStyle();
 	void SendOutEvnet(WPARAM w = 0, LPARAM l = 0);
 	void SetScreenSaveTimer();
 	void KillScreenSaveTimer();
@@ -344,7 +289,7 @@ public:
 	BOOL SetNightControlBackLightTimer();
 	BOOL ReStoreBackLight();
 	BOOL CancelBalckLightSaveTimer();
-	int  CheckInternetStatus();
+	int CheckInternetStatus();
 
 	afx_msg void OnTimer(UINT nIDEvent);
 
@@ -353,6 +298,7 @@ public:
 	void SetAlarmList();
 	BOOL m_bNetOkStatus;
 	int  m_bNetType;
+	void SetNetTelStatus();
 	
 // Construction
 public:
@@ -383,20 +329,23 @@ protected:
 
 public:
 	CDialog *GetPanel(int nID){return panels_[nID];}
-
 public:
 	void SwitchPanel_(int panelId);
 	afx_msg void OnButtonSetting();
-	afx_msg void OnMainSoftKey(WPARAM w, LPARAM l);
 
+	afx_msg void OnMainSoftKey(WPARAM w, LPARAM l);
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(CMultimediaPhoneDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	//}}AFX_MSG
+	afx_msg void OnButtonTime();
 	afx_msg void OnButtonIME();
 	afx_msg void OnButtonLine();
+	afx_msg void OnButtonMain();
+	afx_msg void OnButtonContact();
+	afx_msg void OnButtonContactinfo();
 	afx_msg void OnButtonSound();
 	afx_msg void OnButtonInformation();
 	afx_msg void OnEvent(WPARAM w, LPARAM l);
@@ -407,6 +356,18 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	/*
+	CCEButtonST m_btnTime;
+	CCEButtonST m_btnIME;
+	CCEButtonST m_btnLine;
+	CCEButtonST m_btnMain;
+	CCEButtonST	m_btnContact;
+	CCEButtonST	m_btnContactInfo;
+	CCEButtonST	m_btnSound;
+	CCEButtonST	m_btnInformation;
+	CCEButtonST	m_btnSetting;
+	CCEIconSoftKey	m_StatusKey;
+	*/
 
 	std::map<int, CCEButtonST*> buttons_;
 	CCEButtonST* m_pBtnCurrent;
@@ -415,19 +376,10 @@ private:
 public:
 	static void SetButtonDefaultColor(CCEButtonST* button);
 	void EnableLine(BOOL bEnable = TRUE);
-	unsigned int	m_uiKeyTimer;
-	unsigned int	m_uiRingTimer;
-	unsigned int	m_uiPSTNRingTimer;
-	Util::FSM*		m_pFSM;
-	int				m_nline ;
-	int				m_nContactNum;
-	bool			m_bSearchNetOver;
-	bool			m_bSearchNetWin;
-	bool			m_binitOver;//UI初始化是否结束
-	bool			m_bUnconditonSet;
-	bool			m_bAutoSearchNet;//自动收网
-	
-	bool			OpenAllPort();//是否所有的口全打开
+	unsigned int m_uiKeyTimer;
+	unsigned int m_uiRingTimer;
+	Util::FSM* m_pFSM;
+
 	enum TelephoneState
 	{
 		tsHangOff,
@@ -447,144 +399,9 @@ public:
 		teRing,
 		teCallID,
 	};
-	
 
-	enum phone3gState
-	{
-		p3gsHangOff,
-		p3gsHangOn,
-		p3gsKey,
-		p3gsDialing,
-		p3gsAltering,
-		p3gsRing,
-		p3gsConnected,		
-		p3gsHold,
-		p3gsOppOff,	
-		p3gsPstn,
-		
-	};
 
-	enum phone3gEvent
-	{
-		p3geHangOff,
-		p3geHangOn,
-		p3geKey,
-		p3geDialing,
-		p3geAltering,
-		p3geCallID,
-		p3geRing,
-		p3geConnected,
-
-		p3geActive,
-		p3geHold,
-
-		p3geNoDialtone,
-		p3geODB,
-		p3geBusy,
-		p3geNoanswer,
-		p3geNoNet,
-		p3geCarrier,
-		p3geOppOff,
-			
-	};
-
-	enum pstnstate
-	{
-		pstnsHangOff,
-		pstns3gRing,
-		pstnsRing,
-		pstnsConnected,		
-		pstnsHold,
-		
-	};
-	
-	enum pstnevent
-	{
-		pstneHangOff,
-		pstneHangOn,
-		pstne3gRing,
-		pstneRing,
-		pstneCallID,
-		pstneConnected,
-		pstneHold,
-		pstneActive,
-		
-	};
-
-	typedef struct {
-		
-		enum phonetype{
-			phone3g1,
-			phone3g2,
-			phonepstn,
-		};
-		
-		std::string			contact;//联系人
-		std::string			telnum;
-		std::string         city;
-		std::string         lineStatus;
-		std::string         RingFilename ;//铃声文件
-
-		int					TelStatus;
-		UINT				timer;//时间
-		UINT				LineStatusTimer;//线路状态定时器
-		UINT				HangoffTimer;//挂机定时器
-		UINT				SecondOff;
-		UINT				Second;//
-		UINT				RingCount;//铃声数
-		UINT				iIgnoreRingCount;//忽略铃声数
-		bool				bHasCallID;//是否来过CALL_ID
-		bool				bFirwall;//线路防火墙
-		bool				bRingPlayed;//该线路是否播放过铃声
-		bool				b3gReject;//拒绝接听
-		bool				b3gFisrtRing;//是否第一次振铃
-		phonetype			type;
-		Util::FSM*			pFSM;
-		Util::Timestamp     starttime;
-		
-	}phoneline; 
-	phoneline m_phoneLine[3];
-	
-	static void g3HangOff(void* param);
-	static void g3HangOn(void* param);
-	static void g3Key(void* param);
-	static void g3Dialing(void* param);
-	static void g3Ring(void* param);
-	static void g3CallID(void* param);
-	static void g3Contect(void* param);//接通
-	static void g3Contected(void* param);//已经连接
-	static void g3SubDial(void* param);
-	static void g3Active(void* param);
-	static void g3Hold(void* param);
-
-	static void pstn3gRing(void* param);//3g来电
-	static void pstnRing(void* param);
-	static void pstnHangOff(void* param);
-	static void pstnHangOn(void* param);
-	static void pstnContect(void* param);
-	static void pstnHold(void* param);
-	static void pstnCallID(void* param);
-
-	void HandleHungOn(WPARAM wParam,LPARAM lParam);//摘机
-	void HandleCallIDEnd(WPARAM wParam ,LPARAM lParam);
-	void HandleRing(WPARAM wParam ,LPARAM lParam);
-	void HandleHungOff(WPARAM wParam ,LPARAM lParam);
-
-	void  AddFSMRules(void);
-	bool  FindIdleLine(void);
-	bool  FindActiveLine(void);
-	void  Find3gLineNum(int &g3Num);//3g 数目
-	void  ReleasesOneLine(int const line);//释放掉一路
-	void  Swtich2AnotherLine(void);//切换
-	bool  PstnActive();//pstn这路是否是活动的
-
-	//
-	void  ReadSimSMS();//读SIM中短消息
-	void  RemoveSimSms();//把本地的跟SIM卡相关的SMS移除
-	bool  IsDiskFull();//是否Flashdrv磁盘空间已满
-
-	//获得睡眠标志
-	bool  GetSleepFlag(char &flag);
+	void AddFSMRules(void);
 
 	static void HangOff(void* param);
 	static void HangOn(void* param);
@@ -593,7 +410,6 @@ public:
 	static void Connect(void* param);
 	static void Ring(void* param);
 	static void CallID(void* param);
-
 };
 
 //{{AFX_INSERT_LOCATION}}

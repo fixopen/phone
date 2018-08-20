@@ -8,8 +8,6 @@
 //
 #include "CEStatic.h"
 #include "CeBtnST.h"
-#include "CEComboBox12_.h"
-
 /////////////////////////////////////////////////////////////////////////////
 // CCEComboBox_ window
 #define IDC_COMBO_BTN		0xFFFD
@@ -59,8 +57,6 @@ public:
 	int GetLBTextLen(int nIndex){return m_Combo.GetLBTextLen(nIndex);}
 	void SetDroppedWidth(UINT nWidth){m_Combo.SetDroppedWidth(nWidth);}
 	void ShowDropDown(BOOL bShowIt = TRUE){m_Combo.ShowDropDown(bShowIt);}
-
-
 // Construction
 public:
 	CCEComboBox_();

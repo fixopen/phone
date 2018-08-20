@@ -7,22 +7,21 @@
 #include "3GHomePicDlg.h"
 
 #ifdef _DEBUG
-#define new 
+#define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
 // C3GHomePicDlg dialog
-BOOL g_isAutoPlay = FALSE;
+BOOL g_isAutoPlay = TRUE;
 CString g_destDir = L"";
 CString g_srcDir = L"";
 CString g_showDir = L"";
-extern BOOL g_isShift;
 extern BOOL DetectDIR(TCHAR *sDir);
 extern BOOL DetectFile(TCHAR *sDir);
-extern double GetFileSize(TCHAR *sFile);
-extern double GetDirSize(TCHAR *sDir, float &fSize);
+extern float GetFileSize(TCHAR *sFile);
+extern float GetDirSize(TCHAR *sDir, float &fSize);
 
 C3GHomePicDlg::C3GHomePicDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(C3GHomePicDlg::IDD, pParent)
@@ -40,8 +39,7 @@ C3GHomePicDlg::C3GHomePicDlg(CWnd* pParent /*=NULL*/)
 	m_offSet = 0;
 	m_cardType1 = 0;
 	m_cardType2 = 0;
-	m_callType = 0;
-	m_selCount = 0;
+	m_callType = 0; 
 }
 
 void C3GHomePicDlg::DoDataExchange(CDataExchange* pDX)
@@ -58,7 +56,7 @@ BEGIN_MESSAGE_MAP(C3GHomePicDlg, CDialog)
 	ON_MESSAGE(WM_MJPGTOGGLE, OnClickMJPG)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 	ON_MESSAGE(WM_USB_MSG, OnDeviceChange)
-	ON_WM_TIMER()
+//	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -71,7 +69,7 @@ BOOL C3GHomePicDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 	
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\相册.xml");
 
 	MoveWindow(0, 57, 800, 423);
@@ -79,7 +77,6 @@ BOOL C3GHomePicDlg::OnInitDialog()
 	m_MJPGList.SetUnitText(8, L"当前页", TRUE);
 	m_MJPGList.SetUnitIsDisable(1, TRUE);
 	m_MJPGList.SetUnitIsDisable(2, TRUE);
-
 	m_uiType = 0;
 	ShowItemsInList(m_uiType);
 	PostMessage(WM_USB_MSG, 0x8000, 0);
@@ -98,10 +95,7 @@ void C3GHomePicDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 2:
 		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
 		m_isSelectAll = FALSE;
-		m_firstSelPage = 0;
-		m_lastSelPage = 0;
 		m_uiType = w;
-		m_selCount = 0;
 		ShowItemsInList(w);
 		break;
 	case 3:			//选择当前页数
@@ -119,55 +113,35 @@ void C3GHomePicDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			pMainDlg->m_pMainDlg->m_mainPhotoDlg_->OnOpenFile();
 			pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnPhotoBtn(1);
 			OnPlayer();
-			pMainDlg->AddIcon(Allicon[6],pMainDlg->m_pMainDlg->m_mainVideoDlg_,false);		//lxz 20100528
-		}
-		else
-		{
-			pMainDlg->m_pTipDlg->SetTitle("请选择要播放的文件!");
-			pMainDlg->m_pTipDlg->ShowWindow_(TRUE);
 		}
 		break;
 	case 11:      //转移文件
-		if(!g_isShift)
+		FindSelectPage();
+		if (m_firstSelPage > 0)
 		{
-			FindSelectPage();
-			if (m_firstSelPage > 0)
+			if (0 == m_uiType)
 			{
-				if (0 == m_uiType)
-				{
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, TRUE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, TRUE);
-					pMainDlg->m_pShiftFileDlg->OnClickMJPG(10, 0);
-				}
-				else
-				{
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, TRUE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
-					pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, TRUE);
-					pMainDlg->m_pShiftFileDlg->OnClickMJPG(20, 0);
-				}
-				OnShiftFile();
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, TRUE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, TRUE);
 			}
 			else
 			{
-				pMainDlg->m_pTipDlg->SetTitle("请选择要转移的文件!");
-				pMainDlg->m_pTipDlg->ShowWindow_(TRUE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(20, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(20, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(21, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(21, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(10, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(10, TRUE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDownStatus(11, FALSE);
+				pMainDlg->m_pShiftFileDlg->m_MJPGList.SetUnitIsDisable(11, TRUE);
 			}
-		}
-		else
-		{
-			pMainDlg->m_pShiftFileDlg->ShowWindow_(TRUE);
+			OnShiftFile();
 		}
 		break;
 	case 12:	  //删除
@@ -176,25 +150,9 @@ void C3GHomePicDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		{
 			OnClickDelete();
 		}
-		else
-		{
-			pMainDlg->m_pTipDlg->SetTitle("请选择要删除的文件!");
-			pMainDlg->m_pTipDlg->ShowWindow_(TRUE);
-		}
 		break;
 	case 50:
 		OnSelectAll();
-		break;
-	case 57:
-		if(m_sPreDir.size() > 0)
-		{
-			CString dir = m_sPreDir[m_sPreDir.size()-1];
-			m_sPreDir.pop_back();
-			SetPlayList(dir.GetBuffer(dir.GetLength()));
-			SetInitShow();
-			AddFilePicture();
-			ShowArrayInList(m_filePicture);
-		}
 		break;
 	case 100:      //选择
 	case 200:
@@ -226,7 +184,7 @@ void C3GHomePicDlg::SetUnitFont()
 		m_MJPGList.SetUnitColor(i,font_white,TRUE);
 	}
 	
-	m_MJPGList.SetUnitFont(8, font_14);
+	m_MJPGList.SetUnitFont(8, font_16);
 	m_MJPGList.SetUnitColor(8,font_white,TRUE);
 	
 	for (i=1; i<=5; i++)
@@ -345,30 +303,11 @@ void C3GHomePicDlg::ShowItemsInList(int type)
 void C3GHomePicDlg::ShowArrayInList(std::vector<CString> fileName)
 {
 	OnClearAll();
-
-	CString dir = m_chDir;
-	CString preDir = L"";
-	if(m_sPreDir.size() > 0)
-	{
-		preDir = m_sPreDir[m_sPreDir.size()-1];
-	}
-
-	if(preDir != dir && preDir != L"")
-	{
-		m_MJPGList.SetUnitIsDisable(57, FALSE);
-		m_MJPGList.SetUnitIsShow(57, TRUE, FALSE);
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsDisable(57, TRUE);
-		m_MJPGList.SetUnitIsShow(57, FALSE, FALSE);
-	}
-
 	int index = 100;
 	if (m_fileCount > 0)
 	{
 		CString temp;
-		double fileSize;
+		float fileSize;
 		for (int i=(m_currentPage - 1)*m_pageSize; i<m_currentPage*m_pageSize; i++)
 		{
 			fileSize = 0;
@@ -381,8 +320,23 @@ void C3GHomePicDlg::ShowArrayInList(std::vector<CString> fileName)
 				m_MJPGList.SetUnitText(index+1, m_filePicture[i], FALSE);
 				if(i<m_fileDir.size())
 				{
-					m_MJPGList.SetUnitBitmap(index, ".\\adv\\mjpg\\k5\\common\\png\\文件夹.bmp", L".\\adv\\mjpg\\k5\\common\\png\\文件夹.bmp", FALSE);
-					m_MJPGList.SetUnitText(index+2, L"", FALSE);
+					m_MJPGList.SetUnitBitmap(index, ".\\adv\\mjpg\\k5\\common\\png\\文件夹.png", L".\\adv\\mjpg\\k5\\common\\png\\文件夹.png", FALSE);
+					fileSize = GetDirSize((LPTSTR)(LPCTSTR)path, fileSize);
+					fileSize /= (1024*1024);
+					if(fileSize < 1.0 && fileSize > 0.0000001)
+					{
+						fileSize *= 1024;
+						temp.Format(_T("%0.1fK"), fileSize);
+					}
+					else if(fileSize >= -0.0000001 && fileSize <= 0.0000001)
+					{
+						temp = L"0字节";
+					}
+					else
+					{
+						temp.Format(_T("%0.1fM"), fileSize);
+					}
+					m_MJPGList.SetUnitText(index+2, temp, FALSE);
 				}
 				else
 				{
@@ -393,7 +347,6 @@ void C3GHomePicDlg::ShowArrayInList(std::vector<CString> fileName)
 					if(fileSize < 1.0 && fileSize > 0.0000001)
 					{
 						fileSize *= 1024;
-						fileSize += 0.05;
 						temp.Format(_T("%0.1fK"), fileSize);
 					}
 					else if(fileSize >= -0.0000001 && fileSize <= 0.0000001)
@@ -430,7 +383,6 @@ void C3GHomePicDlg::ShowArrayInList(std::vector<CString> fileName)
 			m_UnitStatus[i-1] = FALSE;
 			SetShowStatus(i*100, TRUE);
 		}
-		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
 	}
 
 	m_MJPGList.Invalidate();
@@ -525,7 +477,7 @@ int C3GHomePicDlg::SetPlayList(TCHAR *dir)
 		{
 			i = wcstombs( filename, FindFileData.cFileName, /*wcslen(FindFileData.cFileName)*/128);
 			filename[i] = '\0';
-			if(strstr(filename, ".bmp")||strstr(filename, ".BMP")||strstr(filename, ".jpg")||strstr(filename, ".JPG")||strstr(filename, ".png")||strstr(filename, ".PNG"))
+			if(strstr(filename, ".bmp")||strstr(filename, ".BMP")||strstr(filename, ".jpg")||strstr(filename, ".JPG"))
 			{
 				m_filePicture.push_back(FindFileData.cFileName);
 				m_isFileSelect.push_back(0);
@@ -566,26 +518,6 @@ void C3GHomePicDlg::AddFilePicture()
 	}
 }
 
-void C3GHomePicDlg::SetScreenPicture()
-{
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-	CString filename = m_chDir;
-	main->m_pMainDlg->m_mainPhotoDlg_->m_PhotoList.clear();
-	if(main->m_pMainDlg->m_mainPhotoDlg_->m_ScreenPhotoList.size() > 0)
-	{
-		main->m_pMainDlg->m_mainPhotoDlg_->m_PhotoList = main->m_pMainDlg->m_mainPhotoDlg_->m_ScreenPhotoList;
-	}
-	else
-	{
-		for(int i=m_fileDir.size(); i<m_isFileSelect.size(); i++)
-		{
-			CString filename = m_chDir + m_filePicture[i];
-			main->m_pMainDlg->m_mainPhotoDlg_->m_PhotoList.push_back(filename);
-			filename.Empty();
-		}
-	}
-}
-
 void C3GHomePicDlg::OnSelectAll()
 {
 	//wangzhenxing0923
@@ -601,7 +533,6 @@ void C3GHomePicDlg::OnSelectAll()
 			{
 				m_isFileSelect[i] = 1;
 			}
-			m_selCount = m_isFileSelect.size();
 		}
 		else
 		{
@@ -613,20 +544,11 @@ void C3GHomePicDlg::OnSelectAll()
 			{
 				m_isFileSelect[i] = 0;
 			}
-			m_selCount = 0;
 		}
 		for (int i=100; i<=500; i+=100)
 		{
 			SetShowStatus(i, !m_isSelectAll);
 		}
-	}
-	else
-	{
-		m_isSelectAll = FALSE;
-		m_firstSelPage = 0;
-		m_lastSelPage = 0;
-		m_MJPGList.SetUnitIsDownStatus(50, FALSE);
-		m_MJPGList.Invalidate();
 	}
 }
 
@@ -640,33 +562,16 @@ void C3GHomePicDlg::OnButtonCheck(int uintNO)
 			if (m_isFileSelect[index] == 0)
 			{
 				m_isFileSelect[index] = 1;
-				m_selCount++;
-				if(m_selCount == m_isFileSelect.size())
-				{
-					m_isSelectAll = TRUE;
-					m_firstSelPage = 1;
-					m_lastSelPage = m_pageCount;
-					m_MJPGList.SetUnitIsDownStatus(50, TRUE);
-				}
 				SetShowStatus(uintNO, FALSE);
 			}
 			else
 			{
 				m_isFileSelect[index] = 0;
-				m_selCount--;
-				if(m_selCount < m_isFileSelect.size())
-				{
-					m_isSelectAll = FALSE;
-					m_firstSelPage = 0;
-					m_lastSelPage = 0;
-					m_MJPGList.SetUnitIsDownStatus(50, FALSE);
-				}
 				SetShowStatus(uintNO, TRUE);
 			}
 		}
 		else
 		{
-			m_sPreDir.push_back(m_chDir);
 			CString dir = m_chDir+m_MJPGList.GetUnitText(uintNO+1)+"/";
 			SetPlayList(dir.GetBuffer(dir.GetLength()));
 			SetInitShow();
@@ -757,34 +662,28 @@ void C3GHomePicDlg::PageDown()
 
 void C3GHomePicDlg::OnClickDelete()
 {
-	CMultimediaPhoneDlg *main = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	if (0 == m_firstSelPage)
 		return;
 	int count = 0;
-	for(int i=(m_firstSelPage-1)*m_pageSize; i<m_fileCount; i++)
+	for(int i=(m_firstSelPage-1)*m_pageSize; i<m_lastSelPage*m_pageSize; i++)
 	{
 		if(1 == m_isFileSelect[i] && i >= m_fileDir.size())
 			count++;
 	}
-
-	CString str;
-	str.Format(L"%d", count);
-	str = L"是否删除已选中的" + str +L"个文件?";
-	main->m_pDeleteTipDlg->SetTitle(str, 0);
-	main->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
-	main->m_pDeleteTipDlg->SetProcessMax(count);
-	if (main->m_pSettingDlg->m_pSetting->isAdmin() && !main->m_pSettingDlg->m_bLogin)
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"确定要删除已选文件吗？", 0);
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(this->GetSafeHwnd());
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessMax(count);
+	if (((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->isAdmin() && !((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_bLogin)
 	{
-		main->m_pDeleteTipDlg->SetPasswordModel(true);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPasswordModel(true);
 	}
-	std::string pw = main->m_pSettingDlg->m_pSetting->adminPassword();
-	main->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
-	main->m_pDeleteTipDlg->ShowWindow_(TRUE);
+	std::string pw = ((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pSettingDlg->m_pSetting->adminPassword();
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetPassword(Util::StringOp::ToCString(pw));
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 }
 extern void DeleteDirectory(CString SrcDir, BOOL isShow = TRUE);
 void C3GHomePicDlg::DeleteSelectedItem()
 {
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	size_t pageStartIndex = m_fileDir.size();
 	std::vector<int>::iterator checkItem = m_isFileSelect.begin() + pageStartIndex;
 	std::vector<CString>::iterator checkFile = m_filePicture.begin() + pageStartIndex;
@@ -798,21 +697,18 @@ void C3GHomePicDlg::DeleteSelectedItem()
 			DeleteFile(s);
 			if(0 == GetLastError())
 			{
+				delCount++;
 				checkFile = m_filePicture.erase(checkFile);
 				checkItem = m_isFileSelect.erase(checkItem);
 			}
 			else
 			{
+				//提示不能删除
 				++checkItem;
 				++checkFile;
 				++i;
-
-				main->m_pWarningNoFlashDlg->SetTitle(L"无法删除该文件!请确定文件是否受保护!");
-				main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
 			}
-
-			delCount++;
-			main->m_pDeleteTipDlg->SetProcessPos(delCount);
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetProcessPos(delCount);
 		}
 		else
 		{
@@ -827,7 +723,7 @@ void C3GHomePicDlg::DeleteSelectedItem()
 	if (0 == m_fileCount)
 	{
 		m_MJPGList.SetUnitText(3, "0", TRUE);
-		m_MJPGList.SetUnitText(4, "/0", TRUE);
+		m_MJPGList.SetUnitText(4, "0", TRUE);
 		m_MJPGList.SetUnitIsDisable(5, TRUE);
 		m_MJPGList.SetUnitIsDisable(6, TRUE);
 		m_pageCount = 0;
@@ -878,7 +774,6 @@ void C3GHomePicDlg::DeleteSelectedItem()
 
 void C3GHomePicDlg::OnShiftFile()
 {
-	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	g_destDir = L"";
 	g_showDir = L"";
 
@@ -886,9 +781,9 @@ void C3GHomePicDlg::OnShiftFile()
 		return;
 	if(!DetectDIR(_T("\\StorageCard")) && !DetectDIR(_T("\\UsbDisk")))
 	{
-		main->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
-		main->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
-		main->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetTitle(_T("请插入移动设备"));
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->SetHWnd(this->GetSafeHwnd());
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pWarningNoFlashDlg->ShowWindow_(TRUE);
 		return;
 	}
 	
@@ -897,23 +792,23 @@ void C3GHomePicDlg::OnShiftFile()
 		if (DetectDIR(L"/usbdisk"))
 		{
 			g_destDir = L"/UsbDisk/";
-			g_showDir = L"U盘";
+			g_showDir = L"USBDISK";
 		}
 		else if (DetectDIR(L"/storagecard"))
 		{
 			g_destDir = L"/StorageCard/";
-			g_showDir = L"SD卡";
+			g_showDir = L"STORAGECARD";
 		}
 	}
 	else if (1 == m_uiType)
 	{
 		if (1 == m_cardType1)
 		{
-			g_showDir = L"U盘";
+			g_showDir = L"USBDISK";
 		}
 		else if (2 == m_cardType1)
 		{
-			g_showDir = L"SD卡";
+			g_showDir = L"STORAGECARD";
 		}
 
 		g_destDir = L"/FlashDrv/MY_PHOTO/";
@@ -922,16 +817,17 @@ void C3GHomePicDlg::OnShiftFile()
 	{
 		if (1 == m_cardType2)
 		{
-			g_showDir = L"U盘";
+			g_showDir = L"USBDISK";
 		}
 		else if (2 == m_cardType2)
 		{
-			g_showDir = L"SD卡";
+			g_showDir = L"STORAGECARD";
 		}
 
 		g_destDir = L"/FlashDrv/MY_PHOTO/";
 	}
 
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 	main->CancelBalckLightSaveTimer();
 	main->m_pShiftFileDlg->m_shiftProc->SetPos(0);
 	main->m_pShiftFileDlg->SetHWnd(this->GetSafeHwnd());
@@ -987,7 +883,7 @@ void C3GHomePicDlg::OnDeviceChange(WPARAM w, LPARAM l)
 {
 	if (w == 0x8000) //insert
 	{
-		::Sleep(3000);
+		::Sleep(500);
 		if (m_MJPGList.GetUnitIsDisable(1))
 		{
 			if(DetectDIR(_T("/usbdisk")))
@@ -1021,7 +917,7 @@ void C3GHomePicDlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 	else if (w == 0x8004) //remove
 	{
-		::Sleep(1000);
+		::Sleep(500);
 		if(DetectDIR(_T("/usbdisk")))
 		{
 			m_cardType1 = 1;
@@ -1047,32 +943,10 @@ void C3GHomePicDlg::OnDeviceChange(WPARAM w, LPARAM l)
 	}
 }
 
-void C3GHomePicDlg::ShowWindow_(int nCmdShow, BOOL isBtnShow)
+void C3GHomePicDlg::ShowWindow_(int nCmdShow)
 {
-	m_sPreDir.clear();
 	ShowItemsInList(m_uiType);
 	ShowWindow(nCmdShow);
-	if(isBtnShow)
-	{
-		SetTimer(0x11, 200, NULL);
-	}
-	else
-	{
-		m_MJPGList.SetUnitIsShow(10, FALSE);
-		m_MJPGList.SetUnitIsShow(11, FALSE);
-		m_MJPGList.SetUnitIsShow(12, FALSE);
-	}
-}
-
-void C3GHomePicDlg::OnTimer(UINT nIDEvent)
-{
-	if(0x11 == nIDEvent)
-	{
-		KillTimer(0x11);
-		m_MJPGList.SetUnitIsShow(10, TRUE);
-		m_MJPGList.SetUnitIsShow(11, TRUE);
-		m_MJPGList.SetUnitIsShow(12, TRUE);
-	}
 }
 
 void C3GHomePicDlg::OnOK_()
@@ -1090,7 +964,6 @@ void C3GHomePicDlg::OnOK_()
 	if(1 == m_callType)
 	{
 		main->m_pMMSDlg->InsertPicture(filename);
-		main->m_pMMSDlg->m_nSelVideo = 0;
 	}
 	m_callType = 0;
 	OnExit_();
@@ -1103,11 +976,8 @@ void C3GHomePicDlg::OnExit_()
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	pMainDlg->PopbackIcon();
 	
-	m_selCount = 0;//add by qi 20100914
-
 	m_isSelectAll = FALSE;
 	m_uiType = 0;
-	m_sPreDir.clear();
 	m_MJPGList.SetUnitIsDownStatus(50, FALSE);
 	for (int i=100; i<=500; i+=100)
 	{
@@ -1117,14 +987,6 @@ void C3GHomePicDlg::OnExit_()
 	{
 		m_isFileSelect[i] = 0;
 	}
-	if(1 == m_callType)
-	{
-		if(pMainDlg->m_pMMSDlg->m_nSelVideo == 0)
-			pMainDlg->m_pMMSDlg->m_nSelVideo = 1;
-		else
-			pMainDlg->m_pMMSDlg->m_nSelVideo = 0;
-	}
-	m_callType = 0;
 }
 
 void C3GHomePicDlg::OnPlayer(int index)
@@ -1161,8 +1023,8 @@ void C3GHomePicDlg::OnPlayer(int index)
 	
 	CString s;
 	s.Format(L"/%d", nFileSelected);
-	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitText(31, s, FALSE);
-	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitText(30, L"1", FALSE);
+	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitText(31, s, TRUE);
+	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitText(30, L"1", TRUE);
 	main->m_pMainDlg->m_mainPhotoDlg_->m_selectFileCount = nFileSelected;
 	main->m_pMainDlg->m_mainPhotoDlg_->m_selectCurrentFile = 1;
 
@@ -1178,11 +1040,9 @@ void C3GHomePicDlg::OnPlayer(int index)
 			main->m_pMainDlg->m_mainPhotoDlg_->playerDlg_->SetParam("", mtImage, FALSE);
 			main->m_pMainDlg->m_mainPhotoDlg_->playerDlg_->ReSetWindowsRect(CRect(110, 88, 552, 385));
 			main->m_pMainDlg->m_mainPhotoDlg_->playerDlg_->ShowWindow(SW_SHOW);
-			main->m_pMainDlg->m_mainPhotoDlg_->playerDlg_->player_->PlayerImage();
 			g_isAutoPlay = TRUE;
 		}
 	}
 	main->m_pMainDlg->m_mainPhotoDlg_->playerDlg_->SetResumeTimer();
 	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitIsDownStatus(3, TRUE);
-	main->m_pMainDlg->m_mainPhotoDlg_->SetTimer(0x101, 500, NULL);
 }

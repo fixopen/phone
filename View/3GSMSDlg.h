@@ -7,7 +7,6 @@
 // YHTelDlg.h : header file
 //
 
-
 /////////////////////////////////////////////////////////////////////////////
 // C3GSMSDlg dialog
 #include "../control/MJPGStatic.h"
@@ -16,14 +15,12 @@
 #include "../Data/Message.h"
 #include "10PhrasesDlg.h"
 
-#define RECEIVE_BOX_SIZE 1000
-#define SEND_BOX_SIZE 1000
-
 class CSMSDlg : public CDialog
 {
 // Construction
 public:
 //	C3GSMSListDlg   *m_pSMSListDlg;
+	C3GSMSDetailDlg *m_pSMSDetailDlg;
 
 	CMJPGStatic		m_MJPGList;
 	CSMSDlg(CWnd* pParent = NULL);   // standard constructor
@@ -60,10 +57,6 @@ private:
 	std::map<int,CString>	m_mapTelnum;//保存联系人的电话
 	int						m_iCurrentPage;//当前在第几页
 	int const				pageSize;
-	int						m_charNumber;
-	int						m_charMax;
-	int						m_msgNumber;
-	int						m_nInsesrtIndex;//插入的联系人的索引
 	C10PhrasesDlg			*m_p10PhrasesDlg;//10条通话记录
 	enum Action{
 		up_page,
@@ -79,7 +72,7 @@ public:
 	void GetTelnum(Action action);
 	bool SenderIsFull();//当前的发信人的电话是否写满
 	void SendSMS();
-	void SaveDraft(bool tip = true);//存成草稿
+	void SaveDraft();//存成草稿
 	void SetSender(std::vector<CString> telnum);//设置发信好人号码
 	void SetAppend(std::vector<CString> append);
 
@@ -91,31 +84,13 @@ public:
 	void SetMessge(boost::shared_ptr<Data::Message> pmessage);
 	void ShowWindow_(int nCmdShow );
 	void GetSender(std::vector<CString> &telnum);
-	void Clear();
-	void SetPage();
-	
-	void OnCharNumberChange();
-	void TransferSender(std::vector<CString> Sender);
-	void TransferTelnum(std::vector<CString> telnum);//
-
-	void FindNumber(std::string &adr);//处理联系人
-	void OnBtnCancel();
-
-	int  SmsBoxCount(Data::Message::Group group);//短信发件箱的数量
-	bool SaveSmsData(boost::shared_ptr<Data::Message> pmessage,Data::Message::Group group);
-	void SaveSmsData(Data::Message *pmessage);
-	void SmsDelOldest(Data::Message::Group group);//删除最老的一个
-
-	static void SingleQuotes(CString &content);
-
-	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 protected:
 	// Generated message map functions
 	//{{AFX_MSG(C3GSMSDlg)
 	virtual BOOL OnInitDialog();
 //	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
 
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

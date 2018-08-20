@@ -46,7 +46,6 @@ BEGIN_MESSAGE_MAP(CNotebookDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_NOTE_CLEAR, OnButtonNoteClear)
 	ON_BN_CLICKED(IDC_BUTTON_NOTE_CLOSE, OnButtonNoteClose)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-	ON_MESSAGE(WM_MJPGTOGGLE, OnClickMJPG)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -57,92 +56,43 @@ BOOL CNotebookDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 
-	m_WriteStatic.Create(L"", WS_VISIBLE|WS_CHILD, CRect(33, 66, 548, 393), this, 8950);
+	m_WriteStatic.Create(L"", WS_VISIBLE|WS_CHILD, CRect(8, 55, 791, 409), this, 8950);
 	m_WriteStatic.SetWrite(_T("/hive/my_note/1.bmp"));
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\便签.xml");
-	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
-	MoveWindow(0,57,800,423);
-	m_MJPGList.SetUnitIsDownStatus(200,TRUE);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 420), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\笔迹记事.xml");
+	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 
 	m_nIndex = 0;
 
 	char txt[64];
 	sprintf(txt, "%d/20 %s", m_nIndex+1, Data::LanguageResource::Get(Data::RI_NOTE_PAGE).c_str());
 	CString s = txt;
-	m_MJPGList.SetUnitFont(205, font_14);
-	m_MJPGList.SetUnitText(205, txt, FALSE);
+	m_MJPGList.SetUnitText(0, txt, FALSE);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CNotebookDlg::OnClickMJPG(WPARAM w, LPARAM l)
-{	
-	CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+{
 	switch (w)
 	{
-	case 100:
-		main->m_pMainDlg->m_mainCalucaterDlg_->ShowWindow_(SW_SHOW);
-		main->PopIcon(this);
-		main->AddIcon(Allicon[8],main->m_pMainDlg->m_mainCalucaterDlg_,false);
+	case 5:
+		OnButtonNoteOk();
 		break;
-	case 200:
-		break;
-	case 202:
+	case 1:
 		OnButtonNotePrev();
 		break;
-	case 203:
+	case 2:
 		OnButtonNoteNext();
 		break;
-// 	case 210:
-// 		OnButtonNoteOk();
-// 		break;
-// 	case 211:
-// 		OnButtonNoteClose();
-// 		break;
-	case 212:
+	case 3:
 		OnButtonNoteClear();
 		break;
-	case 300://SIM卡
-		{
-
-			if (!main->GetSimStatus())
-			{
-				main->m_pWarningNoFlashDlg->SetTitle("没插入SIM卡!");
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				return ;
-			}
-
-			if (main->m_phoneLine[0].pFSM->getCurrentState() >= CMultimediaPhoneDlg::p3gsDialing ||
-				main->m_phoneLine[1].pFSM->getCurrentState() >= CMultimediaPhoneDlg::p3gsDialing ||
-				main->m_phoneLine[2].pFSM->getCurrentState() == CMultimediaPhoneDlg::pstnsConnected )
-			{
-				main->m_pWarningNoFlashDlg->SetTitle(L"操作不允许");
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				return;
-			}
-			else
-			{
-				main->m_pCstkDlg->SetCmdID(-1, 0, FALSE);
-				main->m_pDeleteTipDlg->SetTitle(L"正在查询信息",20000);
-				main->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
-			}
-			
-		}
-		break;
-
-	case 1000:
+	case 4:
 		OnButtonNoteClose();
-		main->PopbackIcon();
 		break;
-
-	case 1001:
-		OnButtonNoteOk();
-		main->PopbackIcon();
-		break;
-
 	default:
 		break;
 	}
@@ -154,7 +104,7 @@ void CNotebookDlg::SetPageIndex()
 	sprintf(txt, "%d/20 %s", m_nIndex+1, Data::LanguageResource::Get(Data::RI_NOTE_PAGE).c_str());
 	CString s = txt;
 
-	m_MJPGList.SetUnitText(205, txt, TRUE);
+	m_MJPGList.SetUnitText(0, txt, TRUE);
 
 }
 
@@ -166,8 +116,14 @@ void CNotebookDlg::OnButtonNoteOk()
 	filename += Util::StringOp::FromInt(m_nIndex + 1);
 	filename += ".bmp";
 	m_WriteStatic.GetWrite((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(filename));
+// 	ShowWindow(FALSE);
 	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
-	ShowWindow(SW_HIDE);
+
+// 	if(m_WriteStatic.WRITE_TYPE == 1)
+// 		m_WriteStatic.WRITE_TYPE = 0;
+// 	else
+// 		m_WriteStatic.WRITE_TYPE = 1;
+
 }
 
 void CNotebookDlg::OnButtonNotePrev()
@@ -217,11 +173,7 @@ void CNotebookDlg::OnButtonNoteClear()
 void CNotebookDlg::OnButtonNoteClose()
 {
 	m_bIsOPenTel = FALSE;
-	ShowWindow(SW_HIDE);
+	//((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SwitchPanel_(IDC_BUTTON_MAIN);
+	((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pNotebookDlg->ShowWindow(SW_HIDE);
 	((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SetStatusAll(FALSE);
-}
-
-void CNotebookDlg::ShowWindow_(int nCmdShow)
-{
-	ShowWindow(nCmdShow);
 }

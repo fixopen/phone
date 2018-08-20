@@ -29,16 +29,16 @@ public:
 	CRingSetDlg(CWnd* pParent = NULL);   // standard constructor
 
 	CCEButtonST m_chbEnableRing;
-	CCEComboBox12_ m_cmbRing;
-	CCEComboBox12_ m_cmbRingVolume;
+	CCEComboBox_ m_cmbRing;
+	CCEComboBox_ m_cmbRingVolume;
 
 	CCEButtonST m_chbEnableSMSRing;
-	CCEComboBox12_ m_cmbSMSRing;
-	CCEComboBox12_ m_cmbSMSRingVolume;
+	CCEComboBox_ m_cmbSMSRing;
+	CCEComboBox_ m_cmbSMSRingVolume;
 
 	CCEButtonST m_chbEnableSpecRing;
-	CCEComboBox12_ m_cmbSpecRing;
-	CCEComboBox12_ m_cmbSpecRingVolume;
+	CCEComboBox_ m_cmbSpecRing;
+	CCEComboBox_ m_cmbSpecRingVolume;
 
 // Dialog Data
 	//{{AFX_DATA(CRingSetDlg)

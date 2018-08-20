@@ -21,12 +21,8 @@ class CContactNewDlg : public CDialog
 {
 // Construction
 public:
-	CCEComboBox12_ m_cmbType;
-	CCEComboBox12_ m_cmbGroup;
-	
-//	CCEComboBox_ m_cmbType;
-//	CCEComboBox_ m_cmbGroup;
-
+	CCEComboBox_ m_cmbType;
+	CCEComboBox_ m_cmbGroup;
 	
 	CContactNewDlg(CWnd* pParent = NULL);   // standard constructor
 
@@ -101,7 +97,7 @@ private:
 	CCERectEdit m_edtDuty;
 	CCERectEdit m_edtMemo;
 	
-//	CCEComboBox12_ m_comStorage;//add by qi 2009_09_28,存储来至组别
+//	CCEComboBox_ m_comStorage;//add by qi 2009_09_28,存储来至组别
 
 /*
 	CCEBmpButton m_btnDialMobile1;
@@ -141,10 +137,6 @@ public:
 	void ClearEdit();//选中SIM卡组，除了前三个控件可编辑，其它不可编辑
 	void SetSim(bool btrue);//设置SIM卡的编辑环境
 	void ShowWindow_();
-
-	void FindSimContactGroupID(int &gid);
-	void FindSimIdleID(int &id);
-	void InSimID(int const size);
 };
 
 //{{AFX_INSERT_LOCATION}}

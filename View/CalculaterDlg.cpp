@@ -83,7 +83,6 @@ void CCalculaterDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CCalculaterDlg, CDialog)
 	//{{AFX_MSG_MAP(CCalculaterDlg)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
-	ON_MESSAGE(WM_MJPGTOGGLE, OnClickMJPG)
 	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -98,28 +97,6 @@ void CCalculaterDlg::OnExit()
 
 	main->PopbackIcon();
 	
-}
-
-BOOL CCalculaterDlg::PreTranslateMessage(MSG* pMsg)
-{
-	if ((pMsg->wParam) == MK_LBUTTON )
-	{
-		CString content;
-		if (pMsg->hwnd == m_DialNumEdit.m_hWnd)
-		{
-			m_edtTemp = &m_DialNumEdit;
-		}
-		if (pMsg->hwnd == m_edtTransferNum1.m_hWnd)
-		{
-			m_edtTemp = &m_edtTransferNum1;
-		}		
-		if (pMsg->hwnd == m_edtTransferNum2.m_hWnd)
-		{
-			m_edtTemp = &m_edtTransferNum2;
-		}		
-	}
-	return CDialog::PreTranslateMessage(pMsg);
-
 }
 /////////////////////////////////////////////////////////////////////////////
 // CCalculaterDlg message handlers
@@ -138,7 +115,7 @@ BOOL CCalculaterDlg::OnInitDialog()
 	m_IsError = FALSE; //2005.5.19 zmy
 
 //  wangzhenxing1102
-	CRect r(32, 59, 517+3, 111);
+	CRect r(49, 30, 537, 85);
 	m_NumFont.CreateFont(30,                        // nHeight
 		0,                         // nWidth
 		0,                         // nEscapement
@@ -158,6 +135,7 @@ BOOL CCalculaterDlg::OnInitDialog()
 	m_DialNumEdit.SetFont(&m_NumFont);
 	m_DialNumEdit.HideCaret();
 	m_DialNumEdit.SetLimitText(16);
+	//m_DialNumEdit.ShowWindow(SW_SHOW);
 	
 	m_TransFont.CreateFont(18,                        // nHeight
 		0,                         // nWidth
@@ -174,31 +152,27 @@ BOOL CCalculaterDlg::OnInitDialog()
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
 	   _T("宋体"));
 
-	m_edtTransferNum1.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(623,165,738,187), this, 0xFFFF);
-	m_edtTransferNum1.SetIsAutoInput();
+	m_edtTransferNum1.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(633,145,749,168), this, 0xFFFF);
 	m_edtTransferNum1.SetFont(&m_TransFont);
 	m_edtTransferNum1.SetLimitDiagital();
 	m_edtTransferNum1.ShowWindow(SW_HIDE);
 	
-	m_edtTransferNum2.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(623,218,738,240), this, 0xFFFF);
-	m_edtTransferNum2.SetIsAutoInput();
+	m_edtTransferNum2.Create(WS_CHILD|WS_VISIBLE|ES_NUMBER|ES_MULTILINE, CRect(633,202,749,225), this, 0xFFFF);
 	m_edtTransferNum2.SetFont(&m_TransFont);
 	m_edtTransferNum2.SetLimitDiagital();
 	m_edtTransferNum2.ShowWindow(SW_HIDE);
 
-	m_cmbType1.CreateEx(WS_CHILD|WS_VISIBLE, CRect(623, 138, 738, 360), this, 0xFFFF, 20, 48, 24, 1);
-	m_cmbType2.CreateEx(WS_CHILD|WS_VISIBLE, CRect(623, 191, 738, 400), this, 0xFFFF, 20, 48, 24, 1);
+	m_cmbType1.CreateEx(WS_CHILD|WS_VISIBLE, CRect(633, 117, 749, 360), this, 0xFFFF, 20, 36, 26, 1);
+	m_cmbType2.CreateEx(WS_CHILD|WS_VISIBLE, CRect(633, 172, 749, 400), this, 0xFFFF, 20, 36, 26, 1);
 	m_cmbType1.ShowWindow(SW_HIDE);
 	m_cmbType2.ShowWindow(SW_HIDE);
 
-	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this,10086);
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 800, 423), this);
 	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\计算器.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 423));
 	
-	m_MJPGList.SetUnitIsDownStatus(100,TRUE);
 	OnClickMJPG(50, 0);
 	MoveWindow(0,57,800,423);
-	m_edtTemp = &m_DialNumEdit;
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -285,45 +259,6 @@ void CCalculaterDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 1000:		//返回
 		OnExit();
 		break;
-	case 100:
-		break;
-	case 200:
-		{	
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-			main->m_pNotebookDlg->ShowWindow_(SW_SHOW);
-			main->PopIcon(this);
-			main->AddIcon(Allicon[8],main->m_pNotebookDlg,false);		//lxz 20100528
-			main->AddDesktopBtn();
-			break;
-		}
-	case 300: //stk add by qi 20100415
-		{
-			CMultimediaPhoneDlg *main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
-			
-			if (!main->GetSimStatus())
-			{
-				main->m_pWarningNoFlashDlg->SetTitle("没插入SIM卡!");
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				return ;
-			}
-
-			if (main->m_phoneLine[0].pFSM->getCurrentState() >= CMultimediaPhoneDlg::p3gsDialing ||
-				main->m_phoneLine[1].pFSM->getCurrentState() >= CMultimediaPhoneDlg::p3gsDialing ||
-				main->m_phoneLine[2].pFSM->getCurrentState() == CMultimediaPhoneDlg::pstnsConnected )
-			{
-				main->m_pWarningNoFlashDlg->SetTitle(L"操作不允许");
-				main->m_pWarningNoFlashDlg->ShowWindow_(SW_SHOW);
-				return;
-			}
-			else
-			{
-				main->m_pCstkDlg->SetCmdID(-1, 0, FALSE);
-				main->m_pDeleteTipDlg->SetTitle(L"正在查询信息",20000);
-				main->m_pDeleteTipDlg->ShowWindow_(SW_SHOW);
-			}
-//			main->m_pCstkDlg->ShowWindow_(TRUE);
-		}
-		break;
 	default:
 		break;
 	}
@@ -347,41 +282,41 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 		if (m_keyvalue < C_KEYV)
 		{	
 			WCHAR t_buffer[20];
-			int len = m_edtTemp->GetWindowText(t_buffer, 20);
+			int len = m_DialNumEdit.GetWindowText(t_buffer, 20);
 			if((len == 0) && (w == '.'))return;
 			if((len == 1) && (t_buffer[0] == '0') && (w == '0'))return;
 			for (int i = wcslen(t_buffer); i > 0; i --)
 				if ((t_buffer[i-1] == '.') && (w == '.')) return;//小数点只能点击一次
 		
-			if (len < 16)
+			if (len < 9)
 			{
 				CString s;
-				m_edtTemp->GetWindowText(s);
+				m_DialNumEdit.GetWindowText(s);
 				if(s == "0")
 					s == "";
 				s += (char)w;
-				m_edtTemp->SetWindowText(s);
+				m_DialNumEdit.SetWindowText(s);
 
 				m_dCurtemp = WTOF(s);
 			}			
 		}
 		else
 		{
-			m_edtTemp->SetWindowText(L"");
+			m_DialNumEdit.SetWindowText(L"");
 			if(w == '.')return;
 			CString s;
-			m_edtTemp->GetWindowText(s);
+			m_DialNumEdit.GetWindowText(s);
 			if(s == "0")
 			  s == "";
 			s += (char)w;
-			m_edtTemp->SetWindowText(s);
+			m_DialNumEdit.SetWindowText(s);
 			m_keyvalue1 = m_keyvalue;
 			m_keyvalue = m_keynull;
 			m_keyvalue2 = m_keynull;
 			m_keyvalue3 = m_keynull;
 			m_dCurtemp = WTOF(s);
 		}
-		if ((m_keyvalue1 >= CHU_KEYV) && (*m_edtTemp == m_DialNumEdit))
+		if (m_keyvalue1 >= CHU_KEYV)
 		{
 			WCHAR buffer[20];
 			memset(buffer, 0, 40);
@@ -397,10 +332,10 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 	{
 		//2005.3.30-zmy 当输入框为空时，点击符号键（除了MS外），不显示
 		WCHAR buff[20];
-		int len = m_edtTemp->GetWindowText(buff, 20);
+		int len = m_DialNumEdit.GetWindowText(buff, 20);
 		if ((len == 0) && (w != MR_KEYV)) return;
-		WCHAR buffer[40];
-		WCHAR buffer1[40];
+		WCHAR buffer[20];
+		WCHAR buffer1[20];
 		int i;
 		int j;
 		double temp1 = 0;
@@ -412,12 +347,12 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 			case BACKSPACE_KEYV:	//delete
 				{
 					CString s;
-					m_edtTemp->GetWindowText(s);
+					m_DialNumEdit.GetWindowText(s);
 					int len = s.GetLength();
 					if(len > 0)
 					{
 						s = s.Left(len-1);
-						m_edtTemp->SetWindowText(s);
+						m_DialNumEdit.SetWindowText(s);
 
 						m_dCurtemp = WTOF(s);		//wwf
 					}
@@ -426,7 +361,7 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 				break;
 			//清除作用
 			case C_KEYV:
-				m_edtTemp->SetWindowText(L"");
+				m_DialNumEdit.SetWindowText(L"");
 				m_dtemp0 = 0;
 				m_keyvalue = m_keynull;
 				m_keyvalue1 = m_keynull;
@@ -442,34 +377,80 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 
 			case CE_KEYV :
 				//ClearData();
-				m_edtTemp->SetWindowText(L"");
+				m_DialNumEdit.SetWindowText(L"");
 				m_dCurtemp = 0;					//wwf
 				break;
 
 			//当前数字和存储器中的数据相加并存到存储器中
 			case MJ_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
-				{
-					m_number1 = m_number1 + m_dCurtemp;
-					m_keyvalue = MJ_KEYV;
-				}
+				m_number1 = m_number1 + m_dCurtemp;
+				m_keyvalue = MJ_KEYV;
 				break;
 
 			//当前数字存储到存储器中并替换掉原来存储器中的值
 			case MS_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
-				{
-					m_number1 = m_dCurtemp;
-					m_keyvalue = MS_KEYV;
-				}
+				m_number1 = m_dCurtemp;
+				m_keyvalue = MS_KEYV;
 				break;
 
 			//调用存储器中的数值
 			case MR_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
+				m_DialNumEdit.SetWindowText(L"");
+				wsprintf(buffer, _T("%16.14f"), m_number1);
+				for (i =  wcslen(buffer); i > 0; i --)
+					if (buffer[i-1] != '0')break;
+				if (buffer[i-1] == '.')
 				{
-					m_DialNumEdit.SetWindowText(L"");
-					wsprintf(buffer, _T("%16.14f"), m_number1);
+					i = i - 1;
+				}
+				memcpy(buffer1, buffer, i*2);
+				buffer1[i] = '\0';
+				m_DialNumEdit.SetWindowText(buffer1);
+				
+				m_dCurtemp = WTOF(buffer1);				//wwf
+
+				m_keyvalue = MR_KEYV;
+				break;
+
+			//把存储器中的数值清除并设为零
+			case MC_KEYV :
+				m_number1 = 0;
+				m_keyvalue = MC_KEYV;
+				break;
+
+			//当前数字取根号值
+			case GENHAO_KEYV :
+				if(m_dCurtemp >= 0)
+				{
+					m_dCurtemp = sqrt(m_dCurtemp) ;		//lxz 2004.9.5			
+					wsprintf(buffer, _T("%16.14f"),m_dCurtemp);				
+					for (i =  wcslen(buffer); i > 0; i --)
+						if (buffer[i-1] != '0')break;
+					if (buffer[i-1] == '.')
+					{
+						i = i - 1;
+					}
+					memcpy(buffer1, buffer, i*2);
+					buffer1[i] = '\0';
+					m_DialNumEdit.SetWindowText(buffer1);
+						
+				}
+				else 
+				{
+					//m_DialNumEdit.SetWindowText("函数输入无效!");
+					m_DialNumEdit.SetWindowText(L"Error");
+					m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+					m_dCurtemp = 0;
+				}
+				m_keyvalue = GENHAO_KEYV;
+				break;
+
+			//当前数字取倒数值
+			case DAOSHU_KEYV :
+				if (m_dCurtemp != 0)
+				{
+					m_dCurtemp = 1.0 / m_dCurtemp;
+					wsprintf(buffer, _T("%16.14f"), m_dCurtemp);
 					for (i =  wcslen(buffer); i > 0; i --)
 						if (buffer[i-1] != '0')break;
 						if (buffer[i-1] == '.')
@@ -478,79 +459,15 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 						}
 						memcpy(buffer1, buffer, i*2);
 						buffer1[i] = '\0';
-						m_DialNumEdit.SetWindowText(buffer1);
-						
-						m_dCurtemp = WTOF(buffer1);				//wwf
-						
-						m_keyvalue = MR_KEYV;
+					m_DialNumEdit.SetWindowText(buffer1);
 				}
-				break;
-
-			//把存储器中的数值清除并设为零
-			case MC_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
+				else
 				{
-					m_number1 = 0;
-					m_keyvalue = MC_KEYV;
+					m_DialNumEdit.SetWindowText(L"Error");
+					m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
 				}
-				break;
-
-			//当前数字取根号值
-			case GENHAO_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
-				{
-					if(m_dCurtemp >= 0)
-					{
-						m_dCurtemp = sqrt(m_dCurtemp) ;		//lxz 2004.9.5			
-						wsprintf(buffer, _T("%16.14f"),m_dCurtemp);				
-						for (i =  wcslen(buffer); i > 0; i --)
-							if (buffer[i-1] != '0')break;
-							if (buffer[i-1] == '.')
-							{
-								i = i - 1;
-							}
-							memcpy(buffer1, buffer, i*2);
-							buffer1[i] = '\0';
-							m_DialNumEdit.SetWindowText(buffer1);
-							
-					}
-					else 
-					{
-						//m_DialNumEdit.SetWindowText("函数输入无效!");
-						m_DialNumEdit.SetWindowText(L"Error");
-						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-						m_dCurtemp = 0;
-					}
-					m_keyvalue = GENHAO_KEYV;
-				}
-				break;
-
-			//当前数字取倒数值
-			case DAOSHU_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
-				{
-					if (m_dCurtemp != 0)
-					{
-						m_dCurtemp = 1.0 / m_dCurtemp;
-						wsprintf(buffer, _T("%16.14f"), m_dCurtemp);
-						for (i =  wcslen(buffer); i > 0; i --)
-							if (buffer[i-1] != '0')break;
-							if (buffer[i-1] == '.')
-							{
-								i = i - 1;
-							}
-							memcpy(buffer1, buffer, i*2);
-							buffer1[i] = '\0';
-							m_DialNumEdit.SetWindowText(buffer1);
-					}
-					else
-					{
-						m_DialNumEdit.SetWindowText(L"Error");
-						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-					}
 					
-					m_keyvalue = DAOSHU_KEYV;
-				}
+				m_keyvalue = DAOSHU_KEYV;
 				break;
 
 			//当前数字取负号
@@ -565,7 +482,7 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 					}
 					memcpy(buffer1, buffer, i*2);
 					buffer1[i] = '\0';	
-				m_edtTemp->SetWindowText(buffer1);
+				m_DialNumEdit.SetWindowText(buffer1);
 
 				if (m_keyvalue != DAOSHU_KEYV && m_keyvalue != GENHAO_KEYV)
 				{
@@ -577,35 +494,30 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 
 			//按百分比的形式显示乘积结果
 			case BAIFENHAO_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
-				{
-					m_dCurtemp = m_dCurtemp / 100;
-					//sprintf_(buffer, "%.12f", dtemp1);				
-					wsprintf(buffer, _T("%16.14f"),m_dCurtemp);				
-					for (i =  wcslen(buffer); i > 0; i --)
-						if (buffer[i-1] != '0')break;
-						if (buffer[i-1] == '.')
-						{
-							i = i - 1;
-						}
-						memcpy(buffer1, buffer, i*2);
-						buffer1[i] = '\0';
-						m_DialNumEdit.SetWindowText(buffer1);
-						m_keyvalue = BAIFENHAO_KEYV;
-				}
+				m_dCurtemp = m_dCurtemp / 100;
+				//sprintf_(buffer, "%.12f", dtemp1);				
+				wsprintf(buffer, _T("%16.14f"),m_dCurtemp);				
+				for (i =  wcslen(buffer); i > 0; i --)
+					if (buffer[i-1] != '0')break;
+					if (buffer[i-1] == '.')
+					{
+						i = i - 1;
+					}
+					memcpy(buffer1, buffer, i*2);
+					buffer1[i] = '\0';
+				m_DialNumEdit.SetWindowText(buffer1);
+				m_keyvalue = BAIFENHAO_KEYV;
 				break;
 
 			//除号
-			case CHU_KEYV :	
-				if(*m_edtTemp == m_DialNumEdit)
+			case CHU_KEYV :				
+				dtemp1 = m_dCurtemp;
+				if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
 				{
-					dtemp1 = m_dCurtemp;
-					if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
+					if (m_keyvalue2 == m_keynull)
 					{
-						if (m_keyvalue2 == m_keynull)
+						switch ( m_keyvalue1 )
 						{
-							switch ( m_keyvalue1 )
-							{
 							case CHU_KEYV :
 								dtemp1 = m_dtemp0 / dtemp1;
 								break;
@@ -618,64 +530,61 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 							case JIA_KEYV :
 								dtemp1 = m_dtemp0 + dtemp1;
 								break;
-							}
-						}else if (m_keyvalue2 == DENG_KEYV)			//wwf
-						{
-							dtemp1 = m_dtemp0;
 						}
-						//2005.1.24-zmy
-						if ( dtemp1 >= 99999999999999999 )
-						{
-							m_DialNumEdit.SetWindowText(L"Error");
-							m_dCurtemp = 0;
-							m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-							m_dtemp0 = 0;
-							m_keyvalue = m_keynull;
-							m_keyvalue1 = m_keynull;
-							m_keyvalue2 = m_keynull;
-							return;
-						}
-						//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
-						
-						m_dCurtemp = dtemp1;
-						wsprintf(buffer, _T("%16.14f"),dtemp1);
-						for (i =  wcslen(buffer); i > 0; i --)
-							if (buffer[i-1] != '0')break;
-							if (buffer[i-1] == '.')
-							{
-								i = i - 1;
-							}
-							memcpy(buffer1, buffer, i*2);
-							buffer1[i] = '\0';
-							m_DialNumEdit.SetWindowText(buffer1);
-					}
-					else if (m_keyvalue2 == m_keynull)
+					}else if (m_keyvalue2 == DENG_KEYV)			//wwf
 					{
-						//strcpy(buffer1, "除数不能为零");
-						m_DialNumEdit.SetWindowText(L"Error");
-						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-						m_dCurtemp = 0;
+						dtemp1 = m_dtemp0;
 					}
+					//2005.1.24-zmy
+					if ( dtemp1 >= 99999999999999999 )
+					{
+						m_DialNumEdit.SetWindowText(L"Error");
+						m_dCurtemp = 0;
+						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+						m_dtemp0 = 0;
+						m_keyvalue = m_keynull;
+						m_keyvalue1 = m_keynull;
+						m_keyvalue2 = m_keynull;
+						return;
+					}
+					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
-					m_dtemp0 = dtemp1;
-					m_dtemp1 = dtemp1;
-					m_keyvalue = CHU_KEYV;
-					m_keyvalue2 = CHU_KEYV;
-					m_keyvalue3 = CHU_KEYV;
+					m_dCurtemp = dtemp1;
+					wsprintf(buffer, _T("%16.14f"),dtemp1);
+					for (i =  wcslen(buffer); i > 0; i --)
+						if (buffer[i-1] != '0')break;
+					if (buffer[i-1] == '.')
+					{
+						i = i - 1;
+					}
+					memcpy(buffer1, buffer, i*2);
+					buffer1[i] = '\0';
+					m_DialNumEdit.SetWindowText(buffer1);
 				}
+				else if (m_keyvalue2 == m_keynull)
+				{
+					//strcpy(buffer1, "除数不能为零");
+					m_DialNumEdit.SetWindowText(L"Error");
+					m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+					m_dCurtemp = 0;
+				}
+				
+				m_dtemp0 = dtemp1;
+				m_dtemp1 = dtemp1;
+				m_keyvalue = CHU_KEYV;
+				m_keyvalue2 = CHU_KEYV;
+				m_keyvalue3 = CHU_KEYV;
 				break;
 
 			//乘号
 			case CHENG_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
+				dtemp1 = m_dCurtemp;
+				if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
 				{
-					dtemp1 = m_dCurtemp;
-					if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
-					{
-						if (m_keyvalue2 == m_keynull)
-						{					
-							switch ( m_keyvalue1 )
-							{
+					if (m_keyvalue2 == m_keynull)
+					{					
+						switch ( m_keyvalue1 )
+						{
 							case CHU_KEYV :
 								dtemp1 = m_dtemp0 / dtemp1;
 								break;
@@ -688,65 +597,62 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 							case JIA_KEYV :
 								dtemp1 = m_dtemp0 + dtemp1;
 								break;
-							}
-						}else if (m_keyvalue2 == DENG_KEYV)			//wwf
-						{
-							dtemp1 = m_dtemp0;
 						}
-						
-						//2005.1.24-zmy
-						if ( dtemp1 >= 99999999999999999 )
-						{
-							m_DialNumEdit.SetWindowText(L"Error");
-							m_dCurtemp = 0;
-							m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-							m_dtemp0 = 0;
-							m_keyvalue = m_keynull;
-							m_keyvalue1 = m_keynull;
-							m_keyvalue2 = m_keynull;
-							return;
-						}
-						//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
-						
-						m_dCurtemp = dtemp1;
-						wsprintf(buffer, _T("%16.14f"),dtemp1);
-						for (i =  wcslen(buffer); i > 0; i --)
-							if (buffer[i-1] != '0')break;
-							if(buffer[i-1] == '.')
-							{
-								i = i - 1;
-							}
-							memcpy(buffer1, buffer, i*2);
-							buffer1[i] = '\0';
-							m_DialNumEdit.SetWindowText(buffer1);		
-					}
-					else if (m_keyvalue2 == m_keynull)
+					}else if (m_keyvalue2 == DENG_KEYV)			//wwf
 					{
-						//strcpy(buffer1, "除数不能为零");
-						m_DialNumEdit.SetWindowText(L"Error");		
-						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-						m_dCurtemp = 0;
+						dtemp1 = m_dtemp0;
 					}
+
+					//2005.1.24-zmy
+					if ( dtemp1 >= 99999999999999999 )
+					{
+						m_DialNumEdit.SetWindowText(L"Error");
+						m_dCurtemp = 0;
+						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+						m_dtemp0 = 0;
+						m_keyvalue = m_keynull;
+						m_keyvalue1 = m_keynull;
+						m_keyvalue2 = m_keynull;
+						return;
+					}
+					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
-					m_dtemp0 = dtemp1;
-					m_dtemp1 = dtemp1;
-					m_keyvalue = CHENG_KEYV;
-					m_keyvalue2 = CHENG_KEYV;
-					m_keyvalue3 = CHENG_KEYV;
+					m_dCurtemp = dtemp1;
+					wsprintf(buffer, _T("%16.14f"),dtemp1);
+					for (i =  wcslen(buffer); i > 0; i --)
+						if (buffer[i-1] != '0')break;
+					if(buffer[i-1] == '.')
+					{
+						i = i - 1;
+					}
+					memcpy(buffer1, buffer, i*2);
+					buffer1[i] = '\0';
+					m_DialNumEdit.SetWindowText(buffer1);		
 				}
+				else if (m_keyvalue2 == m_keynull)
+				{
+					//strcpy(buffer1, "除数不能为零");
+					m_DialNumEdit.SetWindowText(L"Error");		
+					m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+					m_dCurtemp = 0;
+				}
+				
+				m_dtemp0 = dtemp1;
+				m_dtemp1 = dtemp1;
+				m_keyvalue = CHENG_KEYV;
+				m_keyvalue2 = CHENG_KEYV;
+				m_keyvalue3 = CHENG_KEYV;
 				break;
 
 			//减号
 			case JIAN_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
-				{
 					dtemp1 = m_dCurtemp;
-					if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
+				if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
+				{
+					if (m_keyvalue2 == m_keynull)
 					{
-						if (m_keyvalue2 == m_keynull)
+						switch ( m_keyvalue1 )
 						{
-							switch ( m_keyvalue1 )
-							{
 							case CHU_KEYV :
 								dtemp1 = m_dtemp0 / dtemp1;
 								break;
@@ -759,64 +665,61 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 							case JIA_KEYV :
 								dtemp1 = m_dtemp0 + dtemp1;
 								break;
-							}
-						}else if (m_keyvalue2 == DENG_KEYV)			//wwf
-						{
-							dtemp1 = m_dtemp0;
 						}
-						//2005.1.24-zmy
-						if ( dtemp1 >= 99999999999999999 )
-						{
-							m_DialNumEdit.SetWindowText(L"Error");
-							m_dCurtemp = 0;
-							m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-							m_dtemp0 = 0;
-							m_keyvalue = m_keynull;
-							m_keyvalue1 = m_keynull;
-							m_keyvalue2 = m_keynull;
-							return;
-						}
-						//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
-						
-						m_dCurtemp = dtemp1;
-						wsprintf(buffer, _T("%16.14f"),dtemp1);
-						for (i =  wcslen(buffer); i > 0; i --)
-							if (buffer[i-1] != '0')break;
-							if (buffer[i-1] == '.')
-							{
-								i = i - 1;
-							}
-							memcpy(buffer1, buffer, i*2);
-							buffer1[i] = '\0';
-							m_DialNumEdit.SetWindowText(buffer1);	
-					}
-					else if (m_keyvalue2 == m_keynull)
+					}else if (m_keyvalue2 == DENG_KEYV)			//wwf
 					{
-						//strcpy(buffer1, "除数不能为零");					
-						m_DialNumEdit.SetWindowText(L"Error");		
-						m_IsError = TRUE;	//2005.5.19 zmy 设置错误的标志
-						m_dCurtemp = 0;
+						dtemp1 = m_dtemp0;
 					}
+					//2005.1.24-zmy
+					if ( dtemp1 >= 99999999999999999 )
+					{
+						m_DialNumEdit.SetWindowText(L"Error");
+						m_dCurtemp = 0;
+						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+						m_dtemp0 = 0;
+						m_keyvalue = m_keynull;
+						m_keyvalue1 = m_keynull;
+						m_keyvalue2 = m_keynull;
+						return;
+					}
+					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
-					m_dtemp0 = dtemp1;
-					m_dtemp1 = dtemp1;
-					m_keyvalue = JIAN_KEYV;
-					m_keyvalue2 = JIAN_KEYV;
-					m_keyvalue3 = JIAN_KEYV;
+					m_dCurtemp = dtemp1;
+					wsprintf(buffer, _T("%16.14f"),dtemp1);
+					for (i =  wcslen(buffer); i > 0; i --)
+						if (buffer[i-1] != '0')break;
+					if (buffer[i-1] == '.')
+					{
+						i = i - 1;
+					}
+					memcpy(buffer1, buffer, i*2);
+					buffer1[i] = '\0';
+					m_DialNumEdit.SetWindowText(buffer1);	
 				}
+				else if (m_keyvalue2 == m_keynull)
+				{
+					//strcpy(buffer1, "除数不能为零");					
+					m_DialNumEdit.SetWindowText(L"Error");		
+					m_IsError = TRUE;	//2005.5.19 zmy 设置错误的标志
+					m_dCurtemp = 0;
+				}
+				
+				m_dtemp0 = dtemp1;
+				m_dtemp1 = dtemp1;
+				m_keyvalue = JIAN_KEYV;
+				m_keyvalue2 = JIAN_KEYV;
+				m_keyvalue3 = JIAN_KEYV;
 				break;
 
 			//加号
 			case JIA_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
+				dtemp1 = m_dCurtemp;
+				if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
 				{
-					dtemp1 = m_dCurtemp;
-					if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
+					if (m_keyvalue2 == m_keynull)
 					{
-						if (m_keyvalue2 == m_keynull)
+						switch ( m_keyvalue1 )
 						{
-							switch ( m_keyvalue1 )
-							{
 							case CHU_KEYV :
 								dtemp1 = m_dtemp0 / dtemp1;
 								break;
@@ -829,172 +732,169 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 							case JIA_KEYV :
 								dtemp1 = m_dtemp0 + dtemp1;
 								break;
-							}
-						}else if (m_keyvalue2 == DENG_KEYV)			//wwf
-						{
-							dtemp1 = m_dtemp0;
 						}
-						//2005.1.24-zmy
-						if ( dtemp1 >= 99999999999999999 )
-						{
-							m_DialNumEdit.SetWindowText(L"Error");
-							m_dCurtemp = 0;
-							m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-							m_dtemp0 = 0;
-							m_keyvalue = m_keynull;
-							m_keyvalue1 = m_keynull;
-							m_keyvalue2 = m_keynull;
-							return;
-						}
-						//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
-						
-						m_dCurtemp = dtemp1;
-						wsprintf(buffer, _T("%16.14f"),dtemp1);
-						for (i =  wcslen(buffer); i > 0; i --)
-							if (buffer[i-1] != '0')break;
-							if (buffer[i-1] == '.')
-							{
-								i = i - 1;
-							}
-							memcpy(buffer1, buffer, i*2);
-							buffer1[i] = '\0';
-							m_DialNumEdit.SetWindowText(buffer1);	
-							
-					}
-					else if (m_keyvalue2 == m_keynull)
+					}else if (m_keyvalue2 == DENG_KEYV)			//wwf
 					{
-						//strcpy(buffer1, "除数不能为零");
-						m_DialNumEdit.SetWindowText(L"Error");		
-						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-						m_dCurtemp = 0;
+						dtemp1 = m_dtemp0;
 					}
+					//2005.1.24-zmy
+					if ( dtemp1 >= 99999999999999999 )
+					{
+						m_DialNumEdit.SetWindowText(L"Error");
+						m_dCurtemp = 0;
+						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+						m_dtemp0 = 0;
+						m_keyvalue = m_keynull;
+						m_keyvalue1 = m_keynull;
+						m_keyvalue2 = m_keynull;
+						return;
+					}
+					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
 					
-					m_dtemp0 = dtemp1;
-					m_dtemp1 = dtemp1;
-					m_keyvalue = JIA_KEYV;
-					m_keyvalue2 = JIA_KEYV;
-					m_keyvalue3 = JIA_KEYV;
+					m_dCurtemp = dtemp1;
+					wsprintf(buffer, _T("%16.14f"),dtemp1);
+					for (i =  wcslen(buffer); i > 0; i --)
+						if (buffer[i-1] != '0')break;
+					if (buffer[i-1] == '.')
+					{
+						i = i - 1;
+					}
+					memcpy(buffer1, buffer, i*2);
+					buffer1[i] = '\0';
+					m_DialNumEdit.SetWindowText(buffer1);	
+
 				}
+				else if (m_keyvalue2 == m_keynull)
+				{
+					//strcpy(buffer1, "除数不能为零");
+					m_DialNumEdit.SetWindowText(L"Error");		
+					m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+					m_dCurtemp = 0;
+				}
+				
+				m_dtemp0 = dtemp1;
+				m_dtemp1 = dtemp1;
+				m_keyvalue = JIA_KEYV;
+				m_keyvalue2 = JIA_KEYV;
+				m_keyvalue3 = JIA_KEYV;
 				break;
 
 			//等号
 			case DENG_KEYV :
-				if(*m_edtTemp == m_DialNumEdit)
+			dtemp1 = m_dCurtemp;
+				if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
 				{
-					dtemp1 = m_dCurtemp;
-					if ( ( m_keyvalue1 != CHU_KEYV ) || ( dtemp1 != 0 ) || ( m_keyvalue2 != m_keynull ) )
+					switch ( m_keyvalue2 )	
 					{
-						switch ( m_keyvalue2 )	
-						{
-							//数字与等号之间无其它运算符时
+						//数字与等号之间无其它运算符时
 						case m_keynull :
 							switch ( m_keyvalue1 )
 							{
-							case m_keynull :
-								dtemp1 = dtemp1;
-								break;
-							case CHU_KEYV :
-								dtemp1 = m_dtemp0 / dtemp1;
-								break;
-							case CHENG_KEYV :
-								dtemp1 = m_dtemp0 * dtemp1;
-								break;
-							case JIAN_KEYV :
-								dtemp1 = m_dtemp0 - dtemp1;
-								break;
-							case JIA_KEYV :
-								dtemp1 = m_dtemp0 + dtemp1;
-								break;
-							}				
-							break;
-							//等号前有运算符且为等时
-							case DENG_KEYV :
-								switch ( m_keyvalue3 )
-								{
-								case m_keynull :						
-									switch ( m_keyvalue1 )
-									{
-									case m_keynull :
-										dtemp1 = dtemp1;
-										break;
-									case CHU_KEYV :
-										dtemp1 = m_dtemp2;
-										dtemp1 = m_dtemp0 / dtemp1;
-										break;
-									case CHENG_KEYV :
-										dtemp1 = m_dtemp2;
-										dtemp1 = m_dtemp0 * dtemp1;
-										break;
-									case JIAN_KEYV :
-										dtemp1 = m_dtemp2;
-										dtemp1 = m_dtemp0 - dtemp1;
-										break;
-									case JIA_KEYV :
-										dtemp1 = m_dtemp2;
-										dtemp1 = m_dtemp0 + dtemp1;										
-										break;
-									}
+								case m_keynull :
+									dtemp1 = dtemp1;
 									break;
-									case CHU_KEYV :
-										dtemp1 = m_dtemp1;
-										dtemp1 = m_dtemp0 / dtemp1;
-										break;
-									case CHENG_KEYV :
-										dtemp1 = m_dtemp1;
-										dtemp1 = m_dtemp0 * dtemp1;
-										break;
-									case JIAN_KEYV :
-										dtemp1 = m_dtemp1;
-										dtemp1 = m_dtemp0 - dtemp1;
-										break;
-									case JIA_KEYV :
-										dtemp1 = m_dtemp1;
-										dtemp1 = m_dtemp0 + dtemp1;
-										break;		
-								}
-								break;
-								//等号前有运算符且为除时
 								case CHU_KEYV :
 									dtemp1 = m_dtemp0 / dtemp1;
 									break;
-									//等号前有运算符且为乘时
 								case CHENG_KEYV :
 									dtemp1 = m_dtemp0 * dtemp1;
 									break;
-									//等号前有运算符且为减时
 								case JIAN_KEYV :
 									dtemp1 = m_dtemp0 - dtemp1;
 									break;
-									//等号前有运算符且为加等时
 								case JIA_KEYV :
 									dtemp1 = m_dtemp0 + dtemp1;
 									break;
-						}
-						//2005.1.24-zmy
-						if ( dtemp1 >= 99999999999999999 )
-						{
-							m_DialNumEdit.SetWindowText(L"Error");
-							m_dCurtemp = 0;
-							m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
-							m_dtemp0 = 0;
-							m_keyvalue = m_keynull;
-							m_keyvalue1 = m_keynull;
-							m_keyvalue2 = m_keynull;
-							return;
-						}
-						//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
-						
-						m_dCurtemp = dtemp1;
-						wsprintf(buffer, _T("%16.14f"), dtemp1);
-						for (i =  wcslen(buffer); i > 0; i --)
-							if (buffer[i-1] != '0') break;
-							if (buffer[i-1] == '.')
+							}				
+							break;
+						//等号前有运算符且为等时
+						case DENG_KEYV :
+							switch ( m_keyvalue3 )
 							{
-								i = i - 1;
+								case m_keynull :						
+									switch ( m_keyvalue1 )
+									{
+										case m_keynull :
+											dtemp1 = dtemp1;
+											break;
+										case CHU_KEYV :
+											dtemp1 = m_dtemp2;
+											dtemp1 = m_dtemp0 / dtemp1;
+											break;
+										case CHENG_KEYV :
+											dtemp1 = m_dtemp2;
+											dtemp1 = m_dtemp0 * dtemp1;
+											break;
+										case JIAN_KEYV :
+											dtemp1 = m_dtemp2;
+											dtemp1 = m_dtemp0 - dtemp1;
+											break;
+										case JIA_KEYV :
+											dtemp1 = m_dtemp2;
+											dtemp1 = m_dtemp0 + dtemp1;										
+											break;
+									}
+									break;
+								case CHU_KEYV :
+									dtemp1 = m_dtemp1;
+									dtemp1 = m_dtemp0 / dtemp1;
+									break;
+								case CHENG_KEYV :
+									dtemp1 = m_dtemp1;
+									dtemp1 = m_dtemp0 * dtemp1;
+									break;
+								case JIAN_KEYV :
+									dtemp1 = m_dtemp1;
+									dtemp1 = m_dtemp0 - dtemp1;
+									break;
+								case JIA_KEYV :
+									dtemp1 = m_dtemp1;
+									dtemp1 = m_dtemp0 + dtemp1;
+									break;		
 							}
-							memcpy(buffer1, buffer, i*2);
-							buffer1[i] = '\0';
-							m_DialNumEdit.SetWindowText(buffer1);								
+							break;
+						//等号前有运算符且为除时
+						case CHU_KEYV :
+							dtemp1 = m_dtemp0 / dtemp1;
+							break;
+						//等号前有运算符且为乘时
+						case CHENG_KEYV :
+							dtemp1 = m_dtemp0 * dtemp1;
+							break;
+						//等号前有运算符且为减时
+						case JIAN_KEYV :
+							dtemp1 = m_dtemp0 - dtemp1;
+							break;
+						//等号前有运算符且为加等时
+						case JIA_KEYV :
+							dtemp1 = m_dtemp0 + dtemp1;
+							break;
+					}
+					//2005.1.24-zmy
+					if ( dtemp1 >= 99999999999999999 )
+					{
+						m_DialNumEdit.SetWindowText(L"Error");
+						m_dCurtemp = 0;
+						m_IsError = TRUE;//2005.5.19 zmy 设置错误的标志
+						m_dtemp0 = 0;
+						m_keyvalue = m_keynull;
+						m_keyvalue1 = m_keynull;
+						m_keyvalue2 = m_keynull;
+						return;
+					}
+					//if ( dtemp1 >= 999999999 ) dtemp1 = 999999999;
+					
+					m_dCurtemp = dtemp1;
+					wsprintf(buffer, _T("%16.14f"), dtemp1);
+					for (i =  wcslen(buffer); i > 0; i --)
+						if (buffer[i-1] != '0') break;
+					if (buffer[i-1] == '.')
+					{
+						i = i - 1;
+					}
+					memcpy(buffer1, buffer, i*2);
+					buffer1[i] = '\0';
+					m_DialNumEdit.SetWindowText(buffer1);								
 				}
 				else if (m_keyvalue2 == m_keynull)
 				{
@@ -1007,7 +907,6 @@ void CCalculaterDlg::OnSoftKey(WPARAM w, LPARAM l)
 				m_dtemp0 = dtemp1 ;
 				m_keyvalue = DENG_KEYV;
 				m_keyvalue2 = DENG_KEYV;
-				}
 				break;
 		}	
 	}
@@ -1224,7 +1123,7 @@ void CCalculaterDlg::OnButtonEquel(int type)
 		}
 		else if(1 == sel1)
 		{
-			times1 = 0.001;
+			times1 = 1/1000;
 		}
 		else if(2 == sel1)
 		{
@@ -1245,7 +1144,7 @@ void CCalculaterDlg::OnButtonEquel(int type)
 		}
 		else if(1 == sel2)
 		{
-			times2 = 0.001;
+			times2 = 1/1000;
 		}
 		else if(2 == sel2)
 		{
@@ -1509,7 +1408,6 @@ void CCalculaterDlg::OnTimer(UINT nIDEvent)
 	if(1 == nIDEvent)
 	{
 		ShowCtrl();
-		KillTimer(nIDEvent);
 	}
 }
 
