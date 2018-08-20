@@ -100,9 +100,11 @@ namespace Telephone
 		unsigned char State_(void);
 		bool Hangup_(void);
 		bool Answer_(void);
-		//bool Redial_();
+		bool Redial_();
 		bool Incoming_(TEL_NUM* num);
 		unsigned int SignalQuality_(void);
+		unsigned int PhoneNettype_(void);
+		
 		//回调
 		void Incoming(char* num);
 		void Ring(void);
@@ -120,19 +122,21 @@ namespace Telephone
 		void OppHangup(void);
 		void Odb(void);
 		void SignalQuality(int level);
-
+		void PhoneNettype(int type);
+		
 	public:
 		//外部调用
 		bool Dial(char* number);
 		bool Hangup(void);
 		bool Answer(void);
-		//bool Redial(void);
+		bool Redial(void);
 		bool SubDial(char number);
 		bool Volume(unsigned int level);
 		bool Mute(bool isMute);
 		bool AutoAnswer(unsigned int second);
 		bool HandFree(bool isHandFree);
 		std::string GetNumber(void);
+		void PhoneDialTone(BOOL isOn, char *tone);
 		
 		//拨打电话
 		void DialNumber(char* telcode, int dial_tyle = 0);   //int dial_type 0 免提， 1 摘机

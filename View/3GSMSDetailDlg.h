@@ -9,6 +9,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // C3GSMSDetailDlg dialog
+#include "CardSelectDlg.h"
 #include "../control/MJPGStatic.h"
 #include "../Logical/LunarderDate.h"
 #include "../control/CEStatic.h"
@@ -54,6 +55,9 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
+
+private :
+	CCardSelectDlg	m_dlgCardSelect;	
 
 // Implementation
 protected:

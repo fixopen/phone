@@ -22,7 +22,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CMJPGStatic
 extern void DrawImage(LPCTSTR szFileImage, CDC *pdc, CRect rect, BOOL isOffset = FALSE);
-extern void DrawImage_HDC(LPCTSTR szFileImage, HDC pdc, CRect rect, BOOL isOffset = FALSE);
+extern void DrawImage_HDC(LPCTSTR szFileImage, HDC pdc, CRect rect, BOOL isOffset = FALSE, VOID *lpBits = NULL);
 //globle data
 CString gLangName[] = {".\\adv\\mjpg\\中文\\playcfg.xml", ".\\adv\\mjpg\\英文\\playcfg.xml", ".\\adv\\mjpg\\日文\\playcfg.xml", ".\\adv\\mjpg\\韩文\\playcfg.xml"};
 CString gAdvPlayList = ".\\adv\\video\\advplaylist.xml";
@@ -762,13 +762,51 @@ void CMJPGStatic ::ReleaseMemDC()
 }
 */
 
-void CMJPGStatic ::CreateMemDC_HDC() 
+void CMJPGStatic ::CreateMemDC_HDC(CString sFilename) 
 {
+	//   20090723
 	HDC pdc = ::GetDC(m_hWnd);
 	m_hMemDC = ::CreateCompatibleDC(pdc); 
-	m_hBmp = ::CreateCompatibleBitmap(pdc, m_ClientRect.Width(), m_ClientRect.Height());   
+	m_plpBits = NULL;
+	CFile   file;   
+	if( file.Open(sFilename,  CFile::modeRead ) )   
+	{     
+		BITMAPFILEHEADER   bfhHeader;   
+		file.Read(&bfhHeader,sizeof(BITMAPFILEHEADER));   
+		if(bfhHeader.bfType ==((WORD)   ('M'<<8)|'B'))   
+		{   		 
+			if(bfhHeader.bfSize == file.GetLength())     
+			{   
+				UINT   uBmpInfoLen=(UINT)   bfhHeader.bfOffBits-sizeof(BITMAPFILEHEADER);   
+				LPBITMAPINFO   lpBitmap= (LPBITMAPINFO)   new   BYTE[uBmpInfoLen];  
+				
+				file.Read((LPVOID)   lpBitmap,uBmpInfoLen);   
+				if((* (LPDWORD)(lpBitmap))==sizeof(BITMAPINFOHEADER))     
+				{   
+					DWORD   dwBitlen=bfhHeader.bfSize   -   bfhHeader.bfOffBits;     
+					lpBitmap->bmiHeader.biHeight = m_ClientRect.Height();
+					lpBitmap->bmiHeader.biWidth = m_ClientRect.Width();
+					
+					m_hBmp = ::CreateDIBSection(pdc, lpBitmap, DIB_RGB_COLORS, &m_plpBits, NULL, 0);
+					if(m_plpBits)
+					{
+						m_hOldBmp = (HBITMAP)::SelectObject(m_hMemDC, m_hBmp);   
+						::ReleaseDC(m_hWnd, pdc);
+						file.Close();
+						delete []lpBitmap; 
+						return;
+					}
+				}
+				else
+					delete []lpBitmap;    //20090216 test
+			}
+		}	
+		file.Close();
+	}
+	
+	m_hBmp = ::CreateCompatibleBitmap(pdc, m_ClientRect.Width(), m_ClientRect.Height());
 	m_hOldBmp = (HBITMAP)::SelectObject(m_hMemDC, m_hBmp);   
-	::ReleaseDC(m_hWnd, pdc);
+	::ReleaseDC(m_hWnd, pdc);	
 }
 
 void CMJPGStatic ::ReleaseMemDC_HDC()  
@@ -1260,6 +1298,21 @@ BOOL CMJPGStatic:: SetUnitIsShow(int UnitNO, BOOL isShow, BOOL bRefresh, BOOL is
 				else
 					DrawUnitStatus_HDC(&m_currentMJPGList->items[i]->unitparam, m_currentMJPGList->items[i]->unitparam.m_bIsDownStatus);
 			}
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+BOOL CMJPGStatic::SetUnitFont(int UnitNO, TEXTSIZE nFont)
+{
+	if(!m_currentMJPGList)
+		return FALSE;
+	for(int i = 0; i < m_currentMJPGList->items.size(); i++)
+	{
+		if(m_currentMJPGList->items[i]->unitparam.m_nSiererNO == UnitNO)
+		{
+			m_currentMJPGList->items[i]->unitparam.m_FontSize = nFont;		
 			return TRUE;
 		}
 	}
@@ -2019,12 +2072,12 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 	else
 		GetParent()->SendMessage(WM_MJPGSHOWHALF, 0);
 		*/
-
-	CreateMemDC_HDC();
+	DWORD  s = GetTickCount(); 
 	CRect rt1 = m_currentMJPGList->m_Rect;
 	SetMJPGRect(rt1);
 //	MoveWindow(m_rtMJPG, FALSE);
 	m_ClientRect = CRect(0, 0, rt1.Width(), rt1.Height());
+	CreateMemDC_HDC(ToFileDir(m_currentMJPGList->bgfilename));
 	HDC pdc = ::GetDC(m_hWnd);
 
 	if(m_currentMJPGList)
@@ -2040,28 +2093,33 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 		CBitmap *oldbmp = memDC.SelectObject(&bmp);   
 		*/
 		
-		DWORD  s = GetTickCount(); 
+		
 		DWORD   dwStart   =   GetTickCount(); 	
 		if(m_currentMJPGList->bgfilename != "")
-			DrawImage_HDC(ToFileDir(m_currentMJPGList->bgfilename), m_hMemDC, m_ClientRect);
+			DrawImage_HDC(ToFileDir(m_currentMJPGList->bgfilename), m_hMemDC, m_ClientRect, FALSE, m_plpBits);
 		else
 		{
 			CBrush bBr = RGB(255, 255, 255); 
 			::FillRect(m_hMemDC, &m_ClientRect, (HBRUSH)bBr.m_hObject);
 		}
 		DWORD offset = GetTickCount() - dwStart;   
-		//TRACE(L"BG %d\n", offset);
+		TRACE(L"BG %d\n", offset);
 		
+		dwStart   =   GetTickCount();
 		for (int i = 0; i < m_currentMJPGList->items.size(); ++i)
 		{
-			DWORD  s = GetTickCount(); 
-			DWORD   dwStart   =   GetTickCount(); 
+			DWORD   dwStart1   =   GetTickCount(); 
 			MJPGItem *item = m_currentMJPGList->items[i];
 			DrawUnit_HDC(&item->unitparam, m_hMemDC);
-			DWORD offset = GetTickCount() - dwStart;   
-			//TRACE(L"Unit %d\n", offset);
+			DWORD offset1 = GetTickCount() - dwStart1;   
+			TRACE(L"Unit%d %d\n", i, offset1);
 		}
+		offset = GetTickCount() - dwStart;   
+		TRACE(L"Unit %d\n", offset);
+		dwStart   =   GetTickCount();
 		::BitBlt(pdc, m_ClientRect.left, m_ClientRect.top, m_ClientRect.Width(), m_ClientRect.Height(), m_hMemDC, 0, 0, SRCCOPY);
+		offset = GetTickCount() - dwStart;   
+		TRACE(L"Bitblt %d\n", offset);
 		//移到全局中
 		// 		memDC.SelectObject(&oldbmp);
 		// 		memDC.DeleteDC();   
@@ -2108,6 +2166,8 @@ void CMJPGStatic::DrawMJPGPage_HDC(CString sFile)
 	*/
 	::ReleaseDC(m_hWnd, pdc);
 	ReleaseMemDC_HDC();
+	DWORD offset = GetTickCount() - s;   
+	TRACE(L"ALL ok %d\n", offset);
 	/*
 	if(m_currentMJPGList)
 	{

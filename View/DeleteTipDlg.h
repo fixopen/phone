@@ -22,6 +22,7 @@ class CDeleteTipDlg : public CCEDialog
 // Construction
 public:
 	CDeleteTipDlg(CWnd* pParent = NULL);   // standard constructor
+	int       type;
 
 // Dialog Data
 	//{{AFX_DATA(CDeleteTipDlg)
@@ -69,7 +70,7 @@ public:
 	void SetTipModel(BOOL b);
 	void SetPassword(CString password);
 	void SetDelTip(CString tips);
-	void SetTitle(CString title, BOOL isTime = TRUE);
+	void SetTitle(CString title, int isTime = 5000);
 };
 
 //{{AFX_INSERT_LOCATION}}

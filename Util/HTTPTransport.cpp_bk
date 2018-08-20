@@ -98,10 +98,6 @@ namespace Util {
     , thread_(new Transport(this))*/ 
 	{
 		wsprintf(apn_proxyIP, L"");
-		bNewSocket = FALSE;
-		HTTPRequest = NULL;
-	//	pNewSocket = NULL;
-		pNewSocket.Create();
     }
 	
 	void HTTPTransport::SetAPN(DIAL_APN apn, char *proxy)
@@ -314,120 +310,9 @@ namespace Util {
 				actSize = 0;
 			}       
 		}
-		else if(bNewSocket)
-		{
-			actSize = pNewSocket.Receive(pBuf, length);
-		}
 		return actSize;
 	}
 
-	void HTTPTransport::Close()
-	{
-		if(HTTPRequest)
-		{
-			::InternetCloseHandle(HTTPRequest);
-			HTTPRequest = NULL;
-		}
-		if(bNewSocket)
-		{
-//			pNewSocket.Close();    //不主动断开
-//			delete pNewSocket;
-//			pNewSocket = NULL;
-			bNewSocket = FALSE;
-		}
-	}
-
-	DWORD HTTPTransport::Get_(std::wstring const& uriV) {
-		bNewSocket = FALSE;
-	//	if(pNewSocket == NULL)
-		{
-		//	pNewSocket = new CNewSocket();
-		//	pNewSocket.Create();
-		}
-		Dprintf("Get_ HTTPTransport 0\r\n");
-        DWORD error = 0;
-		URI uri(uriV);
-		CString sIp = apn_proxyIP;
-		int port = 80;
-        if(wcslen(apn_proxyIP) > 0)
-		{
-			CString s = apn_proxyIP;
-			int n = s.Find(L":");
-			if(n >= 0)
-			{
-				sIp = s.Mid(0, n);
-				CString sPort = s.Right(s.GetLength() - n - 1);
-				port = Util::StringOp::ToInt(sPort);
-			}
-		}
-		else
-		{
-			sIp = uri.host.c_str();
-			port = uri.port;
-		}
-		if(pNewSocket.Connect(sIp, port))
-		{
-			bNewSocket = TRUE;
-			char BUF_[1024] = {0};
-			char url_[256] = {0};
-			wcstombs(url_, uriV.c_str(), uriV.length());
-			sprintf(BUF_, "GET %s HTTP/1.1\r\nAccept:*/*\r\nAccept-Language:zh-cn\r\nUser-Agent:3GPHONE(0.9/;p)\r\nConnection:Keep-Alive\r\n\r\n", url_);
-			int ret = pNewSocket.Send(BUF_, strlen(BUF_));
-			if(ret != strlen(BUF_))
-				error = GetLastError();
-		}
-		else
-			error = GetLastError();	
-        return error;
-    }
-
-	DWORD HTTPTransport::Post_(std::wstring const& uriV) {
-		bNewSocket = FALSE;
-	//	if(pNewSocket == NULL)
-		{
-		//	pNewSocket = new CNewSocket();
-		//	pNewSocket.Create();
-		}
-		Dprintf("Post_ HTTPTransport 0\r\n");
-        DWORD error = 0;
-		URI uri(uriV);
-		CString sIp = apn_proxyIP;
-		int port = 80;
-        if(wcslen(apn_proxyIP) > 0)
-		{
-			CString s = apn_proxyIP;
-			int n = s.Find(L":");
-			if(n >= 0)
-			{
-				sIp = s.Mid(0, n);
-				CString sPort = s.Right(s.GetLength() - n -1);
-				port = Util::StringOp::ToInt(sPort);
-			}
-
-		}
-		else
-		{
-			sIp = uri.host.c_str();
-			port = uri.port;
-		}
-		if(pNewSocket.Connect(sIp, port))
-		{
-			bNewSocket = TRUE;
-			char BUF_[1024] = {0};
-			char url_[256] = {0};
-			wcstombs(url_, uriV.c_str(), uriV.length());
-			char *pBuf[3] = {"POST ", " HTTP/1.1\r\nContent-type: application/x-www-form-urlencoded\r\nAccept: text/plain,*/*\r\nUser-Agent: ceHttp\r\nContent-Length: ", "\r\n\r\n"};
-	
-			sprintf(BUF_, "%s%s%s%d%s", pBuf[0], url_, pBuf[1], nPostDataLenth, pBuf[2]);
-			strcat(BUF_, pPostData);
-			int ret = pNewSocket.Send(BUF_, strlen(BUF_));
-			if(ret != strlen(BUF_))
-				error = GetLastError();
-		}
-		else
-			error = GetLastError();	
-        return error;
-    }
 	/*
 	int HTTPTransport::Recv()
 	{

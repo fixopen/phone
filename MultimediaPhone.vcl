@@ -6,15 +6,13 @@
 --------------------Configuration: MultimediaPhone - Win32 (WCE MIPSII) Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPB9.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F2.tmp" with contents
 [
 /nologo /W3 /GX /Zi /Od /D "DEBUG" /D "MIPS" /D "_MIPS_" /D "R4000" /D "MIPSII" /D UNDER_CE=500 /D _WIN32_WCE=500 /D "WCE_PLATFORM_ingenicWeb" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /FR"MIPSIIDbg/" /Fp"MIPSIIDbg/MultimediaPhone.pch" /YX /Fo"MIPSIIDbg/" /Fd"MIPSIIDbg/" /QMmips2 /QMFPE /MC /c 
-"D:\lxz_work_dir\media_phone\3G_phone\MultimediaPhoneDlg.cpp"
-"D:\lxz_work_dir\media_phone\3G_phone\Data\MmsMessage.cpp"
-"D:\lxz_work_dir\media_phone\3G_phone\Util\SMSWarp.cpp"
+"D:\lxz_work_dir\media_phone\3g_phone\View\passworddlg.cpp"
 ]
-Creating command line "clmips.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPB9.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBA.tmp" with contents
+Creating command line "clmips.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F2.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F3.tmp" with contents
 [
 lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib jpeg.lib lib\\png.lib lib\\zlib.lib commctrl.lib Coredll.lib lib\\lamelib.lib lib\\mpglib.lib lib\\libshine.lib lib\\speex.lib lib\\chshw.lib /nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCRTStartup" /incremental:yes /pdb:"MIPSIIDbg/MultimediaPhone.pdb" /debug /out:"MIPSIIDbg/MultimediaPhone.exe" /libpath:"E:\My Documents\My Projects\MultimediaPhone\lib" /subsystem:windowsce,5.00 /MACHINE:MIPS 
 .\MIPSIIDbg\MultimediaPhone.obj
@@ -41,6 +39,8 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\User.obj
 .\MIPSIIDbg\3GDetailDlg.obj
 .\MIPSIIDbg\3GDetailReadDlg.obj
+.\MIPSIIDbg\3GHomeJoyDlg.obj
+.\MIPSIIDbg\3GHomePicDlg.obj
 .\MIPSIIDbg\3GSMSDetailDlg.obj
 .\MIPSIIDbg\3GSMSDlg.obj
 .\MIPSIIDbg\3GSMSListDlg.obj
@@ -49,6 +49,7 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\AlarmShowDlg.obj
 .\MIPSIIDbg\CalculaterDlg.obj
 .\MIPSIIDbg\CallSetDlg.obj
+.\MIPSIIDbg\CardSelectDlg.obj
 .\MIPSIIDbg\ContactDlg.obj
 .\MIPSIIDbg\contactgroupdlg.obj
 .\MIPSIIDbg\ContactInfoDlg.obj
@@ -71,6 +72,7 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\NotebookDlg.obj
 .\MIPSIIDbg\notedlg.obj
 .\MIPSIIDbg\passworddlg.obj
+.\MIPSIIDbg\PinSetDlg.obj
 .\MIPSIIDbg\Player.obj
 .\MIPSIIDbg\PlayerDlg.obj
 .\MIPSIIDbg\playsounddlg.obj
@@ -92,6 +94,7 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\MIPSIIDbg\fsm.obj
 .\MIPSIIDbg\HTTPTransport.obj
 .\MIPSIIDbg\MMSWarp.obj
+.\MIPSIIDbg\NewSocket.obj
 .\MIPSIIDbg\OggCodec.obj
 .\MIPSIIDbg\SMSWarp.obj
 .\MIPSIIDbg\socket.ce.obj
@@ -128,24 +131,10 @@ lib\\sqlite.lib ws2.lib iphlpapi.lib mmtimer.lib lib\\csplayer.lib cximage.lib j
 .\cximagelib\png.lib
 .\cximagelib\zlib.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPBA.tmp"
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F3.tmp"
 <h3>Output Window</h3>
 Compiling...
-MultimediaPhoneDlg.cpp
-d:\lxz_work_dir\media_phone\3g_phone\multimediaphonedlg.cpp(1680) : warning C4005: 'CTL_CODE' : macro redefinition
-        d:\lxz_work_dir\media_phone\3g_phone\multimediaphonedlg.h(47) : see previous definition of 'CTL_CODE'
-d:\lxz_work_dir\media_phone\3g_phone\multimediaphonedlg.cpp(1801) : warning C4715: 'CMultimediaPhoneDlg::CheckInternetStatus' : not all control paths return a value
-d:\lxz_work_dir\media_phone\3g_phone\multimediaphonedlg.cpp(3204) : warning C4700: local variable 'i' used without having been initialized
-MmsMessage.cpp
-d:\lxz_work_dir\media_phone\3g_phone\data\mmsmessage.cpp(225) : warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-d:\lxz_work_dir\media_phone\3g_phone\data\mmsmessage.cpp(226) : warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-d:\lxz_work_dir\media_phone\3g_phone\data\mmsmessage.cpp(227) : warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-d:\lxz_work_dir\media_phone\3g_phone\data\mmsmessage.cpp(229) : warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-SMSWarp.cpp
-d:\lxz_work_dir\media_phone\3g_phone\util\smswarp.cpp(723) : warning C4101: 'nLength' : unreferenced local variable
-c:\program files\windows ce tools\wce500\ingenicmedia\include\mipsii\utility(36) : warning C4786: '??0?$pair@Viterator@?$_Tree@HU?$pair@$$CBHPAVCDialog@@@std@@U_Kfn@?$map@HPAVCDialog@@U?$less@H@std@@V?$allocator@PAVCDialog@@@3@@2@U?$less@H@2@V?$allocator@PAVCDialog@@@2@@std@@_N@std@@QAA@ABViterator@?$_Tree@HU?$pair@$$CBHPAVCDialog@@@std@@U_Kfn@?$map@HPAVCDialog@@U?$less@H@std@@V?$allocator@PAVCDialog@@@3@@2@U?$less@H@2@V?$allocator@PAVCDialog@@@2@@1@AB_N@Z' : identifier was truncated to '255' characters in the browser information
-        c:\program files\windows ce tools\wce500\ingenicmedia\include\mipsii\map(106) : see reference to class template instantiation 'std::pair<class std::_Tree<int,struct std::pair<int const ,class CDialog *>,struct std::map<int,class CDialog *,struct std::less<int>,class std::allocator<class CDialog *> >::_Kfn,struct std::less<int>,class std::allocator<class CDialog *> >::iterator,bool>' being compiled
-        c:\program files\windows ce tools\wce500\ingenicmedia\include\mipsii\map(106) : while compiling class-template member function 'class CDialog *&__cdecl std::map<int,class CDialog *,struct std::less<int>,class std::allocator<class CDialog *> >::operator [](const int &) '
+passworddlg.cpp
 Linking...
    Creating library MIPSIIDbg/MultimediaPhone.lib and object MIPSIIDbg/MultimediaPhone.exp
 corelibc.lib(wwinmain.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
@@ -154,7 +143,7 @@ corelibc.lib(crt0dat.obj) : warning LNK4209: debugging information corrupt; reco
 corelibc.lib(crt0init.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 Strmiids.lib(strmguid.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
 Strmiids.lib(strmif_i.obj) : warning LNK4209: debugging information corrupt; recompile module; linking object as if no debug info
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F9.tmp" with contents
 [
 /nologo /o"MIPSIIDbg/MultimediaPhone.bsc" 
 .\MIPSIIDbg\MultimediaPhone.sbr
@@ -181,6 +170,8 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp" with cont
 .\MIPSIIDbg\User.sbr
 .\MIPSIIDbg\3GDetailDlg.sbr
 .\MIPSIIDbg\3GDetailReadDlg.sbr
+.\MIPSIIDbg\3GHomeJoyDlg.sbr
+.\MIPSIIDbg\3GHomePicDlg.sbr
 .\MIPSIIDbg\3GSMSDetailDlg.sbr
 .\MIPSIIDbg\3GSMSDlg.sbr
 .\MIPSIIDbg\3GSMSListDlg.sbr
@@ -189,6 +180,7 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp" with cont
 .\MIPSIIDbg\AlarmShowDlg.sbr
 .\MIPSIIDbg\CalculaterDlg.sbr
 .\MIPSIIDbg\CallSetDlg.sbr
+.\MIPSIIDbg\CardSelectDlg.sbr
 .\MIPSIIDbg\ContactDlg.sbr
 .\MIPSIIDbg\contactgroupdlg.sbr
 .\MIPSIIDbg\ContactInfoDlg.sbr
@@ -211,6 +203,7 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp" with cont
 .\MIPSIIDbg\NotebookDlg.sbr
 .\MIPSIIDbg\notedlg.sbr
 .\MIPSIIDbg\passworddlg.sbr
+.\MIPSIIDbg\PinSetDlg.sbr
 .\MIPSIIDbg\Player.sbr
 .\MIPSIIDbg\PlayerDlg.sbr
 .\MIPSIIDbg\playsounddlg.sbr
@@ -232,6 +225,7 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp" with cont
 .\MIPSIIDbg\fsm.sbr
 .\MIPSIIDbg\HTTPTransport.sbr
 .\MIPSIIDbg\MMSWarp.sbr
+.\MIPSIIDbg\NewSocket.sbr
 .\MIPSIIDbg\OggCodec.sbr
 .\MIPSIIDbg\SMSWarp.sbr
 .\MIPSIIDbg\socket.ce.sbr
@@ -262,7 +256,7 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp" with cont
 .\MIPSIIDbg\MmsShow.sbr
 .\MIPSIIDbg\SoftKey.sbr
 .\MIPSIIDbg\xmlParser.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSPC0.tmp"
+Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1F9.tmp"
 Creating browse info file...
 <h3>Output Window</h3>
 
@@ -270,7 +264,7 @@ Creating browse info file...
 
 
 <h3>Results</h3>
-MultimediaPhone.exe - 0 error(s), 15 warning(s)
+MultimediaPhone.exe - 0 error(s), 6 warning(s)
 </pre>
 </body>
 </html>

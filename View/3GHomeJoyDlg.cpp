@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "../multimediaphone.h"
 #include "../MultimediaPhoneDlg.h"
-#include "3GSysToolTelDlg.h"
+#include "3GHomeJoyDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -13,38 +13,38 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// C3GSysToolDlg dialog
+// C3GHomeJoyDlg dialog
 
 
-C3GSysToolDlg::C3GSysToolDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(C3GSysToolDlg::IDD, pParent)
+C3GHomeJoyDlg::C3GHomeJoyDlg(CWnd* pParent /*=NULL*/)
+	: CDialog(C3GHomeJoyDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(C3GSysToolDlg)
+	//{{AFX_DATA_INIT(C3GHomeJoyDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 }
 
 
-void C3GSysToolDlg::DoDataExchange(CDataExchange* pDX)
+void C3GHomeJoyDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(C3GSysToolDlg)
+	//{{AFX_DATA_MAP(C3GHomeJoyDlg)
 		// NOTE: the ClassWizard will add DDX and DDV calls here
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(C3GSysToolDlg, CDialog)
-	//{{AFX_MSG_MAP(C3GSysToolDlg)
+BEGIN_MESSAGE_MAP(C3GHomeJoyDlg, CDialog)
+	//{{AFX_MSG_MAP(C3GHomeJoyDlg)
 	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
 //	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// C3GSysToolDlg message handlers
+// C3GHomeJoyDlg message handlers
 /*
-void C3GSysToolDlg::OnTimer(UINT nIDEvent)
+void C3GHomeJoyDlg::OnTimer(UINT nIDEvent)
 {
 	if(IsWindowVisible())
 	{
@@ -57,13 +57,13 @@ void C3GSysToolDlg::OnTimer(UINT nIDEvent)
 }
 */
 
-BOOL C3GSysToolDlg::OnInitDialog() 
+BOOL C3GHomeJoyDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
 
 	// TODO: Add extra initialization here
 	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(0, 0, 600, 420), this);
-	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\系统工具.xml");
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k1\\中文\\3g_家庭娱乐.xml");
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 600, 420));
 //	SetTimer(1, 1000, NULL);
 
@@ -71,26 +71,22 @@ BOOL C3GSysToolDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
+void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 {
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	switch(w)
 	{
-	case 1:			//家庭影院
-		//pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
-		pMainDlg->OnButtonSetting(); //系统设置
+	case 1:			//音乐商店
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn();
 		break;
-	case 2:			//计算器
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnCalculBtn();
+	case 2:			//影音天地
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
 		break;
-	case 3:			//电子日历
-		SYSTEMTIME curtime;
-		GetLocalTime(&curtime);
-		pMainDlg->m_pMainDlg->m_pHuangLiDlg_->SetData(curtime.wYear, curtime.wMonth, curtime.wDay, TRUE);
-		pMainDlg->m_pMainDlg->m_pHuangLiDlg_->ShowWindow(SW_SHOW);    //老黄历
+	case 3:			//游戏集中营
+		if(pMainDlg->IsConnectNet())
+			pMainDlg->m_pMainDlg->StartWeb();
 		break;
-	case 4:			//日程提醒
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnLunarderBtn();
+	case 4:			//收音机
 		break;
 	case 5:
 		break;

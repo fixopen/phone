@@ -25,7 +25,7 @@ typedef enum
 	//stDeletePhoneRequest,     // 删除记录    
 	//stDeletePhoneResponse,    // 删除记录应答    
 	//stDeletePhoneWaitIdle,    // 删除不成功，等待GSM就绪  
-	//atRedial,
+	stRedial,
 	stAnswer,
 	stHangupPhone,			//挂机
 	stExitThread                // 退出    
@@ -85,11 +85,15 @@ void ParseTelephoneData(unsigned char const* const data, unsigned int const leng
 					if(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_nTELRigster >= TELRIGSTER_TD )
 						Telephone::TelephoneWarp::GetTelephoneWarp()->HandFree(false);
 					break;
-					/*
+				case 1: case 2: case 3: case 4: case 5: case 6:	
+				case 7: case 8: case 9: case 10: case 11: case 12:
+					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_SPEEDDIAL, c, 0);
+					break;
+				
 				case 0xBD:
 					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_REDIAL, 0, 0);
 					break;
-				case 0xBF:
+				/*	case 0xBF:
 					PostMessage(theApp.m_pMainWnd->m_hWnd, WM_RKEY, 0, 0);
 					break;
 				case 1: case 2: case 3: case 4: case 5: case 6:	
@@ -258,6 +262,8 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 	char* state = NULL;
 	unsigned int signalOrg = 0;
 	unsigned int signalNow = 0;
+	int netType = -1;
+	int netTypeOrg = -1;
 
 	// 发送和接收处理的状态循环    
 	while (nState != stExitThread)   
@@ -300,6 +306,7 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 		case stReadPhoneRequest:   
 			TRACE(L"State=stReadPhoneRequest\n");    
 			memset(&buff, 0, sizeof(buff));   
+			
 			if (p->Incoming_(&param[0]))
 			{
 				p->Incoming(param[0].NUM);
@@ -308,6 +315,14 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 			else
 			{
 				Sleep(1000);
+				
+				netType = p->PhoneNettype_();
+			//	if(netType != netTypeOrg)
+				{
+					netTypeOrg = netType;
+					p->PhoneNettype(netType);
+				}
+				//TRACE(L"Net %d\r", r);
 				signalNow = p->SignalQuality_();
 				if (signalNow != signalOrg)
 				{
@@ -316,8 +331,10 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 				}
 				LeaveCriticalSection(&csCom);
 				TRACE(L"Tel Leave\n");
+			   
 				nState = stBeginRest;   
 			}
+				//test lxz
 			break;   
 
 		case stReadPhoneResponse:   
@@ -325,6 +342,11 @@ UINT TelephoneWarp::TelephoneThread(LPVOID lParam)
 			Sleep(2000);   
 			p->State_();
 			break;   
+
+		case stRedial:
+			TRACE(L"State=stRedial\n");    
+			p->Redial_();
+			break;
 
 		case stAnswer:
 			TRACE(L"State=stAnswer\n");    
@@ -430,10 +452,10 @@ bool TelephoneWarp::Answer_(void)
 	return m_pAT->PhoneAnswer();
 }
 
-// bool TelephoneWarp::Redial_()
-// {
-// 	return m_pAT->PhoneRedial();
-// }
+bool TelephoneWarp::Redial_()
+{
+	return m_pAT->PhoneRedial();
+}
 
 bool TelephoneWarp::Incoming_(TEL_NUM* num)
 {
@@ -442,6 +464,15 @@ bool TelephoneWarp::Incoming_(TEL_NUM* num)
 unsigned int TelephoneWarp::SignalQuality_(void)
 {
 	return m_pAT->PhoneSignalQuality();
+}
+unsigned int TelephoneWarp::PhoneNettype_(void)
+{
+	return m_pAT->PhoneNettype();
+}
+
+void TelephoneWarp::PhoneDialTone(BOOL isOn, char *tone)
+{
+	m_pAT->PhoneDialTone(isOn, tone);
 }
 //////////////////////////////////////////////////////////////////////////
 bool TelephoneWarp::Dial(char* number)
@@ -462,11 +493,11 @@ bool TelephoneWarp::Answer(void)
 	nState = stAnswer;
 	return true;
 }
-// bool TelephoneWarp::Redial(void)
-// { 
-// 	nState = atRedial;
-// 	return true;
-// }
+bool TelephoneWarp::Redial(void)
+{ 
+	nState = stRedial;
+	return true;
+}
 bool TelephoneWarp::SubDial(char number)
 {
 	return m_pAT->PhoneSubDial(number);
@@ -527,6 +558,7 @@ void TelephoneWarp::Dialing(void)//正在拨打状态
 }
 void TelephoneWarp::Alerting(void)//对方振铃状态
 {
+	PhoneDialTone(0, NULL);
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMALERTING, 0);
 }
 void TelephoneWarp::Waiting(void)
@@ -539,10 +571,12 @@ void TelephoneWarp::NoDialTone(void)
 }
 void TelephoneWarp::NoAnswer(void)//无应答
 {
+	PhoneDialTone(1, "hangup");
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNOANSWER, 0);
 }
 void TelephoneWarp::NoCarrier(void)//连接不能被建立
 {
+	PhoneDialTone(1, "hangup");
 	nState = stHangupPhone;
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMNOCARRIER, 0);
 }
@@ -552,20 +586,30 @@ void TelephoneWarp::Congestion(void)//网络拥塞
 }
 void TelephoneWarp::OppHangup(void)//对方挂机
 {
+	PhoneDialTone(1, "hangup");
 	nState = stHangupPhone;
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMOPPHUNGUP, 0);
 }
 void TelephoneWarp::Odb(void)//呼叫限制
 {
+	PhoneDialTone(1, "hangup");
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_FROMODB, 0);
 }
 void TelephoneWarp::SignalQuality(int level)
 {
 	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_SIGNALQUALITY, level);
 }
+void TelephoneWarp::PhoneNettype(int type)
+{
+	PostMessage(theApp.m_pMainWnd->m_hWnd, WM_TEL_STATUS, TEL_NETTYPE, type);
+}
 //拨打电话
 void TelephoneWarp::DialNumber(char* telcode, int dial_tyle)   //int dial_type 0 免提， 1 摘机
 {
+//	if(dial_tyle == 0)
+//		HandFree(true);
+//	else
+//		HandFree(false);
 	Dial(telcode);
 }
 //挂机

@@ -165,6 +165,8 @@ void CWebDialog::OnClickMJPG(WPARAM w, LPARAM l)
 			ShowWindow(SW_HIDE);
 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->SetStatusAll(FALSE);
 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->SetScreenSaveTimer();
+
+			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->IsUnConnectNet();
 		}		
 		break;
 	case 8:				//È·¶¨

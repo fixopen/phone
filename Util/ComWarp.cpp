@@ -78,10 +78,9 @@ int ComWarp::WriteComm(void* pData, int nLength)
 	if (dwNumWrite > 0)
 	{
 		extern VOID WriteLog(char *ptr);
-	//	WriteLog((char *)pData);
-		Dprintf("Write: %d ", dwNumWrite);
+		WriteLog((char *)pData);
+//		Dprintf("Write: %d ", dwNumWrite);
 		Dprintf((char *)pData);
-		Dprintf("\n");
 	}
 	return (int)dwNumWrite;   
 }   
@@ -92,24 +91,31 @@ int ComWarp::WriteComm(void* pData, int nLength)
 // 返回: 实际读出的数据长度    
 int ComWarp::ReadComm(void* pData, int nLength)   
 {   
-	Sleep(1000);
-	DWORD dwNumRead;    // 串口收到的数据长度    
+//	Sleep(1000);
+	DWORD dwNumRead;    // 串口收到的数据长度  
+	DWORD ret = 0;
 
 	memset(pData, 0, nLength);
-	ReadFile(hComm, pData, (DWORD)nLength, &dwNumRead, NULL);   
-	if (dwNumRead > 0)
-	{
-		extern VOID WriteLog(char *ptr);
-	//	WriteLog((char *)pData);
+	DWORD  s = GetTickCount();
 
-		Dprintf("Read: %d ", dwNumRead);
-		Dprintf((char *)pData);
-//		Dprintf("\r\n");
-	}
-	else if (dwNumRead == 0)
+	while((GetTickCount() -s) < 1000)
 	{
-		TRACE(L"00000000000000000000000000000000000000000\n");
-		Dprintf("00000000000000000000000000000000000000000\n");
+		ReadFile(hComm, pData, (DWORD)nLength, &dwNumRead, NULL);  
+		ret += dwNumRead;
+		if (dwNumRead > 0)
+		{
+			extern VOID WriteLog(char *ptr);
+			WriteLog((char *)pData);
+			
+			Dprintf((char *)pData);
+			break;
+		}
+		else if (dwNumRead == 0)
+		{
+			TRACE(L"00000000000000000000000000000000000000000\n");
+			// Dprintf("00000000000000000000000000000000000000000\n");
+		}
+		::Sleep(0);
 	}
 
 	return (int)dwNumRead;   

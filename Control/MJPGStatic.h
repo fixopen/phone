@@ -36,11 +36,12 @@ public:
 //	CBitmap *m_pBmp;
 	HBITMAP m_hBmp;
 	HBITMAP m_hOldBmp;
+	LPVOID   m_plpBits;
 //	CBitmap *m_pOldbmp;
 //	void CreateMemDC();
 //	void ReleaseMemDC();
 	void ReleaseMemDC_HDC();
-	void CreateMemDC_HDC();
+	void CreateMemDC_HDC(CString sFilename);
 
 	int GetCStringMuliteLine(CString s, int height, CRect rt, MULTILINEINFO *pCount, int LineCount);
 	void DrawMultiLine(CDC *pdc, CString s, int nPixel, int nFontSize, CRect rt, MULTILINEINFO *pVarry, int LineCount,int nAglin1);
@@ -71,6 +72,7 @@ public:
 	BOOL SetUnitColor(int UnitNO, TEXTCOLOR cl, BOOL isDraw, BOOL isInvalidate = FALSE);
 	BOOL SetUnitIsTranslate(int UnitNO, BOOL isTrans);
 	BOOL SetUnitIsDisable(int UnitNO, BOOL isDisable);
+	BOOL SetUnitFont(int unitNO, TEXTSIZE nFont);
 	BOOL GetUnitIsShow(int UnitNO);
 	BOOL GetUnitIsDownStatus(int UnitNO);
 	CRect GetUnitRect(int UnitNO);

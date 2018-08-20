@@ -25,6 +25,7 @@ CDeleteTipDlg::CDeleteTipDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CDeleteTipDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	type = 0;
 }
 
 
@@ -124,7 +125,8 @@ void CDeleteTipDlg::OnButtonDeleteTipOk()
 	{
 		ShowWindow_(FALSE);
 		SetPasswordModel(false);
-		::PostMessage(m_handle, WM_DELETESELITEM, 0, 0);
+		::SendMessage(m_handle, WM_DELETESELITEM, type, 0);
+		type = 0;
 	}
 	m_edtNewPassword1.SetWindowText(_T(""));
 	SipShowIM(SIPF_OFF);
@@ -189,7 +191,7 @@ void CDeleteTipDlg::SetDelTip(CString tips)
 	//m_sticTip.SetWindowText(tips);
 }
 
-void CDeleteTipDlg::SetTitle(CString title, BOOL isTime)
+void CDeleteTipDlg::SetTitle(CString title, int isTime)
 {
 // 	TextStruct ts[1];
 // 	memset(ts, 0, sizeof(TextStruct) * 1);
@@ -202,8 +204,8 @@ void CDeleteTipDlg::SetTitle(CString title, BOOL isTime)
 // 	m_sticBackground.SetTextStruct(ts, 1);
 	m_MJPGList.SetUnitText(100, title, TRUE);
 	m_MJPGList.SetUnitBitmap(100, "", "", TRUE);
-	if(isTime)
-		SetTimer(100, 15000, NULL);
+	if(isTime > 0)
+		SetTimer(100, isTime, NULL);
 	else
 	{
 

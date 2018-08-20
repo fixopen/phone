@@ -205,7 +205,7 @@ bool ATCommandWarp::PhoneDial(char * number)
 	char CMD[128];
 	strcpy(CMD, ATD);
 	strcat(CMD, number);
-	strcat(CMD, ";\r");
+	strcat(CMD, "\r");
 	bool result = true;
 	//char ans[128];      // Ó¦´ð´®    
 	m_pCom->WriteComm(CMD, strlen(CMD));

@@ -45,7 +45,7 @@
                 tpSend,
                 tpUnSend,
 				tpSpecod,       //特殊短信
-				tpReadySend			//正在发送
+				tpReadySend		//正在发送
             };
             Type type;
         private:

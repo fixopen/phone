@@ -38,6 +38,7 @@
 #include "View/HuangliDlg.h"
 #include "View/NetStatusDlg.h"
 #include "View/WarningNoFlashDlg.h"
+#include "View/PasswordDlg.h"
 #include "./util/SMSWarp.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -121,6 +122,7 @@ struct DIAL_APN
 	char proxy[32];
 	char http[64];
 }; 
+
 class CMultimediaPhoneDlg : public CDialog
 {
 public:
@@ -132,6 +134,8 @@ public:
 	void        SetAPN(int apn);
 	void        TestDB();
 	TelTDStatus m_nTELRigster;
+	BOOL        IsConnectNet();
+	BOOL        IsUnConnectNet();
 	//处理短信
 	//int type 0	短信
 	//		   1	百事通
@@ -192,6 +196,15 @@ public:
 	//读取加密批次
 	UINT32 GetEnry();
 
+//add by qi 2009_07_22
+public:
+	void GetDataFromContact(std::vector<Util::ATCommandWarp::SIM_FORMAT> &vsim);
+	void SaveDataToContact(const std::vector<Util::ATCommandWarp::SIM_FORMAT> vsim);
+	void InsertSimToContact(const std::vector<Util::ATCommandWarp::SIM_FORMAT> vsim);//把sim卡里电话插入到Contact
+	std::string GetAlias(std::string name);
+
+private :
+	int m_nSIMID ;
 public:
 	CMJPGStatic		m_MJPGList;
 
@@ -207,6 +220,7 @@ public:
 	//CMainVideoDlg	*mainVideoDlg_;
 	//CPlayerDlg	*playerDlg_; 
 
+	CPasswordDlg	*m_pPasswordDlg;
 	CMainDlg* m_pMainDlg;
 	CContactDlg* m_pContactDlg;
 	CContactNewDlg* m_pContactNewDlg;
@@ -322,10 +336,10 @@ private:
 
 	std::map<int, CCEButtonST*> buttons_;
 	CCEButtonST* m_pBtnCurrent;
-	void SetButtonDefaultColor(CCEButtonST* button);
 	void SetButtonSelectedColor(CCEButtonST* button);
 	
 public:
+	static void SetButtonDefaultColor(CCEButtonST* button);
 	void EnableLine(BOOL bEnable = TRUE);
 	unsigned int m_uiKeyTimer;
 	unsigned int m_uiRingTimer;

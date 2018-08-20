@@ -106,12 +106,17 @@ void CMainMenuDlg::OnVideoBtn()
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)0, SW_SHOW);   //ÇÐ»»µ½ÊÓÆµ
 //	main->m_mainVideoDlg_->ShowWindow(SW_SHOW);
 }
-void CMainMenuDlg::OnPhotoBtn() 
+void CMainMenuDlg::OnPhotoBtn(int type) 
 {
 	// TODO: Add your control notification handler code here
 	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+
+	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitIsDownStatus(9, !type);
+	main->m_pMainDlg->m_mainPhotoDlg_->m_MJPGList.SetUnitIsShow(9, TRUE, FALSE);
+	main->m_pMainDlg->m_mainPhotoDlg_->m_nPhotoType = (PhotoType)(!type);
 	main->m_pMainDlg->m_mainPhotoDlg_->SetPlayList(_T("/flashdrv/my_photo/"), 0);
 	GetParent()->SendMessage(WM_CHANGEWINDOW, (WPARAM)1, SW_SHOW);   //ÇÐ»»µ½Photo
+
 //	main->m_mainVideoDlg_->ShowWindow(SW_SHOW);
 }
 

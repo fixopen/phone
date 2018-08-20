@@ -724,12 +724,14 @@ void CMainPhotoDlg ::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 100:		//本地相片&网络相片互相切换
 		{
+			/*
 			BOOL flag = m_MJPGList.GetUnitIsDownStatus(9);
 			m_MJPGList.SetUnitIsDownStatus(9, !flag);
 			m_MJPGList.SetUnitIsShow(9, TRUE, TRUE);
 			m_nPhotoType = (PhotoType)(!flag);
 			SetPlayList(L"/flashdrv/my_photo/", 0);
 			break;
+			*/
 		}
 	}
 }

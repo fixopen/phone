@@ -101,6 +101,36 @@ void C3GSMSListDlg::initType(SMSBOX_TYPE box_type, SMSMMS_TYPE sms_type, BOOL re
 	initDateBase();
 }
 
+void C3GSMSListDlg::DoDeleteSMSAll()
+{
+	if(m_nBoxType == HOME_RECORD_TYPE)   //家庭留言   短信中心特殊号
+	{
+		m_sListFilter = "[group] = " + Util::StringOp::FromInt(Data::Message::gReMoteSMS); //"smscAddress = '" + m_strHomeRecordeTelCode + "'";
+	}
+	else
+	{
+		if(m_nSMSType == MMS_TYPE)
+			m_sListFilter = "[type] = " + Util::StringOp::FromInt(m_nBoxType);
+		else
+			m_sListFilter = "[group] = " + Util::StringOp::FromInt(m_nBoxType);
+	}
+	
+	if(m_nSMSType == MMS_TYPE)			//彩信
+	{
+		if (Data::MMSData::GetDataCount("") > 0)
+		{
+			Data::MMSData::Remove(m_sListFilter);
+		}	
+	}
+	else			//短信及家庭留言
+	{
+		if (Data::Message::GetDataCount("") > 0)
+		{
+			 Data::Message::Remove(m_sListFilter);
+		}
+	}
+}
+
 BOOL C3GSMSListDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
@@ -159,8 +189,15 @@ void C3GSMSListDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			Invalidate();
 		}	
 		break;
-	case 3:
-	
+	case 3:			//全删
+		{
+			m_nSelectItem = -1;
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
+			std::string strTemp = ".\\adv\\mjpg\\k1\\common\\确定删除吗.bmp";
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
+			((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
+		}
+		DoDeleteSMSAll();	
 		break;
 	case 4:
 	
@@ -323,7 +360,12 @@ void C3GSMSListDlg::ShowArrayInList()
 	{
 		for (int i = 0; i < m_vMMSDataCurrentResult.size(); ++i)
 		{	
-			temp = Util::StringOp::ToCString(m_vMMSDataCurrentResult[i]->SenderAddress);
+			if(m_nBoxType == SEND_TYPE || m_nBoxType == DRAFT_TYPE)
+			{
+				temp = Util::StringOp::ToCString(m_vMMSDataCurrentResult[i]->RecipientAddress);
+			}
+			else
+				temp = Util::StringOp::ToCString(m_vMMSDataCurrentResult[i]->SenderAddress);
 			if (!m_vMMSDataCurrentResult[i]->isRead)
 			{
 				m_lsList.InsertItem(i, temp, 0);
@@ -406,23 +448,31 @@ LRESULT C3GSMSListDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_DELETESELITEM:
 		{
-			if(m_nSMSType == MMS_TYPE)
+			if(m_nSelectItem == -1)
 			{
-				m_vMMSDataCurrentResult[m_nSelectItem]->Remove();
-				CString s = m_vMMSDataCurrentResult[m_nSelectItem]->SavePath.c_str();
-				
-				CString filename = "";
-				CString path = "";
-				extern int FindFileEx(CString s, CString &sPath, CString &sFilename);
-				FindFileEx(s, path, filename);
-				extern void DeleteDirectory(CString SrcDir, BOOL isShow = TRUE);
-				DeleteDirectory(path);
+				DoDeleteSMSAll();
 			}
 			else
 			{
-			//	nId = m_vMessageCurrentResult[0]->id();
-				m_vMessageCurrentResult[m_nSelectItem]->Remove();
+				if(m_nSMSType == MMS_TYPE)
+				{
+					m_vMMSDataCurrentResult[m_nSelectItem]->Remove();
+					CString s = m_vMMSDataCurrentResult[m_nSelectItem]->SavePath.c_str();
+					
+					CString filename = "";
+					CString path = "";
+					extern int FindFileEx(CString s, CString &sPath, CString &sFilename);
+					FindFileEx(s, path, filename);
+					extern void DeleteDirectory(CString SrcDir, BOOL isShow = TRUE);
+					DeleteDirectory(path);
+				}
+				else
+				{
+				//	nId = m_vMessageCurrentResult[0]->id();
+					m_vMessageCurrentResult[m_nSelectItem]->Remove();
+				}
 			}
+			
 	//		initDateBase();
 	//		ScrollItemsInList(SB_PAGEDOWN, m_lsList.m_scollbar_.GetPos());
 			DeleteRefreshList();

@@ -34,6 +34,7 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/)
 
 	m_nSMSCount = 0;
 	m_nMMSCount = 0;
+	m_nUnSMS = 0;
 	m_nSMSLeaveCount = 0;
 	m_nRssCount = 0;
 	//}}AFX_DATA_INIT
@@ -207,6 +208,14 @@ BOOL CMainDlg::OnInitDialog()
 	m_p3GSysToolDlg->Create(C3GSysToolDlg::IDD, this);
 	m_p3GSysToolDlg->ShowWindow(SW_HIDE);
 
+	m_p3GHomePicDlg = new C3GHomePicDlg();
+	m_p3GHomePicDlg->Create(C3GHomePicDlg::IDD, this);
+	m_p3GHomePicDlg->ShowWindow(SW_HIDE);
+
+	m_p3GHomeJoyDlg = new C3GHomeJoyDlg();
+	m_p3GHomeJoyDlg->Create(C3GHomeJoyDlg::IDD, this);
+	m_p3GHomeJoyDlg->ShowWindow(SW_HIDE);
+
 	m_p3GSMSDlg = new C3GSMSDlg();
 	m_p3GSMSDlg->Create(C3GSMSDlg::IDD, this);
 	m_p3GSMSDlg->ShowWindow(SW_HIDE);
@@ -227,6 +236,7 @@ BOOL CMainDlg::OnInitDialog()
 	OnShowNoteStatic();
 	OnShowCallWallStatic();
 	OnShowTelStatusStatic(0, 0);
+	OnShowTelStatusStatic(3, 0);
 //	OnTimer(2);
 
 	SetPhotoList();
@@ -328,8 +338,8 @@ void CMainDlg::SetRightInfo(BOOL isDraw)
 	m_nMMSCount = mmsFileresult.size();
 
 	filter = "[group] = " + Util::StringOp::FromInt(Data::Message::gReMoteSMS);
-	filter += " AND state = ";
-	filter += Util::StringOp::FromInt(Data::Message::sNoRead);
+//	filter += " AND state = ";
+//	filter += Util::StringOp::FromInt(Data::Message::sNoRead);
     smsLeaveresult = Data::Message::GetFromDatabase(filter, Data::dNull, 0, 1);
 	m_nSMSLeaveCount = smsLeaveresult.size();
 
@@ -378,7 +388,7 @@ void CMainDlg::SetRightInfo(BOOL isDraw)
 		sRssContent = rssFileresult[0]->multimediaInfos.content.c_str();
 		if(sRssContent == "")
 		{
-			sRssContent = "工信部：7月1日起新售电脑将预装上网过滤软件";
+			sRssContent = "信息提示区：无定制信息";
 		}
 	}
 	if(m_nSMSLeaveCount > 0)     //有留言
@@ -1221,6 +1231,24 @@ void CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
 				m_nLeaveSound = 0;
 		}
 	}
+
+	else  if(wParam == 3)    //短信
+	{
+		std::string filter;
+			
+		filter = "[group] = " + Util::StringOp::FromInt(Data::Message::gReceive);
+		filter += " AND state = ";
+		filter += Util::StringOp::FromInt(Data::Message::sNoRead);
+		smsFileresult = Data::Message::GetFromDatabase(filter); 
+		m_nSMSCount = smsFileresult.size();
+		
+		filter = "[type] = " + Util::StringOp::FromInt(Data::MMSData::tpReceive);
+		filter += " AND isRead = ";
+		filter += Util::StringOp::FromInt(0);
+		mmsFileresult = Data::MMSData::GetFromDatabase(filter);
+		m_nMMSCount = mmsFileresult.size();
+		m_nUnSMS = m_nSMSCount + m_nMMSCount;
+	}
 	
 	CString s;
 //	s.Format(_T("%d"), m_nLeaveSound);
@@ -1228,6 +1256,9 @@ void CMainDlg::OnShowTelStatusStatic(WPARAM wParam, LPARAM lParam)
 
 	s.Format(_T("%d"), m_nUnTel);
 	m_MJPGList.SetUnitText(401, s, TRUE);
+
+	s.Format(_T("%d"), m_nUnSMS);
+	m_MJPGList.SetUnitText(403, s, TRUE);
 
 }
 
@@ -1355,8 +1386,9 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		m_p3GSMSDlg->ShowWindow(SW_SHOW);
 		break;
 	case 3:					//家庭相册
-		m_mainPhotoDlg_->OnOpenFile();
-		m_mainmenuDlg_->OnPhotoBtn();
+	//	m_mainPhotoDlg_->OnOpenFile();
+	//	m_mainmenuDlg_->OnPhotoBtn();
+		m_p3GHomePicDlg->ShowWindow(SW_SHOW);
 		break;
 	case 4:			//家庭百事通
 		/*
@@ -1370,7 +1402,8 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		m_p3GDetailDlg->ShowWindow(SW_SHOW);
 		break;
 	case 5:						//家庭影院	
-		m_mainmenuDlg_->OnMp3Btn();	
+	//	m_mainmenuDlg_->OnMp3Btn();	
+		m_p3GHomeJoyDlg->ShowWindow(SW_SHOW);
 	//	m_mainmenuDlg_->OnVideoBtn();
 		break;
 	case 6:					    //系统工具		//

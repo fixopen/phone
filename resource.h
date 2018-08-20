@@ -30,6 +30,7 @@
 #define TEL_FROMRING                    13
 #define TEL_FROMEND                     14
 #define TEL_SIGNALQUALITY               15
+#define TEL_NETTYPE						16
 #define IDD_MULTIMEDIAPHONE_DIALOG      102
 #define IDR_MAINFRAME                   128
 #define IDD_DIALOG_MAIN                 129
@@ -581,6 +582,15 @@
 #define WM_SMS_MMS                      9092
 #define WM_SMS_OTA                      9093
 #define WM_SMS_SENDRESULT               9094
+#define WM_SMS_SENDPRO					9095
+#define IDC_LIST_CONTRAL_CARDSELECT		9096
+#define WM_PIN_INPUT					9097
+#define PIN_OK							9098
+#define PIN_ERROR						9099
+#define PIN_LOCKED						9100
+#define PIN_PUK							9101
+#define PIN_FUK_LOCKED					9102
+#define PIN_FUK_ERROR					9103
 
 // Next default values for new objects
 // 

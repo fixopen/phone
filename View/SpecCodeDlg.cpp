@@ -144,15 +144,16 @@ BOOL CSpecCodeDlg::OnInitDialog()
 	{
 		if (i < 6)
 		{
-			m_edtNumber[i].Create(WS_CHILD|WS_VISIBLE, CRect(107 + 54, 78 + i*32 + 62, 286 + 54, 104 + i*32 + 62), this, IDC_EDIT_FASTDIALS_NUMBER01);
+			m_edtNumber[i].Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, CRect(107 + 54, 78 + i*32 + 62, 286 + 54, 104 + i*32 + 62), this, IDC_EDIT_FASTDIALS_NUMBER01);
 			m_edtNumber[i].SetLimitText(15);
 			m_edtNumber[i].SetLimitDiagital();
 		}
 		else
 		{
-			m_edtNumber[i].Create(WS_CHILD|WS_VISIBLE, CRect(366 + 54, 78 + (i-6)*32 + 62, 544 + 54, 104 + (i-6)*32 + 62), this, IDC_EDIT_FASTDIALS_NUMBER01);
+			m_edtNumber[i].Create(WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL, CRect(366 + 54, 78 + (i-6)*32 + 62, 544 + 54, 104 + (i-6)*32 + 62), this, IDC_EDIT_FASTDIALS_NUMBER01);
 			m_edtNumber[i].SetLimitText(15);
-			m_edtNumber[i].SetLimitDiagital();
+			if(i != 11)
+				m_edtNumber[i].SetLimitDiagital();
 		}
 	}
 /*

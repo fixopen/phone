@@ -15,6 +15,7 @@
 #include "../Data/Setting.h"
 #include "fastdialsdlg.h"
 #include "CallSetDlg.h"
+#include "PinSetDlg.h"
 #include "RingSetDlg.h"
 #include "SpecCodeDlg.h"
 #include "passwordDlg.h"
@@ -295,6 +296,7 @@ public:
 
 	CFastDialsDlg* m_pFastDialsDlg;
 	CCallSetDlg *m_pCallSetDlg;
+	CPinSetDlg *m_pPinSetDlg;
 	CRingSetDlg *m_pRingSetDlg;
 	CSpecCodeDlg *m_pSpecCodeDlg;
 

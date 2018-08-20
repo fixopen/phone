@@ -8,8 +8,6 @@
 #include <vector>
 #include <map>
 
-#include "NewSocket.h"
-
 typedef unsigned long DWORD;
 namespace Util {
 	enum DIAL_APN{CM_WAP, CM_NET};
@@ -52,14 +50,7 @@ namespace Util {
         }
         DWORD Get(std::wstring const& uri, std::wstring const& agentName = AgentName);
         DWORD Post(std::wstring const& uri, std::wstring const& agentName = AgentName);
-
-		CNewSocket  pNewSocket;
-		BOOL bNewSocket;
-		DWORD Get_(std::wstring const& uri);
-        DWORD Post_(std::wstring const& uri);
-
 		int  Recv(UINT8 *pBuf, int length);
-		void Close();
 		/*
     private:
         class Transport : public Thread {

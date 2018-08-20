@@ -26,6 +26,8 @@
 #include "3GSMSDlg.h"
 #include "3GDetailDlg.h"
 #include "3GSysToolTelDlg.h"
+#include "3GHomeJoyDlg.h"
+#include "3GHomePicDlg.h"
 
 #define MAIN_MARGIN_OFFSET	0	
 
@@ -51,6 +53,10 @@ public:
 
 	C3GTelDlg	*m_p3GTelDlg;
 	C3GSysToolDlg	*m_p3GSysToolDlg;
+	
+	C3GHomePicDlg	*m_p3GHomePicDlg;
+	C3GHomeJoyDlg	*m_p3GHomeJoyDlg;
+
 	C3GSMSDlg	*m_p3GSMSDlg;
 	C3GDetailDlg	*m_p3GDetailDlg;
 
@@ -92,6 +98,7 @@ public:
 public:
 	virtual ~CMainDlg();
 	
+	int     m_nUnSMS;
 	int		m_nUnTel;					//未接电话数
 	int     m_nLeaveSound;				//录音留言数
 	BOOL    m_bIsFireWall;				//防火墙是否开启

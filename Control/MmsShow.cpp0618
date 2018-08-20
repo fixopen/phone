@@ -3,10 +3,8 @@
 
 #include "stdafx.h"
 #include "MmsShow.h"
-#include "../Util/stringOp.h"
 
 // ImageShow
-
 static int  UnicodeToUTF_8(char* des, wchar_t* src, int size_d, int size_s)
 {
 	// 注意 WCHAR高低字的顺序,低字节在前，高字节在后
@@ -484,7 +482,6 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 		AfxMessageBox(L"文件的路径设置不正确，重新设置");
 		return FALSE ;
 	}
-	
 	str = str + L"*" ;
 	WIN32_FIND_DATA fd;
 	HANDLE hfind;
@@ -506,61 +503,34 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 				{
 					//解析smil	
 					std::wstring	wr		= str1 + strfl	;
-					std::string		file	= Util::StringOp::FromCString(wr.c_str())	;//ToUTF8
+					std::string		file	= ToUTF8(wr)	;
 					MMS::MMSWarp::GetMMSWarp()->DecodeSmil(file, m_cMmsPar, m_cMmsLayOut);
 					
-					if (m_cMmsPar.size() > 1)//有两个以上par,显示上下页
-					{
-						m_btnNextPage.ShowWindow(TRUE);
-						m_btnUpPage.ShowWindow(TRUE);
-					}
-					
-					//这页的内容全是空的，清除该页
-				/*	int b = m_cMmsPar.size() ;
-					std::vector<MMS::MMSWarp::MMS_PAR>::iterator it;
-					for(it=m_cMmsPar.begin();it!= m_cMmsPar.end();it++)
-					{
-						int a ;
-						a  = 0 ;
-					}*/
-
 					m_bFindSiml	= TRUE ;
 					GetMmsRegionInfo();
 					InitialRegion();
 					SetImageShow(true);
 					SetTextShow(true);
-					if(m_cMmsPar.size() > 1)
-					{
-						SetTimer(PAR_SHOW_TIMER,1000,NULL);
-						SetTimer(IMAGE_TIMER,1000,NULL);
-						SetTimer(TXT_TIMER,1000,NULL);					
-					}
+					SetTimer(PAR_SHOW_TIMER,1000,NULL);
+					SetTimer(IMAGE_TIMER,1000,NULL);
+					SetTimer(TXT_TIMER,1000,NULL);
+					
 					return	TRUE ;
-
 				}
 				if(strfl.Find(L".txt") > 0)
 				{						
 					CFile f;
 					CFileException e;
-					//char wr[1000]	;
+					char wr[1000]	;
 					if( f.Open(str1 +strfl, CFile::modeRead, &e ) )
 					{
-						char *wr ;
-						wr = new CHAR[1024*10];//10k
-						memset(wr,0,1024*10);
-
-						wchar_t *uicode = NULL ;//转化成uicode
-						uicode = new wchar_t[1024*10];//10k
-						memset(uicode,0,1024*10);
-						
 						int length = f.GetLength() ;
+						memset(wr,0,1000);
 						f.Read(wr,length);
 						wr[length] = '\0';
 					//	m_cTxtContent = wr;//CString 不能转化成 char *指针
-					//	wchar_t uicode[1000] ;//转化成uicode
-					//	memset(uicode,0,2000);
-						
-					//	memset(uicode,0,1024*8*20);
+						wchar_t uicode[1000] ;//转化成uicode
+						memset(uicode,0,2000);
 						int index = 0 ;
 						int count = strlen(wr);//
 						int iNum =0 ;
@@ -572,9 +542,7 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 							iNum++;					
 						}
 						m_cTxtContent = uicode ;
-						m_cDefTxtContent.push_back(m_cTxtContent);
-						delete []wr ;
-						delete []uicode ;
+						m_cDefTxtContent.push_back((CString)wr);
 						f.Close();
 					}
 
@@ -595,18 +563,13 @@ BOOL MmsShow::FindFileSmil(std::wstring const& filename)
 	}
 	else
 	{  	
-		if (m_cDefImagePath.size() > 1 || m_cDefTxtContent.size() > 1)
-		{
-			m_btnNextPage.ShowWindow(TRUE);//有两个以上par,显示上下页
-			m_btnUpPage.ShowWindow(TRUE);	
-		}
 		m_bFindSiml	= FALSE;
 		GetDefRegionInfo();
 		InitialDefRegion();
 		SetImageShow(true);
 		SetTextShow(true);
-		SetTimer(DEF_IMAGE_SHOW,2000,NULL);
-		SetTimer(DEF_TXT_SHOW,2000,NULL);
+		SetTimer(DEF_IMAGE_SHOW,1000,NULL);
+		SetTimer(DEF_TXT_SHOW,1000,NULL);
 
 	}
 	return TRUE	;
@@ -638,8 +601,6 @@ void MmsShow::Clear()
 	KillTimer(TXT_TIMER);
 	KillTimer(DEF_TXT_SHOW);
 	KillTimer(DEF_IMAGE_SHOW);
-
-	m_iPageNum			=	0		;
 	m_uMmsParPlay		=	0		;
 	m_cImageTime		=	0		;
 	m_cImagePath		=   L""		;
@@ -705,7 +666,7 @@ void MmsShow::InitialDefPar()
 {	
 	MMS::MMSWarp::MMS_SRC		mmspar					;//文本
 	std::wstring path	= m_cImagePath					;
-	mmspar.name			= Util::StringOp::FromCString(path.c_str())					;
+	mmspar.name			= ToUTF8(path)					;
 	mmspar.region		= "text"						;
 	mmspar.type			= MMS::MMSWarp::stText			;
 	mmspar.dur			= 0								;
@@ -771,10 +732,8 @@ void MmsShow::InitialRegion()
 			}
 			else
 			{
-				region.width	= TEXT_REGION_WIDTH						;
-				region.height	= TEXT_REGION_HEIGHT					;
-			//	region.width	= m_cMmsLayOut.regions["text"].width	;
-			//	region.height	= m_cMmsLayOut.regions["text"].height	;								 
+				region.width	= m_cMmsLayOut.regions["text"].width	;
+				region.height	= m_cMmsLayOut.regions["text"].height	;								 
 
 			}
 			region.id			= "text"								;
@@ -889,7 +848,7 @@ void MmsShow::SaveParInfo()
 			{
 				//删除txt
 				std::string sr = m_cMmsPar[m_uMmsParPlay].srcs[i].name ;
-				std::wstring wr = Util::StringOp::ToCString(sr);
+				std::wstring wr = FromUTF8(sr);
 				DeleteFile(wr.c_str());							
 				
 				//删除par里src容器中的文本项
@@ -911,7 +870,7 @@ void MmsShow::SaveParInfo()
 			if (m_cImagePath !=L"")//再次保存
 			{
 				wr = m_cImagePath								;
-				sr = Util::StringOp::FromCString(wr.c_str())									;
+				sr = ToUTF8(wr)									;
 				m_cMmsPar[m_uMmsParPlay].srcs[i].name = sr		;  
 			}
 			else
@@ -939,7 +898,7 @@ void MmsShow::SaveParInfo()
 			{	
 				MMS::MMSWarp::MMS_SRC  src1			;
 				wr = allpath						;
-				sr = Util::StringOp::FromCString(wr.c_str())						;
+				sr = ToUTF8(wr)						;
 				src1.alt	= ""					;
 				src1.begin	= 0						;
 				src1.dur	= 2000					;
@@ -957,7 +916,7 @@ void MmsShow::SaveParInfo()
 		{	
 			MMS::MMSWarp::MMS_SRC  src			;
 			wr = m_cImagePath					;
-			sr = Util::StringOp::FromCString(wr.c_str())						;		
+			sr = ToUTF8(wr)						;		
 			src.alt		= ""					;
 			src.begin	= 0						;
 			src.dur		= 2000					;
@@ -995,7 +954,7 @@ void MmsShow::AddParInfo()
 	{
 		//记录下上一页的内容
 		MMS::MMSWarp::MMS_PAR  par ;
-		par.duration = 5 ;
+		par.duration = 5000 ;
 		MMS::MMSWarp::MMS_SRC  src ;
 		MMS::MMSWarp::MMS_SRC  src1 ;
 		std::wstring wr	;		
@@ -1003,7 +962,7 @@ void MmsShow::AddParInfo()
 		if (m_cImagePath !=L"")
 		{
 			wr = m_cImagePath					;
-			sr = Util::StringOp::FromCString(wr.c_str())						;		
+			sr = ToUTF8(wr)						;		
 			src.alt		= ""					;
 			src.begin	= 0						;
 			src.dur		= 2000					;
@@ -1046,7 +1005,7 @@ void MmsShow::AddParInfo()
 					
 				}
 				wr = allpath						;
-				sr = Util::StringOp::FromCString(wr.c_str())						;
+				sr = ToUTF8(wr)						;
 				src1.alt	= ""					;
 				src1.begin	= 0						;
 				src1.dur	= 2000					;
@@ -1069,7 +1028,7 @@ BOOL MmsShow::GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp
 	wchar_t buf[100];
 	memset(buf,0,200);
 	m_cMmsTitle.GetWindowText(buf,100)	;
-	m_cTitleName = buf;
+	m_cTitleName = buf ;
 	title = buf;
     
 //	MMS::MMSWarp::GetMMSWarp()->AddRootLayout(&r, 176, 216);
@@ -1117,7 +1076,6 @@ BOOL MmsShow::GetParInfo(std::vector<MMS::MMSWarp::MMS_PAR> &mmsPar,MMS::MMSWarp
 	{
 		mmsPar.clear();
 	}
-
 	for (int i = 0 ; i < m_cMmsPar.size() ;i++)
 	{
 		mmsPar.push_back(m_cMmsPar[i]);
@@ -1159,10 +1117,7 @@ CString MmsShow::GetFileName(CString const allpath)
 }
 void MmsShow::GetMmsRegionInfo()
 {
-	if (m_cMmsPar.size() > 0)
-	{
-		m_uParDur	= m_cMmsPar[m_uMmsParPlay].duration ;//一个par的显示时间
-	}
+    m_uParDur	= m_cMmsPar[m_uMmsParPlay].duration ;//一个par的显示时间
 	m_cTxtContent	= L"";
 	m_cImagePath	= L"";
 	for (int j = 0 ; j < m_cMmsPar[m_uMmsParPlay].srcs.size();j++)
@@ -1173,7 +1128,7 @@ void MmsShow::GetMmsRegionInfo()
 			//找图片的Region
 			m_uImageDur		=  m_cMmsPar[m_uMmsParPlay].srcs[j].end ;
 			std::string	 s	=  m_cMmsPar[m_uMmsParPlay].srcs[j].name;
-			std::wstring ws	=  Util::StringOp::ToCString(s);
+			std::wstring ws	=  FromUTF8(s);
 			CString fl		=  ws.c_str();
 			if (fl.Find(L".jpg") > 0 || fl.Find(L".JPG") > 0 ||
 				fl.Find(L".png") > 0 || fl.Find(L".PNG") > 0 ||
@@ -1198,37 +1153,25 @@ void MmsShow::GetMmsRegionInfo()
 			//Text
 			m_uTxtDur			=  m_cMmsPar[m_uMmsParPlay].srcs[j].end		;
 			std::string	 s		=  m_cMmsPar[m_uMmsParPlay].srcs[j].name	;
-			std::wstring wsr	=  Util::StringOp::ToCString(s);
+			std::wstring wsr	=  FromUTF8(s);
 			CString	 fl			=	wsr.c_str() ;//文件名
 		//	if (fl.Find(L".txt") <= 0 )//文本没有后缀名自己加
 		//	{
 		//		fl = fl + L".txt" ;
 		//	}
-			
-			if (fl.Find(L".txt") == -1 && fl.Find(L".text") == -1 )
-			{
-				return ;
-			}
+	
 			CFile f;
 			CFileException e;
-		//	char wr[1000];
+			char wr[1000];
 			if( f.Open( fl, CFile::modeRead, &e ) )
 			{
-				char *wr ;
-				wr = new char[1024*10];//10k
-				memset(wr,0,1024*10);
-				wchar_t *uicode;//转化成uicode
-				uicode = new wchar_t[1024*10];//10k
-				memset(uicode,0,1024*10);
-
 				int length = f.GetLength() ;
+				memset(wr,0,1000);
 				f.Read(wr,length);
 				wr[length] = '\0';				
 				//m_cTxtContent = wr;	
-				
-				//wchar_t uicode[1000] ;//转化成uicode
-				//memset(uicode,0,2000);
-//				memset(uicode,0,1024*8*20);
+				wchar_t uicode[1000] ;//转化成uicode
+				memset(uicode,0,2000);
 				int index = 0 ;
 				int count = strlen(wr);//
 				int iNum =0 ;
@@ -1239,13 +1182,13 @@ void MmsShow::GetMmsRegionInfo()
 					index += offset;
 					iNum++;					
 				}
-				m_cTxtContent = uicode ;
-				delete []wr ;
-				delete []uicode ;
+				m_cTxtContent = uicode ;			
 				f.Close();
 			}
-						
-		}	
+			
+			
+		}
+	
 	}
 
 	if (1 == m_uState)//只读状态才检查
@@ -1403,7 +1346,6 @@ void MmsShow::OnTimer(UINT nIDEvent)
 		{
 			m_uTxtTime++ ;
 		}
-
 	}
 	else if (nIDEvent == DEF_IMAGE_SHOW)
 	{
@@ -1604,59 +1546,6 @@ void MmsShow::OnBtnUp()
 		
 	}
 	
-	if (1 == m_uState)//只读状态
-	{		
-		if (m_bFindSiml)
-		{	
-			if (m_cMmsPar.size() >0)
-			{
-				m_uMmsParPlay--;
-				if (m_uMmsParPlay < 0)
-				{
-					m_uMmsParPlay = m_cMmsPar.size() -1 ;
-				}
-				KillTimer(PAR_SHOW_TIMER);
-				KillTimer(IMAGE_TIMER);
-				KillTimer(TXT_TIMER);
-				GetMmsRegionInfo();
-				InitialRegion();
-				SetImageShow(true);
-				SetTextShow(true);
-				SetTimer(PAR_SHOW_TIMER,1000,NULL);
-				SetTimer(IMAGE_TIMER,1000,NULL);
-				SetTimer(TXT_TIMER,1000,NULL);
-			}
-			
-		}
-		else
-		{	
-			if (m_cDefImagePath.size() > 1 || m_cMmsPar.size()>0)
-			{
-				m_uDefImageItem-- ;
-				m_uDefTxtItem-- ;
-				if (m_uDefImageItem < 0)
-				{	
-					m_uDefImageItem = m_cDefImagePath.size() - 1;	
-				}
-				
-				if (m_uDefTxtItem  < 0 )
-				{	
-					m_uDefTxtItem  = m_cDefTxtContent.size() -1 ;	
-				}
-				KillTimer(DEF_IMAGE_SHOW);
-				KillTimer(DEF_TXT_SHOW);
-				GetDefRegionInfo();
-				InitialDefRegion();
-				SetImageShow(true);
-				SetTextShow(true);
-				SetTimer(DEF_IMAGE_SHOW,2000,NULL);
-				SetTimer(DEF_TXT_SHOW,2000,NULL);
-
-			}
-		}
-		
-	}
-	
 }
 
 void MmsShow::OnBtnNext()
@@ -1726,60 +1615,6 @@ void MmsShow::OnBtnNext()
 			
 		}
 
-	}
-
-	if (1 == m_uState)//只读状态
-	{   
-					
-		if (m_bFindSiml)
-		{
-			if (m_cMmsPar.size() >0)
-			{
-				m_uMmsParPlay++ ;
-				if (m_uMmsParPlay >= m_cMmsPar.size())
-				{
-					m_uMmsParPlay = 0 ;
-				}
-				KillTimer(PAR_SHOW_TIMER);
-				KillTimer(IMAGE_TIMER);
-				KillTimer(TXT_TIMER);
-				GetMmsRegionInfo();
-				InitialRegion();
-				SetImageShow(true);
-				SetTextShow(true);
-				SetTimer(PAR_SHOW_TIMER,1000,NULL);
-				SetTimer(IMAGE_TIMER,1000,NULL);
-				SetTimer(TXT_TIMER,1000,NULL);
-			}
-			
-		}
-		else
-		{	
-			if (m_cDefImagePath.size() > 1 || m_cMmsPar.size()>0)
-			{
-				m_uDefImageItem++ ;
-				m_uDefTxtItem++ ;
-				if (m_uDefImageItem >= m_cDefImagePath.size())
-				{	
-					m_uDefImageItem = 0;	
-				}
-								
-				if (m_uDefTxtItem >= m_cDefTxtContent.size() )
-				{	
-					m_uDefTxtItem  =  0;	
-				}
-				
-				KillTimer(DEF_IMAGE_SHOW);
-				KillTimer(DEF_TXT_SHOW);
-				GetDefRegionInfo();
-				InitialDefRegion();
-				SetImageShow(true);
-				SetTextShow(true);
-				SetTimer(DEF_IMAGE_SHOW,1000,NULL);
-				SetTimer(DEF_TXT_SHOW,1000,NULL);
-			}
-		}
-		
 	}
 	
 }

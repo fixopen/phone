@@ -14,8 +14,8 @@
 #define GSM_OK			1		// OK 
 #define GSM_ERR			-1		// ERROR 
 
-#define MAX_SM_SEND		128		// 发送队列长度 
-#define MAX_SM_RECV		128		// 接收队列长度 
+#define MAX_SM_SEND		16		// 发送队列长度      //lxz   128
+#define MAX_SM_RECV		16		// 接收队列长度 
 
 namespace SMS
 {
@@ -32,6 +32,7 @@ namespace SMS
 	private:
 		Util::ATCommandWarp* m_pAT;
 		std::string m_strOTANumber;
+		std::string m_strCenterAddress;
 	public:
 
 		typedef enum
@@ -55,12 +56,12 @@ namespace SMS
 		// 短消息参数结构，编码/解码共用 
 		// 其中，字符串以'\0'结尾 
 		typedef struct { 
-			char SCA[16];			// 短消息服务中心号码(SMSC地址) 
-			char TPA[16];			// 目标号码或回复号码(TP-DA或TP-RA) 
+			char SCA[32];			// 短消息服务中心号码(SMSC地址) 
+			char TPA[32];			// 目标号码或回复号码(TP-DA或TP-RA) 
 			char TP_PID;			// 用户信息协议标识(TP-PID) 
 			char TP_DCS;			// 用户信息编码方式(TP-DCS) 
 			char TP_SCTS[16];		// 服务时间戳字符串(TP_SCTS), 接收时用到 
-			char TP_UD[160];		// 原始用户信息(编码前或解码后的TP-UD) 
+			char TP_UD[1024];		// 原始用户信息(编码前或解码后的TP-UD)        //160    1024    
 			short index;			// 短消息序号，在读取时用到 
 
 			char Serial[4];
@@ -90,6 +91,11 @@ namespace SMS
 			char* data; 
 		} SM_BUFF; 
 
+		typedef struct{
+			int len;
+			char buff[1024];
+		}SMS_BUFF;
+
 		int gsmBytes2String(const unsigned char* pSrc, char* pDst, int nSrcLength); 
 		int gsmString2Bytes(const char* pSrc, unsigned char* pDst, int nSrcLength); 
 		int gsmEncode7bit(const char* pSrc, unsigned char* pDst, int nSrcLength); 
@@ -102,6 +108,7 @@ namespace SMS
 		int gsmSerializeNumbers(const char* pSrc, char* pDst, int nSrcLength); 
 		int gsmEncodePdu(const SM_PARAM* pSrc, char* pDst); 
 		int gsmDecodePdu(const char* pSrc, SM_PARAM* pDst); 
+		int gsmEncodePdu_(const SM_PARAM* pSrc, SMS_BUFF* pDst);
 
 		//BOOL gsmInit(); 
 
@@ -135,7 +142,8 @@ namespace SMS
 
 		static UINT SmThread(LPVOID lpParam);	// 短消息收发处理子线程 
 
-		void Send(std::string number, std::string content, std::string sca = "+8613800100500");
+		void Send(std::string number, std::string content);
+		void SetCenterAddress(std::string address);
 		std::wstring ToUnicode(std::string content);
 		void MapMessage(SM_PARAM* sms);//格式转换
 		void ReceiveCallback(SMS_TYPE type, void* msg);

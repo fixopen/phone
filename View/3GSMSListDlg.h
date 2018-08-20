@@ -50,6 +50,8 @@ public:
 	CMJPGStatic		m_MJPGList;
 	C3GSMSListDlg(CWnd* pParent = NULL);   // standard constructor
 
+	void DoDeleteSMSAll();
+
 // Dialog Data
 	//{{AFX_DATA(C3GSMSListDlg)
 	enum { IDD = IDD_DIALOG_CONTACT };

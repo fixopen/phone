@@ -483,7 +483,7 @@ void C3GDetailReadDlg::OnTimer(UINT nIDEvent)
 		{
 			std::string filename = m_pWeatherPicture[0]->filename;
 			HDC pdc = ::GetDC(m_onlyEdit.m_hWnd);
-			extern void DrawImage_HDC(LPCTSTR szFileImage, HDC pdc, CRect rect, BOOL isOffset = FALSE);
+			extern void DrawImage_HDC(LPCTSTR szFileImage, HDC pdc, CRect rect, BOOL isOffset = FALSE, VOID *lpBits = NULL);
 			CRect rt = m_MJPGList.GetUnitRect(16);
 			rt.left = rt.Width() - 128;
 			rt.right = rt.left + 128;

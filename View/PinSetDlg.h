@@ -1,5 +1,5 @@
-#if !defined(AFX_FASTDIALSDLG_H__6F1EB099_1F0C_487C_AAED_221F5FB6088B01__INCLUDED_)
-#define AFX_FASTDIALSDLG_H__6F1EB099_1F0C_487C_AAED_221F5FB6088B01__INCLUDED_
+#if !defined(AFX_FASTDIALSDLG_H__6F1EB099_1F0C_487C_AAED_221F5FB6088B01_10__INCLUDED_)
+#define AFX_FASTDIALSDLG_H__6F1EB099_1F0C_487C_AAED_221F5FB6088B01_10__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
@@ -17,34 +17,26 @@
 #include "../Data/Setting.h"
 
 #include "../control/MJPGStatic.h"
+#include "../view/PasswordDlg.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CCallSetDlg dialog
+// CPinSetDlg dialog
 
-class CCallSetDlg : public CCEDialog
+class CPinSetDlg : public CCEDialog
 {
 // Construction
 public:
-	CCEButtonST m_chbCallToCall;
-		CCEButtonST  m_chbNoAnswer;
-		CCEButtonST  m_chbUnCondifie;
-		CCEButtonST  m_chbIsTeling;
-		CCEButtonST  m_chbIsNoTeling;
-		CCERectEdit m_edtTelCode;
-	CCEButtonST m_chbCallToLimit;
-		CCEButtonST  m_chbLimitCallIn;
-		CCEButtonST  m_chbLimitCallOut;
-	CCEButtonST m_chbCallToWaiting;
-		CCERadioButton m_rdoIsYes;
-		CCERadioButton m_rdoIsNo;
-	
+	CPasswordDlg*  m_pPasswordDlg;
+	BOOL m_bPin;
 	void SetButtonDefaultColor(CCEButtonST* button);
+	CCEButtonST m_chbPIN;
+
 	boost::shared_ptr<Data::Setting>  m_Data;
 	void SetCallSetParam(boost::shared_ptr<Data::Setting> data);
-	CCallSetDlg(CWnd* pParent = NULL);   // standard constructor
+	CPinSetDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CCallSetDlg)
+	//{{AFX_DATA(CPinSetDlg)
 	enum { IDD = IDD_DIALOG_FASTDIALS };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
@@ -52,7 +44,7 @@ public:
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CCallSetDlg)
+	//{{AFX_VIRTUAL(CPinSetDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -61,12 +53,13 @@ public:
 protected:
 
 	// Generated message map functions
-	//{{AFX_MSG(CCallSetDlg)
+	//{{AFX_MSG(CPinSetDlg)
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
 	afx_msg void OnButtonFastDialsOk();
 	afx_msg void OnButtonFastDialsCancel();
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
+	afx_msg void OnCheckPIN(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 		
 private:

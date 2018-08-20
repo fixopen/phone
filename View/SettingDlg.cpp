@@ -21,7 +21,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSettingDlg dialog
-CString s_VerSionTitle = "2.33090422";
+CString s_VerSionTitle = "7.37090731";
 CString s_VerSion = "\
 6.03090325\
 1.ÐÞ¸ÄÁËÂ¼ÒôÃÜÂë.\
@@ -604,6 +604,12 @@ void CSettingDlg::OnClickMJPG(WPARAM w, LPARAM l)
 // 			((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pSettingDlg->m_pSetting->blockAllTimeDuration().GetTotalSeconds());
 // 		m_firWallDlg->ShowWindow(TRUE);
 		break;
+	case 105:	//	ÉèÖÃPIN
+		{
+			m_pPinSetDlg->SetCallSetParam(m_pSetting);
+			m_pPinSetDlg->ShowWindow(TRUE);	
+			break;
+		}
 	case 110:
 		{
 			if(!m_MJPGList.GetUnitIsDownStatus(10))
@@ -797,8 +803,8 @@ BOOL CSettingDlg::OnInitDialog()
 // 	m_sticRingTimes.Create(str, WS_CHILD|WS_VISIBLE, CRect(100, 144, 186, 160), this);
 // 	m_sticRingTimes.SetColor(RGB(0, 0, 0), Data::g_allFramInRectBackRGB[Data::g_skinstyle]);
 
-	m_cmbRingTimes.Create(WS_CHILD|WS_VISIBLE, CRect(326, 181, 437, 219), this, IDC_COMBOBOX_SETTING_RINGTIMES);
-	m_cmbAutoRecoedeTimes.Create(WS_CHILD|WS_VISIBLE, CRect(534, 181, 647, 219), this, IDC_COMBOBOX_SETTING_RINGTIMES);
+	m_cmbRingTimes.Create(WS_CHILD|WS_VISIBLE, CRect(326, 181, 437, 410), this, IDC_COMBOBOX_SETTING_RINGTIMES);
+	m_cmbAutoRecoedeTimes.Create(WS_CHILD|WS_VISIBLE, CRect(534, 181, 647, 410), this, IDC_COMBOBOX_SETTING_RINGTIMES);
 
 
 // 	strTemp = Data::LanguageResource::Get(Data::RI_SETTING_LEAVEWORD);
@@ -1304,6 +1310,9 @@ BOOL CSettingDlg::OnInitDialog()
 
 	m_pCallSetDlg = new CCallSetDlg(this);
 	m_pCallSetDlg->Create(CCallSetDlg::IDD);
+
+	m_pPinSetDlg = new CPinSetDlg(this);
+	m_pPinSetDlg->Create(CPinSetDlg::IDD);
 
 	m_pRingSetDlg = new CRingSetDlg(this);
 	m_pRingSetDlg->Create(CRingSetDlg::IDD);

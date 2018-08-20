@@ -134,6 +134,12 @@ void  C3GSMSDetailDlg::initDataBase(SMSDETAILTYPE type,  int smsid, BOOL reDraw 
 			s = Util::StringOp::ToCString(m_pMessageData->timestamp.ToStringFormat_());
 			m_MJPGList.SetUnitText(12, s, reDraw);
 			m_contentEdit.ShowWindow(SW_SHOW);
+		
+			if(m_pMessageData->state != Data::Message::sReaded)
+			{
+				m_pMessageData->state = Data::Message::sReaded;
+				m_pMessageData->Update();
+			}			
 		}
 		else if(m_nSMSType == MMS_READ)
 		{
@@ -151,6 +157,7 @@ void  C3GSMSDetailDlg::initDataBase(SMSDETAILTYPE type,  int smsid, BOOL reDraw 
 			if(path != "")
 			{
 				m_MMSShow.FindFileSmil(path.GetBuffer(256));
+				m_MMSShow.SetTitle(MMS::MMSWarp::GetMMSWarp()->ToUnicode((m_pMMSData->Subject)));
 				m_MMSShow.ShowWindow(SW_SHOW);
 			}
 			s = Util::StringOp::ToCString(m_pMMSData->SenderAddress);
@@ -242,6 +249,10 @@ BOOL C3GSMSDetailDlg::OnInitDialog()
 	m_MJPGList.SetMJPGRect(CRect(0, 0, 800, 420));
 //	SetTimer(1, 1000, NULL);
 
+	m_dlgCardSelect.Create(IDD_DIALOG_TELEPHONE,this);
+	m_dlgCardSelect.MoveWindow(10,120,790, 340);
+	m_dlgCardSelect.CenterWindow();
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -283,6 +294,17 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				m_contentEdit.GetWindowText(s);
 				CString s_;
 				m_senderEdit.GetWindowText(s_);
+				
+				//add by qi
+				std::vector<Util::ATCommandWarp::SIM_FORMAT> vcontact; 
+				std::vector<Util::ATCommandWarp::SIM_FORMAT>::iterator it; 
+				m_dlgCardSelect.GetSendContact(vcontact);
+				for (it = vcontact.begin(); it < vcontact.end();it++)
+				{
+					std::string name  = (*it).name ;
+					std::string phone = (*it).telnum ;
+				}
+
 				if(s != "" && s_ != "")
 				{
 					SipShowIM(SIPF_OFF);
@@ -306,9 +328,13 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 
 					pMainDlg->m_pSMSWarp->Send(m_pMessageData->remote.address, m_pMessageData->unicodeData);
 					
+					/*
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"正在发送短信...", FALSE);
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
+					*/
+
+					ShowWindow(SW_HIDE);
 				}
 			}
 		
@@ -316,9 +342,17 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 			{
 				CString s_;
 				m_senderEdit.GetWindowText(s_);
-				std::wstring sImage, sText, sAudio, sVedio;
-				m_MMSShow.GetAllFileInfo(sImage, sText, sAudio, sVedio);
-				if(s_ != "" && (sImage != L"" || sText != L"" || sAudio != L"" || sVedio != L""))
+			//	std::wstring sImage, sText, sAudio, sVedio;
+			//	m_MMSShow.GetAllFileInfo(sImage, sText, sAudio, sVedio);
+			//	void EncodeSmil(vector<MMS_PAR> vpars, MMS_LAYOUT layout, std::string path);
+
+				MMS::MMSWarp::MMS_LAYOUT layout;
+				std::vector<MMS::MMSWarp::MMS_PAR> pars;
+				std::wstring sTitle;
+				BOOL ret = m_MMSShow.GetParInfo(pars, layout, sTitle);//获得par里的内容
+
+				
+				if(s_ != "" && ret)
 				{
 					SipShowIM(SIPF_OFF);
 					
@@ -333,7 +367,10 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 					sprintf(sDir, "/flashdrv/3g/mms/%s/", datetime);
 					CString sDir_ = sDir;
 					CreateDirectory((LPTSTR)(LPCTSTR)sDir_, NULL);
-					           
+					
+					MMS::MMSWarp::GetMMSWarp()->EncodeSmil(pars, layout, sDir);
+
+					/*       
 					CString sI = sImage.c_str();
 					CString sT = sText.c_str();
 					CString sA = sAudio.c_str();
@@ -390,6 +427,7 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 							CopyFile(sV, sNew, FALSE);
 						}
 					}
+					*/
 					
 				//	CopyFile()
 					m_pMMSData = boost::shared_ptr<Data::MMSData> (new Data::MMSData);
@@ -397,16 +435,14 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 					m_pMMSData->TransactionId = datetime;
 					m_pMMSData->RecipientAddress = Util::StringOp::FromCString(s_); //To-value = Encoded-string-value
 					m_pMMSData->SenderAddress = pMainDlg->m_sMobileNumber; //Optional From-value = Value-length (Address-present-token Encoded-string-value | Insert-address-token )Address-present-token = <Octet 128>Insert-address-token = <Octet 129>
-					m_pMMSData->Subject = "test mms!";
+					m_pMMSData->Subject = MMS::MMSWarp::GetMMSWarp()->FromUnicode(sTitle);   //存进去应该是 GB2312
+					//m_pMMSData->Subject = Util::StringOp::ToUTF8(MMS::MMSWarp::GetMMSWarp()->FromUnicode(sTitle));
 					m_pMMSData->DateAndTime = sp.GetSeconds(); //Date-value = Long-integer	In seconds from 1970-01-01, 00:00:00 GMT.
 					m_pMMSData->SavePath = sDir;
 					m_pMMSData->isRead = TRUE;
 					m_pMMSData->Insert();
-/*
-					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetTitle(L"正在发送彩信,请稍候...", FALSE);
-					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_hWnd);
-					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
-*/					
+
+					ShowWindow(SW_HIDE);	
 				}
 			}
 			else								//回复
@@ -544,7 +580,28 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		break;
 	case 10:
 		break;
+	case 11: //add by qi 2009_08_05
+		m_dlgCardSelect.ShowWindow(true);
+		m_dlgCardSelect.ShowCard();
+		break;
+
+	case 20:
+		if(m_contentEdit.IsWindowVisible())
+		{
+			m_contentEdit.SendMessage(WM_VSCROLL, MAKELONG(SB_PAGEUP,0),NULL);
+			m_contentEdit.Invalidate();
+		}
+		break;
+
+	case 21:
+		if(m_contentEdit.IsWindowVisible())
+		{
+			m_contentEdit.SendMessage(WM_VSCROLL, MAKELONG(SB_PAGEDOWN,0),NULL);
+			m_contentEdit.Invalidate();
+		}
+		break;
 	case 100:
+		::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 		SipShowIM(SIPF_OFF);
 		ShowWindow(SW_HIDE);
 	default:

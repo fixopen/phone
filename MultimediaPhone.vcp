@@ -179,6 +179,8 @@ DEP_CPP_MULTI=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -187,6 +189,7 @@ DEP_CPP_MULTI=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -207,6 +210,7 @@ DEP_CPP_MULTI=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -224,6 +228,7 @@ DEP_CPP_MULTI=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -233,7 +238,6 @@ DEP_CPP_MULTI=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -371,6 +375,8 @@ DEP_CPP_MULTIM=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -379,6 +385,7 @@ DEP_CPP_MULTIM=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -400,6 +407,7 @@ DEP_CPP_MULTIM=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -418,6 +426,7 @@ DEP_CPP_MULTIM=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -427,7 +436,6 @@ DEP_CPP_MULTIM=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"GdiplusImaging.h"\
 	{$(INCLUDE)}"GdiplusPixelFormats.h"\
@@ -560,6 +568,7 @@ DEP_CPP_PBLME=\
 	".\Util\fsm.h"\
 	".\Util\HTTPTransport.h"\
 	".\Util\MMSWarp.h"\
+	".\Util\NewSocket.h"\
 	".\Util\OggCodec.h"\
 	".\Util\SmartPtr.h"\
 	".\Util\SMSWarp.h"\
@@ -568,6 +577,8 @@ DEP_CPP_PBLME=\
 	".\Util\unzip.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -576,6 +587,7 @@ DEP_CPP_PBLME=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -596,6 +608,7 @@ DEP_CPP_PBLME=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -613,6 +626,7 @@ DEP_CPP_PBLME=\
 	".\xml\config.h"\
 	".\xml\DateTime.h"\
 	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -622,7 +636,6 @@ DEP_CPP_PBLME=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -1946,6 +1959,8 @@ DEP_CPP_3GDET=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -1954,6 +1969,7 @@ DEP_CPP_3GDET=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -1974,6 +1990,7 @@ DEP_CPP_3GDET=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -1998,6 +2015,7 @@ DEP_CPP_3GDET=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -2008,7 +2026,6 @@ DEP_CPP_3GDET=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -2135,6 +2152,8 @@ DEP_CPP_3GDETA=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -2143,6 +2162,7 @@ DEP_CPP_3GDETA=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -2163,6 +2183,7 @@ DEP_CPP_3GDETA=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -2187,6 +2208,7 @@ DEP_CPP_3GDETA=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -2197,7 +2219,392 @@ DEP_CPP_3GDETA=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
+	{$(INCLUDE)}"fourcc.h"\
+	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"measure.h"\
+	{$(INCLUDE)}"msgthrd.h"\
+	{$(INCLUDE)}"msxml2.h"\
+	{$(INCLUDE)}"mtype.h"\
+	{$(INCLUDE)}"os_types.h"\
+	{$(INCLUDE)}"outputq.h"\
+	{$(INCLUDE)}"perflog.h"\
+	{$(INCLUDE)}"perflogdata.h"\
+	{$(INCLUDE)}"pstream.h"\
+	{$(INCLUDE)}"refclock.h"\
+	{$(INCLUDE)}"reftime.h"\
+	{$(INCLUDE)}"renbase.h"\
+	{$(INCLUDE)}"renbaseasync.h"\
+	{$(INCLUDE)}"renqual.h"\
+	{$(INCLUDE)}"Schedule.h"\
+	{$(INCLUDE)}"source.h"\
+	{$(INCLUDE)}"speex.h"\
+	{$(INCLUDE)}"speex_bits.h"\
+	{$(INCLUDE)}"speex_types.h"\
+	{$(INCLUDE)}"stdafx.h"\
+	{$(INCLUDE)}"streams.h"\
+	{$(INCLUDE)}"strmctl.h"\
+	{$(INCLUDE)}"sysclock.h"\
+	{$(INCLUDE)}"transfrm.h"\
+	{$(INCLUDE)}"transip.h"\
+	{$(INCLUDE)}"util\DateTime.h"\
+	{$(INCLUDE)}"util\stringOp.h"\
+	{$(INCLUDE)}"videoctl.h"\
+	{$(INCLUDE)}"View\HuangliDlg.h"\
+	{$(INCLUDE)}"vtrans.h"\
+	{$(INCLUDE)}"winctrl.h"\
+	{$(INCLUDE)}"winutil.h"\
+	{$(INCLUDE)}"winx.h"\
+	{$(INCLUDE)}"wxdebug.h"\
+	{$(INCLUDE)}"wxlist.h"\
+	{$(INCLUDE)}"wxutil.h"\
+	{$(INCLUDE)}"xfile.h"\
+	{$(INCLUDE)}"ximacfg.h"\
+	{$(INCLUDE)}"ximadef.h"\
+	{$(INCLUDE)}"ximage.h"\
+	{$(INCLUDE)}"xiofile.h"\
+	{$(INCLUDE)}"xmemfile.h"\
+	{$(INCLUDE)}"xml\config.h"\
+	{$(INCLUDE)}"xml\DateTime.h"\
+	{$(INCLUDE)}"xml\xmlParser.h"\
+	
+
+!IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"
+
+!ELSEIF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Debug"
+
+# ADD CPP /YX
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\View\3GHomeJoyDlg.cpp
+DEP_CPP_3GHOM=\
+	".\control\CeBtnST.h"\
+	".\Control\CEComboBox_.h"\
+	".\Control\CEDateTimeCtrl.h"\
+	".\Control\CEDialog.h"\
+	".\control\CELineEdit.h"\
+	".\control\CEListCtrl.h"\
+	".\Control\CELunarder.h"\
+	".\control\CEProcessBar.h"\
+	".\Control\CERadioButton.h"\
+	".\control\CEScrollBar_.h"\
+	".\control\CEStatic.h"\
+	".\Control\DateCtrl.h"\
+	".\Control\DIBSectionCE.h"\
+	".\control\InputDlg.h"\
+	".\Control\MJPGStatic.h"\
+	".\Control\MmsShow.h"\
+	".\control\SoftKey.h"\
+	".\Data\Contact.h"\
+	".\Data\ContactData.h"\
+	".\Data\ContactGroup.h"\
+	".\Data\ContactInfo.h"\
+	".\Data\Data.h"\
+	".\Data\LanguageResource.h"\
+	".\Data\Message.h"\
+	".\Data\MMSData.h"\
+	".\Data\OTAData.h"\
+	".\Data\Picture.h"\
+	".\Data\SchedulerData.h"\
+	".\Data\Setting.h"\
+	".\Data\SoundSegment.h"\
+	".\Data\TelephoneNumber.h"\
+	".\inc\csplayer.h"\
+	".\inc\SABTD.h"\
+	".\inc\SABTD_Param_Type.h"\
+	".\inc\SABTD_Return_Codes.h"\
+	".\inc\sqlite3.h"\
+	".\inc\xfile.h"\
+	".\inc\ximacfg.h"\
+	".\inc\ximadef.h"\
+	".\inc\ximage.h"\
+	".\inc\xiofile.h"\
+	".\inc\xmemfile.h"\
+	".\Logical\LunarderDate.h"\
+	".\Logical\Phone.h"\
+	".\Logical\serialPort.h"\
+	".\Logical\Telephone.h"\
+	".\Logical\Telephone_IO.h"\
+	".\Logical\Telephone_rs232.h"\
+	".\Logical\TelephoneWarp.h"\
+	".\MultimediaPhone.h"\
+	".\MultimediaPhoneDlg.h"\
+	".\StdAfx.h"\
+	".\Util\ATCommandWarp.h"\
+	".\Util\ComWarp.h"\
+	".\Util\DateTime.h"\
+	".\Util\fsm.h"\
+	".\Util\MMSWarp.h"\
+	".\Util\OggCodec.h"\
+	".\Util\SmartPtr.h"\
+	".\Util\SMSWarp.h"\
+	".\Util\stringOp.h"\
+	".\Util\thread.h"\
+	".\View\3GDetailDlg.h"\
+	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
+	".\View\3GSMSDetailDlg.h"\
+	".\View\3GSMSDlg.h"\
+	".\View\3GSMSListDlg.h"\
+	".\View\3GSysToolTelDlg.h"\
+	".\View\3GTelDlg.h"\
+	".\View\AlarmShowDlg.h"\
+	".\View\CalculaterDlg.h"\
+	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
+	".\View\ContactDlg.h"\
+	".\View\contactgroupdlg.h"\
+	".\View\ContactInfoDlg.h"\
+	".\View\contactinfosearchdlg.h"\
+	".\View\ContactNewDlg.h"\
+	".\View\contactsearchdlg.h"\
+	".\View\copyfileDlg.h"\
+	".\View\deletetipdlg.h"\
+	".\View\fastdialsdlg.h"\
+	".\View\firewalldlg.h"\
+	".\View\HuangliDlg.h"\
+	".\View\LunarderDlg.h"\
+	".\View\MainDlg.h"\
+	".\View\mainmenudlg.h"\
+	".\View\MainMp3Dlg.h"\
+	".\View\mainphotodlg.h"\
+	".\View\MainVideoDlg.h"\
+	".\View\NetStatusDlg.h"\
+	".\View\NotebookDlg.h"\
+	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
+	".\View\Player.h"\
+	".\View\PlayerDlg.h"\
+	".\View\playsounddlg.h"\
+	".\View\RecordSoundDlg.h"\
+	".\View\RenameDlg.h"\
+	".\View\RingSetDlg.h"\
+	".\View\ScreenSaveDlg.h"\
+	".\View\SettingDlg.h"\
+	".\View\SoundDlg.h"\
+	".\View\soundsearchdlg.h"\
+	".\View\SpecCodeDlg.h"\
+	".\View\telephonedlg.h"\
+	".\View\WarningNoFlashDlg.h"\
+	".\View\WebDialog.h"\
+	".\xml\config.h"\
+	".\xml\DateTime.h"\
+	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"5\inc\ogg.h"\
+	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"5\inc\speex_header.h"\
+	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"5\inc\speex_stereo.h"\
+	{$(INCLUDE)}"5\inc\wav_io.h"\
+	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
+	{$(INCLUDE)}"amextra.h"\
+	{$(INCLUDE)}"amfilter.h"\
+	{$(INCLUDE)}"bldver.h"\
+	{$(INCLUDE)}"cache.h"\
+	{$(INCLUDE)}"celog.h"\
+	{$(INCLUDE)}"combase.h"\
+	{$(INCLUDE)}"Control\MJPGStatic.h"\
+	{$(INCLUDE)}"cprop.h"\
+	{$(INCLUDE)}"ctlutil.h"\
+	{$(INCLUDE)}"dllsetup.h"\
+	{$(INCLUDE)}"fourcc.h"\
+	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"measure.h"\
+	{$(INCLUDE)}"msgthrd.h"\
+	{$(INCLUDE)}"msxml2.h"\
+	{$(INCLUDE)}"mtype.h"\
+	{$(INCLUDE)}"os_types.h"\
+	{$(INCLUDE)}"outputq.h"\
+	{$(INCLUDE)}"perflog.h"\
+	{$(INCLUDE)}"perflogdata.h"\
+	{$(INCLUDE)}"pstream.h"\
+	{$(INCLUDE)}"refclock.h"\
+	{$(INCLUDE)}"reftime.h"\
+	{$(INCLUDE)}"renbase.h"\
+	{$(INCLUDE)}"renbaseasync.h"\
+	{$(INCLUDE)}"renqual.h"\
+	{$(INCLUDE)}"Schedule.h"\
+	{$(INCLUDE)}"source.h"\
+	{$(INCLUDE)}"speex.h"\
+	{$(INCLUDE)}"speex_bits.h"\
+	{$(INCLUDE)}"speex_types.h"\
+	{$(INCLUDE)}"stdafx.h"\
+	{$(INCLUDE)}"streams.h"\
+	{$(INCLUDE)}"strmctl.h"\
+	{$(INCLUDE)}"sysclock.h"\
+	{$(INCLUDE)}"transfrm.h"\
+	{$(INCLUDE)}"transip.h"\
+	{$(INCLUDE)}"util\DateTime.h"\
+	{$(INCLUDE)}"util\stringOp.h"\
+	{$(INCLUDE)}"videoctl.h"\
+	{$(INCLUDE)}"View\HuangliDlg.h"\
+	{$(INCLUDE)}"vtrans.h"\
+	{$(INCLUDE)}"winctrl.h"\
+	{$(INCLUDE)}"winutil.h"\
+	{$(INCLUDE)}"winx.h"\
+	{$(INCLUDE)}"wxdebug.h"\
+	{$(INCLUDE)}"wxlist.h"\
+	{$(INCLUDE)}"wxutil.h"\
+	{$(INCLUDE)}"xfile.h"\
+	{$(INCLUDE)}"ximacfg.h"\
+	{$(INCLUDE)}"ximadef.h"\
+	{$(INCLUDE)}"ximage.h"\
+	{$(INCLUDE)}"xiofile.h"\
+	{$(INCLUDE)}"xmemfile.h"\
+	{$(INCLUDE)}"xml\config.h"\
+	{$(INCLUDE)}"xml\DateTime.h"\
+	{$(INCLUDE)}"xml\xmlParser.h"\
+	
+
+!IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"
+
+!ELSEIF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Debug"
+
+# ADD CPP /YX
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\View\3GHomePicDlg.cpp
+DEP_CPP_3GHOME=\
+	".\control\CeBtnST.h"\
+	".\Control\CEComboBox_.h"\
+	".\Control\CEDateTimeCtrl.h"\
+	".\Control\CEDialog.h"\
+	".\control\CELineEdit.h"\
+	".\control\CEListCtrl.h"\
+	".\Control\CELunarder.h"\
+	".\control\CEProcessBar.h"\
+	".\Control\CERadioButton.h"\
+	".\control\CEScrollBar_.h"\
+	".\control\CEStatic.h"\
+	".\Control\DateCtrl.h"\
+	".\Control\DIBSectionCE.h"\
+	".\control\InputDlg.h"\
+	".\Control\MJPGStatic.h"\
+	".\Control\MmsShow.h"\
+	".\control\SoftKey.h"\
+	".\Data\Contact.h"\
+	".\Data\ContactData.h"\
+	".\Data\ContactGroup.h"\
+	".\Data\ContactInfo.h"\
+	".\Data\Data.h"\
+	".\Data\LanguageResource.h"\
+	".\Data\Message.h"\
+	".\Data\MMSData.h"\
+	".\Data\OTAData.h"\
+	".\Data\Picture.h"\
+	".\Data\SchedulerData.h"\
+	".\Data\Setting.h"\
+	".\Data\SoundSegment.h"\
+	".\Data\TelephoneNumber.h"\
+	".\inc\csplayer.h"\
+	".\inc\SABTD.h"\
+	".\inc\SABTD_Param_Type.h"\
+	".\inc\SABTD_Return_Codes.h"\
+	".\inc\sqlite3.h"\
+	".\inc\xfile.h"\
+	".\inc\ximacfg.h"\
+	".\inc\ximadef.h"\
+	".\inc\ximage.h"\
+	".\inc\xiofile.h"\
+	".\inc\xmemfile.h"\
+	".\Logical\LunarderDate.h"\
+	".\Logical\Phone.h"\
+	".\Logical\serialPort.h"\
+	".\Logical\Telephone.h"\
+	".\Logical\Telephone_IO.h"\
+	".\Logical\Telephone_rs232.h"\
+	".\Logical\TelephoneWarp.h"\
+	".\MultimediaPhone.h"\
+	".\MultimediaPhoneDlg.h"\
+	".\StdAfx.h"\
+	".\Util\ATCommandWarp.h"\
+	".\Util\ComWarp.h"\
+	".\Util\DateTime.h"\
+	".\Util\fsm.h"\
+	".\Util\MMSWarp.h"\
+	".\Util\OggCodec.h"\
+	".\Util\SmartPtr.h"\
+	".\Util\SMSWarp.h"\
+	".\Util\stringOp.h"\
+	".\Util\thread.h"\
+	".\View\3GDetailDlg.h"\
+	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
+	".\View\3GSMSDetailDlg.h"\
+	".\View\3GSMSDlg.h"\
+	".\View\3GSMSListDlg.h"\
+	".\View\3GSysToolTelDlg.h"\
+	".\View\3GTelDlg.h"\
+	".\View\AlarmShowDlg.h"\
+	".\View\CalculaterDlg.h"\
+	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
+	".\View\ContactDlg.h"\
+	".\View\contactgroupdlg.h"\
+	".\View\ContactInfoDlg.h"\
+	".\View\contactinfosearchdlg.h"\
+	".\View\ContactNewDlg.h"\
+	".\View\contactsearchdlg.h"\
+	".\View\copyfileDlg.h"\
+	".\View\deletetipdlg.h"\
+	".\View\fastdialsdlg.h"\
+	".\View\firewalldlg.h"\
+	".\View\HuangliDlg.h"\
+	".\View\LunarderDlg.h"\
+	".\View\MainDlg.h"\
+	".\View\mainmenudlg.h"\
+	".\View\MainMp3Dlg.h"\
+	".\View\mainphotodlg.h"\
+	".\View\MainVideoDlg.h"\
+	".\View\NetStatusDlg.h"\
+	".\View\NotebookDlg.h"\
+	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
+	".\View\Player.h"\
+	".\View\PlayerDlg.h"\
+	".\View\playsounddlg.h"\
+	".\View\RecordSoundDlg.h"\
+	".\View\RenameDlg.h"\
+	".\View\RingSetDlg.h"\
+	".\View\ScreenSaveDlg.h"\
+	".\View\SettingDlg.h"\
+	".\View\SoundDlg.h"\
+	".\View\soundsearchdlg.h"\
+	".\View\SpecCodeDlg.h"\
+	".\View\telephonedlg.h"\
+	".\View\WarningNoFlashDlg.h"\
+	".\View\WebDialog.h"\
+	".\xml\config.h"\
+	".\xml\DateTime.h"\
+	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"5\inc\ogg.h"\
+	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"5\inc\speex_header.h"\
+	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"5\inc\speex_stereo.h"\
+	{$(INCLUDE)}"5\inc\wav_io.h"\
+	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
+	{$(INCLUDE)}"amextra.h"\
+	{$(INCLUDE)}"amfilter.h"\
+	{$(INCLUDE)}"bldver.h"\
+	{$(INCLUDE)}"cache.h"\
+	{$(INCLUDE)}"celog.h"\
+	{$(INCLUDE)}"combase.h"\
+	{$(INCLUDE)}"Control\MJPGStatic.h"\
+	{$(INCLUDE)}"cprop.h"\
+	{$(INCLUDE)}"ctlutil.h"\
+	{$(INCLUDE)}"dllsetup.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -2325,6 +2732,8 @@ DEP_CPP_3GSMS=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -2333,6 +2742,7 @@ DEP_CPP_3GSMS=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -2353,6 +2763,7 @@ DEP_CPP_3GSMS=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -2377,6 +2788,7 @@ DEP_CPP_3GSMS=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -2387,7 +2799,6 @@ DEP_CPP_3GSMS=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -2516,6 +2927,8 @@ DEP_CPP_3GSMSD=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -2524,6 +2937,7 @@ DEP_CPP_3GSMSD=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -2544,6 +2958,7 @@ DEP_CPP_3GSMSD=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -2568,6 +2983,7 @@ DEP_CPP_3GSMSD=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -2578,7 +2994,6 @@ DEP_CPP_3GSMSD=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -2705,6 +3120,8 @@ DEP_CPP_3GSMSL=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -2713,6 +3130,7 @@ DEP_CPP_3GSMSL=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -2733,6 +3151,7 @@ DEP_CPP_3GSMSL=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -2757,6 +3176,7 @@ DEP_CPP_3GSMSL=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -2767,7 +3187,6 @@ DEP_CPP_3GSMSL=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -2894,6 +3313,8 @@ DEP_CPP_3GSYS=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -2902,6 +3323,7 @@ DEP_CPP_3GSYS=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -2922,6 +3344,7 @@ DEP_CPP_3GSYS=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -2946,6 +3369,7 @@ DEP_CPP_3GSYS=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -2956,7 +3380,6 @@ DEP_CPP_3GSYS=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -3083,6 +3506,8 @@ DEP_CPP_3GTEL=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -3091,6 +3516,7 @@ DEP_CPP_3GTEL=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -3111,6 +3537,7 @@ DEP_CPP_3GTEL=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -3135,6 +3562,7 @@ DEP_CPP_3GTEL=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -3145,7 +3573,6 @@ DEP_CPP_3GTEL=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -3272,6 +3699,8 @@ DEP_CPP_ALARM=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -3280,6 +3709,7 @@ DEP_CPP_ALARM=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -3300,6 +3730,7 @@ DEP_CPP_ALARM=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -3324,6 +3755,7 @@ DEP_CPP_ALARM=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -3334,7 +3766,6 @@ DEP_CPP_ALARM=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -3462,6 +3893,201 @@ DEP_CPP_CALLS=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\View\CardSelectDlg.cpp
+DEP_CPP_CARDS=\
+	".\control\CeBtnST.h"\
+	".\Control\CEComboBox_.h"\
+	".\Control\CEDateTimeCtrl.h"\
+	".\Control\CEDialog.h"\
+	".\control\CELineEdit.h"\
+	".\control\CEListCtrl.h"\
+	".\Control\CELunarder.h"\
+	".\control\CEProcessBar.h"\
+	".\Control\CERadioButton.h"\
+	".\control\CEScrollBar_.h"\
+	".\control\CEStatic.h"\
+	".\Control\DateCtrl.h"\
+	".\Control\DIBSectionCE.h"\
+	".\control\InputDlg.h"\
+	".\Control\MJPGStatic.h"\
+	".\Control\MmsShow.h"\
+	".\control\SoftKey.h"\
+	".\Data\Contact.h"\
+	".\Data\ContactData.h"\
+	".\Data\ContactGroup.h"\
+	".\Data\ContactInfo.h"\
+	".\Data\Data.h"\
+	".\Data\LanguageResource.h"\
+	".\Data\Message.h"\
+	".\Data\MMSData.h"\
+	".\Data\OTAData.h"\
+	".\Data\Picture.h"\
+	".\Data\SchedulerData.h"\
+	".\Data\Setting.h"\
+	".\Data\SkinStyle.h"\
+	".\Data\SoundSegment.h"\
+	".\Data\TelephoneNumber.h"\
+	".\inc\csplayer.h"\
+	".\inc\SABTD.h"\
+	".\inc\SABTD_Param_Type.h"\
+	".\inc\SABTD_Return_Codes.h"\
+	".\inc\sqlite3.h"\
+	".\inc\xfile.h"\
+	".\inc\ximacfg.h"\
+	".\inc\ximadef.h"\
+	".\inc\ximage.h"\
+	".\inc\xiofile.h"\
+	".\inc\xmemfile.h"\
+	".\Logical\LunarderDate.h"\
+	".\Logical\Phone.h"\
+	".\Logical\serialPort.h"\
+	".\Logical\Telephone.h"\
+	".\Logical\Telephone_IO.h"\
+	".\Logical\Telephone_rs232.h"\
+	".\Logical\TelephoneWarp.h"\
+	".\MultimediaPhone.h"\
+	".\MultimediaPhoneDlg.h"\
+	".\StdAfx.h"\
+	".\Util\ATCommandWarp.h"\
+	".\Util\ComWarp.h"\
+	".\Util\DateTime.h"\
+	".\Util\fsm.h"\
+	".\Util\MMSWarp.h"\
+	".\Util\OggCodec.h"\
+	".\Util\SmartPtr.h"\
+	".\Util\SMSWarp.h"\
+	".\Util\stringOp.h"\
+	".\Util\thread.h"\
+	".\View\3GDetailDlg.h"\
+	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
+	".\View\3GSMSDetailDlg.h"\
+	".\View\3GSMSDlg.h"\
+	".\View\3GSMSListDlg.h"\
+	".\View\3GSysToolTelDlg.h"\
+	".\View\3GTelDlg.h"\
+	".\View\AlarmShowDlg.h"\
+	".\View\CalculaterDlg.h"\
+	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
+	".\View\ContactDlg.h"\
+	".\View\contactgroupdlg.h"\
+	".\View\ContactInfoDlg.h"\
+	".\View\contactinfosearchdlg.h"\
+	".\View\ContactNewDlg.h"\
+	".\View\contactsearchdlg.h"\
+	".\View\copyfileDlg.h"\
+	".\View\deletetipdlg.h"\
+	".\View\fastdialsdlg.h"\
+	".\View\firewalldlg.h"\
+	".\View\HuangliDlg.h"\
+	".\View\LunarderDlg.h"\
+	".\View\MainDlg.h"\
+	".\View\mainmenudlg.h"\
+	".\View\MainMp3Dlg.h"\
+	".\View\mainphotodlg.h"\
+	".\View\MainVideoDlg.h"\
+	".\View\NetStatusDlg.h"\
+	".\View\NotebookDlg.h"\
+	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
+	".\View\Player.h"\
+	".\View\PlayerDlg.h"\
+	".\View\playsounddlg.h"\
+	".\View\RecordSoundDlg.h"\
+	".\View\RenameDlg.h"\
+	".\View\RingSetDlg.h"\
+	".\View\ScreenSaveDlg.h"\
+	".\View\SettingDlg.h"\
+	".\View\SIMImportDlg.h"\
+	".\View\SoundDlg.h"\
+	".\View\soundsearchdlg.h"\
+	".\View\SpecCodeDlg.h"\
+	".\View\telephonedlg.h"\
+	".\View\WarningNoFlashDlg.h"\
+	".\View\WebDialog.h"\
+	".\xml\config.h"\
+	".\xml\DateTime.h"\
+	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"5\inc\ogg.h"\
+	{$(INCLUDE)}"5\inc\speex_callbacks.h"\
+	{$(INCLUDE)}"5\inc\speex_header.h"\
+	{$(INCLUDE)}"5\inc\speex_preprocess.h"\
+	{$(INCLUDE)}"5\inc\speex_stereo.h"\
+	{$(INCLUDE)}"5\inc\wav_io.h"\
+	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
+	{$(INCLUDE)}"amextra.h"\
+	{$(INCLUDE)}"amfilter.h"\
+	{$(INCLUDE)}"bldver.h"\
+	{$(INCLUDE)}"cache.h"\
+	{$(INCLUDE)}"celog.h"\
+	{$(INCLUDE)}"combase.h"\
+	{$(INCLUDE)}"Control\MJPGStatic.h"\
+	{$(INCLUDE)}"cprop.h"\
+	{$(INCLUDE)}"ctlutil.h"\
+	{$(INCLUDE)}"dllsetup.h"\
+	{$(INCLUDE)}"fourcc.h"\
+	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"measure.h"\
+	{$(INCLUDE)}"msgthrd.h"\
+	{$(INCLUDE)}"msxml2.h"\
+	{$(INCLUDE)}"mtype.h"\
+	{$(INCLUDE)}"os_types.h"\
+	{$(INCLUDE)}"outputq.h"\
+	{$(INCLUDE)}"perflog.h"\
+	{$(INCLUDE)}"perflogdata.h"\
+	{$(INCLUDE)}"pstream.h"\
+	{$(INCLUDE)}"refclock.h"\
+	{$(INCLUDE)}"reftime.h"\
+	{$(INCLUDE)}"renbase.h"\
+	{$(INCLUDE)}"renbaseasync.h"\
+	{$(INCLUDE)}"renqual.h"\
+	{$(INCLUDE)}"Schedule.h"\
+	{$(INCLUDE)}"source.h"\
+	{$(INCLUDE)}"speex.h"\
+	{$(INCLUDE)}"speex_bits.h"\
+	{$(INCLUDE)}"speex_types.h"\
+	{$(INCLUDE)}"stdafx.h"\
+	{$(INCLUDE)}"streams.h"\
+	{$(INCLUDE)}"strmctl.h"\
+	{$(INCLUDE)}"sysclock.h"\
+	{$(INCLUDE)}"transfrm.h"\
+	{$(INCLUDE)}"transip.h"\
+	{$(INCLUDE)}"util\DateTime.h"\
+	{$(INCLUDE)}"util\stringOp.h"\
+	{$(INCLUDE)}"videoctl.h"\
+	{$(INCLUDE)}"View\HuangliDlg.h"\
+	{$(INCLUDE)}"vtrans.h"\
+	{$(INCLUDE)}"winctrl.h"\
+	{$(INCLUDE)}"winutil.h"\
+	{$(INCLUDE)}"winx.h"\
+	{$(INCLUDE)}"wxdebug.h"\
+	{$(INCLUDE)}"wxlist.h"\
+	{$(INCLUDE)}"wxutil.h"\
+	{$(INCLUDE)}"xfile.h"\
+	{$(INCLUDE)}"ximacfg.h"\
+	{$(INCLUDE)}"ximadef.h"\
+	{$(INCLUDE)}"ximage.h"\
+	{$(INCLUDE)}"xiofile.h"\
+	{$(INCLUDE)}"xmemfile.h"\
+	{$(INCLUDE)}"xml\config.h"\
+	{$(INCLUDE)}"xml\DateTime.h"\
+	{$(INCLUDE)}"xml\xmlParser.h"\
+	
+
+!IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"
+
+!ELSEIF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Debug"
+
+# ADD CPP /YX
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\View\ContactDlg.cpp
 DEP_CPP_CONTACTD=\
 	".\control\CeBtnST.h"\
@@ -3529,6 +4155,8 @@ DEP_CPP_CONTACTD=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -3537,6 +4165,7 @@ DEP_CPP_CONTACTD=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -3557,6 +4186,7 @@ DEP_CPP_CONTACTD=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -3582,6 +4212,7 @@ DEP_CPP_CONTACTD=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -3592,7 +4223,6 @@ DEP_CPP_CONTACTD=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -3720,6 +4350,8 @@ DEP_CPP_CONTACTG=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -3728,6 +4360,7 @@ DEP_CPP_CONTACTG=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -3748,6 +4381,7 @@ DEP_CPP_CONTACTG=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -3772,6 +4406,7 @@ DEP_CPP_CONTACTG=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -3782,7 +4417,6 @@ DEP_CPP_CONTACTG=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -3912,6 +4546,8 @@ DEP_CPP_CONTACTIN=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -3920,6 +4556,7 @@ DEP_CPP_CONTACTIN=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -3940,6 +4577,7 @@ DEP_CPP_CONTACTIN=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -3964,6 +4602,7 @@ DEP_CPP_CONTACTIN=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -3974,7 +4613,6 @@ DEP_CPP_CONTACTIN=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -4166,6 +4804,8 @@ DEP_CPP_CONTACTN=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -4174,6 +4814,7 @@ DEP_CPP_CONTACTN=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -4194,6 +4835,7 @@ DEP_CPP_CONTACTN=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -4218,6 +4860,7 @@ DEP_CPP_CONTACTN=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -4228,7 +4871,6 @@ DEP_CPP_CONTACTN=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -4405,6 +5047,8 @@ DEP_CPP_COPYF=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -4413,6 +5057,7 @@ DEP_CPP_COPYF=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -4433,6 +5078,7 @@ DEP_CPP_COPYF=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -4457,6 +5103,7 @@ DEP_CPP_COPYF=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -4467,7 +5114,6 @@ DEP_CPP_COPYF=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -4679,6 +5325,8 @@ DEP_CPP_FIREW=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -4687,6 +5335,7 @@ DEP_CPP_FIREW=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -4707,6 +5356,7 @@ DEP_CPP_FIREW=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -4731,6 +5381,7 @@ DEP_CPP_FIREW=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -4741,7 +5392,6 @@ DEP_CPP_FIREW=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -4870,6 +5520,8 @@ DEP_CPP_HUANG=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -4878,6 +5530,7 @@ DEP_CPP_HUANG=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -4898,6 +5551,7 @@ DEP_CPP_HUANG=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -4922,6 +5576,7 @@ DEP_CPP_HUANG=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -4932,7 +5587,6 @@ DEP_CPP_HUANG=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -5052,6 +5706,8 @@ DEP_CPP_INFOR=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -5060,6 +5716,7 @@ DEP_CPP_INFOR=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -5081,6 +5738,7 @@ DEP_CPP_INFOR=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -5105,6 +5763,7 @@ DEP_CPP_INFOR=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -5115,7 +5774,6 @@ DEP_CPP_INFOR=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"icmpapi.h"\
@@ -5245,6 +5903,8 @@ DEP_CPP_LUNAR=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -5253,6 +5913,7 @@ DEP_CPP_LUNAR=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -5273,6 +5934,7 @@ DEP_CPP_LUNAR=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -5297,6 +5959,7 @@ DEP_CPP_LUNAR=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -5307,7 +5970,6 @@ DEP_CPP_LUNAR=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -5435,6 +6097,8 @@ DEP_CPP_MAIND=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -5443,6 +6107,7 @@ DEP_CPP_MAIND=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -5463,6 +6128,7 @@ DEP_CPP_MAIND=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -5487,6 +6153,7 @@ DEP_CPP_MAIND=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -5497,7 +6164,6 @@ DEP_CPP_MAIND=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -5625,6 +6291,8 @@ DEP_CPP_MAINM=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -5633,6 +6301,7 @@ DEP_CPP_MAINM=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -5653,6 +6322,7 @@ DEP_CPP_MAINM=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -5677,6 +6347,7 @@ DEP_CPP_MAINM=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -5687,7 +6358,6 @@ DEP_CPP_MAINM=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -5816,6 +6486,8 @@ DEP_CPP_MAINMP=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -5824,6 +6496,7 @@ DEP_CPP_MAINMP=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -5844,6 +6517,7 @@ DEP_CPP_MAINMP=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -5868,6 +6542,7 @@ DEP_CPP_MAINMP=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -5878,7 +6553,6 @@ DEP_CPP_MAINMP=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -6006,6 +6680,8 @@ DEP_CPP_MAINP=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -6014,6 +6690,7 @@ DEP_CPP_MAINP=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -6034,6 +6711,7 @@ DEP_CPP_MAINP=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -6058,6 +6736,7 @@ DEP_CPP_MAINP=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -6068,7 +6747,6 @@ DEP_CPP_MAINP=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -6196,6 +6874,8 @@ DEP_CPP_MAINV=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -6204,6 +6884,7 @@ DEP_CPP_MAINV=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -6224,6 +6905,7 @@ DEP_CPP_MAINV=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -6248,6 +6930,7 @@ DEP_CPP_MAINV=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -6258,7 +6941,6 @@ DEP_CPP_MAINV=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -6385,6 +7067,8 @@ DEP_CPP_NETST=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -6393,6 +7077,7 @@ DEP_CPP_NETST=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -6413,6 +7098,7 @@ DEP_CPP_NETST=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -6437,6 +7123,7 @@ DEP_CPP_NETST=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -6447,7 +7134,6 @@ DEP_CPP_NETST=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -6567,6 +7253,8 @@ DEP_CPP_NOTEB=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -6575,6 +7263,7 @@ DEP_CPP_NOTEB=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -6595,6 +7284,7 @@ DEP_CPP_NOTEB=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -6619,6 +7309,7 @@ DEP_CPP_NOTEB=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -6629,7 +7320,6 @@ DEP_CPP_NOTEB=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -6768,6 +7458,47 @@ DEP_CPP_PASSW=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\View\PinSetDlg.cpp
+DEP_CPP_PINSE=\
+	".\control\CeBtnST.h"\
+	".\Control\CEDialog.h"\
+	".\control\CELineEdit.h"\
+	".\control\CEStatic.h"\
+	".\Control\DIBSectionCE.h"\
+	".\control\InputDlg.h"\
+	".\Control\MJPGStatic.h"\
+	".\control\SoftKey.h"\
+	".\Data\LanguageResource.h"\
+	".\Data\Setting.h"\
+	".\Data\SkinStyle.h"\
+	".\Data\TelephoneNumber.h"\
+	".\MultimediaPhone.h"\
+	".\StdAfx.h"\
+	".\Util\DateTime.h"\
+	".\Util\SmartPtr.h"\
+	".\Util\stringOp.h"\
+	".\View\PinSetDlg.h"\
+	".\xml\config.h"\
+	".\xml\DateTime.h"\
+	".\xml\xmlParser.h"\
+	{$(INCLUDE)}"HWAPI.H"\
+	{$(INCLUDE)}"msxml2.h"\
+	{$(INCLUDE)}"sip.h"\
+	{$(INCLUDE)}"sipapi.h"\
+	{$(INCLUDE)}"stdafx.h"\
+	
+
+!IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"
+
+!ELSEIF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Debug"
+
+# ADD CPP /YX
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\View\Player.cpp
 DEP_CPP_PLAYE=\
 	".\control\CeBtnST.h"\
@@ -6834,6 +7565,8 @@ DEP_CPP_PLAYE=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -6842,6 +7575,7 @@ DEP_CPP_PLAYE=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -6862,6 +7596,7 @@ DEP_CPP_PLAYE=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -6886,6 +7621,7 @@ DEP_CPP_PLAYE=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -6896,7 +7632,6 @@ DEP_CPP_PLAYE=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -7023,6 +7758,8 @@ DEP_CPP_PLAYER=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -7031,6 +7768,7 @@ DEP_CPP_PLAYER=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -7051,6 +7789,7 @@ DEP_CPP_PLAYER=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -7075,6 +7814,7 @@ DEP_CPP_PLAYER=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -7085,7 +7825,6 @@ DEP_CPP_PLAYER=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -7213,6 +7952,8 @@ DEP_CPP_PLAYS=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -7221,6 +7962,7 @@ DEP_CPP_PLAYS=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -7241,6 +7983,7 @@ DEP_CPP_PLAYS=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -7265,6 +8008,7 @@ DEP_CPP_PLAYS=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -7275,7 +8019,6 @@ DEP_CPP_PLAYS=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -7403,6 +8146,8 @@ DEP_CPP_RECOR=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -7411,6 +8156,7 @@ DEP_CPP_RECOR=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -7431,6 +8177,7 @@ DEP_CPP_RECOR=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -7455,6 +8202,7 @@ DEP_CPP_RECOR=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -7465,7 +8213,6 @@ DEP_CPP_RECOR=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -7624,6 +8371,8 @@ DEP_CPP_RINGS=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -7632,6 +8381,7 @@ DEP_CPP_RINGS=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -7652,6 +8402,7 @@ DEP_CPP_RINGS=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -7676,6 +8427,7 @@ DEP_CPP_RINGS=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -7686,7 +8438,6 @@ DEP_CPP_RINGS=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -7807,6 +8558,8 @@ DEP_CPP_SCREE=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -7815,6 +8568,7 @@ DEP_CPP_SCREE=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -7835,6 +8589,7 @@ DEP_CPP_SCREE=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -7859,6 +8614,7 @@ DEP_CPP_SCREE=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -7869,7 +8625,6 @@ DEP_CPP_SCREE=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -8000,6 +8755,8 @@ DEP_CPP_SETTIN=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -8008,6 +8765,7 @@ DEP_CPP_SETTIN=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -8028,6 +8786,7 @@ DEP_CPP_SETTIN=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -8053,6 +8812,7 @@ DEP_CPP_SETTIN=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -8063,7 +8823,6 @@ DEP_CPP_SETTIN=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"ipexport.h"\
@@ -8186,6 +8945,8 @@ DEP_CPP_SOUNDD=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -8194,6 +8955,7 @@ DEP_CPP_SOUNDD=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -8214,6 +8976,7 @@ DEP_CPP_SOUNDD=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -8238,6 +9001,7 @@ DEP_CPP_SOUNDD=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -8248,7 +9012,6 @@ DEP_CPP_SOUNDD=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -8475,6 +9238,8 @@ DEP_CPP_TELEPH=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -8483,6 +9248,7 @@ DEP_CPP_TELEPH=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -8503,6 +9269,7 @@ DEP_CPP_TELEPH=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -8527,6 +9294,7 @@ DEP_CPP_TELEPH=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -8537,7 +9305,6 @@ DEP_CPP_TELEPH=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -8667,6 +9434,8 @@ DEP_CPP_TESTD=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -8675,6 +9444,7 @@ DEP_CPP_TESTD=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -8695,6 +9465,7 @@ DEP_CPP_TESTD=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -8720,6 +9491,7 @@ DEP_CPP_TESTD=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -8732,7 +9504,6 @@ DEP_CPP_TESTD=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -8853,6 +9624,8 @@ DEP_CPP_WARNI=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -8861,6 +9634,7 @@ DEP_CPP_WARNI=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -8881,6 +9655,7 @@ DEP_CPP_WARNI=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -8905,6 +9680,7 @@ DEP_CPP_WARNI=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -8915,7 +9691,6 @@ DEP_CPP_WARNI=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -9035,6 +9810,8 @@ DEP_CPP_WEBDI=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -9043,6 +9820,7 @@ DEP_CPP_WEBDI=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -9063,6 +9841,7 @@ DEP_CPP_WEBDI=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -9087,6 +9866,7 @@ DEP_CPP_WEBDI=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -9097,7 +9877,6 @@ DEP_CPP_WEBDI=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -9172,6 +9951,14 @@ SOURCE=.\View\3GDetailReadDlg.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\View\3GHomeJoyDlg.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\View\3GHomePicDlg.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\View\3GSMSDetailDlg.h
 # End Source File
 # Begin Source File
@@ -9209,6 +9996,10 @@ SOURCE=.\View\CalculaterDlg.h
 # Begin Source File
 
 SOURCE=.\View\CallSetDlg.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\View\CardSelectDlg.h
 # End Source File
 # Begin Source File
 
@@ -9297,6 +10088,10 @@ SOURCE=.\View\notedlg.h
 # Begin Source File
 
 SOURCE=.\View\passworddlg.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\View\PinSetDlg.h
 # End Source File
 # Begin Source File
 
@@ -9434,6 +10229,7 @@ DEP_CPP_HTTPT=\
 	".\StdAfx.h"\
 	".\Util\DateTime.h"\
 	".\Util\HTTPTransport.h"\
+	".\Util\NewSocket.h"\
 	".\Util\stringOp.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	
@@ -9453,6 +10249,23 @@ SOURCE=.\Util\MMSWarp.cpp
 DEP_CPP_MMSWA=\
 	".\Data\MMSData.h"\
 	".\Util\MMSWarp.h"\
+	{$(INCLUDE)}"stdafx.h"\
+	
+
+!IF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Release"
+
+!ELSEIF  "$(CFG)" == "MultimediaPhone - Win32 (WCE MIPSII) Debug"
+
+# ADD CPP /YX
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Util\NewSocket.cpp
+DEP_CPP_NEWSO=\
+	".\Util\NewSocket.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	
 
@@ -9563,6 +10376,8 @@ DEP_CPP_SMSWA=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -9571,6 +10386,7 @@ DEP_CPP_SMSWA=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -9591,6 +10407,7 @@ DEP_CPP_SMSWA=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -9615,6 +10432,7 @@ DEP_CPP_SMSWA=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -9625,7 +10443,6 @@ DEP_CPP_SMSWA=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -9828,6 +10645,10 @@ SOURCE=.\Util\MMSWarp.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Util\NewSocket.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Util\OggCodec.h
 # End Source File
 # Begin Source File
@@ -9995,6 +10816,8 @@ DEP_CPP_TELEPHO=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -10003,6 +10826,7 @@ DEP_CPP_TELEPHO=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -10023,6 +10847,7 @@ DEP_CPP_TELEPHO=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -10048,6 +10873,7 @@ DEP_CPP_TELEPHO=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -10058,7 +10884,6 @@ DEP_CPP_TELEPHO=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -10510,6 +11335,8 @@ DEP_CPP_MJPGS=\
 	".\Util\thread.h"\
 	".\View\3GDetailDlg.h"\
 	".\View\3GDetailReadDlg.h"\
+	".\View\3GHomeJoyDlg.h"\
+	".\View\3GHomePicDlg.h"\
 	".\View\3GSMSDetailDlg.h"\
 	".\View\3GSMSDlg.h"\
 	".\View\3GSMSListDlg.h"\
@@ -10518,6 +11345,7 @@ DEP_CPP_MJPGS=\
 	".\View\AlarmShowDlg.h"\
 	".\View\CalculaterDlg.h"\
 	".\View\CallSetDlg.h"\
+	".\View\CardSelectDlg.h"\
 	".\View\ContactDlg.h"\
 	".\View\contactgroupdlg.h"\
 	".\View\ContactInfoDlg.h"\
@@ -10538,6 +11366,7 @@ DEP_CPP_MJPGS=\
 	".\View\NetStatusDlg.h"\
 	".\View\NotebookDlg.h"\
 	".\View\passworddlg.h"\
+	".\View\PinSetDlg.h"\
 	".\View\Player.h"\
 	".\View\PlayerDlg.h"\
 	".\View\playsounddlg.h"\
@@ -10562,6 +11391,7 @@ DEP_CPP_MJPGS=\
 	{$(INCLUDE)}"5\inc\speex_stereo.h"\
 	{$(INCLUDE)}"5\inc\wav_io.h"\
 	{$(INCLUDE)}"5\inc\wave_out.h"\
+	{$(INCLUDE)}"\dshow.h"\
 	{$(INCLUDE)}"amextra.h"\
 	{$(INCLUDE)}"amfilter.h"\
 	{$(INCLUDE)}"bldver.h"\
@@ -10572,7 +11402,6 @@ DEP_CPP_MJPGS=\
 	{$(INCLUDE)}"cprop.h"\
 	{$(INCLUDE)}"ctlutil.h"\
 	{$(INCLUDE)}"dllsetup.h"\
-	{$(INCLUDE)}"dshow.h"\
 	{$(INCLUDE)}"fourcc.h"\
 	{$(INCLUDE)}"HWAPI.H"\
 	{$(INCLUDE)}"measure.h"\
@@ -10644,7 +11473,10 @@ DEP_CPP_MMSSH=\
 	".\Control\DIBSectionCE.h"\
 	".\Control\MmsShow.h"\
 	".\Data\MMSData.h"\
+	".\StdAfx.h"\
+	".\Util\DateTime.h"\
 	".\Util\MMSWarp.h"\
+	".\Util\stringOp.h"\
 	{$(INCLUDE)}"stdafx.h"\
 	{$(INCLUDE)}"xfile.h"\
 	{$(INCLUDE)}"ximacfg.h"\

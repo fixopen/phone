@@ -442,6 +442,10 @@ CString GetFileName(CString pathname)
 int dowith_Parse(char *ptr, int type)
 {
 	std::string str = (char *)ptr;
+	if(str.find("utf-8")>0 || str.find("UTF-8")>0)
+	{
+		str = Util::StringOp::FromUTF8(str);
+	}
 	TCHAR *root_dir[] = {L"/flashdrv/3g/file/", L"/flashdrv/3g/weather/", L"/flashdrv/3g/menu/"};
 	char *root_dir_[] = {"/flashdrv/3g/file/", "/flashdrv/3g/weather/", "/flashdrv/3g/menu/"};
 	int iDir = type;
@@ -650,18 +654,25 @@ int dowith_Parse(char *ptr, int type)
 	return 0;
 }
 
+//release dialed   20090619
 int HttpProcesse(void *pParam)
 {
+	Dprintf("HttpProcesse:\r\n");
 	int ret = -1;
 	HttpParam *pHttpParam = (HttpParam *)pParam;
 	CString strSentence;
     CString strFileName = pHttpParam->url;
+	
+	Dprintf(pHttpParam->url);
+	Dprintf("\r\n");
 
 	CString strFormData = "";    // 需要提交的数据
     CString strHeaders = _T("Content-Type: application/x-www-form-urlencoded"); // 请求头
 
 	Util::HTTPTransport Transport;
+	Dprintf("HttpProcesse:0\r\n");
 	Transport.SetAPN((Util::DIAL_APN)pHttpParam->apn_type, pHttpParam->apn_proxy);
+	Dprintf("HttpProcesse:1\r\n");
     char *regist[] = 
 	{
 	"<?xml version=\"1.0\" encoding=\"GBK\" ?>\r\n\
@@ -684,11 +695,16 @@ int HttpProcesse(void *pParam)
     if(pHttpParam->type == 1)    //post
 	{
 		
+		Dprintf("HttpProcesse:2\r\n");
 		SYSTEMTIME curtime;
 		GetLocalTime(&curtime);
 		char datetime[32];
 		sprintf(datetime, "%04d%02d%02d%02d%02d%02d", curtime.wYear, curtime.wMonth, curtime.wDay, curtime.wHour, curtime.wMinute, curtime.wSecond);
+		Dprintf("HttpProcesse:3\r\n");
+		
 		char sData[1024] = {0};
+		memset(sData, 0, 1024);
+
 		strcpy(sData, regist[0]);
 		strcat(sData, datetime);
 		strcat(sData, regist[1]);
@@ -698,12 +714,22 @@ int HttpProcesse(void *pParam)
 		if(pHttpParam->cTerminalId)
 		strcat(sData, pHttpParam->cTerminalId);
 		strcat(sData, regist[3]);
+		Dprintf("HttpProcesse:4\r\n");
 
 		Transport.message.headers.insert(std::make_pair(std::wstring(L"Content-Type"), std::wstring(L"application/x-www-form-urlencoded")));
+		
+		TCHAR sLen[32];
+		wsprintf(sLen, L"%d", strlen(sData));
+		std::wstring sLen_ = sLen;
+		Transport.message.headers.insert(std::make_pair(std::wstring(L"CONTENT-LENGTH"), sLen_));
+
 		Transport.message.body = sData;
+		Dprintf("HttpProcesse5: %d\r\n", strlen(sData));
 		Transport.SetPost(sData, strlen(sData));
-		DWORD r_ = Transport.Post((LPCTSTR)strFileName);
-		if(r_ == 0)
+		Dprintf("HttpProcesse:6\r\n");
+		DWORD r_ = Transport.Post_((LPCTSTR)strFileName);
+		Dprintf("Post1 error %d\r\n", r_);
+		if(r_ == 0 )
 		{
 			int size = 0;
 			BYTE pBuf[1024*2+1] = {0};
@@ -716,7 +742,6 @@ int HttpProcesse(void *pParam)
 			Dprintf((char *)pBuf);
 			ret = dowith_Parse((char *)pBuf, 4);
 		}
-		
 	}
 	
 	else if(pHttpParam->type == 2 || pHttpParam->type == 11)    //发送彩信
@@ -725,6 +750,7 @@ int HttpProcesse(void *pParam)
 		if(pHttpParam->type == 2)
 		{
 			Transport.message.headers.insert(std::make_pair(std::wstring(L"Content-Type"), std::wstring(L"application/vnd.wap.mms-message")));
+			
 			Transport.message.headers.insert(std::make_pair(std::wstring(L"Accept"), std::wstring(L"application/vnd.wap.mms-message,text/plain,*/*")));
 			Transport.message.headers.insert(std::make_pair(std::wstring(L"User-Agent"), std::wstring(L"CeHttp")));
 		}
@@ -736,9 +762,11 @@ int HttpProcesse(void *pParam)
 		Transport.message.body = std::string(pHttpParam->pData, pHttpParam->dataLentg);
 		Transport.SetPost(pHttpParam->pData, pHttpParam->dataLentg);
 		extern VOID WriteLog_(char *ptr, int size);
-	//	WriteLog_(pHttpParam->pData, pHttpParam->dataLentg);
+		WriteLog_(pHttpParam->pData, pHttpParam->dataLentg);
+		Dprintf("Post start:\r\n");
 		DWORD r_ = Transport.Post((LPCTSTR)strFileName);
-		if(r_ == 0)
+		Dprintf("Post mms error %d\r\n", r_);
+		if(r_ == 0 )
 		{
 			int size = 0;
 			BYTE pBuf[1024*2+1] = {0};
@@ -757,28 +785,36 @@ int HttpProcesse(void *pParam)
 			else
 				ret = 0;
 		}
-		
+				
 	}
 
 	else	//get
 	{
-		DWORD r_ = Transport.Get((LPCTSTR)strFileName);
-		if(r_ == 0)
+		Dprintf("Get start:\r\n");
+// 	
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"Accept-Language"), std::wstring(L"utf-8")));
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"Accept"), std::wstring(L"text/plain,*/*")));
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"User-Agent"), std::wstring(L"CeHttp")));
+// 		Transport.message.headers.insert(std::make_pair(std::wstring(L"Connection"), std::wstring(L"Keep-Alive")));
+				
+		DWORD r_ = Transport.Get_((LPCTSTR)strFileName);
+		Dprintf("Get error %d\r\n", r_);
+		if(r_ == 0 )
 		{
-		
-			BYTE  *pBuf = new BYTE[1024*1024];
-			memset(pBuf, 0, 1024*1024);
+			BYTE  *pBuf = new BYTE[1024*1024*2];
+			memset(pBuf, 0, 1024*1024*2);
 			int size = 0;
 			int nCount = 1;
 		
 			while(nCount != 0)
 			{
-				nCount = Transport.Recv(pBuf+size, 256);
+				nCount = Transport.Recv(pBuf+size, 128);
 				size += nCount;
-				if(size > (1024*1204-256))
+				if(size > (1024*1204*2-256))
 					break;
 			} 
-
+			
+	//		Dprintf((char *)pBuf);
 			if(pHttpParam->dwType < 10)
 				ret = dowith_Parse((char *)pBuf, pHttpParam->dwType);
 			else if(pHttpParam->dwType == 10)			//彩信
@@ -788,13 +824,14 @@ int HttpProcesse(void *pParam)
 
 				Data::MMSData* pMMsData = MMS::MMSWarp::GetMMSWarp()->DecodeMessage(pBuf, size);
 				pMMsData->Insert();
+				ret = pMMsData->id();
+				::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 				delete pMMsData;
-				ret = 0;
 			}
 			delete []pBuf;
 		}
 	}
-    
+    Transport.Close();
 	delete pHttpParam;
 	return ret;
 }
@@ -960,6 +997,7 @@ int HttpProcesse(void *pParam)
 	delete pHttpParam;
 	return ret;
 }
+*/
 
 /*
 int HttpProcesse(void *pParam)
