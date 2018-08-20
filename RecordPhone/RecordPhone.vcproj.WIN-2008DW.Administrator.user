@@ -9,7 +9,7 @@
 			Name="Debug|IngenicMedia (MIPSII)"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -44,7 +44,7 @@
 			Name="Release|IngenicMedia (MIPSII)"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"

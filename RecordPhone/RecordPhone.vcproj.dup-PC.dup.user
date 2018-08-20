@@ -9,20 +9,20 @@
 			Name="Debug|IngenicMedia (MIPSII)"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
-				RemoteMachine="WIN-2008DW"
+				RemoteMachine="DUP-PC"
 				RemoteCommand=""
 				HttpUrl=""
 				PDBPath=""
 				SQLDebugging=""
 				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor="5"
+				DebuggerFlavor=""
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""
@@ -33,7 +33,7 @@
 				MPIAcceptFilter=""
 			/>
 			<DeploymentTool
-				DeploymentDevice="C9D9CFF1-D79B-456B-ADC4-537CDD8A75E7d6519012-710f-11d3-99f2-00105a0df099"
+				DeploymentDevice="81551346-886F-43a2-B707-A91FAE1B33A7"
 			/>
 			<DebuggerTool
 				RemoteExecutable=""
@@ -44,20 +44,20 @@
 			Name="Release|IngenicMedia (MIPSII)"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
-				RemoteMachine="WIN-2008DW"
+				RemoteMachine="DUP-PC"
 				RemoteCommand=""
 				HttpUrl=""
 				PDBPath=""
 				SQLDebugging=""
 				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor="5"
+				DebuggerFlavor=""
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""
@@ -68,7 +68,7 @@
 				MPIAcceptFilter=""
 			/>
 			<DeploymentTool
-				DeploymentDevice="C9D9CFF1-D79B-456B-ADC4-537CDD8A75E7d6519012-710f-11d3-99f2-00105a0df099"
+				DeploymentDevice="81551346-886F-43a2-B707-A91FAE1B33A7"
 			/>
 			<DebuggerTool
 				RemoteExecutable=""
