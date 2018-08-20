@@ -117,6 +117,6 @@ int ComWarp::ReadComm(void* pData, int nLength)
 		}
 		::Sleep(0);
 	}
-	::Sleep(0);
+
 	return (int)dwNumRead;   
 }   

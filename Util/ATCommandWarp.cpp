@@ -111,14 +111,10 @@ void ATCommandWarp::Bind(Util::ComWarp* com)
 }
 int ATCommandWarp::Connect(char* pin)
 {
-	static int gbInit = 0;
-	if(gbInit == 0)
-		gbInit = Init();
 	if (!bInit)
 	{
-		//int i = Init();
-		//if (i == 1)
-		if(gbInit == 1)
+		int i = Init();
+		if (i == 1)
 		{
 			int o = On(pin);
 			if (o == 1)
@@ -319,13 +315,13 @@ int ATCommandWarp::On(char* pin)
 	bool result = true;
 	char ans[1024] = {0};      // 应答串   
 	
-//	PhoneVolume(3);
+	PhoneVolume(3);
 	
 	if (!Command(CREG1, strlen(CREG1)))
 	{
 		return 0;
 	}
-	
+
 //	Command(CMER, strlen(CMER));
 	memset(ans, 0, 1024);
 	BOOL bIsUnSIM = FALSE;
@@ -462,19 +458,11 @@ bool ATCommandWarp::Off(void)
 	return false;
 }
 
-extern BOOL gIsHandSet;
 bool ATCommandWarp::PhoneDial(char * number, BOOL isVideo)
 {
-	Sleep(50);
 	PhoneDialTone(0, NULL);
-	if(!gIsHandSet)
-	{
-		extern void GNotifyDial(BOOL isDial);
-		GNotifyDial(TRUE);
-	}
-	gIsHandSet = FALSE;
+	Sleep(10);
 
-	
 	char ATD[] = "ATD";
 	char CMD[1024];
 	strcpy(CMD, ATD);
@@ -484,10 +472,6 @@ bool ATCommandWarp::PhoneDial(char * number, BOOL isVideo)
 		char temp[] = "AT^DUSBPOWER=1\r";
 		char r[64] = {0}; 
 		Transaction(temp, strlen(temp), r, 64);
-
-		memset(CMD, 0, 1024);
-		strcpy(CMD, "AT^DVTDIAL=");
-		strcat(CMD, number);
 		strcat(CMD, "\r");
 	}
 	else
@@ -681,9 +665,6 @@ bool ATCommandWarp::PhoneRing(char * number, int * type)
 
 bool ATCommandWarp::PhoneHangup(void)
 {
-	extern void GNotifyDial(BOOL isDial);
-	GNotifyDial(FALSE);
-
 	char ATH[] = "ATH\r";//对于挂断AT指令，AT＋CHUP（挂断当前激活CS链路）和AT＋CHLD 也可作为可选AT指令。被动挂断，则LC6311 会给APP 上报“3\r”，3 表示“NO CARRIER”,为对端主动挂断
 	bool result = true;
 	char ans[1024] = {0};      // 应答串 
@@ -890,11 +871,11 @@ bool ATCommandWarp::CallLimit(const char *fac,bool able)
 	memset(ans,0,1024);
 	if (able)
 	{
-		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",5\r",fac,1);
+		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",2\r",fac,1);
 	}
 	else
 	{
-		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",5\r",fac,0);
+		sprintf(CLCK,"AT+CLCK=\"%s\",%d,\"0000\",2\r",fac,0);
 	}
 	Transaction(CLCK,strlen(CLCK),ans,1024, 0xFF);
 	if (strstr(ans,"ERROR") != NULL)
@@ -945,11 +926,11 @@ bool ATCommandWarp::PhoneSetCallWaiting(bool able)//设置呼叫等待
 	char ans[1024];
 	if (able)
 	{
-		sprintf(CCWA,"AT+CCWA=1,%d\r",1);		
+		sprintf(CCWA,"AT+CCWA=%d\r",1);		
 	}
 	else
 	{
-		sprintf(CCWA,"AT+CCWA=1,%d\r",0);		
+		sprintf(CCWA,"AT+CCWA=%d\r",0);		
 	}
 	Transaction(CCWA,strlen(CCWA),ans,1024);
 	if (strstr(ans,"ERROR") != NULL)
@@ -961,7 +942,7 @@ bool ATCommandWarp::PhoneSetCallWaiting(bool able)//设置呼叫等待
 
 bool ATCommandWarp::PhoneGetCallWaiting(int &status)//获取呼叫等待设置
 {
-	char CCWA[] = "AT+CCWA=1,2\r";
+	char CCWA[] = "AT+CCWA?\r";
 	char ans[1024];
 	memset(ans,0,1024);
 	Transaction(CCWA,strlen(CCWA),ans,1024);
@@ -995,20 +976,19 @@ bool ATCommandWarp::PhoneCallSwitch(int n)
 
 int ATCommandWarp::ReportSCE()
 {
-	char DAUDSCS[] = "AT^DAUDO?\r";
+	char DAUDSCS[] = "AT^DAUDSCS?\r";
 	char ans[1024] = {0};      // 应答串 
 	int ansLen = 1024;
 	Transaction(DAUDSCS, strlen(DAUDSCS), ans, ansLen);
-	if(strstr(ans, "DAUDO: 1") != NULL)   
+	if(strstr(ans, "0") != NULL)   
 	{
-		return 1;
+		return 0;
 	}
 	
 	return 2;
 }
 
 int gTelVolume = 3;
-
 bool ATCommandWarp::PhoneVolume(unsigned int level)
 {
 	gTelVolume = level;
@@ -1023,7 +1003,7 @@ bool ATCommandWarp::PhoneVolume(unsigned int level)
 	int ansLen = 1024;
 	// 	m_pCom->WriteComm(cmd, strlen(cmd));
 	// 	//m_pCom->ReadComm(ans, 1024);
-	if(ReportSCE() == 1)
+	if(ReportSCE() == 0)
 		Transaction(cmd1, strlen(cmd1), ans, ansLen);
 	else
 		Transaction(cmd2, strlen(cmd2), ans, ansLen);
@@ -1033,7 +1013,6 @@ bool ATCommandWarp::PhoneVolume(unsigned int level)
 	}
 	return false;
 }
-
 bool ATCommandWarp::PhoneMute(bool isMute)
 {
 	int mute = 0;
@@ -1104,8 +1083,6 @@ unsigned int ATCommandWarp::PhoneNettype(void)			//LC6211
 	return result;
 }
 
-extern void GPlayDialTone(char *dialtone);
-extern void GIsOpenMix(BOOL isOn);
 void ATCommandWarp::PhoneDialTone(BOOL isOn, char *tone)
 {
 	char AT[64] = {0};
@@ -1114,22 +1091,19 @@ void ATCommandWarp::PhoneDialTone(BOOL isOn, char *tone)
 	int ansLen = 1024;
 	if(!isOn)
 	{
-		//strcpy(AT, "AT^DAUDCTRL=0\r");
-		//Command_1(AT, strlen(AT));
-		GIsOpenMix(0);
+		strcpy(AT, "AT^DAUDCTRL=0\r");
+		Command_1(AT, strlen(AT));
 	}
 	else
 	{
 	//	if(strlen(tone) < 2)
 		{
-			//PhoneDialTone(0, NULL);
+			PhoneDialTone(0, NULL);
 		}
-		//strcpy(AT, "AT^DAUDCTRL=1,\"");
-		//strcat(AT, tone);
-		//strcat(AT, "\"\r");
-		//Command_1(AT, strlen(AT));
-		 GIsOpenMix(1);
-		 GPlayDialTone(tone);
+		strcpy(AT, "AT^DAUDCTRL=1,\"");
+		strcat(AT, tone);
+		strcat(AT, "\"\r");
+		Command_1(AT, strlen(AT));
 	}
 }
 
@@ -1177,7 +1151,6 @@ unsigned int ATCommandWarp::PhoneSignalQuality(void)
 
 bool ATCommandWarp::PhoneHandFree(bool isHandFree)
 {
-	/*
 	int hf = 0;
 	if (isHandFree)
 	{
@@ -1193,40 +1166,6 @@ bool ATCommandWarp::PhoneHandFree(bool isHandFree)
 	int ansLen = 1024;
 // 	m_pCom->WriteComm(cmd, strlen(cmd));
 // 	//m_pCom->ReadComm(ans, 1024);
-	Transaction(cmd, strlen(cmd), ans, ansLen);
-	//if(strstr(ans, "OK\r\n") != NULL)   
-	{
-		return true;
-	}
-	return false;
-	*/
-	
-	int hf = 0;
-	if (isHandFree)
-	{
-		hf = 2;
-// 		char cmd1[16];       // 命令串   
-// 		sprintf(cmd1, "AT^DAUDAECON=1\r"); // 生成命令    
-// 		char ans[1024] = {0};      // 应答串 
-// 		int ansLen = 1024;
-// 		Transaction(cmd1, strlen(cmd1), ans, ansLen);
-	}
-	else
-	{
-		hf = 1;
-// 		char cmd1[16];       // 命令串   
-// 		sprintf(cmd1, "AT^DAUDAECON=0\r"); // 生成命令    
-// 		char ans[1024] = {0};      // 应答串 
-// 		int ansLen = 1024;
-// 		Transaction(cmd1, strlen(cmd1), ans, ansLen);
-	}
-	char cmd[16];       // 命令串   
-	extern int gTelVolume;
-	sprintf(cmd, "AT^DAUDO=%d,%d\r", hf, gTelVolume); // 生成命令    
-	char ans[1024] = {0};      // 应答串 
-	int ansLen = 1024;
-	// 	m_pCom->WriteComm(cmd, strlen(cmd));
-	// 	//m_pCom->ReadComm(ans, 1024);
 	Transaction(cmd, strlen(cmd), ans, ansLen);
 	//if(strstr(ans, "OK\r\n") != NULL)   
 	{
@@ -2076,66 +2015,15 @@ void ATCommandWarp::USC2toGB2312(char *src,char *des,int length)
 	des[nDstLength] = '\0';	
 }
 
-struct VideoThreadParam 
-{
-	Util::ComWarp * pVideoComm;
-	BOOL			*pIsRunThread;
-	BOOL            *pIsExitThread;
-	pGetVideoData   GetVideoData; 
-};
-
-VideoThreadParam   gVideaoParam;
-
-void GetVideoDataProc(void *pParam)
-{
-	VideoThreadParam *pVideoParam = (VideoThreadParam *)pParam;
-	char data[1024];
-	while(pVideoParam->pIsRunThread)
-	{
-		int len = pVideoParam->pVideoComm->ReadComm(data, 1024);
-		pVideoParam->GetVideoData(data, len);
-	}
-	*pVideoParam->pIsExitThread = TRUE;
-}
 
 //开始视频
 bool ATCommandWarp::StartVideoPhone(Util::ComWarp *pVideoCom)
 {
-	pVideoCom->OpenComm(L"COM4:");
-	char *cmd = "AT^DVTCHL=1\r";
-	pVideoCom->WriteComm(cmd, strlen(cmd));
-	m_bIsVideoRun = TRUE;
-	m_bIsVideoExit = FALSE;
-	
-	gVideaoParam.pVideoComm = pVideoCom;
-	gVideaoParam.pIsRunThread = &m_bIsVideoRun;
-	gVideaoParam.pIsExitThread = &m_bIsVideoExit;
-	
-	DWORD d;
-	HANDLE pThread = CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE)GetVideoDataProc, (void *)&gVideaoParam, 0, &d );
-
 	return TRUE;
 }
 
 //结束视频
 bool ATCommandWarp::EndVideoPhone(Util::ComWarp *pVideoCom)
 {
-	m_bIsVideoRun = FALSE;
-	while(!m_bIsVideoExit)
-	{
-		Sleep(5);
-	}
-	pVideoCom->CloseComm();
 	return TRUE;
-}
-
-int ATCommandWarp::GetVideoData(void *pData, int length)
-{
-	return 0;
-}
-
-int ATCommandWarp::SendVideoData(void *pData, int length)
-{
-	int ret = gVideaoParam.pVideoComm->WriteComm(pData, length);
-	return ret;
 }

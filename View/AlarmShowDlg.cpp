@@ -140,9 +140,14 @@ void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
 		KillTimer(1);
 		main->phone_->StartRing(L"");
 		boost::shared_ptr<Data::Scheduler> m_result = Data::Scheduler::GetFromDatabaseById(m_nAlarmID);
-		m_result->tipsType(Data::ttRead);
+		
+		if(m_result->tipsType() == Data::ttNet)
+			m_result->tipsType(Data::ttNetRead);
+		else
+			m_result->tipsType(Data::ttRead);
+		
 		m_result->Update();
-		main->m_pMainDlg->FindTodayAlarm(TRUE);
+		main->m_pMainDlg->FindTodayAlarm();
 		ShowWindow_(SW_HIDE);
 	//	theApp.PostThreadMessage(WM_LBUTTONDOWN, 0, 0);
 		main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
@@ -160,7 +165,7 @@ void CAlarmShowDlg::OnTimer(UINT nIDEvent)
 		KillTimer(1);
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
 		main->phone_->StartRing(L"");
-		main->m_pMainDlg->FindTodayAlarm(TRUE);
+		main->m_pMainDlg->FindTodayAlarm();
 		ShowWindow_(SW_HIDE);
 		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetScreenSaveTimer();
 		main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);

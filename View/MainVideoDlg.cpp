@@ -201,11 +201,18 @@ void CMainVideoDlg::SetPlayList(TCHAR *dir, int local)
 	int ncount = 0;
 	if(local == 0)
 	{
-		if(DetectDIR(_T("/usbdisk")))
-			m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
-		if(DetectDIR(_T("/storagecard")))
-			m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
-		memcpy(m_chDir, _T("/flashdrv/my_video/"), wcslen(_T("/flashdrv/my_video/"))*2);
+		if(m_nMp4Type == mp4_net_type)
+		{
+			memcpy(m_chDir, _T("/flashdrv/my_net_video/"), wcslen(_T("/flashdrv/my_net_video/"))*2);	
+		}
+		else
+		{
+			if(DetectDIR(_T("/usbdisk")))
+				m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
+			if(DetectDIR(_T("/storagecard")))
+				m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
+			memcpy(m_chDir, _T("/flashdrv/my_video/"), wcslen(_T("/flashdrv/my_video/"))*2);
+		}
 	}
 	
 	else

@@ -15,13 +15,14 @@
 #include "PlayerDlg.h"
 /////////////////////////////////////////////////////////////////////////////
 // CMainVideoDlg dialog
+enum Mp4Type{mp4_local_type, mp4_net_type};
 
 class CMainVideoDlg : public CDialog
 {
 //control
 public:
 	std::vector<CString> m_VideoList;
-
+	Mp4Type	m_nMp4Type;
 	BOOL m_bIsPausebyEvent;
 
 	TCHAR		m_chDir[128];

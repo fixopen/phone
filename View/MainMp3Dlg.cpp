@@ -264,11 +264,18 @@ void CMainMp3Dlg::SetPlayList(TCHAR *dir, int local)
 	int ncount = 0;
 	if(local == 0)
 	{
-		if(DetectDIR(_T("/usbdisk")))
-			m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
-		if(DetectDIR(_T("/storagecard")))
-			m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
-		memcpy(m_chDir, _T("/flashdrv/my_music/"), wcslen(_T("/flashdrv/my_music/"))*2);
+		if(m_nMp3Type == mp3_net_type)
+		{
+			memcpy(m_chDir, _T("/flashdrv/my_net_music/"), wcslen(_T("/flashdrv/my_net_music/"))*2);	
+		}
+		else
+		{
+			if(DetectDIR(_T("/usbdisk")))
+				m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
+			if(DetectDIR(_T("/storagecard")))
+				m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
+			memcpy(m_chDir, _T("/flashdrv/my_music/"), wcslen(_T("/flashdrv/my_music/"))*2);	
+		}
 	}
 
 	else

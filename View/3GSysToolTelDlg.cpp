@@ -78,9 +78,7 @@ void C3GSysToolDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	{
 	case 1:			//家庭影院
 		//pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
-		//pMainDlg->OnButtonSetting(); //系统设置
-		if(pMainDlg->IsConnectNet())
-			pMainDlg->m_pMainDlg->StartWeb();
+		pMainDlg->OnButtonSetting(); //系统设置
 		break;
 	case 2:			//计算器
 		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnCalculBtn();

@@ -165,7 +165,6 @@ public:
 	Util::ComWarp* m_pComWarp2;
 	Util::ATCommandWarp* m_pATCommandWarp2;
 	SMS::SMSWarp* m_pSMSWarp;
-	BOOL m_bATComm;
 
 	//用于VP数据通道
 	Util::ComWarp* m_pVideoComWarp;
@@ -292,7 +291,6 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
-public:
 	std::map<int, CDialog*> panels_;
 	CDialog* currentPanel_;
 	UINT	 currentPanelID_;
@@ -322,7 +320,6 @@ protected:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 	afx_msg void OnDeviceChange(WPARAM w, LPARAM l);
 	afx_msg void OnClickMJPG(WPARAM w, LPARAM l);
-	afx_msg void OnClickToggle(WPARAM w, LPARAM l);
 	afx_msg void OnRasErrorCode(WPARAM w, LPARAM l);
 	DECLARE_MESSAGE_MAP()
 

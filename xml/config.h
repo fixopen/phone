@@ -20,7 +20,7 @@ enum TEXTHEIGHT{font_h_1, font_h_2, font_h_4, font_h_6, font_h_8, font_h_10, fon
 enum TEXTALIGN{ left_top, left_center, left_bottom, middle_top, middle_center, middle_bottom, right_top, right_center, right_bottom, textalign_end};
 enum UNIT_TYPE{unit_no, unit_link, unit_click, unit_dial, unit_outdial, uint_pagedown, unit_pageup, unit_audio, unit_video, unittype_end};
 enum ADV_TYPE{adv_jpg, adv_video, advtype_end};
-enum CTRL_TYPE{ctrl_unit, ctrl_edit, ctrl_chechbutton, ctrl_radiobutton, ctrl_commbox, ctrl_datetime, ctrl_unittoggle, ctrtype_end};
+enum CTRL_TYPE{ctrl_unit, ctrl_edit, ctrl_chechbutton, ctrl_radiobutton, ctrl_commbox, ctrtype_end};
 
 /*
 ×ó¶ÔÆëÖÃ¶¥      left_top
@@ -118,7 +118,8 @@ namespace Structure
 		std::vector<KEYFILEItem*> Keyitems;
 		~PLAYConfigList()
 		{
-			for (int i = 0; i < ADVItems.size(); ++i)
+			int i;
+			for (i = 0; i < ADVItems.size(); ++i)
 				delete ADVItems[i];
 			for (i = 0; i < Sounditems.size(); ++i)
 				delete Sounditems[i];

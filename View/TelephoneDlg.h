@@ -26,12 +26,15 @@ class CTelephoneDlg : public CCEDialog
 {
 // Construction
 public:
+	
 	BOOL m_bFirstConnect;
 	CMJPGStatic		m_MJPGList;
 	CString m_strTelStatus;
 	int     m_nTelStatus;
 	BOOL    m_bTelUsing;
+	std::string m_sPeedCode[5]; 
 	void DialSpeedCode(int index);
+	void initSpeedCode();
 
 	CTelephoneDlg(CWnd* pParent = NULL);   // standard constructor
 	BOOL m_bRecording;

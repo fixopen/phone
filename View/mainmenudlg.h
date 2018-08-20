@@ -21,9 +21,9 @@ public:
 	void SetVideo();
 	void SetSkinStyle();
 
-	void OnVideoBtn();
+	void OnVideoBtn(int type = 0);
 	void OnPhotoBtn(int type = 0);
-	void OnMp3Btn();
+	void OnMp3Btn(int type = 0);
 	void OnScreenSaveBtn();
 	void OnCalculBtn();
 	void OnLunarderBtn();

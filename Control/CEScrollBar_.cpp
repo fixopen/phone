@@ -14,7 +14,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-COLORREF SCROLLBAR_DISABLERGB[2] = {RGB(154, 212, 255), RGB(192, 192, 192)};
+COLORREF SCROLLBAR_DISABLERG                             B[2] = {RGB(154, 212, 255), RGB(192, 192, 192)};
 COLORREF SCROLLBAR_FRAMERGB[2] = {RGB(76,165,229), RGB(128, 128, 128)};
 
 /////////////////////////////////////////////////////////////////////////////

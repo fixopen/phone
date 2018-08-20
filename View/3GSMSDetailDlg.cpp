@@ -74,20 +74,14 @@ void C3GSMSDetailDlg::OnComboSelect(WPARAM w, LPARAM l)
 	{
 		if(m_nSMSType != SMS_NEW)
 		{
-			CString s;
-			m_senderEdit.GetWindowText(s);
 			initDataBase(SMS_NEW, -1, TRUE);
-			m_senderEdit.SetWindowText(s);
 		}
 	}
 	else
 	{
 		if(m_nSMSType != MMS_NEW)
 		{
-			CString s;
-			m_senderEdit.GetWindowText(s);
 			initDataBase(MMS_NEW, -1, TRUE);
-			m_senderEdit.SetWindowText(s);
 		}
 	}
 }	
@@ -172,12 +166,6 @@ void  C3GSMSDetailDlg::initDataBase(SMSDETAILTYPE type,  int smsid, BOOL reDraw 
 			tm += CTimeSpan(0, 0, 0, m_pMMSData->DateAndTime);
 			s = Util::StringOp::FromTimestampFormat(tm).c_str();
 			m_MJPGList.SetUnitText(12, s, reDraw);
-
-			if(!m_pMMSData->isRead)
-			{
-				m_pMMSData->isRead = TRUE;
-				m_pMMSData->Update();
-			}	
 		}
 	}
 	else
@@ -290,8 +278,6 @@ void C3GSMSDetailDlg:: OnDeleteItem(WPARAM w, LPARAM l)
 	CMultimediaPhoneDlg *pMainDlg = ((CMultimediaPhoneDlg*)(theApp.m_pMainWnd));
 	pMainDlg->m_pMainDlg->m_p3GSMSDlg->m_pSMSListDlg->DeleteRefreshList();
 	ShowWindow(SW_HIDE);
-
-	::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);
 }
 
 int g_iSendSMSId = -1;
@@ -538,8 +524,6 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 				CString s;
 				m_contentEdit.GetWindowText(s);
 				m_sReverse = s.Mid(n, n1-n);
-				m_contentEdit.SetSel(n1, n1);
-				m_contentEdit.SetFocus();
 			}
 		}
 		else if(m_nSMSType == MMS_NEW)
@@ -597,8 +581,8 @@ void C3GSMSDetailDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	case 10:
 		break;
 	case 11: //add by qi 2009_08_05
-	//	m_dlgCardSelect.ShowWindow(true);
-	//	m_dlgCardSelect.ShowCard();
+		m_dlgCardSelect.ShowWindow(true);
+		m_dlgCardSelect.ShowCard();
 		break;
 
 	case 20:

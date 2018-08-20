@@ -654,73 +654,6 @@ int dowith_Parse(char *ptr, int type)
 	return 0;
 }
 
-BOOL FindHttpEnd(char *pBuf, int &status, int pLen, int &nOffLen)
-{
-	static int zLength = 0;
-	int len = 0;
-	if(status == 0)
-	{
-		char *ptr = strstr(pBuf, "\r\n\r\n");
-		
-		int len = 0;
-		if(ptr)
-		{
-			char *lPtr;
-
-			lPtr = strstr(pBuf, "Content-Length:");
-			len = strlen("Content-Length:");
-			if(!lPtr)
-			{
-				lPtr = strstr(pBuf, "content-length:");
-				len = strlen("content-length:");
-				if(!lPtr)
-				{
-					lPtr = strstr(pBuf, "Content-length:");
-					len = strlen("Content-length:");
-					if(!ptr)
-					{
-						lPtr = strstr(pBuf, "Content-Length :");
-						len = strlen("Content-Length :");
-						if(!lPtr)
-						{
-							lPtr = strstr(pBuf, "content-length :");
-							len = strlen("content-length :");
-							if(!lPtr)
-							{
-								lPtr = strstr(pBuf, "Content-length :");
-								len = strlen("Content-length :");
-							}
-						}
-					}
-				}	
-			}
-
-			if(lPtr)
-			{
-				char *ePtr = strstr(lPtr+len, "\r\n");
-				if(ePtr)
-				{
-					char txt[12] = {0};
-					memcpy(txt, lPtr+len, (ePtr - lPtr - len));
-					CString s = txt;
-					s.TrimLeft();
-					s.TrimRight();
-					int length1 = Util::StringOp::ToInt(s);
-					zLength = length1 + ptr - pBuf + 4;
-					status = 1;
-					nOffLen = ptr - pBuf + 4;
-				}
-			}
-		}
-	}
-	else if(status == 1)
-	{
-		if(pLen >= zLength)
-			return TRUE;
-	}
-	return FALSE;
-}
-
 //release dialed   20090619
 int HttpProcesse(void *pParam)
 {
@@ -872,31 +805,24 @@ int HttpProcesse(void *pParam)
 			memset(pBuf, 0, 1024*1024*2);
 			int size = 0;
 			int nCount = 1;
-
-			int status = 0;
-			int nOffLength = 0;
 		
 			while(nCount != 0)
 			{
 				nCount = Transport.Recv(pBuf+size, 128);
 				size += nCount;
-				
-				if(FindHttpEnd((char *)pBuf, status, size, nOffLength))
-					break;
-				
-				else if(size > (1024*1204*2-256))
+				if(size > (1024*1204*2-256))
 					break;
 			} 
 			
 	//		Dprintf((char *)pBuf);
 			if(pHttpParam->dwType < 10)
-				ret = dowith_Parse((char *)(pBuf+nOffLength), pHttpParam->dwType);
+				ret = dowith_Parse((char *)pBuf, pHttpParam->dwType);
 			else if(pHttpParam->dwType == 10)			//²ÊÐÅ
 			{
 				extern VOID WriteLog_(char *ptr, int size);
-				WriteLog_((char *)pBuf, size);
+			//	WriteLog_((char *)pBuf, size);
 
-				Data::MMSData* pMMsData = MMS::MMSWarp::GetMMSWarp()->DecodeMessage(pBuf+nOffLength, size-nOffLength);
+				Data::MMSData* pMMsData = MMS::MMSWarp::GetMMSWarp()->DecodeMessage(pBuf, size);
 				pMMsData->Insert();
 				ret = pMMsData->id();
 				::SendMessage(((CMultimediaPhoneDlg*)(theApp.m_pMainWnd))->m_pMainDlg->GetSafeHwnd(), WM_TELNOTIFY, 3, 0);

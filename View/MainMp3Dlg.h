@@ -17,11 +17,13 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainMp3Dlg dialog
+enum Mp3Type{mp3_local_type, mp3_net_type};
 
 class CMainMp3Dlg : public CDialog
 {
 	//control
 public:
+	Mp3Type	m_nMp3Type;
 	BOOL m_bIsPausebyEvent;
 	int			m_nListIndex;
 

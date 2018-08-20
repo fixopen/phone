@@ -73,6 +73,7 @@ void CMainPhotoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 		{
 			if(l == 1)
 			{
+				/*
 				if(w >= 0 && w <= (8-1))
 				{
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetHWnd(m_hWnd);
@@ -80,6 +81,7 @@ void CMainPhotoDlg::OnListCltrlClick(WPARAM w, LPARAM l)
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->SetDelTip(strTemp.c_str());
 					((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->m_pDeleteTipDlg->ShowWindow_(TRUE);
 				}
+				*/
 			}
 			else
 			{
@@ -177,7 +179,7 @@ int CMainPhotoDlg::SetPlayList(TCHAR *dir, int local)
 	memset(m_chDir, 0, 128*2);
 	m_lstPlayList.DeleteAllItems();
 	int ncount = 0;
-
+/*
 	if(m_nPhotoType == net_type)   //网络相片
 	{
 		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
@@ -207,15 +209,22 @@ int CMainPhotoDlg::SetPlayList(TCHAR *dir, int local)
 		m_lstPlayList.SetScrollRagle(TRUE);
 		return filecount;	
 	}
-
+*/
 	
 	if(local == 0)
 	{
-		if(DetectDIR(_T("/usbdisk")))
-			m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
-		if(DetectDIR(_T("/storagecard")))
-			m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
-		memcpy(m_chDir, _T("/flashdrv/my_photo/"), wcslen(_T("/flashdrv/my_photo/"))*2);
+		if(m_nPhotoType == net_type)
+		{
+			memcpy(m_chDir, _T("/flashdrv/my_net_photo/"), wcslen(_T("/flashdrv/my_net_photo/"))*2);
+		}
+		else
+		{
+			if(DetectDIR(_T("/usbdisk")))
+				m_lstPlayList.InsertItem(ncount++, _T("usbdisk"), 3);
+			if(DetectDIR(_T("/storagecard")))
+				m_lstPlayList.InsertItem(ncount++, _T("storagecard"), 3);
+			memcpy(m_chDir, _T("/flashdrv/my_photo/"), wcslen(_T("/flashdrv/my_photo/"))*2);
+		}
 	}
 	
 	else
@@ -399,7 +408,7 @@ void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
 		CString s;
 		CString s1 = Data::LanguageResource::Get(Data::RI_COMN_TOBOTTOM).c_str();
 		s = m_lstPlayList.GetItemText(index, 0);
-
+/*
 		if(m_nPhotoType == net_type)			//网络相片
 		{
 			int id = m_lstPlayList.GetItemData(index);
@@ -408,7 +417,7 @@ void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
 			lvitem.mask=LVIF_TEXT | LVIF_IMAGE;   
 			lvitem.iItem=index;   
 			lvitem.iSubItem=0;   
-			lvitem.pszText = (LPTSTR)(LPCTSTR)s;//(LPTSTR)(LPCTSTR)m_lstPlayList.GetItemText(index, 0)/*.GetBuffer(128)*/;  
+			lvitem.pszText = (LPTSTR)(LPCTSTR)s;//(LPTSTR)(LPCTSTR)m_lstPlayList.GetItemText(index, 0);  
 			lvitem.lParam=index;   
 			lvitem.iImage=id;
 			m_lstPlayList.SetItem(&lvitem);
@@ -416,7 +425,7 @@ void CMainPhotoDlg::OnClickPlayList(NMHDR* pNMHDR, LRESULT* pResult)
 			
 			return;
 		}
-
+*/
 		//usb
 		if(s.Compare(_T("usbdisk")) == 0)
 		{
@@ -510,7 +519,7 @@ void CMainPhotoDlg::OnPlayer(int index)
 		int val = m_lstPlayList.GetItemData(i);
 		if(val == 1)
 		{
-			if(m_nPhotoType == local_type)			//本地相片
+		//	if(m_nPhotoType == local_type)			//本地相片
 			{
 				char filename[128];
 				CString s = m_lstPlayList.GetItemText(i, 0);
@@ -527,12 +536,14 @@ void CMainPhotoDlg::OnPlayer(int index)
 				m_PhotoList.push_back(txt);
 				nFileSelected++;
 			}
+			/*
 			else
 			{
 				CString s = m_pMediaFileresult[i]->multimediaInfos.filename.c_str();
 				m_PhotoList.push_back(s);
 				nFileSelected++;
 			}
+			*/
 		}
 	}
 

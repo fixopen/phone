@@ -597,8 +597,14 @@ void CLunarderDlg::SetData(int y, int m, int d, BOOL flag)
 			m_MJPGList.SetUnitIsShow(nIndex, isDraw, TRUE);
 
 			//如果有提醒，将显示的文字改为红色
-			if(IsHaveAlarm(m_Year, m_Month, i+1-nWeek))
-				m_MJPGList.SetUnitColor(nIndex, font_red, isDraw, TRUE);
+			int ret2 = IsHaveAlarm(m_Year, m_Month, i+1-nWeek);
+			if(ret2>0)
+			{
+				if(ret2 == (int)(Data::ttNet) || ret2 == (int)(Data::ttNetRead))
+					m_MJPGList.SetUnitColor(nIndex, font_red, isDraw, TRUE);
+				else
+					m_MJPGList.SetUnitColor(nIndex, font_green, isDraw, TRUE);
+			}
 		}
 		
 		//判断天，toggle
@@ -927,7 +933,7 @@ void CLunarderDlg ::SetAlarmCtrl(BOOL isNew)
 	m_rdoIsNoAlarm.Invalidate();
 }
 
-BOOL CLunarderDlg::IsHaveAlarm(int y, int m ,int d)
+int CLunarderDlg::IsHaveAlarm(int y, int m ,int d)
 {
 	m_nAlarmCount = 0;
 	m_nAlarmCurrent = 0;
@@ -950,7 +956,8 @@ BOOL CLunarderDlg::IsHaveAlarm(int y, int m ,int d)
 		m_nAlarmCount = m_result.size();
 		m_nAlarmCurrent = 0;
 		m_pScheduler = m_result[0];
-		return TRUE;
+		int ret = m_pScheduler->tipsType();
+		return ret;
 	}
 	return FALSE;
 }

@@ -16,8 +16,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define ENGLISH_VERSION 0
-
 /////////////////////////////////////////////////////////////////////////////
 // CMainDlg dialog
 
@@ -386,27 +384,17 @@ void CMainDlg::SetRightInfo(BOOL isDraw)
 		gsSMS = sSms;
 	}
 
-#if(ENGLISH_VERSION==1)
-	CString sRssContent = "Beijing was the center of jubilant national celebrations Thursday as the country marked 60 years since the founding of New China.";
-	CString sLeaveContent = "No Message.";
-	static CString gsRssContent = "";
-	static CString gsLeaveContent = "";
-#else
 	CString sRssContent = "工信部：7月1日起新售电脑将预装上网过滤软件";
 	CString sLeaveContent = "无家庭留言";
 	static CString gsRssContent = "";
 	static CString gsLeaveContent = "";
-#endif
+
 	if(m_nRssCount > 0)		//有rss消息
 	{
 		sRssContent = rssFileresult[0]->multimediaInfos.content.c_str();
 		if(sRssContent == "")
 		{
-#if(ENGLISH_VERSION==1)
-			sRssContent = "Info Area: No Subscriptions";
-#else
 			sRssContent = "信息提示区：无定制信息";
-#endif
 		}
 	}
 	if(m_nSMSLeaveCount > 0)     //有留言
@@ -421,7 +409,7 @@ void CMainDlg::SetRightInfo(BOOL isDraw)
 	if(sLeaveContent != gsLeaveContent)
 	{
 		gsLeaveContent = sLeaveContent;
-	//	m_MJPGList.SetUnitText(404, sLeaveContent, isDraw);
+		m_MJPGList.SetUnitText(404, sLeaveContent, isDraw);
 	}
 }
 
@@ -432,11 +420,7 @@ void CMainDlg::SetWeather()
 	CTime time = CTime(curtime.wYear, curtime.wMonth, curtime.wDay, 0, 0, 0);
 
 	std::vector<boost::shared_ptr<Data::RegisterReply> > registReplyresult = Data::RegisterReply::GetFromDatabase(""); 
-#if(ENGLISH_VERSION==1)
-	std::string area = "Nanjing";
-#else
 	std::string area = "南京";
-#endif
 	if(registReplyresult.size() > 0)
 	{
 		area = registReplyresult[0]->areaCode.c_str();
@@ -449,11 +433,7 @@ void CMainDlg::SetWeather()
 	filter += "'";
 	std::vector<boost::shared_ptr<Data::Weather> > weaherResult = Data::Weather::GetFromDatabase(filter); 
 	CString s = area.c_str();
-#if(ENGLISH_VERSION==1)
-	CString s1 = "Today\r\n";
-#else
 	CString s1 = "今天\r\n";
-#endif
 	if(weaherResult.size() > 0)
 	{
 		std::string fil = "code = " +  Util::StringOp::FromInt(weaherResult[0]->weatherInfos.code);
@@ -474,13 +454,8 @@ void CMainDlg::SetWeather()
 	}
 	else
 	{
-#if(ENGLISH_VERSION==1)
-		s += "\r\nWeather\r\nNo";
-		s1 += "Weather\r\nNo";
-#else
 		s += "\r\n天气\r\n无定制";
 		s1 += "天气\r\n无定制";
-#endif
 	}
 	m_MJPGList.SetUnitText(201, s, TRUE);
 	m_MJPGList.SetUnitText(202, s1, TRUE);
@@ -491,11 +466,7 @@ void CMainDlg::SetWeather()
 	filter += "' AND datetime = '";
 	filter += Util::StringOp::FromTimestamp(time);
 	filter += "'";
-#if(ENGLISH_VERSION==1)
-	s1 = "Tomorrow\r\n";
-#else
 	s1 = "明天\r\n";
-#endif
 	weaherResult = Data::Weather::GetFromDatabase(filter); 
 	if(weaherResult.size() > 0)
 	{
@@ -505,11 +476,7 @@ void CMainDlg::SetWeather()
 	}
 	else
 	{
-#if(ENGLISH_VERSION==1)
-		s1 += "Weather\r\nNo";
-#else
 		s1 += "天气\r\n无定制";
-#endif
 	}
 	m_MJPGList.SetUnitText(203, s1, TRUE);
 
@@ -519,11 +486,7 @@ void CMainDlg::SetWeather()
 	filter += "' AND datetime = '";
 	filter += Util::StringOp::FromTimestamp(time);
 	filter += "'";
-#if(ENGLISH_VERSION==1)
-	s1 = "...\r\n";
-#else
 	s1 = "后天\r\n";
-#endif
     weaherResult = Data::Weather::GetFromDatabase(filter); 
 	if(weaherResult.size() > 0)
 	{
@@ -533,11 +496,7 @@ void CMainDlg::SetWeather()
 	}
 	else
 	{
-#if(ENGLISH_VERSION==1)
-		s1 += "Weather\r\nNo";
-#else
 		s1 += "天气\r\n无定制";
-#endif
 	}
 	m_MJPGList.SetUnitText(204, s1, TRUE);
 }
@@ -589,7 +548,7 @@ BOOL CMainDlg::ShowTodayAlarm()
 }
 
 // // 
-BOOL CMainDlg::FindTodayAlarm(BOOL isDraw)
+BOOL CMainDlg::FindTodayAlarm()
 {
 	m_bIsAlarm = FALSE;
 
@@ -620,14 +579,10 @@ BOOL CMainDlg::FindTodayAlarm(BOOL isDraw)
 			if(m_result[i]->tipsType() == Data::ttAlarmSound && (nowtm > tm))
 			{
 				m_bIsAlarm = TRUE;
-				CString s;
-				s = m_result[i]->what().c_str();
-				m_MJPGList.SetUnitText(404, s, TRUE);
 				return TRUE;
 			}
 		}
 	}
-	m_MJPGList.SetUnitText(404, L"无日程提醒", isDraw);
 	return FALSE;
 }
 
@@ -935,6 +890,7 @@ void CMainDlg::OnTimer(UINT nIDEvent)
 		}
 		else if(nIDEvent == 2)				//右边的广告区
 		{
+			/*
 			int size = m_PhotoList.size();
 			if(size > 0)
 			{
@@ -943,6 +899,7 @@ void CMainDlg::OnTimer(UINT nIDEvent)
 				m_MJPGList.SetUnitBitmap(20, m_PhotoList[nAdvIndex%size], "", TRUE);
 				nAdvIndex++;
 			}
+			*/
 		}
 	}
 	CDialog::OnTimer(nIDEvent);
@@ -1443,9 +1400,9 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		m_p3GSMSDlg->ShowWindow(SW_SHOW);
 		break;
 	case 3:					//家庭相册
-		m_mainPhotoDlg_->OnOpenFile();
-		m_mainmenuDlg_->OnPhotoBtn(1);
-	//	m_p3GHomePicDlg->ShowWindow(SW_SHOW);
+	//	m_mainPhotoDlg_->OnOpenFile();
+	//	m_mainmenuDlg_->OnPhotoBtn();
+		m_p3GHomePicDlg->ShowWindow(SW_SHOW);
 		break;
 	case 4:			//家庭百事通
 		/*
@@ -1455,13 +1412,12 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		
 		m_firewalDlg_->ShowWindow(SW_SHOW);
 		*/
-	//	m_p3GDetailDlg->initmenu(4);
-	//	m_p3GDetailDlg->ShowWindow(SW_SHOW);
-		m_mainmenuDlg_->OnVideoBtn();
+		m_p3GDetailDlg->initmenu(4);
+		m_p3GDetailDlg->ShowWindow(SW_SHOW);
 		break;
 	case 5:						//家庭影院	
-		m_mainmenuDlg_->OnMp3Btn();	
-	//	m_p3GHomeJoyDlg->ShowWindow(SW_SHOW);
+	//	m_mainmenuDlg_->OnMp3Btn();	
+		m_p3GHomeJoyDlg->ShowWindow(SW_SHOW);
 	//	m_mainmenuDlg_->OnVideoBtn();
 		break;
 	case 6:					    //系统工具		//
@@ -1566,12 +1522,7 @@ void CMainDlg::OnClickMJPGToApp(WPARAM w, LPARAM l)
 		doReadSMS();
 		break;
 	case 404:
-		//doReadLeaveHome();
-		if(m_bIsAlarm)
-		{
-			SetMainMenu();
-			ShowTodayAlarm();
-		}
+		doReadLeaveHome();
 		break;
 
 	default:

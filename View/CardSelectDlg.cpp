@@ -324,7 +324,8 @@ void CCardSelectDlg::ShowArrayInList(std::vector<boost::shared_ptr<Data::Contact
 		}
 		else
 		{
-			for (int j = 0 ; j < m_vContact.size();j++)
+			int j;
+			for ( j = 0 ; j < m_vContact.size();j++)
 			{
 				if (0 == m_vContact[j].name.compare(name) && 0 == m_vContact[j].telnum.compare(telnum))
 				{	
@@ -572,7 +573,8 @@ void CCardSelectDlg::OnBtnSelectAll()
 		Util::ATCommandWarp::SIM_FORMAT vc ;
 		vc.name		= name	;	
 		vc.telnum   = mobilephone ;
-		for (int j = 0 ; j < m_vContact.size() ; j++)
+		int j = 0;
+		for ( ; j < m_vContact.size() ; j++)
 		{
 			if ( 0 == m_vContact[j].name.compare(name) && 0 == m_vContact[j].telnum.compare(mobilephone))
 			{

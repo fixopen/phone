@@ -1,6 +1,7 @@
 #ifndef __DATA_DATAACCESS_H__
 #define __DATA_DATAACCESS_H__
 
+#include "../Util/StringOp.h"
 #pragma warning(disable: 4786)
 #include <vector>
 #include <string>
@@ -8,7 +9,6 @@
 
 #include "../Util/DateTime.h"
 #include "../Util/SmartPtr.h"
-#include "../Util/StringOp.h"
 #include "../inc/sqlite3.h"
 
 namespace Data
@@ -236,7 +236,7 @@ namespace Data
             return p.items;
         }
 
-		static std::vector<boost::shared_ptr<T> > GetDatasByFilterAndPageInfo(std::string const filter, ModifyFieldByDB modifyFieldByDB, int const offset, int const count)
+        static std::vector<boost::shared_ptr<T> > GetDatasByFilterAndPageInfo(std::string const filter, ModifyFieldByDB modifyFieldByDB, int const offset, int const count)
         {
             std::string cmd = "SELECT * FROM [";
             cmd += tableName_;

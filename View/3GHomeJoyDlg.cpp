@@ -77,16 +77,18 @@ void C3GHomeJoyDlg::OnClickMJPG(WPARAM w, LPARAM l)
 	switch(w)
 	{
 	case 1:			//音乐商店
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn();
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn(1);
 		break;
 	case 2:			//影音天地
-		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn();
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn(1);
 		break;
 	case 3:			//游戏集中营
-		if(pMainDlg->IsConnectNet())
-			pMainDlg->m_pMainDlg->StartWeb();
+// 		if(pMainDlg->IsConnectNet())
+// 			pMainDlg->m_pMainDlg->StartWeb();
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnMp3Btn(0);
 		break;
 	case 4:			//收音机
+		pMainDlg->m_pMainDlg->m_mainmenuDlg_->OnVideoBtn(0);
 		break;
 	case 5:
 		break;
