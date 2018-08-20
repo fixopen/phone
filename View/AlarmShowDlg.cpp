@@ -1,0 +1,170 @@
+// AlarmShowDlg.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "../MultimediaPhone.h"
+#include "../MultimediaPhoneDlg.h"
+#include "AlarmShowDlg.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CAlarmShowDlg dialog
+
+
+CAlarmShowDlg::CAlarmShowDlg(CWnd* pParent /*=NULL*/)
+	: CCEDialog(CAlarmShowDlg::IDD, pParent)
+{
+	//{{AFX_DATA_INIT(CAlarmShowDlg)
+		// NOTE: the ClassWizard will add member initialization here
+	//}}AFX_DATA_INIT
+}
+
+
+void CAlarmShowDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CCEDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CAlarmShowDlg)
+		// NOTE: the ClassWizard will add DDX and DDV calls here
+	//}}AFX_DATA_MAP
+}
+
+
+BEGIN_MESSAGE_MAP(CAlarmShowDlg, CCEDialog)
+	//{{AFX_MSG_MAP(CAlarmShowDlg)
+	ON_MESSAGE(WM_CLICKMJPG_TOAPP, OnClickMJPG)
+	ON_WM_TIMER()
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CAlarmShowDlg message handlers
+
+BOOL CAlarmShowDlg::OnInitDialog() 
+{
+	CCEDialog::OnInitDialog();
+	
+	// TODO: Add extra initialization here
+	m_MJPGList.Create(L"", WS_VISIBLE|WS_CHILD, CRect(180, 120, 620, 390), this);
+	m_MJPGList.SetCurrentLinkFile(".\\adv\\mjpg\\k5\\中文\\提醒.xml");
+	m_MJPGList.SetMJPGRect(CRect(180, 120, 620, 390));
+
+	m_MJPGList.SetUnitFont(1, font_20);
+	m_MJPGList.SetUnitFont(2, font_20);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CAlarmShowDlg::SetTxt(int nAlarmID, CString sTime, CString sContent, std::string sRing, BOOL isADDList)
+{
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	
+	main->m_pSoundDlg->m_pRecordSoundDlg->CloseSound();
+	main->m_pSoundDlg->m_pPlaySoundDlg->CloseSound();
+	//退出屏保
+	if(main->m_pMainDlg->m_mainScreenSaveDlg_->IsWindowVisible())
+	{
+		main->m_pMainDlg->m_mainScreenSaveDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+		
+		main->m_pMainDlg->m_mainScreenSaveDlg_->ShowWindow(SW_HIDE);
+	}
+
+	if(main->m_pMainDlg->m_mainPhotoDlg_->IsWindowVisible())
+		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 0);
+	
+	m_nAlarmID = nAlarmID;
+
+	if(isADDList)
+	{
+		main->m_pMainDlg->m_mainMp3Dlg_->OnTimer(1002);
+		//停止试听音乐
+		main->m_pSettingDlg->StopTryRing();
+		main->m_pContactGroupDlg->StopTryRing();
+		main->m_pMainDlg->m_mainLunarderDlg_->StopTryRing();
+	}
+
+	main->m_pMainDlg->m_mainVideoDlg_->OnTimer(1002);
+
+	m_MJPGList.SetUnitText(1, sTime, FALSE);
+	m_MJPGList.SetUnitText(2, sContent, FALSE);
+	main->phone_->StartRing((LPTSTR)(LPCTSTR)Util::StringOp::ToCString(sRing), 0xFF);
+	m_MJPGList.Invalidate();
+	KillTimer(1);
+	SetTimer(1, 60*1000, NULL);
+}
+
+void CAlarmShowDlg::ShowWindow_(int cmdshow)
+{
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	if(cmdshow > 0)
+	{
+		main->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 1, 0);
+		::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 800, 480, 0);
+		CCEDialog::ShowWindow_(cmdshow);
+
+		::PostMessage(main->m_pMainDlg->m_firewalDlg_->m_cmbTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);  //如果commbox打开，让commobox隐藏
+		::PostMessage(main->m_pContactGroupDlg->m_cmbSoundTip.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		
+		::PostMessage(main->m_pContactNewDlg->m_cmbType.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(main->m_pContactNewDlg->m_cmbGroup.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(main->m_pMainDlg->m_mainLunarderDlg_->m_cmbRing.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(main->m_pMainDlg->m_pWebDialog->m_cmbURL.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		
+		::PostMessage(main->m_pSettingDlg->m_cmbRingTimes.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(main->m_pSettingDlg->m_cmbAutoRecoedeTimes.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(main->m_pSettingDlg->m_cmbWaitTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+		::PostMessage(main->m_pSettingDlg->m_cmbBlackLightWaitTime.m_pCombo->m_hWnd, CB_SHOWDROPDOWN,0,0);
+	}
+	else
+	{
+		CCEDialog::ShowWindow_(cmdshow);
+		main->m_pMainDlg->m_pWebDialog->SendMessage(WM_KILLWEBSHOW, 0, 0);
+	}
+	
+}
+
+void CAlarmShowDlg::OnClickMJPG(WPARAM w, LPARAM l)
+{
+	CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+	switch(w)
+	{
+	case 0:
+		KillTimer(1);
+		main->phone_->StartRing(L"");
+		boost::shared_ptr<Data::Scheduler> m_result = Data::Scheduler::GetFromDatabaseById(m_nAlarmID);
+		m_result->tipsType(Data::ttRead);
+		m_result->Update();
+		main->m_pMainDlg->FindTodayAlarm();
+		ShowWindow_(SW_HIDE);
+	//	theApp.PostThreadMessage(WM_LBUTTONDOWN, 0, 0);
+		main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
+		main->m_pMainDlg->m_mainVideoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
+		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
+		break;
+
+	}
+}
+
+void CAlarmShowDlg::OnTimer(UINT nIDEvent) 
+{
+	// TODO: Add your message handler code here and/or call default
+	if(nIDEvent == 1)
+	{
+		KillTimer(1);
+		CMultimediaPhoneDlg* main = (CMultimediaPhoneDlg*)theApp.m_pMainWnd;
+		main->phone_->StartRing(L"");
+		main->m_pMainDlg->FindTodayAlarm();
+		ShowWindow_(SW_HIDE);
+		((CMultimediaPhoneDlg*)theApp.m_pMainWnd)->SetScreenSaveTimer();
+		main->m_pMainDlg->m_mainMp3Dlg_->SendMessage(WM_OUTEVENT, 0, 1);
+		main->m_pMainDlg->m_mainVideoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
+		main->m_pMainDlg->m_mainPhotoDlg_->SendMessage(WM_OUTEVENT, 0, 1);
+	}
+	CCEDialog::OnTimer(nIDEvent);
+
+}

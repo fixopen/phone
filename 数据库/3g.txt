@@ -1,0 +1,196 @@
+Welcome to the Windows CE Telnet Service on WindowsCE
+
+Pocket CMD v 5.0
+\>
+\>
+\>
+\>
+\> cd temp
+\temp> m_test_db
+SQLite version 3.5.6
+Enter ".help" for instructions
+sqlite> select * from menumanage;
+SQL error: no such table: menumanage
+sqlite> select * from menumanager;
+21||19700101080000|1|1|0|1|1|4|11111|0||||||
+22||19700101080000|1|1|0|2|1|5|1065806681|0||||||
+23||19700101080000|1|1|0|3|1|6|1065806611|0||||||
+24||19700101080000|1|1|0|4|1|7|1065806621|0||||||
+25||19700101080000|1|1|0|5|1|8|1065806651|0||||||
+26||19700101080000|1|1|0|6|1|9|1065806661|0||||||
+27||19700101080000|1|1|0|7|1|10|1065806612|0||||||
+28||19700101080000|1|1|0|8|1|11|3333|0||||||
+29||19700101080000|1|1|0|9|1|12|1065806603|0||||||
+30|1.0.0|20090523171147|1|2|4|480|1|0|1065806696|10|/flashdrv/3g/menu/128x128/3-
+6-1.png||/flashdrv/3g/menu/128x128/3-6-2.png|||菜单信息
+31|1.0.0|20090523182749|1|2|4|480|1|0|1065806696|10|/flashdrv/3g/menu/128x128/3-
+6-1.png||/flashdrv/3g/menu/128x128/3-6-2.png|||菜单信息
+32|1.0.0|20090525091052|1|2|4|480|1|0|1065806696|10|/flashdrv/3g/menu/128x128/3-
+6-1.png||/flashdrv/3g/menu/128x128/3-6-2.png|||菜单信息
+sqlite> select * from weather;
+1|1.0.0|20090523170242|21060207142813||||0|
+2|1.0.0|20090523171145|21060207142813||||0|
+3|1.0.0|20090523182748|21060207142813||||0|
+4|1.0.0|20090525091051|21060207142813||||0|
+sqlite> select * from weatherpic;
+SQL error: no such table: weatherpic
+sqlite> select * from weatherpicture;
+2||19700403023408|900022|\flashdrv\3g\weather\小雪.png|小雪
+3||19700403023408|900032|\flashdrv\3g\weather\中雪.png|中雪
+4||19700403023408|900042|\flashdrv\3g\weather\大雪.png|大雪
+5||19700403023408|900052|\flashdrv\3g\weather\暴雪.png|暴雪
+6||19700403023408|900072|\flashdrv\3g\weather\冰雹.png|冰雹
+7||19700403023408|900082|\flashdrv\3g\weather\小雨.png|小雨
+8||19700403023408|900092|\flashdrv\3g\weather\中雨.png|中雨
+9||19700403023408|900102|\flashdrv\3g\weather\大雨.png|大雨
+10||19700403023408|900112|\flashdrv\3g\weather\暴雨.png|暴雨
+11||19700403023408|900132|\flashdrv\3g\weather\雨夹�?png|雨夹�
+?2||19700403023408|900142|\flashdrv\3g\weather\�?png|�
+?3||19700403023408|900152|\flashdrv\3g\weather\多云.png|多云
+14||19700403023408|900162|\flashdrv\3g\weather\�?png|�
+?5||19700403023408|900172|\flashdrv\3g\weather\阴转多云.png|阴转多云
+16||19700403023408|900182|\flashdrv\3g\weather\晴转多云.png|晴转多云
+17||19700403023408|900242|\flashdrv\3g\weather\阵雨.png|阵雨
+18||19700403023408|900252|\flashdrv\3g\weather\雷雨.png|雷雨
+19||19700403023408|900262|\flashdrv\3g\weather\雷阵�?png|雷阵�
+?0||19700403023408|900272|\flashdrv\3g\weather\强雷�?png|强雷�
+?1||19700403023408|900322|\flashdrv\3g\weather\�?png|�
+�sqlite>
+sqlite>
+sqlite>
+sqlite> select * from manumanager;
+SQL error: no such table: manumanager
+sqlite> select * from manumenager;
+SQL error: no such table: manumenager
+sqlite> select * from manumaneger;
+SQL error: no such table: manumaneger
+sqlite> select * from menumaneger;
+SQL error: no such table: menumaneger
+sqlite> select * from manumanager;
+SQL error: no such table: manumanager
+sqlite> select * from menumanager;
+33||19700101080000|1|1|4|1|1|4|11111|0||||||
+34||19700101080000|1|1|4|2|1|5|1065806681|0||||||
+35||19700101080000|1|1|4|3|1|6|1065806611|0||||||
+36||19700101080000|1|1|4|4|1|7|1065806621|0||||||
+37||19700101080000|1|1|4|5|1|8|1065806651|0||||||
+38||19700101080000|1|1|4|6|1|9|1065806661|0||||||
+39||19700101080000|1|1|4|7|1|10|1065806612|0||||||
+40||19700101080000|1|1|4|8|1|11|3333|0||||||
+41||19700101080000|1|1|4|9|1|12|1065806603|0||||||
+sqlite> INSERT INTO mmsMessage (smscAddressType, smscAddress, isSetReplyPath, ha
+sHeaderInfo, requestReport, validityPeriodFormat, rejectCopy, type, reference, r
+emoteAddressType, remoteAddress, uplevelProtocol, encoding, validityPeriod, time
+stamp, state, transactionId, messageClass, messageSize, timeOfExpiry, url ) VALU
+0525143640', 0, 'KPQ0007DYB50', -128, 28292, 172710, 'http://218.200.247.40:180/
+bIJS01' );
+SQL error: table mmsMessage has no column named messageSize
+sHeaderInfo, requestReport, validityPeriodFormat, rejectCopy, type, reference, r
+emoteAddressType, remoteAddress, uplevelProtocol, encoding, validityPeriod, time
+stamp, state, transactionId, messageClass, messageSize, timeOfExpiry, url ) VALU
+ES ( 1, '8613800250543', 1, 0, 1, 2, 0, 0, 48, 2, '1065815401', 57, 2, 48, '2009
+0525143640', 0, 'KPQ0007DYB50', 128, 28292, 172710, 'http://218.200.247.40:180/b
+IJS01' );
+SQL error: table mmsMessage has no column named messageSize
+sqlite> .schema
+CREATE TABLE contact ( id INTEGER PRIMARY KEY AUTOINCREMENT, groupId INTEGER, na
+me TEXT, alias TEXT, type INTEGER, mobilesTelephone TEXT, mobilesTelephone2 TEXT
+, worksTelephone TEXT, worksTelephone2 TEXT, internalTelephone TEXT, fax TEXT, f
+amilyTelephone TEXT, msn TEXT, qq TEXT, skype TEXT, email TEXT, homesite TEXT, c
+ompany TEXT, duty TEXT, companyAddress TEXT, companyPostCode TEXT, familyAddress
+ TEXT, postCode TEXT, memo TEXT, department TEXT);
+CREATE TABLE contactGroup ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ali
+as TEXT, useDefaultRing INTEGER, ringId INTEGER, useDefaultTips INTEGER, tipsId
+INTEGER, iconId INTEGER, ringName TEXT, tipName TEXT);
+CREATE TABLE contactInfo ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER, i
+sSound INTEGER, startTime TEXT, duration TEXT, telephoneNumber TEXT, contactId I
+NTEGER, name TEXT, played INTEGER);
+CREATE TABLE contactInfoPictureMap ( id INTEGER PRIMARY KEY AUTOINCREMENT, conta
+ctInfoId INTEGER, pictureId INTEGER);
+CREATE TABLE contactInfoSoundSegmentMap ( id INTEGER PRIMARY KEY AUTOINCREMENT,
+contactInfoId INTEGER, soundSegmentId INTEGER, startTime TEXT);
+CREATE TABLE log ( id INTEGER PRIMARY KEY AUTOINCREMENT, level INTEGER, who TEXT
+, [when] TEXT, what TEXT, code INTEGER, value NUMERIC);
+CREATE TABLE menuManager( id integer primary key autoincrement, version text, ti
+mestamp text, operator text, menuLevel integer, parentId integer, selfId integer
+, type integer, showOrder integer, spCode text, pageCount integer, imageName tex
+t, imageContent text, specImageName text, specImageContent text, url text,name t
+ext);
+CREATE TABLE message( id integer primary key autoincrement, smscAddressType INTE
+GER, smscAddress TEXT,isSetReplyPath INTEGER,hasHeaderInfo INTEGER,requestReport
+ INTEGER,validityPeriodFormat INTEGER,rejectCopy INTEGER,type INTEGER,reference
+INTEGER,remoteAddressType INTEGER,remoteAddress TEXT,uplevelProtocol INTEGER,enc
+oding INTEGER,validityPeriod INTEGER,data TEXT, timestamp TEXT, state INTEGER, "
+group" INTEGER);
+CREATE TABLE mmsData (id INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,  "messag
+eType" VARCHAR, "transactionId" VARCHAR, "mmsVersion" VARCHAR, "recipientAddress
+" VARCHAR, "contentType" VARCHAR, "timeOfExpiry" INTEGER, "subject" VARCHAR, "me
+ssageId" VARCHAR, "messageClass" VARCHAR, "dateAndTime" INTEGER, "requestStatus"
+ VARCHAR, "savePath" VARCHAR, "isRead" INTEGER, "type" INTEGER );
+CREATE TABLE mmsMessage (id INTEGER PRIMARY KEY  NOT NULL ,"smscAddressType" INT
+EGER,"smscAddress" VARCHAR,"isSetReplyPath" INTEGER,"hasHeaderInfo" INTEGER,"req
+uestReport" INTEGER,"validityPeriodFormat" INTEGER,"rejectCopy" INTEGER,"type" I
+NTEGER,"reference" INTEGER,"remoteAddressType" INTEGER,"remoteAddress" VARCHAR,"
+uplevelProtocol" INTEGER,"encoding" INTEGER,"validityPeriod" INTEGER,"url" VARCH
+AR,"timestamp" VARCHAR,"state" INTEGER,"transactionId" VARCHAR,"messageClass" IN
+TEGER,"timeOfExpiry" INTEGER);
+CREATE TABLE multimediaDownload( id integer primary key autoincrement, version t
+ext,timestamp text, type integer,spCode text,subject text,filename text,weatherC
+ode text,content text);
+CREATE TABLE otaMessage (id INTEGER PRIMARY KEY  NOT NULL ,"smscAddressType" INT
+EGER,"smscAddress" VARCHAR,"isSetReplyPath" INTEGER,"hasHeaderInfo" INTEGER,"req
+uestReport" INTEGER,"validityPeriodFormat" INTEGER,"rejectCopy" INTEGER,"type" I
+NTEGER,"reference" INTEGER,"remoteAddressType" INTEGER,"remoteAddress" VARCHAR,"
+uplevelProtocol" INTEGER,"encoding" INTEGER,"validityPeriod" INTEGER,"instructio
+n" INTEGER, "url" VARCHAR, "timestamp" VARCHAR, "state" INTEGER);
+CREATE TABLE picture ( id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT, file
+size INTEGER, type INTEGER);
+CREATE TABLE register( id integer primary key autoincrement, version text, times
+tamp text,terminalVersion text, imei text, terminalCode text);
+CREATE TABLE registerReply( id integer primary key autoincrement, version text,
+timestamp text,result integer, area text, description text);
+CREATE TABLE scheduler( id INTEGER PRIMARY KEY AUTOINCREMENT, startTime TEXT, ty
+pe integer, ring TEXT, what TEXT);
+CREATE TABLE setting ( id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER, thisT
+elephoneNumber TEXT, outlinePrefix TEXT, isAutoAppendOutlinePrefix INTEGER, ipPr
+efix TEXT, isAppendIpPrefix INTEGER, isUseSpecRing INTEGER, defaultRingFilename
+TEXT, isAutoReply INTEGER, autoReplyRingCount INTEGER, speedDialName1 TEXT, spee
+dDialValue1 TEXT, speedDialName2 TEXT, speedDialValue2 TEXT, speedDialName3 TEXT
+, speedDialValue3 TEXT, speedDialName4 TEXT, speedDialValue4 TEXT, speedDialName
+5 TEXT, speedDialValue5 TEXT, speedDialName6 TEXT, speedDialValue6 TEXT, speedDi
+alName7 TEXT, speedDialValue7 TEXT, speedDialName8 TEXT, speedDialValue8 TEXT, s
+peedDialName9 TEXT, speedDialValue9 TEXT, speedDialName10 TEXT, speedDialValue10
+ TEXT, speedDialName11 TEXT, speedDialValue11 TEXT, speedDialName12 TEXT, speedD
+ialValue12 TEXT, linkMode INTEGER, dialUsername TEXT, dialPassword TEXT, ipMode
+INTEGER, thisIpAddr INTEGER, subnetMask INTEGER, gateway INTEGER, dns INTEGER, i
+sIndicationUser INTEGER, isAlwaysSave INTEGER, copyright TEXT, hardwareVersion T
+EXT, softwareVersion TEXT, maxContactUseSize INTEGER, maxContactInfoUseSize INTE
+GER, maxSoundUseSize INTEGER, soundVolume INTEGER, systemVolume INTEGER, flashDr
+vRoot TEXT, storageCardRoot TEXT, usbDiskRoot TEXT, dataRootPath TEXT, picturePa
+th TEXT, notePath TEXT, musicPath TEXT, soundPath TEXT, videoPath TEXT, removeab
+leSemiFixPath TEXT, removeableDynamicPath TEXT, thisUserId INTEGER, firewallType
+ INTEGER, blockAllTimeDuration INTEGER, soundProtectPassword TEXT, isUseScreenSa
+ver INTEGER, screenSaverDuration INTEGER, screenSaverContent INTEGER, isUseScree
+nSaverPassword INTEGER, screenSaverPassword TEXT , isFirewall INTEGER, isAdmin I
+NTEGER, isPlayProtect INTEGER, isDeleteProtect INTEGER, isMustRecord INTEGER, ad
+minPassword TEXT, playRecordPassword TEXT, backlightDuration integer, defaultTip
+Filename TEXT, blackLinghtValue INTEGER, isContrlBlackLight INTEGER, controlBlac
+kLightWaitTime INTEGER, isNightControlBlackLight INTEGER, nightControlBlackLight
+StartTime TEXT, nightControlBlackLightEndTime TEXT);
+CREATE TABLE sms( id integer primary key autoincrement, msgid integer, source te
+xt, destination text, type integer, title text, content text, statecode integer,
+ time text, stop text);
+CREATE TABLE soundSegment ( id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT,
+ duration TEXT, type INTEGER, telephoneNumber TEXT, startTime TEXT, contactId IN
+TEGER, contactInfoId INTEGER, name TEXT, played INTEGER, isTip INTEGER);
+CREATE TABLE user ( id INTEGER PRIMARY KEY AUTOINCREMENT, baseInfoId INTEGER, pa
+ssword TEXT, settingId INTEGER);
+CREATE TABLE weather( id integer primary key autoincrement, version text, timest
+amp text, datetime text, area text, wind text,temperature text,code integer,desc
+ription text);
+CREATE TABLE weatherPicture( id integer primary key autoincrement, version text,
+timestamp text,code text,filename text,content text);
+sqlite>
+
+
+CREATE TABLE mmsMessage (id INTEGER PRIMARY KEY  NOT NULL ,"smscAddressType" INTEGER,"smscAddress" VARCHAR,"isSetReplyPath" INTEGER,"hasHeaderInfo" INTEGER,"requestReport" INTEGER,"validityPeriodFormat" INTEGER,"rejectCopy" INTEGER,"type" INTEGER,"reference" INTEGER,"remoteAddressType" INTEGER,"remoteAddress" VARCHAR, "uplevelProtocol" INTEGER,"encoding" INTEGER,"validityPeriod" INTEGER,"url" VARCHAR,"timestamp" VARCHAR,"state" INTEGER,"transactionId" VARCHAR,"messageClass" INTEGER,"timeOfExpiry" INTEGER, "messageSize" INTEGER);
